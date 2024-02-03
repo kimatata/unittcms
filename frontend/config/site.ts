@@ -4,9 +4,13 @@ export const siteConfig = {
   name: "Open Source Test Case Management Tool",
   description: "Integrate and manage all your software testing.",
   navItems: [
+    // {
+    //   label: "Home",
+    //   href: "/",
+    // },
     {
-      label: "Home",
-      href: "/",
+      label: "About",
+      href: "/about",
     },
 		{
       label: "Projects",
@@ -24,10 +28,6 @@ export const siteConfig = {
     //   label: "Blog",
     //   href: "/blog",
     // },
-    {
-      label: "About",
-      href: "/about",
-    }
   ],
   navMenuItems: [
     {
