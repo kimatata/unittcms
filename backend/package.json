@@ -13,6 +13,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "cors": "^2.8.5",
     "express": "^4.18.2",
     "sequelize": "^6.36.0",
     "sequelize-cli": "^6.6.2",

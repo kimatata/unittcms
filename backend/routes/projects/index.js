@@ -4,9 +4,9 @@ const defineProject = require('../../models/projects');
 const { DataTypes } = require('sequelize');
 
 module.exports = function(sequelize) {
-  router.get("/", async (req, res) => {
-    const Project = defineProject(sequelize, DataTypes)
+  const Project = defineProject(sequelize, DataTypes)
 
+  router.get("/", async (req, res) => {
     try {
       const projects = await Project.findAll();
       res.json(projects);
