@@ -5,12 +5,17 @@
   "main": "index.js",
   "scripts": {
     "start": "node index",
+    "migrate": "bash scripts/migrate.sh",
+    "seed": "bash scripts/seed.sh",
+    "drop": "bash scripts/drop.sh",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "express": "^4.18.2",
-    "mysql": "^2.18.1"
+    "sequelize": "^6.36.0",
+    "sequelize-cli": "^6.6.2",
+    "sqlite3": "^5.1.7"
   }
 }

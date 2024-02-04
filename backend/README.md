@@ -4,7 +4,7 @@
 
 - Node.js
 - Express
-- MySQL
+- SQLite
 
 ## Install dependencies
 
@@ -12,8 +12,28 @@
 npm install
 ```
 
+## Set up database
+
+```bash
+npm run migrate
+```
+
 ## Run the development server
 
 ```bash
-node dev
+npm run start
+```
+
+## Database operation command
+
+### drop table
+
+```bash
+npm run drop
+```
+
+### add seed data
+
+```bash
+npm run seed
 ```
