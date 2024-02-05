@@ -1,31 +1,46 @@
 "use client";
+import { useEffect, useState } from "react";
 import { title } from "@/components/primitives";
 import { ProjectCard } from "./project-card";
 import { Button } from "@nextui-org/react";
 
-const projects = [
-  {
-    name: "Robot1",
-    detail: "Embeded system test",
-  },
-  {
-    name: "Battle-tested in Production",
-    detail: "All the features you need for production: hybrid static & server rendering, TypeScript support, smart bundling, route pre-fetching, and more.",
-  },
-  {
-    name: "bank front",
-    detail: "web frontend application for abc bank",
-  },
-  {
-    name: "bank API",
-    detail: "api server code for abc bank",
-  },
-  {
-    name: "Battle-tested in Production",
-    detail: "All the features you need for production: hybrid static & server rendering, TypeScript support, smart bundling, route pre-fetching, and more.",
-  },
-];
+import Config from "@/config/config";
+const apiServer = Config.apiServer;
 
+/**
+ * fetch project records
+ *
+ * @param {string} url - API endpoint url
+ * @returns {Promise<Array>} - project record array
+ * @throws {Error}
+ */
+async function fetchProjects(url) {
+  try {
+    const response = await fetch(url, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error("Error fetching data:", error.message);
+  }
+}
+
+/**
+ * Create project
+ *
+ * @async
+ * @function
+ * @throws {Error}
+ */
 async function createProject() {
   const newProjectData = {
     name: "新しいプロジェクト",
@@ -40,7 +55,8 @@ async function createProject() {
     body: JSON.stringify(newProjectData),
   };
 
-  fetch("http://localhost:3001/projects", fetchOptions)
+  const url = `${apiServer}/projects`;
+  fetch(url, fetchOptions)
     .then((response) => {
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
@@ -56,10 +72,31 @@ async function createProject() {
 }
 
 export default function ProjectsPage() {
+  const [projects, setProjects] = useState([]);
+  const url = `${apiServer}/projects`;
+
+  useEffect(() => {
+    async function fetchDataEffect() {
+      try {
+        const data = await fetchProjects(url);
+        setProjects(data);
+      } catch (error) {
+        console.error('Error in effect:', error.message);
+      }
+    }
+
+    fetchDataEffect();
+  }, []);
+
   return (
     <div>
-      <h1 className={title()}>Projects</h1>
-      <Button color="primary" onClick={createProject}>Create</Button>
+      <div className="flex h-full items-center">
+        <h1 className={title()}>Projects</h1>
+        <Button variant="bordered" onClick={createProject} className="ms-5 mt-3">
+          Create
+        </Button>
+      </div>
+
       <div className="flex flex-wrap gap-4 mt-5">
         {projects.map((project, index) => (
           <ProjectCard
