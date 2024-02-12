@@ -44,6 +44,37 @@ module.exports = {
         updatedAt: new Date(),
       },
     ]);
+
+    // Add runs table records
+    await queryInterface.bulkInsert('runs', [
+      {
+        name: 'Run 1',
+        projectId: 1,
+        configurations: null,
+        description: null,
+        state: 1,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+      {
+        name: 'Run 2',
+        projectId: 1,
+        configurations: null,
+        description: null,
+        state: 1,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+      {
+        name: 'Run 3',
+        projectId: 1,
+        configurations: null,
+        description: null,
+        state: 1,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+    ]);
   },
 
   down: async (queryInterface, Sequelize) => {

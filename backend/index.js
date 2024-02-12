@@ -35,6 +35,12 @@ const foldersNewRoute = require('./routes/folders/new')(sequelize);
 app.use('/folders', foldersIndexRoute);
 app.use('/folders', foldersNewRoute);
 
+// "/runs"
+const runsIndexRoute = require('./routes/runs/index')(sequelize);
+const runsNewRoute = require('./routes/runs/new')(sequelize);
+app.use('/runs', runsIndexRoute);
+app.use('/runs', runsNewRoute);
+
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
