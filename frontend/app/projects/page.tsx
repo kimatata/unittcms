@@ -149,7 +149,7 @@ export default function ProjectsPage() {
         projectName.text,
         projectDetail.text
       );
-      setProjects([...projects, newProject])
+      setProjects([...projects, newProject]);
       closeModal();
     }
   };

@@ -1,8 +1,9 @@
 'use strict';
 
+/** @type {import('sequelize-cli').Migration} */
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.createTable('Projects', {
+    await queryInterface.createTable('folders', {
       id: {
         type: Sequelize.INTEGER,
         primaryKey: true,
@@ -16,6 +17,20 @@ module.exports = {
         type: Sequelize.STRING,
         allowNull: true,
       },
+      parentFolderId: {
+        type: Sequelize.INTEGER,
+        allowNull: true,
+      },
+      projectId: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+        references: {
+          model: 'Projects',
+          key: 'id',
+          onDelete: 'CASCADE',
+          onUpdate: 'CASCADE',
+        },
+      },
       createdAt: {
         type: Sequelize.DATE,
         allowNull: false,
@@ -27,7 +42,7 @@ module.exports = {
     });
   },
 
-  down: async (queryInterface, Sequelize) => {
-    await queryInterface.dropTable('Projects');
-  },
+  async down (queryInterface, Sequelize) {
+    await queryInterface.dropTable('folders');
+  }
 };
