@@ -19,8 +19,17 @@ function defineRun(sequelize, DataTypes) {
     projectId: {
       type: DataTypes.INTEGER,
       allowNull: false,
-    },
+      references: {
+        model: 'project',
+        key: 'id'
+      },
+      onDelete: 'CASCADE'
+    }
   });
+
+  Run.associate = (models) => {
+    Run.belongsTo(models.Project, { foreignKey: 'projectId', onDelete: 'CASCADE' });
+  };
 
   return Run;
 }

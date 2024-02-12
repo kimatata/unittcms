@@ -75,6 +75,38 @@ module.exports = {
         updatedAt: new Date(),
       },
     ]);
+
+    // Add cases table records
+    await queryInterface.bulkInsert('cases', [
+      {
+        title: 'Sample Case 1',
+        state: 1,
+        priority: 1,
+        type: 1,
+        automationStatus: 1,
+        description: 'Sample description for case 1',
+        template: 1,
+        preConditions: 'Sample pre-conditions for case 1',
+        expectedResults: 'Sample expected results for case 1',
+        folderId: 1,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+      {
+        title: 'Sample Case 2',
+        state: 1,
+        priority: 1,
+        type: 1,
+        automationStatus: 1,
+        description: 'Sample description for case 2',
+        template: 1,
+        preConditions: 'Sample pre-conditions for case 2',
+        expectedResults: 'Sample expected results for case 2',
+        folderId: 1,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+    ]);
   },
 
   down: async (queryInterface, Sequelize) => {
