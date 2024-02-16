@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import Config from "@/config/config";
 const apiServer = Config.apiServer;
+import Main from "./main";
 
 /**
  * fetch folder records
@@ -48,8 +49,8 @@ export default function Page({ params }: { params: { id: string } }) {
   }, []);
 
   return (
-    <div>
-      <div>Project: {params.id}</div>
+    <>
+      {/* <div>Project: {params.id}</div>
       <div className="flex flex-wrap gap-4 mt-5">
         {folders.map((folder, index) => (
           <div key={index}>
@@ -58,7 +59,8 @@ export default function Page({ params }: { params: { id: string } }) {
             <div>{folder.projectId}</div>
           </div>
         ))}
-      </div>
-    </div>
+      </div> */}
+      <Main />
+    </>
   );
 }

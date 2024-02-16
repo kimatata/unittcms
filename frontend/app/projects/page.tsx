@@ -134,16 +134,6 @@ export default function ProjectsPage() {
       isValid = false;
     }
 
-    // validate projectDetail
-    if (!projectDetail.text) {
-      setProjectDetail({
-        text: "",
-        isValid: true,
-        errorMessage: "Please enter project detail",
-      });
-      isValid = false;
-    }
-
     if (isValid) {
       const newProject = await createProject(
         projectName.text,
