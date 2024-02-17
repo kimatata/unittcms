@@ -4,6 +4,7 @@ import Config from "@/config/config";
 const apiServer = Config.apiServer;
 import { Listbox, ListboxItem } from "@nextui-org/react";
 import { FolderIcon } from "@/components/icons";
+import { useRouter } from "next/navigation";
 
 /**
  * fetch folder records
@@ -32,9 +33,15 @@ async function fetchFolders(url) {
   }
 }
 
-export default function Page({ params }: { params: { id: string } }) {
+export default function ProjectsLayout({
+  children,
+  params,
+}: {
+  children: React.ReactNode;
+  params: { projectId: string };
+}) {
   const [folders, setFolders] = useState([]);
-  const url = `${apiServer}/folders?projectId=${params.id}`;
+  const url = `${apiServer}/folders?projectId=${params.projectId}`;
 
   useEffect(() => {
     async function fetchDataEffect() {
@@ -49,20 +56,29 @@ export default function Page({ params }: { params: { id: string } }) {
     fetchDataEffect();
   }, []);
 
+  const router = useRouter();
   return (
-    <div className="w-64 min-h-screen border-r-1">
-      <Listbox aria-label="Listbox Variants">
-        {folders.map((folder, index) => (
-          <ListboxItem
-            key={index}
-            startContent={<FolderIcon size={16} className="text-gray-600" />}
-          >
-            {folder.name}
-            {/* {folder.detail}
+    <div className="flex">
+      <div className="w-64 min-h-screen border-r-1">
+        <Listbox aria-label="Listbox Variants">
+          {folders.map((folder, index) => (
+            <ListboxItem
+              key={index}
+              onClick={() =>
+                router.push(
+                  `/projects/${params.projectId}/folders/${folder.id}/cases`
+                )
+              }
+              startContent={<FolderIcon size={16} className="text-gray-600" />}
+            >
+              {folder.name}
+              {/* {folder.detail}
             {folder.projectId} */}
-          </ListboxItem>
-        ))}
-      </Listbox>
+            </ListboxItem>
+          ))}
+        </Listbox>
+      </div>
+      <div className="flex-grow">{children}</div>
     </div>
   );
 }
