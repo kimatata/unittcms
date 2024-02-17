@@ -145,12 +145,22 @@ export default function ProjectsPage() {
   };
 
   return (
-    <div>
+    <div className="container mx-auto max-w-7xl pt-16 px-6 flex-grow">
       <div className="flex h-full items-center">
         <h1 className={title()}>Projects</h1>
         <Button color="primary" onClick={openModal} className="ms-5 mt-3">
           Create
         </Button>
+      </div>
+
+      <div className="flex flex-wrap items-stretch gap-4 mt-5">
+        {projects.map((project, index) => (
+          <ProjectCard
+            key={index}
+            projectName={project.name}
+            projectDetail={project.detail}
+          />
+        ))}
       </div>
 
       <Modal isOpen={isCreateDialogOpen}>
@@ -193,16 +203,6 @@ export default function ProjectsPage() {
           </ModalFooter>
         </ModalContent>
       </Modal>
-
-      <div className="flex flex-wrap gap-4 mt-5">
-        {projects.map((project, index) => (
-          <ProjectCard
-            key={index}
-            projectName={project.name}
-            projectDetail={project.detail}
-          />
-        ))}
-      </div>
     </div>
   );
 }

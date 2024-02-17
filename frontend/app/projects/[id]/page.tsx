@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import Config from "@/config/config";
 const apiServer = Config.apiServer;
 import Main from "./main";
+import Sidebar from "./sidebar";
 
 /**
  * fetch folder records
@@ -60,7 +61,10 @@ export default function Page({ params }: { params: { id: string } }) {
           </div>
         ))}
       </div> */}
-      <Main />
+      <div className="flex border-t-1 min-h-screen">
+        <Sidebar />
+        <Main />
+      </div>
     </>
   );
 }

@@ -14,7 +14,6 @@ import {
 
 import { siteConfig } from "@/config/site";
 import NextLink from "next/link";
-import clsx from "clsx";
 
 import { ThemeSwitch } from "@/components/theme-switch";
 import { GithubIcon, SearchIcon } from "@/components/icons";
