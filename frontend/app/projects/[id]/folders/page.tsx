@@ -2,8 +2,8 @@
 import { useEffect, useState } from "react";
 import Config from "@/config/config";
 const apiServer = Config.apiServer;
-import Main from "./main";
-import Sidebar from "./sidebar";
+import { Listbox, ListboxItem } from "@nextui-org/react";
+import { FolderIcon } from "@/components/icons";
 
 /**
  * fetch folder records
@@ -50,21 +50,19 @@ export default function Page({ params }: { params: { id: string } }) {
   }, []);
 
   return (
-    <>
-      {/* <div>Project: {params.id}</div>
-      <div className="flex flex-wrap gap-4 mt-5">
+    <div className="w-64 min-h-screen border-r-1">
+      <Listbox aria-label="Listbox Variants">
         {folders.map((folder, index) => (
-          <div key={index}>
-            <div>{folder.name}</div>
-            <div>{folder.detail}</div>
-            <div>{folder.projectId}</div>
-          </div>
+          <ListboxItem
+            key={index}
+            startContent={<FolderIcon size={16} className="text-gray-600" />}
+          >
+            {folder.name}
+            {/* {folder.detail}
+            {folder.projectId} */}
+          </ListboxItem>
         ))}
-      </div> */}
-      <div className="flex border-t-1 min-h-screen">
-        <Sidebar />
-        <Main />
-      </div>
-    </>
+      </Listbox>
+    </div>
   );
 }
