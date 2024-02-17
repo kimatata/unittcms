@@ -11,7 +11,7 @@ import NextLink from "next/link";
 export function ProjectCard({ projectName, projectDetail }) {
   return (
     <NextLink href={`/projects/${1}`}>
-      <Card className="w-[250px] h-36 hover:bg-slate-200">
+      <Card className="w-[250px] h-36 bg-white hover:bg-gray-100 dark:bg-gray-700 dark:hover:bg-gray-800">
         <CardHeader className="flex gap-3 h-16">
           <Image
             alt="nextui logo"

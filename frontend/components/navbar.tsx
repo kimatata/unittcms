@@ -9,7 +9,7 @@ import {
   Kbd,
   Link,
   Input,
-  link as linkStyles
+  link as linkStyles,
 } from "@nextui-org/react";
 
 import { siteConfig } from "@/config/site";
@@ -44,7 +44,7 @@ export const Navbar = () => {
   );
 
   return (
-    <NextUINavbar maxWidth="xl" position="sticky">
+    <NextUINavbar maxWidth="xl" position="sticky" className="bg-inherit">
       <NavbarContent className="basis-1/5 sm:basis-full" justify="start">
         <NavbarBrand as="li" className="gap-3 max-w-fit">
           <NextLink className="flex justify-start items-center gap-1" href="/">
@@ -61,11 +61,7 @@ export const Navbar = () => {
           {siteConfig.navItems.map((item) => (
             <NavbarItem key={item.href}>
               <NextLink
-                className={clsx(
-                  linkStyles({ color: "foreground" }),
-                  "data-[active=true]:text-primary data-[active=true]:font-medium"
-                )}
-                color="foreground"
+                className="data-[active=true]:text-primary data-[active=true]:font-medium"
                 href={item.href}
               >
                 {item.label}

@@ -1,7 +1,5 @@
 import { Link, button as buttonStyles } from "@nextui-org/react";
-import { siteConfig } from "@/config/site";
 import { title, subtitle } from "@/components/primitives";
-import { GithubIcon } from "@/components/icons";
 
 export default function Home() {
   return (
@@ -10,7 +8,7 @@ export default function Home() {
         <h1 className={title({ color: "pink" })}>Open Source&nbsp;</h1>
         <h1 className={title()}>Test Case Management Tool&nbsp;</h1>
         <br />
-        <h2 className={subtitle({ class: "mt-4" })}>
+        <h2 className={subtitle({ class: "text-inherit mt-4" })}>
           Integrate and manage all your software testing.
         </h2>
       </div>
@@ -25,14 +23,6 @@ export default function Home() {
           })}
         >
           Create first test project
-        </Link>
-        <Link
-          isExternal
-          className={buttonStyles({ variant: "bordered", radius: "full" })}
-          href={siteConfig.links.github}
-        >
-          <GithubIcon size={20} />
-          GitHub
         </Link>
       </div>
     </section>
