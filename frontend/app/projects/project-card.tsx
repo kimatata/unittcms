@@ -13,7 +13,7 @@ import {
 } from "@nextui-org/react";
 import { DotsIcon } from "@/components/icons";
 
-export function ProjectCard({ project, onDeleteClicked }) {
+export function ProjectCard({ project, onEditClicked, onDeleteClicked }) {
   return (
     <Card className="w-[250px]">
       <CardHeader className="flex gap-3 h-[50px] justify-between text-ellipsis overflow-hidden">
@@ -24,17 +24,14 @@ export function ProjectCard({ project, onDeleteClicked }) {
         </div>
         <Dropdown>
           <DropdownTrigger>
-            <Button
-              isIconOnly
-              variant="light"
-              size="sm"
-              className="text-transparent hover:text-inherit"
-            >
+            <Button isIconOnly variant="light" size="sm">
               <DotsIcon size={16} />
             </Button>
           </DropdownTrigger>
           <DropdownMenu aria-label="Static Actions">
-            <DropdownItem key="edit">Edit project</DropdownItem>
+            <DropdownItem key="edit" onClick={() => onEditClicked(project)}>
+              Edit project
+            </DropdownItem>
             <DropdownItem
               key="delete"
               className="text-danger"

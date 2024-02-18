@@ -45,10 +45,6 @@ async function fetchProjects(url: string) {
 
 /**
  * Create project
- *
- * @async
- * @function
- * @throws {Error}
  */
 async function createProject(name: string, detail: string) {
   const newProjectData = {
@@ -79,6 +75,41 @@ async function createProject(name: string, detail: string) {
   }
 }
 
+/**
+ * Update project
+ */
+async function updateProject(projectId: number, name: string, detail: string) {
+  const updatedProjectData = {
+    name: name,
+    detail: detail,
+  };
+
+  const fetchOptions = {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(updatedProjectData),
+  };
+
+  const url = `${apiServer}/projects/${projectId}`;
+
+  try {
+    const response = await fetch(url, fetchOptions);
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error("Error updating project:", error);
+    throw error;
+  }
+}
+
+/**
+ * Delete project
+ */
 async function deleteProject(projectId: number) {
   const fetchOptions = {
     method: "DELETE",
@@ -120,7 +151,9 @@ export default function ProjectsPage() {
 
   // dialog
   const [isProjectDialogOpen, setIsProjectDialogOpen] = useState(false);
-  const [editingProject, setEditingProject] = useState(null);
+  const [editingProject, setEditingProject] = useState<ProjectType | null>(
+    null
+  );
   const openDialogForCreate = () => {
     setIsProjectDialogOpen(true);
     setEditingProject(null);
@@ -132,9 +165,26 @@ export default function ProjectsPage() {
   };
 
   const onSubmit = async (name: string, detail: string) => {
-    const newProject = await createProject(name, detail);
-    setProjects([...projects, newProject]);
+    if (editingProject) {
+      const updatedProject = await updateProject(
+        editingProject.id,
+        name,
+        detail
+      );
+      const updatedProjects = projects.map((project) =>
+        project.id === updatedProject.id ? updatedProject : project
+      );
+      setProjects(updatedProjects);
+    } else {
+      const newProject = await createProject(name, detail);
+      setProjects([...projects, newProject]);
+    }
     closeDialog();
+  };
+
+  const onEditClicked = (project: ProjectType) => {
+    setEditingProject(project);
+    setIsProjectDialogOpen(true);
   };
 
   const onDeleteClicked = async (projectId: number) => {
@@ -164,6 +214,7 @@ export default function ProjectsPage() {
           <ProjectCard
             key={index}
             project={project}
+            onEditClicked={onEditClicked}
             onDeleteClicked={onDeleteClicked}
           />
         ))}
@@ -171,7 +222,7 @@ export default function ProjectsPage() {
 
       <ProjectDialog
         isOpen={isProjectDialogOpen}
-        project={editingProject}
+        editingProject={editingProject}
         onCancel={closeDialog}
         onSubmit={onSubmit}
       />

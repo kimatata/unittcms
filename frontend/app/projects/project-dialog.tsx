@@ -1,6 +1,6 @@
 "use client";
 import React from "react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Button,
   Input,
@@ -37,6 +37,30 @@ export function ProjectDialog({
     isValid: false,
     errorMessage: "",
   });
+
+  useEffect(() => {
+    if (editingProject) {
+      setProjectName({
+        ...projectName,
+        text: editingProject.name,
+      });
+
+      setProjectDetail({
+        ...projectDetail,
+        text: editingProject.detail ? editingProject.detail : "",
+      });
+    } else {
+      setProjectName({
+        ...projectName,
+        text: "",
+      });
+
+      setProjectDetail({
+        ...projectDetail,
+        text: "",
+      });
+    }
+  }, [editingProject]);
 
   const clear = () => {
     setProjectName({
