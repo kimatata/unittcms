@@ -2,19 +2,19 @@
 import { useEffect, useState } from "react";
 import { title } from "@/components/primitives";
 import { ProjectCard } from "./project-card";
-import {
-  Button,
-  Input,
-  Textarea,
-  Modal,
-  ModalContent,
-  ModalHeader,
-  ModalBody,
-  ModalFooter,
-} from "@nextui-org/react";
+import { ProjectDialog } from "./project-dialog";
+import { Button } from "@nextui-org/react";
 
 import Config from "@/config/config";
 const apiServer = Config.apiServer;
+
+export type ProjectType = {
+  id: number;
+  name: string;
+  detail: string;
+  createdAt: string;
+  updatedAt: string;
+};
 
 /**
  * fetch project records
@@ -23,7 +23,7 @@ const apiServer = Config.apiServer;
  * @returns {Promise<Array>} - project record array
  * @throws {Error}
  */
-async function fetchProjects(url) {
+async function fetchProjects(url: string) {
   try {
     const response = await fetch(url, {
       method: "GET",
@@ -50,7 +50,7 @@ async function fetchProjects(url) {
  * @function
  * @throws {Error}
  */
-async function createProject(name, detail) {
+async function createProject(name: string, detail: string) {
   const newProjectData = {
     name: name,
     detail: detail,
@@ -118,51 +118,23 @@ export default function ProjectsPage() {
     fetchDataEffect();
   }, []);
 
-  // new project data
-  const [projectName, setProjectName] = useState({
-    text: "",
-    isValid: false,
-    errorMessage: "",
-  });
-  const [projectDetail, setProjectDetail] = useState({
-    text: "",
-    isValid: false,
-    errorMessage: "",
-  });
-
-  // modal
-  const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
-  const openModal = () => {
-    setIsCreateDialogOpen(true);
+  // dialog
+  const [isProjectDialogOpen, setIsProjectDialogOpen] = useState(false);
+  const [editingProject, setEditingProject] = useState(null);
+  const openDialogForCreate = () => {
+    setIsProjectDialogOpen(true);
+    setEditingProject(null);
   };
 
-  const closeModal = () => {
-    setProjectName({ text: "", isValid: false, errorMessage: "" });
-    setProjectDetail({ text: "", isValid: false, errorMessage: "" });
-    setIsCreateDialogOpen(false);
+  const closeDialog = () => {
+    setIsProjectDialogOpen(false);
+    setEditingProject(null);
   };
 
-  const onCreateClicked = async () => {
-    let isValid = true;
-
-    // validate projectName
-    if (!projectName.text) {
-      setProjectName({
-        text: "",
-        isValid: false,
-        errorMessage: "Please enter project name",
-      });
-      isValid = false;
-    }
-
-    if (isValid) {
-      const newProject = await createProject(
-        projectName.text,
-        projectDetail.text
-      );
-      setProjects([...projects, newProject]);
-      closeModal();
-    }
+  const onSubmit = async (name: string, detail: string) => {
+    const newProject = await createProject(name, detail);
+    setProjects([...projects, newProject]);
+    closeDialog();
   };
 
   const onDeleteClicked = async (projectId: number) => {
@@ -178,7 +150,11 @@ export default function ProjectsPage() {
     <div className="container mx-auto max-w-7xl pt-16 px-6 flex-grow">
       <div className="flex h-full items-center">
         <h1 className={title()}>Projects</h1>
-        <Button color="primary" onClick={openModal} className="ms-5 mt-3">
+        <Button
+          color="primary"
+          onClick={openDialogForCreate}
+          className="ms-5 mt-3"
+        >
           Create
         </Button>
       </div>
@@ -193,51 +169,12 @@ export default function ProjectsPage() {
         ))}
       </div>
 
-      <Modal
-        isOpen={isCreateDialogOpen}
-        onOpenChange={() => {
-          setIsCreateDialogOpen(false);
-        }}
-      >
-        <ModalContent>
-          <ModalHeader className="flex flex-col gap-1">Project</ModalHeader>
-          <ModalBody>
-            <Input
-              type="text"
-              label="Project Name"
-              value={projectName.text}
-              isInvalid={projectName.isValid}
-              errorMessage={projectName.errorMessage}
-              onChange={(e) => {
-                setProjectName({
-                  ...projectName,
-                  text: e.target.value,
-                });
-              }}
-            />
-            <Textarea
-              label="Project Detail"
-              value={projectDetail.text}
-              isInvalid={projectDetail.isValid}
-              errorMessage={projectDetail.errorMessage}
-              onChange={(e) => {
-                setProjectDetail({
-                  ...projectDetail,
-                  text: e.target.value,
-                });
-              }}
-            />
-          </ModalBody>
-          <ModalFooter>
-            <Button variant="light" onPress={closeModal}>
-              Close
-            </Button>
-            <Button color="primary" onPress={onCreateClicked}>
-              Create
-            </Button>
-          </ModalFooter>
-        </ModalContent>
-      </Modal>
+      <ProjectDialog
+        isOpen={isProjectDialogOpen}
+        project={editingProject}
+        onCancel={closeDialog}
+        onSubmit={onSubmit}
+      />
     </div>
   );
 }
