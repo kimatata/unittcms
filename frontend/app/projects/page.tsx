@@ -79,6 +79,27 @@ async function createProject(name, detail) {
   }
 }
 
+async function deleteProject(projectId: number) {
+  const fetchOptions = {
+    method: "DELETE",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  };
+
+  const url = `${apiServer}/projects/${projectId}`;
+
+  try {
+    const response = await fetch(url, fetchOptions);
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+  } catch (error) {
+    console.error("Error deleting project:", error);
+    throw error;
+  }
+}
+
 export default function ProjectsPage() {
   // projects
   const [projects, setProjects] = useState([]);
@@ -144,6 +165,15 @@ export default function ProjectsPage() {
     }
   };
 
+  const onDeleteClicked = async (projectId: number) => {
+    try {
+      await deleteProject(projectId);
+      setProjects(projects.filter((project) => project.id !== projectId));
+    } catch (error) {
+      console.error("Error deleting project:", error);
+    }
+  };
+
   return (
     <div className="container mx-auto max-w-7xl pt-16 px-6 flex-grow">
       <div className="flex h-full items-center">
@@ -157,15 +187,20 @@ export default function ProjectsPage() {
         {projects.map((project, index) => (
           <ProjectCard
             key={index}
-            projectName={project.name}
-            projectDetail={project.detail}
+            project={project}
+            onDeleteClicked={onDeleteClicked}
           />
         ))}
       </div>
 
-      <Modal isOpen={isCreateDialogOpen}>
+      <Modal
+        isOpen={isCreateDialogOpen}
+        onOpenChange={() => {
+          setIsCreateDialogOpen(false);
+        }}
+      >
         <ModalContent>
-          <ModalHeader className="flex flex-col gap-1">Modal Title</ModalHeader>
+          <ModalHeader className="flex flex-col gap-1">Project</ModalHeader>
           <ModalBody>
             <Input
               type="text"
@@ -194,7 +229,7 @@ export default function ProjectsPage() {
             />
           </ModalBody>
           <ModalFooter>
-            <Button color="danger" variant="light" onPress={closeModal}>
+            <Button variant="light" onPress={closeModal}>
               Close
             </Button>
             <Button color="primary" onPress={onCreateClicked}>

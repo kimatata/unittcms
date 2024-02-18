@@ -26,8 +26,10 @@ app.use("/", indexRoute);
 // "/projects"
 const projectsIndexRoute = require('./routes/projects/index')(sequelize);
 const projectsNewRoute = require('./routes/projects/new')(sequelize);
+const projectsDeleteRoute = require('./routes/projects/delete')(sequelize);
 app.use('/projects', projectsIndexRoute);
 app.use('/projects', projectsNewRoute);
+app.use('/projects', projectsDeleteRoute);
 
 // "/folders"
 const foldersIndexRoute = require('./routes/folders/index')(sequelize);

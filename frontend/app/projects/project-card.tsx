@@ -1,34 +1,55 @@
 import React from "react";
 import {
+  Link,
+  Button,
+  Dropdown,
+  DropdownTrigger,
+  DropdownMenu,
+  DropdownItem,
   Card,
   CardHeader,
   CardBody,
   Divider,
-  Image,
 } from "@nextui-org/react";
-import NextLink from "next/link";
+import { DotsIcon } from "@/components/icons";
 
-export function ProjectCard({ projectName, projectDetail }) {
+export function ProjectCard({ project, onDeleteClicked }) {
   return (
-    <NextLink href={`/projects/${1}/home`}>
-      <Card className="w-[250px] bg-white hover:bg-gray-100 dark:bg-gray-700 dark:hover:bg-gray-800">
-        <CardHeader className="flex gap-3">
-          <Image
-            alt="nextui logo"
-            height={40}
-            radius="sm"
-            src="https://avatars.githubusercontent.com/u/86160567?s=200&v=4"
-            width={40}
-          />
-          <div className="flex flex-col">
-            <p className="text-md">{projectName}</p>
+    <Card className="w-[250px]">
+      <CardHeader className="flex gap-3 h-[50px] justify-between text-ellipsis overflow-hidden">
+        <div className="flex gap-5">
+          <div className="flex flex-col gap-1 items-start justify-center">
+            <Link href={`/projects/${project.id}/home`}>{project.name}</Link>
           </div>
-        </CardHeader>
-        <Divider />
-        <CardBody>
-          <p>{projectDetail}</p>
-        </CardBody>
-      </Card>
-    </NextLink>
+        </div>
+        <Dropdown>
+          <DropdownTrigger>
+            <Button
+              isIconOnly
+              variant="light"
+              size="sm"
+              className="text-transparent hover:text-inherit"
+            >
+              <DotsIcon size={16} />
+            </Button>
+          </DropdownTrigger>
+          <DropdownMenu aria-label="Static Actions">
+            <DropdownItem key="edit">Edit project</DropdownItem>
+            <DropdownItem
+              key="delete"
+              className="text-danger"
+              color="danger"
+              onClick={() => onDeleteClicked(project.id)}
+            >
+              Delete project
+            </DropdownItem>
+          </DropdownMenu>
+        </Dropdown>
+      </CardHeader>
+      <Divider />
+      <CardBody className="h-[50px] text-ellipsis overflow-hidden">
+        <p>{project.detail}</p>
+      </CardBody>
+    </Card>
   );
 }
