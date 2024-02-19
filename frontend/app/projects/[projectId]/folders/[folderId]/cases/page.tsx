@@ -32,7 +32,7 @@ async function fetchCases(url) {
   }
 }
 
-export default function Page({ params }: { params: { folderId: string } }) {
+export default function Page({ params }: { params: { projectId: string, folderId: string } }) {
   const router = useRouter();
   const [cases, setCases] = useState([]);
   const url = `${apiServer}/cases?folderId=${params.folderId}`;
@@ -57,7 +57,7 @@ export default function Page({ params }: { params: { folderId: string } }) {
           key={index}
           onClick={() =>
             router.push(
-              `/projects/1/folders/${params.folderId}/cases/${testCase.id}`
+              `/projects/${params.projectId}/folders/${params.folderId}/cases/${testCase.id}`
             )
           }
         >
