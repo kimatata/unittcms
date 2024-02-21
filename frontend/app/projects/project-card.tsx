@@ -11,7 +11,7 @@ import {
   CardBody,
   Divider,
 } from "@nextui-org/react";
-import { DotsIcon } from "@/components/icons";
+import { MoreVertical } from "lucide-react";
 
 export function ProjectCard({ project, onEditClicked, onDeleteClicked }) {
   return (
@@ -19,13 +19,13 @@ export function ProjectCard({ project, onEditClicked, onDeleteClicked }) {
       <CardHeader className="flex gap-3 h-[50px] justify-between text-ellipsis overflow-hidden">
         <div className="flex gap-5">
           <div className="flex flex-col gap-1 items-start justify-center">
-            <Link href={`/projects/${project.id}/home`}>{project.name}</Link>
+            <Link href={`/projects/${project.id}/dashboard`}>{project.name}</Link>
           </div>
         </div>
         <Dropdown>
           <DropdownTrigger>
-            <Button isIconOnly variant="light" size="sm">
-              <DotsIcon size={16} />
+            <Button isIconOnly size="sm" className="bg-transparent rounded-full">
+              <MoreVertical size={16} />
             </Button>
           </DropdownTrigger>
           <DropdownMenu aria-label="Static Actions">
