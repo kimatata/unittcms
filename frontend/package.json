@@ -21,6 +21,7 @@
     "eslint-config-next": "14.0.2",
     "framer-motion": "^10.16.4",
     "intl-messageformat": "^10.5.0",
+    "lucide-react": "^0.335.0",
     "next": "14.0.2",
     "next-themes": "^0.2.1",
     "postcss": "8.4.31",

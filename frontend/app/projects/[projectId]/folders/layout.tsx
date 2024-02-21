@@ -2,8 +2,8 @@
 import { useEffect, useState } from "react";
 import Config from "@/config/config";
 const apiServer = Config.apiServer;
-import { Listbox, ListboxItem } from "@nextui-org/react";
-import { FolderIcon } from "@/components/icons";
+import { Button, Listbox, ListboxItem } from "@nextui-org/react";
+import { Folder, Plus } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 /**
@@ -60,6 +60,14 @@ export default function ProjectsLayout({
   return (
     <div className="flex">
       <div className="w-64 min-h-screen border-r-1">
+        <Button
+          startContent={<Plus size={16} />}
+          size="sm"
+          variant="bordered"
+          className="m-2"
+        >
+          New Folder
+        </Button>
         <Listbox aria-label="Listbox Variants">
           {folders.map((folder, index) => (
             <ListboxItem
@@ -69,7 +77,7 @@ export default function ProjectsLayout({
                   `/projects/${params.projectId}/folders/${folder.id}/cases`
                 )
               }
-              startContent={<FolderIcon size={16} className="text-gray-600" />}
+              startContent={<Folder size={20} color="#99ccff" fill="#99ccff" />}
             >
               {folder.name}
               {/* {folder.detail}
