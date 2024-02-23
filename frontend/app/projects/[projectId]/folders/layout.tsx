@@ -5,6 +5,7 @@ const apiServer = Config.apiServer;
 import { Button, Listbox, ListboxItem } from "@nextui-org/react";
 import { Folder, Plus } from "lucide-react";
 import { useRouter } from "next/navigation";
+import useGetCurrentIds from "@/utils/useGetCurrentIds";
 
 /**
  * fetch folder records
@@ -41,24 +42,34 @@ export default function ProjectsLayout({
   params: { projectId: string };
 }) {
   const [folders, setFolders] = useState([]);
+  const [selectedFolder, setSelectedFolder] = useState({
+    id: null,
+    name: "",
+  });
   const url = `${apiServer}/folders?projectId=${params.projectId}`;
+  const { folderId } = useGetCurrentIds();
 
   useEffect(() => {
     async function fetchDataEffect() {
       try {
         const data = await fetchFolders(url);
         setFolders(data);
+
+        const selectedFolderFromUrl = data.find(
+          (folder) => folder.id === folderId
+        );
+        setSelectedFolder(selectedFolderFromUrl);
       } catch (error) {
         console.error("Error in effect:", error.message);
       }
     }
 
     fetchDataEffect();
-  }, []);
+  }, [folderId]);
 
   const router = useRouter();
   return (
-    <div className="flex">
+    <div className="flex w-full">
       <div className="w-64 min-h-screen border-r-1">
         <Button
           startContent={<Plus size={16} />}
@@ -78,15 +89,21 @@ export default function ProjectsLayout({
                 )
               }
               startContent={<Folder size={20} color="#99ccff" fill="#99ccff" />}
+              className={
+                selectedFolder && folder.id === selectedFolder.id
+                  ? "bg-gray-300"
+                  : ""
+              }
             >
               {folder.name}
-              {/* {folder.detail}
-            {folder.projectId} */}
             </ListboxItem>
           ))}
         </Listbox>
       </div>
-      <div className="flex-grow">{children}</div>
+      <div className="flex-grow w-full">
+        <h3 className="border-b-1 w-full font-bold p-3">{selectedFolder ? selectedFolder.name : "Select Folder"}</h3>
+        {children}
+      </div>
     </div>
   );
 }
