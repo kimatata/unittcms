@@ -182,12 +182,12 @@ export default function ProjectsPage() {
     closeDialog();
   };
 
-  const onEditClicked = (project: ProjectType) => {
+  const onEditClick = (project: ProjectType) => {
     setEditingProject(project);
     setIsProjectDialogOpen(true);
   };
 
-  const onDeleteClicked = async (projectId: number) => {
+  const onDeleteClick = async (projectId: number) => {
     try {
       await deleteProject(projectId);
       setProjects(projects.filter((project) => project.id !== projectId));
@@ -214,8 +214,8 @@ export default function ProjectsPage() {
           <ProjectCard
             key={index}
             project={project}
-            onEditClicked={onEditClicked}
-            onDeleteClicked={onDeleteClicked}
+            onEditClick={onEditClick}
+            onDeleteClick={onDeleteClick}
           />
         ))}
       </div>

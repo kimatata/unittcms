@@ -5,5 +5,3 @@ export default function Page() {
     </>
   );
 }
-
-// TODO Automatically navigate to head folder page

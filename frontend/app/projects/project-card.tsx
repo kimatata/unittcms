@@ -13,7 +13,7 @@ import {
 } from "@nextui-org/react";
 import { MoreVertical } from "lucide-react";
 
-export function ProjectCard({ project, onEditClicked, onDeleteClicked }) {
+export function ProjectCard({ project, onEditClick, onDeleteClick }) {
   return (
     <Card className="w-[250px]">
       <CardHeader className="flex gap-3 h-[50px] justify-between text-ellipsis overflow-hidden">
@@ -29,14 +29,14 @@ export function ProjectCard({ project, onEditClicked, onDeleteClicked }) {
             </Button>
           </DropdownTrigger>
           <DropdownMenu aria-label="Static Actions">
-            <DropdownItem key="edit" onClick={() => onEditClicked(project)}>
+            <DropdownItem key="edit" onClick={() => onEditClick(project)}>
               Edit project
             </DropdownItem>
             <DropdownItem
               key="delete"
               className="text-danger"
               color="danger"
-              onClick={() => onDeleteClicked(project.id)}
+              onClick={() => onDeleteClick(project.id)}
             >
               Delete project
             </DropdownItem>
