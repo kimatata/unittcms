@@ -18,19 +18,14 @@ import {
 } from "@nextui-org/react";
 import { MoreVertical } from "lucide-react";
 
-const columns = [
+const headerColumns = [
   { name: "ID", uid: "id", sortable: true },
   { name: "Title", uid: "title", sortable: true },
   { name: "Priority", uid: "priority", sortable: true },
   { name: "Actions", uid: "actions" },
 ];
 
-const priorities = [
-  { name: "Critical", uid: "critical", color: "danger" },
-  { name: "High", uid: "high", color: "warning" },
-  { name: "Medium", uid: "medium", color: "primary" },
-  { name: "Low", uid: "low", color: "success" },
-];
+import priorities from "./priorities";
 
 type Case = {
   id: number;
@@ -54,7 +49,6 @@ export default function TestCaseTable({ projectId, cases }) {
     column: "id",
     direction: "ascending",
   });
-  const headerColumns = columns;
 
   const sortedItems = useMemo(() => {
     return [...cases].sort((a: Case, b: Case) => {

@@ -1,25 +1,30 @@
 const express = require("express");
 const router = express.Router();
 const defineCase = require("../../models/cases");
-const { DataTypes } = require('sequelize');
+const { DataTypes } = require("sequelize");
 
-module.exports = function(sequelize) {
-  const Run = defineCase(sequelize, DataTypes)
+module.exports = function (sequelize) {
+  const Case = defineCase(sequelize, DataTypes);
 
   router.get("/", async (req, res) => {
-    const { folderId } = req.query;
+    const { caseId, folderId } = req.query;
 
-    if (!folderId) {
-      return res.status(400).json({ error: 'folderId is required' });
+    if (!caseId && !folderId) {
+      return res.status(400).json({ error: "caseId or folderId is required" });
+    }
+
+    if (caseId) {
+      const testcase = await Case.findByPk(caseId);
+      return res.json(testcase);
     }
 
     try {
-      const runs = await Run.findAll({
+      const cases = await Case.findAll({
         where: {
-          folderId: folderId
-        }
+          folderId: folderId,
+        },
       });
-      res.json(runs);
+      res.json(cases);
     } catch (error) {
       console.error(error);
       res.status(500).send("Internal Server Error");

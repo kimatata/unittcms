@@ -2,8 +2,6 @@
 import { useEffect, useState } from "react";
 import Config from "@/config/config";
 const apiServer = Config.apiServer;
-import { Listbox, ListboxItem } from "@nextui-org/react";
-import { useRouter } from "next/navigation";
 import TestCaseTable from "./test-case-table";
 
 /**
@@ -38,7 +36,6 @@ export default function Page({
 }: {
   params: { projectId: string; folderId: string };
 }) {
-  const router = useRouter();
   const [cases, setCases] = useState([]);
   const url = `${apiServer}/cases?folderId=${params.folderId}`;
 
