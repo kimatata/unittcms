@@ -71,7 +71,7 @@ export default function Page({
           </ListboxItem>
         ))}
       </Listbox> */}
-      <TestCaseTable cases={cases}/>
+      <TestCaseTable projectId={params.folderId} cases={cases}/>
     </>
   );
 }

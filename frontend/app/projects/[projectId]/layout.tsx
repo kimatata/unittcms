@@ -7,10 +7,10 @@ export default function SidebarLayout({
 }) {
   return (
     <>
-      <div className="flex border-t-1 min-h-screen">
+      <div className="flex border-t-1 dark:border-neutral-700 min-h-screen">
         <Sidebar />
         <div className="flex w-full">
-          <div className="flex-grow bg-white rounded-lg">{children}</div>
+          <div className="flex-grow">{children}</div>
         </div>
       </div>
     </>

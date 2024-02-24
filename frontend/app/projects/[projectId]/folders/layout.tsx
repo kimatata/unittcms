@@ -231,7 +231,7 @@ export default function FoldersLayout({
 
   return (
     <div className="flex w-full">
-      <div className="w-64 min-h-screen border-r-1">
+      <div className="w-64 min-h-screen border-r-1 dark:border-neutral-700">
         <Button
           startContent={<Plus size={16} />}
           size="sm"
@@ -253,7 +253,7 @@ export default function FoldersLayout({
               startContent={<Folder size={20} color="#99ccff" fill="#99ccff" />}
               className={
                 selectedFolder && folder.id === selectedFolder.id
-                  ? "bg-gray-300"
+                  ? "bg-gray-300 dark:bg-gray-700"
                   : ""
               }
               endContent={
@@ -270,9 +270,20 @@ export default function FoldersLayout({
         </Listbox>
       </div>
       <div className="flex-grow w-full">
-        <h3 className="border-b-1 w-full font-bold p-3">
-          {selectedFolder ? selectedFolder.name : "Select Folder"}
-        </h3>
+        <div className="border-b-1 dark:border-neutral-700 w-full p-3 flex items-center justify-between">
+          <h3 className="font-bold">
+            {selectedFolder ? selectedFolder.name : "Select Folder"}
+          </h3>
+          <Button
+            startContent={<Plus size={16} />}
+            size="sm"
+            color="primary"
+            isDisabled={!selectedFolder}
+            onClick={() => console.log("create")}
+          >
+            New Test Case
+          </Button>
+        </div>
         {children}
       </div>
 

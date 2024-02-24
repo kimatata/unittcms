@@ -8,7 +8,7 @@ export default function Sidebar() {
   const { projectId } = useGetCurrentIds();
   const router = useRouter();
   return (
-    <div className="w-64 bg-white border-r-1">
+    <div className="w-64 border-r-1 dark:border-neutral-700">
       <Menu aria-label="sidebar">
         <MenuItem
           startContent={<LayoutDashboard strokeWidth={1} size={28} />}
