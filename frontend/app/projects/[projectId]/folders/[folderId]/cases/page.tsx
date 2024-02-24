@@ -4,6 +4,7 @@ import Config from "@/config/config";
 const apiServer = Config.apiServer;
 import { Listbox, ListboxItem } from "@nextui-org/react";
 import { useRouter } from "next/navigation";
+import TestCaseTable from "./test-case-table";
 
 /**
  * fetch folder records
@@ -56,7 +57,7 @@ export default function Page({
 
   return (
     <>
-      <Listbox aria-label="Listbox Variants">
+      {/* <Listbox aria-label="Listbox Variants">
         {cases.map((testCase, index) => (
           <ListboxItem
             key={index}
@@ -69,7 +70,8 @@ export default function Page({
             {testCase.title}
           </ListboxItem>
         ))}
-      </Listbox>
+      </Listbox> */}
+      <TestCaseTable cases={cases}/>
     </>
   );
 }
