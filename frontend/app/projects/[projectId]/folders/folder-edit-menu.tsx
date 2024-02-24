@@ -6,13 +6,8 @@ import {
   DropdownItem,
 } from "@nextui-org/react";
 import { MoreVertical } from "lucide-react";
-import { FolderType } from "./layout";
 
-export default function FolderEditMenu(
-  folder: FolderType,
-  onEditClick: (folder: FolderType) => void,
-  onDeleteClick: (folderId: number) => void
-) {
+export default function FolderEditMenu({ folder, onEditClick, onDeleteClick }) {
   return (
     <Dropdown>
       <DropdownTrigger>

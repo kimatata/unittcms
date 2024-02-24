@@ -156,6 +156,7 @@ export default function FoldersLayout({
   children: React.ReactNode;
   params: { projectId: number };
 }) {
+  const router = useRouter();
   const [folders, setFolders] = useState([]);
   const [selectedFolder, setSelectedFolder] = useState<FolderType>({});
 
@@ -205,6 +206,11 @@ export default function FoldersLayout({
     setIsFolderDialogOpen(true);
   };
 
+  const onDeleteClick = async (folderId: number) => {
+    await deleteFolder(folderId);
+    router.push(`/projects/${params.projectId}/folders`);
+  };
+
   useEffect(() => {
     async function fetchDataEffect() {
       try {
@@ -223,7 +229,6 @@ export default function FoldersLayout({
     fetchDataEffect();
   }, [folderId]);
 
-  const router = useRouter();
   return (
     <div className="flex w-full">
       <div className="w-64 min-h-screen border-r-1">
@@ -253,10 +258,9 @@ export default function FoldersLayout({
               }
               endContent={
                 <FolderEditMenu
-                  key={index}
                   folder={folder}
                   onEditClick={onEditClick}
-                  onDeleteClick={() => console.log("TODO")}
+                  onDeleteClick={onDeleteClick}
                 />
               }
             >
