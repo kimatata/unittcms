@@ -25,7 +25,7 @@ const headerColumns = [
   { name: "Actions", uid: "actions" },
 ];
 
-import priorities from "./priorities";
+import { priorities } from "@/config/selection"
 
 type Case = {
   id: number;

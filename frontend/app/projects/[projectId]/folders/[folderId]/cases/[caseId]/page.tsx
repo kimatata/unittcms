@@ -1,7 +1,14 @@
 "use client";
 import { useEffect, useState } from "react";
-import { Select, SelectItem } from "@nextui-org/react";
-import priorities from "../priorities";
+import {
+  Input,
+  Textarea,
+  Select,
+  SelectItem,
+  Chip,
+  Button,
+} from "@nextui-org/react";
+import { priorities, testTypes } from "@/config/selection";
 import Config from "@/config/config";
 const apiServer = Config.apiServer;
 
@@ -56,12 +63,40 @@ async function fetchCase(url: string) {
   }
 }
 
+/**
+ * Update folder
+ */
+async function updateCase(updateCaseData) {
+  const fetchOptions = {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(updateCaseData),
+  };
+
+  const url = `${apiServer}/cases/${updateCaseData.id}`;
+
+  try {
+    const response = await fetch(url, fetchOptions);
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error("Error updating project:", error);
+    throw error;
+  }
+}
+
 export default function Page({
   params,
 }: {
   params: { projectId: string; folderId: string; caseId: string };
 }) {
   const [testCase, setTestCase] = useState<CaseType>(defaultTestCase);
+  const [isTitleInvalid, setIsTitleInvalid] = useState<boolean>(false);
 
   const url = `${apiServer}/cases?caseId=${params.caseId}`;
   useEffect(() => {
@@ -79,32 +114,113 @@ export default function Page({
 
   return (
     <div className="p-5">
-      <h4 className="font-bold">{testCase.title}</h4>
-      <Select
-        selectedKeys={[priorities[testCase.priority].uid]}
-        onSelectionChange={(e) => {
-          const selectedUid = e.anchorKey;
-          const index = priorities.findIndex(
-            (priority) => priority.uid === selectedUid
-          );
-          setTestCase({ ...testCase, priority: index });
+      <Input
+        size="sm"
+        type="text"
+        variant="bordered"
+        label="Title"
+        value={testCase.title}
+        isInvalid={isTitleInvalid}
+        errorMessage={isTitleInvalid ? "please enter title" : ""}
+        onChange={(e) => {
+          setTestCase({ ...testCase, title: e.target.value });
         }}
-        label="Priority"
-        className="mt-3 max-w-xs"
-      >
-        {priorities.map((priority, index) => (
-          <SelectItem key={priority.uid} value={index}>
-            {priority.name}
-          </SelectItem>
-        ))}
-      </Select>
+      />
 
-      <div>type: {testCase.type}</div>
-      <div>automationStatus: {testCase.automationStatus}</div>
-      <div>description: {testCase.description}</div>
-      <div>template: {testCase.template}</div>
-      <div>preConditions: {testCase.preConditions}</div>
-      <div>expectedResults: {testCase.expectedResults}</div>
+      <Textarea
+        size="sm"
+        variant="bordered"
+        label="Description"
+        placeholder="Test case description"
+        value={testCase.description}
+        onValueChange={(changeValue) => {
+          setTestCase({ ...testCase, description: changeValue });
+        }}
+        className="mt-3"
+      />
+
+      <div>
+        <Select
+          size="sm"
+          variant="bordered"
+          selectedKeys={[priorities[testCase.priority].uid]}
+          onSelectionChange={(e) => {
+            const selectedUid = e.anchorKey;
+            const index = priorities.findIndex(
+              (priority) => priority.uid === selectedUid
+            );
+            setTestCase({ ...testCase, priority: index });
+          }}
+          startContent={
+            <Chip
+              className="border-none gap-1 text-default-600"
+              color={priorities[testCase.priority].color}
+              size="sm"
+              variant="dot"
+            ></Chip>
+          }
+          label="Priority"
+          className="mt-3 max-w-xs"
+        >
+          {priorities.map((priority, index) => (
+            <SelectItem key={priority.uid} value={index}>
+              {priority.name}
+            </SelectItem>
+          ))}
+        </Select>
+      </div>
+
+      <div>
+        <Select
+          size="sm"
+          variant="bordered"
+          selectedKeys={[testTypes[testCase.type].uid]}
+          onSelectionChange={(e) => {
+            const selectedUid = e.anchorKey;
+            const index = testTypes.findIndex(
+              (type) => type.uid === selectedUid
+            );
+            setTestCase({ ...testCase, type: index });
+          }}
+          label="type"
+          className="mt-3 max-w-xs"
+        >
+          {testTypes.map((type, index) => (
+            <SelectItem key={type.uid} value={index}>
+              {type.name}
+            </SelectItem>
+          ))}
+        </Select>
+      </div>
+
+      <Textarea
+        size="sm"
+        variant="bordered"
+        label="PreConditions"
+        placeholder="PreConditions"
+        value={testCase.preConditions}
+        onValueChange={(changeValue) => {
+          setTestCase({ ...testCase, preConditions: changeValue });
+        }}
+        className="mt-3"
+      />
+
+      <Textarea
+        variant="bordered"
+        label="ExpectedResults"
+        placeholder="ExpectedResults"
+        value={testCase.expectedResults}
+        onValueChange={(changeValue) => {
+          setTestCase({ ...testCase, expectedResults: changeValue });
+        }}
+        className="mt-3"
+      />
+
+      <div className="mt-3">
+        <Button color="primary" onPress={() => updateCase(testCase)}>
+          Update
+        </Button>
+      </div>
     </div>
   );
 }
