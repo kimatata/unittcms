@@ -1,10 +1,12 @@
 const express = require("express");
 const router = express.Router();
 const defineCase = require("../../models/cases");
+const defineStep = require("../../models/steps");
 const { DataTypes } = require("sequelize");
 
 module.exports = function (sequelize) {
   const Case = defineCase(sequelize, DataTypes);
+  const Step = defineStep(sequelize, DataTypes);
 
   router.get("/", async (req, res) => {
     const { caseId, folderId } = req.query;
@@ -14,7 +16,10 @@ module.exports = function (sequelize) {
     }
 
     if (caseId) {
-      const testcase = await Case.findByPk(caseId);
+      // Include steps if requested using caseId
+      const testcase = await Case.findByPk(caseId, {
+        include: Step,
+      });
       return res.json(testcase);
     }
 

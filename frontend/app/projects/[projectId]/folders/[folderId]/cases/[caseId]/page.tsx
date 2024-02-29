@@ -103,6 +103,7 @@ export default function Page({
     async function fetchDataEffect() {
       try {
         const data = await fetchCase(url);
+        console.log(data)
         setTestCase(data);
       } catch (error) {
         console.error("Error in effect:", error.message);

@@ -48,7 +48,8 @@ function defineCase(sequelize, DataTypes) {
   });
 
   Case.associate = (models) => {
-    Case.belongsTo(models.folder, { foreignKey: 'folderId', onDelete: 'CASCADE' });
+    Case.belongsTo(models.Folder, { foreignKey: 'folderId', onDelete: 'CASCADE' });
+    Case.belongsToMany(models.Step, { through: 'Case_Step' });
   };
 
   return Case;
