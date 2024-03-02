@@ -7,8 +7,11 @@ import {
   SelectItem,
   Chip,
   Button,
+  Divider,
 } from "@nextui-org/react";
-import { priorities, testTypes } from "@/config/selection";
+import { ArrowUpFromLine } from "lucide-react";
+import { priorities, testTypes, templates } from "@/config/selection";
+import StepsEditor from "./steps-editor";
 import Config from "@/config/config";
 const apiServer = Config.apiServer;
 
@@ -24,6 +27,22 @@ type CaseType = {
   preConditions: string;
   expectedResults: string;
   folderId: number;
+};
+
+type CaseStepType = {
+  createdAt: Date;
+  updatedAt: Date;
+  CaseId: number;
+  StepId: number;
+};
+
+export type StepType = {
+  id: number;
+  step: string;
+  result: string;
+  createdAt: Date;
+  updatedAt: Date;
+  caseSteps: CaseStepType;
 };
 
 const defaultTestCase = {
@@ -103,7 +122,7 @@ export default function Page({
     async function fetchDataEffect() {
       try {
         const data = await fetchCase(url);
-        console.log(data)
+        console.log(data);
         setTestCase(data);
       } catch (error) {
         console.error("Error in effect:", error.message);
@@ -115,6 +134,7 @@ export default function Page({
 
   return (
     <div className="p-5">
+      <h6>Basic</h6>
       <Input
         size="sm"
         type="text"
@@ -126,6 +146,7 @@ export default function Page({
         onChange={(e) => {
           setTestCase({ ...testCase, title: e.target.value });
         }}
+        className="mt-3"
       />
 
       <Textarea
@@ -194,30 +215,95 @@ export default function Page({
         </Select>
       </div>
 
-      <Textarea
-        size="sm"
-        variant="bordered"
-        label="PreConditions"
-        placeholder="PreConditions"
-        value={testCase.preConditions}
-        onValueChange={(changeValue) => {
-          setTestCase({ ...testCase, preConditions: changeValue });
-        }}
-        className="mt-3"
-      />
+      <div>
+        <Select
+          size="sm"
+          variant="bordered"
+          selectedKeys={[templates[testCase.template].uid]}
+          onSelectionChange={(e) => {
+            const selectedUid = e.anchorKey;
+            const index = templates.findIndex(
+              (template) => template.uid === selectedUid
+            );
+            setTestCase({ ...testCase, template: index });
+          }}
+          label="template"
+          className="mt-3 max-w-xs"
+        >
+          {templates.map((template, index) => (
+            <SelectItem key={template.uid} value={index}>
+              {template.name}
+            </SelectItem>
+          ))}
+        </Select>
+      </div>
 
-      <Textarea
-        variant="bordered"
-        label="ExpectedResults"
-        placeholder="ExpectedResults"
-        value={testCase.expectedResults}
-        onValueChange={(changeValue) => {
-          setTestCase({ ...testCase, expectedResults: changeValue });
-        }}
-        className="mt-3"
-      />
+      <Divider className="my-6" />
 
-      <div className="mt-3">
+      {templates[testCase.template].name === "Text" ? (
+        <div>
+          <h6>Test Detail</h6>
+          <div className="flex">
+            <Textarea
+              size="sm"
+              variant="bordered"
+              label="PreConditions"
+              placeholder="PreConditions"
+              value={testCase.preConditions}
+              onValueChange={(changeValue) => {
+                setTestCase({ ...testCase, preConditions: changeValue });
+              }}
+              className="mt-3 pe-1"
+            />
+
+            <Textarea
+              size="sm"
+              variant="bordered"
+              label="ExpectedResults"
+              placeholder="ExpectedResults"
+              value={testCase.expectedResults}
+              onValueChange={(changeValue) => {
+                setTestCase({ ...testCase, expectedResults: changeValue });
+              }}
+              className="mt-3 ps-1"
+            />
+          </div>
+        </div>
+      ) : (
+        <div>
+          <h6>Steps</h6>
+          <StepsEditor
+            steps={testCase.Steps}
+            onStepUpdate={() => {}}
+            onStepPlus={() => {}}
+            onStepDelete={() => {}}
+          />
+        </div>
+      )}
+
+      <Divider className="my-6" />
+
+      <h6>Attachments</h6>
+      <div className="flex items-center justify-center w-96 mt-3">
+        <label
+          htmlFor="dropzone-file"
+          className="flex flex-col items-center justify-center w-full h-32 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-bray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600"
+        >
+          <div className="flex flex-col items-center justify-center pt-5 pb-6">
+            <ArrowUpFromLine />
+            <p className="mb-2 text-sm text-gray-500 dark:text-gray-400">
+              <span className="font-semibold">Click to upload</span> or drag and
+              drop
+            </p>
+            <p className="text-xs text-gray-500 dark:text-gray-400">
+              Max. file size: 50 MB
+            </p>
+          </div>
+          <input id="dropzone-file" type="file" className="hidden" />
+        </label>
+      </div>
+
+      <div className="mt-6">
         <Button color="primary" onPress={() => updateCase(testCase)}>
           Update
         </Button>
