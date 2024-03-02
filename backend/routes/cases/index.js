@@ -7,6 +7,8 @@ const { DataTypes } = require("sequelize");
 module.exports = function (sequelize) {
   const Case = defineCase(sequelize, DataTypes);
   const Step = defineStep(sequelize, DataTypes);
+  Case.belongsToMany(Step, { through: 'caseSteps' });
+  Step.belongsToMany(Case, { through: 'caseSteps' });
 
   router.get("/", async (req, res) => {
     const { caseId, folderId } = req.query;

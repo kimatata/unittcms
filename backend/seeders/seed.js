@@ -125,7 +125,7 @@ module.exports = {
     ]);
 
     // Add case-step join table
-    await queryInterface.bulkInsert("cases_steps", [
+    await queryInterface.bulkInsert("caseSteps", [
       {
         caseId: 1,
         stepId: 1,

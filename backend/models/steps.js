@@ -11,7 +11,9 @@ function defineStep(sequelize, DataTypes) {
   });
 
   Step.associate = (models) => {
-    Step.belongsToMany(models.Case, { through: "Case_Step" });
+    Step.belongsToMany(models.Case, {
+      through: "caseSteps"
+    });
   };
 
   return Step;

@@ -3,7 +3,7 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.createTable("cases_steps", {
+    await queryInterface.createTable("caseSteps", {
       id: {
         type: Sequelize.INTEGER,
         primaryKey: true,
@@ -37,12 +37,12 @@ module.exports = {
       },
     });
 
-    await queryInterface.addIndex("cases_steps", ["caseId", "stepId"], {
+    await queryInterface.addIndex("caseSteps", ["caseId", "stepId"], {
       unique: true,
     });
   },
 
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.dropTable("cases_steps");
+    await queryInterface.dropTable("caseSteps");
   },
 };
