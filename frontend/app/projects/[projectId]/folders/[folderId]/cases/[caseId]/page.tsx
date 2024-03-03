@@ -27,6 +27,7 @@ type CaseType = {
   preConditions: string;
   expectedResults: string;
   folderId: number;
+  Steps: StepType[];
 };
 
 type CaseStepType = {
@@ -85,7 +86,7 @@ async function fetchCase(url: string) {
 /**
  * Update folder
  */
-async function updateCase(updateCaseData) {
+async function updateCase(updateCaseData: CaseType) {
   const fetchOptions = {
     method: "PUT",
     headers: {
@@ -116,6 +117,7 @@ export default function Page({
 }) {
   const [testCase, setTestCase] = useState<CaseType>(defaultTestCase);
   const [isTitleInvalid, setIsTitleInvalid] = useState<boolean>(false);
+  const [isUpdating, setIsUpdating] = useState<boolean>(false);
 
   const url = `${apiServer}/cases?caseId=${params.caseId}`;
   useEffect(() => {
@@ -239,7 +241,6 @@ export default function Page({
       </div>
 
       <Divider className="my-6" />
-
       {templates[testCase.template].name === "Text" ? (
         <div>
           <h6>Test Detail</h6>
@@ -274,7 +275,18 @@ export default function Page({
           <h6>Steps</h6>
           <StepsEditor
             steps={testCase.Steps}
-            onStepUpdate={() => {}}
+            onStepUpdate={(stepId, changeStep) => {
+              setTestCase({
+                ...testCase,
+                Steps: testCase.Steps.map((step) => {
+                  if (step.id === stepId) {
+                    return changeStep;
+                  } else {
+                    return step;
+                  }
+                }),
+              });
+            }}
             onStepPlus={() => {}}
             onStepDelete={() => {}}
           />
@@ -282,7 +294,6 @@ export default function Page({
       )}
 
       <Divider className="my-6" />
-
       <h6>Attachments</h6>
       <div className="flex items-center justify-center w-96 mt-3">
         <label
@@ -304,8 +315,18 @@ export default function Page({
       </div>
 
       <div className="mt-6">
-        <Button color="primary" onPress={() => updateCase(testCase)}>
-          Update
+        <Button
+          color="primary"
+          isLoading={isUpdating}
+          onPress={async () => {
+            setIsUpdating(true);
+            await updateCase(testCase);
+            setTimeout(() => {
+              setIsUpdating(false);
+            }, 1000);
+          }}
+        >
+          {isUpdating ? "Updating..." : "Update"}
         </Button>
       </div>
     </div>
