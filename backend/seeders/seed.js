@@ -122,6 +122,18 @@ module.exports = {
         createdAt: new Date(),
         updatedAt: new Date(),
       },
+      {
+        step: "Sample Step 3",
+        result: "Sample Result 3",
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+      {
+        step: "Sample Step 4",
+        result: "Sample Result 4",
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
     ]);
 
     // Add case-step join table
@@ -129,18 +141,35 @@ module.exports = {
       {
         caseId: 1,
         stepId: 1,
+        stepNo: 1,
         createdAt: new Date(),
         updatedAt: new Date(),
       },
       {
         caseId: 1,
         stepId: 2,
+        stepNo: 2,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+      {
+        caseId: 1,
+        stepId: 3,
+        stepNo: 3,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+      {
+        caseId: 1,
+        stepId: 4,
+        stepNo: 4,
         createdAt: new Date(),
         updatedAt: new Date(),
       },
       {
         caseId: 2,
         stepId: 2,
+        stepNo: 1,
         createdAt: new Date(),
         updatedAt: new Date(),
       },

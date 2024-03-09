@@ -20,7 +20,10 @@ module.exports = function (sequelize) {
     if (caseId) {
       // Include steps if requested using caseId
       const testcase = await Case.findByPk(caseId, {
-        include: Step,
+        include: [{
+          model: Step,
+          through: { attributes: ['stepNo'] },
+        }],
       });
       return res.json(testcase);
     }
