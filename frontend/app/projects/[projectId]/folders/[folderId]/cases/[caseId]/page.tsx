@@ -9,7 +9,7 @@ import {
   Button,
   Divider,
 } from "@nextui-org/react";
-import { ArrowUpFromLine } from "lucide-react";
+import { Plus, ArrowUpFromLine } from "lucide-react";
 import { priorities, testTypes, templates } from "@/config/selection";
 import StepsEditor from "./steps-editor";
 import Config from "@/config/config";
@@ -145,12 +145,44 @@ export default function Page({
 
   const url = `${apiServer}/cases?caseId=${params.caseId}`;
 
+  const onPlusClick = async (newStepNo: number) => {
+    console.log(newStepNo);
+  };
+
   const onDeleteClick = async (stepId: number) => {
+    // find deletedStep's stepNo
+    const deletedStep = testCase.Steps.find((step) => step.id === stepId);
+    if (!deletedStep) {
+      return;
+    }
+    const deletedStepNo = deletedStep.caseSteps.stepNo;
+    console.log(deletedStepNo)
+
+    // delete request
     await fetchDeleteStep(stepId, params.caseId);
-    const updatedSteps = testCase.Steps.filter(step => step.id !== stepId);
+    // const updatedSteps = testCase.Steps.filter((step) => step.id !== stepId);
+    // setTestCase({
+    //   ...testCase,
+    //   Steps: updatedSteps,
+    // });
+
+    const updatedSteps = testCase.Steps.map(step => {
+      if (step.caseSteps.stepNo > deletedStepNo) {
+        console.log("bigger", step)
+        return {
+          ...step,
+          caseSteps: {
+            ...step.caseSteps,
+            stepNo: step.caseSteps.stepNo - 1
+          }
+        };
+      }
+      return step;
+    }).filter(step => step.id !== stepId);
+
     setTestCase({
       ...testCase,
-      Steps: updatedSteps
+      Steps: updatedSteps,
     });
   };
 
@@ -305,7 +337,18 @@ export default function Page({
         </div>
       ) : (
         <div>
-          <h6>Steps</h6>
+          <div className="flex items-center">
+            <h6>Steps</h6>
+            <Button
+              startContent={<Plus size={16} />}
+              size="sm"
+              color="primary"
+              className="ms-3"
+              onPress={() => onPlusClick(1)}
+            >
+              New Step
+            </Button>
+          </div>
           <StepsEditor
             steps={testCase.Steps}
             onStepUpdate={(stepId, changeStep) => {
@@ -320,7 +363,7 @@ export default function Page({
                 }),
               });
             }}
-            onStepPlus={() => {}}
+            onStepPlus={onPlusClick}
             onStepDelete={onDeleteClick}
           />
         </div>
@@ -331,7 +374,7 @@ export default function Page({
       <div className="flex items-center justify-center w-96 mt-3">
         <label
           htmlFor="dropzone-file"
-          className="flex flex-col items-center justify-center w-full h-32 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-bray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600"
+          className="flex flex-col items-center justify-center w-full h-32 border-2 border-gray-200 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-bray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600"
         >
           <div className="flex flex-col items-center justify-center pt-5 pb-6">
             <ArrowUpFromLine />

@@ -1,11 +1,11 @@
-import { Textarea, Button } from "@nextui-org/react";
+import { Textarea, Button, Tooltip } from "@nextui-org/react";
 import { StepType } from "./page";
 import { Plus, Trash } from "lucide-react";
 
 type Props = {
   steps: StepType[];
   onStepUpdate: (stepId: number, step: StepType) => void;
-  onStepPlus: () => void;
+  onStepPlus: (newStepNo: number) => void;
   onStepDelete: (stepId: number) => void;
 };
 
@@ -15,7 +15,6 @@ export default function StepsEditor({
   onStepPlus,
   onStepDelete,
 }: Props) {
-
   // sort steps by junction table's column
   const sortedSteps = steps.slice().sort((a, b) => {
     const stepNoA = a.caseSteps.stepNo;
@@ -27,6 +26,9 @@ export default function StepsEditor({
     <>
       {sortedSteps.map((step, index) => (
         <div key={index} className="flex">
+          <div className="bg-gray-50 rounded-full flex items-center justify-center min-w-unit-8 w-unit-8 h-unit-8 mt-3 me-2">
+            <div>{step.caseSteps.stepNo}</div>
+          </div>
           <Textarea
             size="sm"
             variant="bordered"
@@ -51,22 +53,26 @@ export default function StepsEditor({
             className="mt-3 ms-1"
           />
           <div className="mt-3 ms-1">
-            <Button
-              isIconOnly
-              size="sm"
-              className="bg-transparent rounded-full"
-              onPress={() => onStepDelete(step.id)}
-            >
-              <Trash size={16} />
-            </Button>
-            <Button
-              isIconOnly
-              size="sm"
-              className="bg-transparent rounded-full"
-              onPress={onStepPlus}
-            >
-              <Plus size={16} />
-            </Button>
+            <Tooltip content="Delete this step">
+              <Button
+                isIconOnly
+                size="sm"
+                className="bg-transparent rounded-full"
+                onPress={() => onStepDelete(step.id)}
+              >
+                <Trash size={16} />
+              </Button>
+            </Tooltip>
+            <Tooltip content="Insert step">
+              <Button
+                isIconOnly
+                size="sm"
+                className="bg-transparent rounded-full"
+                onPress={() => onStepPlus(step.caseSteps.stepNo)}
+              >
+                <Plus size={16} />
+              </Button>
+            </Tooltip>
           </div>
         </div>
       ))}
