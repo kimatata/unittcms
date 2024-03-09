@@ -15,9 +15,17 @@ export default function StepsEditor({
   onStepPlus,
   onStepDelete,
 }: Props) {
+
+  // sort steps by junction table's column
+  const sortedSteps = steps.slice().sort((a, b) => {
+    const stepNoA = a.caseSteps.stepNo;
+    const stepNoB = b.caseSteps.stepNo;
+    return stepNoA - stepNoB;
+  });
+
   return (
     <>
-      {steps.map((step, index) => (
+      {sortedSteps.map((step, index) => (
         <div key={index} className="flex">
           <Textarea
             size="sm"

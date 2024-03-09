@@ -51,6 +51,10 @@ app.use("/cases", casesIndexRoute);
 app.use("/cases", casesNewRoute);
 app.use("/cases", casesEditRoute);
 
+// "/steps"
+const stepsDeleteRoute = require("./routes/steps/delete")(sequelize);
+app.use("/steps", stepsDeleteRoute);
+
 // "/runs"
 const runsIndexRoute = require("./routes/runs/index")(sequelize);
 const runsNewRoute = require("./routes/runs/new")(sequelize);

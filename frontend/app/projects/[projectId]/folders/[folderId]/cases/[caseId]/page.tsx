@@ -84,6 +84,30 @@ async function fetchCase(url: string) {
 }
 
 /**
+ * delete step
+ */
+async function fetchDeleteStep(stepId: number, parentCaseId: number) {
+  const fetchOptions = {
+    method: "DELETE",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  };
+
+  const url = `${apiServer}/steps/${stepId}?parentCaseId=${parentCaseId}`;
+
+  try {
+    const response = await fetch(url, fetchOptions);
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+  } catch (error) {
+    console.error("Error deleting project:", error);
+    throw error;
+  }
+}
+
+/**
  * Update folder
  */
 async function updateCase(updateCaseData: CaseType) {
@@ -120,11 +144,20 @@ export default function Page({
   const [isUpdating, setIsUpdating] = useState<boolean>(false);
 
   const url = `${apiServer}/cases?caseId=${params.caseId}`;
+
+  const onDeleteClick = async (stepId: number) => {
+    await fetchDeleteStep(stepId, params.caseId);
+    const updatedSteps = testCase.Steps.filter(step => step.id !== stepId);
+    setTestCase({
+      ...testCase,
+      Steps: updatedSteps
+    });
+  };
+
   useEffect(() => {
     async function fetchDataEffect() {
       try {
         const data = await fetchCase(url);
-        console.log(data);
         setTestCase(data);
       } catch (error) {
         console.error("Error in effect:", error.message);
@@ -288,7 +321,7 @@ export default function Page({
               });
             }}
             onStepPlus={() => {}}
-            onStepDelete={() => {}}
+            onStepDelete={onDeleteClick}
           />
         </div>
       )}
