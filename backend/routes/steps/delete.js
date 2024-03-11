@@ -10,11 +10,15 @@ module.exports = function (sequelize) {
 
   router.delete("/:stepId", async (req, res) => {
     const stepId = req.params.stepId;
+    // TODO The caseId should not be specified from the front end, but should be traced from stepId by association.
     const caseId = req.query.parentCaseId;
+
+    const t = await sequelize.transaction();
 
     try {
       const step = await Step.findByPk(stepId);
       if (!step) {
+        await t.rollback();
         return res.status(404).send("Step not found");
       }
 
@@ -23,6 +27,7 @@ module.exports = function (sequelize) {
         where: {
           StepId: stepId,
         },
+        transaction: t,
       });
 
       // Decrease stepNo for all caseSteps with greater than the caseStep to be deleted.
@@ -35,14 +40,17 @@ module.exports = function (sequelize) {
               [Op.gt]: deletingCaseStep.stepNo,
             },
           },
+          transaction: t,
         }
       );
 
-      await step.destroy();
+      await step.destroy({ transaction: t });
 
+      await t.commit();
       res.status(204).send();
     } catch (error) {
       console.error(error);
+      await t.rollback();
       res.status(500).send("Internal Server Error");
     }
   });

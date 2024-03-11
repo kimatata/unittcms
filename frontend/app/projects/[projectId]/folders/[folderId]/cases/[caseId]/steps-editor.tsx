@@ -68,7 +68,7 @@ export default function StepsEditor({
                 isIconOnly
                 size="sm"
                 className="bg-transparent rounded-full"
-                onPress={() => onStepPlus(step.caseSteps.stepNo)}
+                onPress={() => onStepPlus(step.caseSteps.stepNo + 1)}
               >
                 <Plus size={16} />
               </Button>

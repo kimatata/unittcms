@@ -84,6 +84,30 @@ async function fetchCase(url: string) {
 }
 
 /**
+ * create step
+ */
+async function fetchCreateStep(newStepNo: number, parentCaseId: number) {
+  const fetchOptions = {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  };
+
+  const url = `${apiServer}/steps?newStepNo=${newStepNo}&parentCaseId=${parentCaseId}`;
+
+  try {
+    const response = await fetch(url, fetchOptions);
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+  } catch (error) {
+    console.error("Error deleting project:", error);
+    throw error;
+  }
+}
+
+/**
  * delete step
  */
 async function fetchDeleteStep(stepId: number, parentCaseId: number) {
@@ -146,7 +170,7 @@ export default function Page({
   const url = `${apiServer}/cases?caseId=${params.caseId}`;
 
   const onPlusClick = async (newStepNo: number) => {
-    console.log(newStepNo);
+    await fetchCreateStep(newStepNo, params.caseId);
   };
 
   const onDeleteClick = async (stepId: number) => {
@@ -156,19 +180,12 @@ export default function Page({
       return;
     }
     const deletedStepNo = deletedStep.caseSteps.stepNo;
-    console.log(deletedStepNo)
 
     // delete request
     await fetchDeleteStep(stepId, params.caseId);
-    // const updatedSteps = testCase.Steps.filter((step) => step.id !== stepId);
-    // setTestCase({
-    //   ...testCase,
-    //   Steps: updatedSteps,
-    // });
 
     const updatedSteps = testCase.Steps.map(step => {
       if (step.caseSteps.stepNo > deletedStepNo) {
-        console.log("bigger", step)
         return {
           ...step,
           caseSteps: {
