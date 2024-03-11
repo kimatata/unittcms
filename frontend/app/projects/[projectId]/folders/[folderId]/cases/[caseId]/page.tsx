@@ -101,6 +101,7 @@ async function fetchCreateStep(newStepNo: number, parentCaseId: number) {
     if (!response.ok) {
       throw new Error(`HTTP error! Status: ${response.status}`);
     }
+    return await response.json();
   } catch (error) {
     console.error("Error deleting project:", error);
     throw error;
@@ -170,7 +171,29 @@ export default function Page({
   const url = `${apiServer}/cases?caseId=${params.caseId}`;
 
   const onPlusClick = async (newStepNo: number) => {
-    await fetchCreateStep(newStepNo, params.caseId);
+    const newStep = await fetchCreateStep(newStepNo, params.caseId);
+    if (newStep) {
+      newStep.caseSteps = { stepNo: newStepNo };
+      const updatedSteps = testCase.Steps.map((step) => {
+        if (step.caseSteps.stepNo >= newStepNo) {
+          return {
+            ...step,
+            caseSteps: {
+              ...step.caseSteps,
+              stepNo: step.caseSteps.stepNo + 1,
+            },
+          };
+        }
+        return step;
+      });
+
+      updatedSteps.push(newStep);
+
+      setTestCase({
+        ...testCase,
+        Steps: updatedSteps,
+      });
+    }
   };
 
   const onDeleteClick = async (stepId: number) => {
@@ -184,18 +207,18 @@ export default function Page({
     // delete request
     await fetchDeleteStep(stepId, params.caseId);
 
-    const updatedSteps = testCase.Steps.map(step => {
+    const updatedSteps = testCase.Steps.map((step) => {
       if (step.caseSteps.stepNo > deletedStepNo) {
         return {
           ...step,
           caseSteps: {
             ...step.caseSteps,
-            stepNo: step.caseSteps.stepNo - 1
-          }
+            stepNo: step.caseSteps.stepNo - 1,
+          },
         };
       }
       return step;
-    }).filter(step => step.id !== stepId);
+    }).filter((step) => step.id !== stepId);
 
     setTestCase({
       ...testCase,

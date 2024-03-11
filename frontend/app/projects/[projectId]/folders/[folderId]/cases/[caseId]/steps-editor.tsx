@@ -53,7 +53,7 @@ export default function StepsEditor({
             className="mt-3 ms-1"
           />
           <div className="mt-3 ms-1">
-            <Tooltip content="Delete this step">
+            <Tooltip content="Delete this step" placement="left">
               <Button
                 isIconOnly
                 size="sm"
@@ -63,7 +63,7 @@ export default function StepsEditor({
                 <Trash size={16} />
               </Button>
             </Tooltip>
-            <Tooltip content="Insert step">
+            <Tooltip content="Insert step" placement="left">
               <Button
                 isIconOnly
                 size="sm"
