@@ -12,6 +12,7 @@ import {
 import { Plus, ArrowUpFromLine } from "lucide-react";
 import { priorities, testTypes, templates } from "@/config/selection";
 import StepsEditor from "./steps-editor";
+import AttachmentsEditor from "./attachments-editor";
 import Config from "@/config/config";
 const apiServer = Config.apiServer;
 
@@ -28,6 +29,7 @@ type CaseType = {
   expectedResults: string;
   folderId: number;
   Steps: StepType[];
+  Attachments: AttachmentType[];
 };
 
 type CaseStepType = {
@@ -44,6 +46,23 @@ export type StepType = {
   createdAt: Date;
   updatedAt: Date;
   caseSteps: CaseStepType;
+};
+
+type CaseAttachmentType = {
+  createdAt: Date;
+  updatedAt: Date;
+  CaseId: number;
+  AttachmentId: number;
+};
+
+export type AttachmentType = {
+  id: number;
+  title: string;
+  detail: string;
+  path: string;
+  createdAt: Date;
+  updatedAt: Date;
+  caseSteps: CaseAttachmentType;
 };
 
 const defaultTestCase = {
@@ -411,6 +430,10 @@ export default function Page({
 
       <Divider className="my-6" />
       <h6>Attachments</h6>
+      <AttachmentsEditor
+        attachments={testCase.Attachments}
+        onAttachmentDelete={(id) => console.log(id)}
+      />
       <div className="flex items-center justify-center w-96 mt-3">
         <label
           htmlFor="dropzone-file"

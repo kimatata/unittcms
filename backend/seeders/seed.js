@@ -174,6 +174,38 @@ module.exports = {
         updatedAt: new Date(),
       },
     ]);
+
+    await queryInterface.bulkInsert("attachments", [
+      {
+        title: "Selenium logo",
+        detail: "",
+        path: "http://localhost:3001/sample/861px-Selenium_Logo.png",
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+      {
+        title: "vitest logo",
+        detail: "",
+        path: "http://localhost:3001/sample/logo-shadow.svg",
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      }
+    ]);
+
+    await queryInterface.bulkInsert("caseAttachments", [
+      {
+        caseId: 1,
+        attachmentId: 1,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+      {
+        caseId: 1,
+        attachmentId: 2,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      }
+    ]);
   },
 
   down: async (queryInterface, Sequelize) => {

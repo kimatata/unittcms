@@ -2,13 +2,17 @@ const express = require("express");
 const router = express.Router();
 const defineCase = require("../../models/cases");
 const defineStep = require("../../models/steps");
+const defineAttachment = require("../../models/attachments");
 const { DataTypes } = require("sequelize");
 
 module.exports = function (sequelize) {
   const Case = defineCase(sequelize, DataTypes);
   const Step = defineStep(sequelize, DataTypes);
-  Case.belongsToMany(Step, { through: 'caseSteps' });
-  Step.belongsToMany(Case, { through: 'caseSteps' });
+  const Attachment = defineAttachment(sequelize, DataTypes);
+  Case.belongsToMany(Step, { through: "caseSteps" });
+  Step.belongsToMany(Case, { through: "caseSteps" });
+  Case.belongsToMany(Attachment, { through: "caseAttachments" });
+  Attachment.belongsToMany(Case, { through: "caseAttachments" });
 
   router.get("/", async (req, res) => {
     const { caseId, folderId } = req.query;
@@ -20,10 +24,15 @@ module.exports = function (sequelize) {
     if (caseId) {
       // Include steps if requested using caseId
       const testcase = await Case.findByPk(caseId, {
-        include: [{
-          model: Step,
-          through: { attributes: ['stepNo'] },
-        }],
+        include: [
+          {
+            model: Step,
+            through: { attributes: ["stepNo"] },
+          },
+          {
+            model: Attachment,
+          },
+        ],
       });
       return res.json(testcase);
     }

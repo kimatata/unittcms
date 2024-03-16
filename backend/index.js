@@ -1,4 +1,5 @@
 const express = require("express");
+const path = require('path');
 const { Sequelize } = require("sequelize");
 const app = express();
 
@@ -12,6 +13,9 @@ app.use(cors(corsOptions));
 
 // enable json middleware
 app.use(express.json());
+
+// Specify the directory to serve static files
+app.use(express.static(path.join(__dirname, "public")));
 
 // init sequalize
 const sequelize = new Sequelize({
