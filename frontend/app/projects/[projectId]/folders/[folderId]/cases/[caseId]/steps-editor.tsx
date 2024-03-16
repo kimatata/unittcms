@@ -26,7 +26,7 @@ export default function StepsEditor({
     <>
       {sortedSteps.map((step, index) => (
         <div key={index} className="flex">
-          <div className="bg-gray-50 rounded-full flex items-center justify-center min-w-unit-8 w-unit-8 h-unit-8 mt-3 me-2">
+          <div className="bg-gray-50 dark:bg-gray-900 rounded-full flex items-center justify-center min-w-unit-8 w-unit-8 h-unit-8 mt-3 me-2">
             <div>{step.caseSteps.stepNo}</div>
           </div>
           <Textarea

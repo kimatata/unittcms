@@ -231,7 +231,7 @@ export default function FoldersLayout({
 
   return (
     <div className="flex w-full">
-      <div className="w-64 min-h-screen border-r-1 dark:border-neutral-700">
+      <div className="w-64 min-h-[calc(100vh-64px)] border-r-1 dark:border-neutral-700">
         <Button
           startContent={<Plus size={16} />}
           size="sm"
