@@ -245,6 +245,30 @@ export default function Page({
     });
   };
 
+  const handleFileUpload = async (event) => {
+    const files = event.target.files;
+    try {
+      const formData = new FormData();
+      for (let i = 0; i < files.length; i++) {
+        formData.append("files", files[i]);
+      }
+
+      const url = `${apiServer}/attachments`;
+      const response = await fetch(url, {
+        method: "POST",
+        body: formData,
+      });
+
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+
+      const responseData = await response.json();
+    } catch (error) {
+      console.error("Error uploading files:", error);
+    }
+  };
+
   useEffect(() => {
     async function fetchDataEffect() {
       try {
@@ -449,7 +473,13 @@ export default function Page({
               Max. file size: 50 MB
             </p>
           </div>
-          <input id="dropzone-file" type="file" className="hidden" />
+          <input
+            id="dropzone-file"
+            type="file"
+            className="hidden"
+            onChange={handleFileUpload}
+            multiple
+          />
         </label>
       </div>
 
