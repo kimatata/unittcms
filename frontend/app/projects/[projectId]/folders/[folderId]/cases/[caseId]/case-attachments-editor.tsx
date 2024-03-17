@@ -1,6 +1,6 @@
-import { Image, Button, Tooltip } from "@nextui-org/react";
+import { Image, Button, Tooltip, Card, CardBody } from "@nextui-org/react";
 import { AttachmentType } from "./caseTypes";
-import { Trash } from "lucide-react";
+import { Trash, ArrowDownToLine } from "lucide-react";
 
 type Props = {
   attachments: AttachmentType[];
@@ -32,45 +32,63 @@ export default function CaseAttachmentsEditor({
   });
   return (
     <>
-      {images.map((image, index) => (
-        <div key={index} className="flex">
-          <Image
-            alt={image.title}
-            src={image.path}
-            className="object-cover h-40 w-40"
-          />
-          <div className="mt-3 ms-1">
-            <Tooltip content="Delete this image file" placement="left">
-              <Button
-                isIconOnly
-                size="sm"
-                className="bg-transparent rounded-full"
-                onPress={() => onAttachmentDelete(image.id)}
-              >
-                <Trash size={16} />
-              </Button>
-            </Tooltip>
-          </div>
-        </div>
-      ))}
+      <div className="flex flex-wrap mt-3">
+        {images.map((image, index) => (
+          <Card key={index} radius="sm" className="mt-2 me-2 max-w-md">
+            <CardBody>
+              <Image
+                alt={image.title}
+                src={image.path}
+                className="object-cover h-40 w-40"
+              />
+              <div className="flex items-center justify-between">
+                <p>{image.title}</p>
+                <Tooltip content="Delete">
+                  <Button
+                    isIconOnly
+                    size="sm"
+                    className="bg-transparent rounded-full"
+                    onPress={() => onAttachmentDelete(image.id)}
+                  >
+                    <Trash size={16} />
+                  </Button>
+                </Tooltip>
+              </div>
+            </CardBody>
+          </Card>
+        ))}
+      </div>
 
       {others.map((file, index) => (
-        <div key={index} className="flex">
-          <div>{file.title}</div>
-          <div>{file.path}</div>
-          <div className="mt-3 ms-1">
-            <Tooltip content="Delete this attachment file" placement="left">
-              <Button
-                isIconOnly
-                size="sm"
-                className="bg-transparent rounded-full"
-                onPress={() => onAttachmentDelete(file.id)}
-              >
-                <Trash size={16} />
-              </Button>
-            </Tooltip>
-          </div>
-        </div>
+        <Card key={index} radius="sm" className="mt-2 max-w-md">
+          <CardBody>
+            <div className="flex items-center justify-between">
+              <p>{file.title}</p>
+              <div>
+                <Tooltip content="Download">
+                  <Button
+                    isIconOnly
+                    size="sm"
+                    className="bg-transparent rounded-full"
+                    onPress={() => console.log("download")}
+                  >
+                    <ArrowDownToLine size={16} />
+                  </Button>
+                </Tooltip>
+                <Tooltip content="Delete">
+                  <Button
+                    isIconOnly
+                    size="sm"
+                    className="bg-transparent rounded-full"
+                    onPress={() => onAttachmentDelete(file.id)}
+                  >
+                    <Trash size={16} />
+                  </Button>
+                </Tooltip>
+              </div>
+            </div>
+          </CardBody>
+        </Card>
       ))}
     </>
   );
