@@ -1,4 +1,6 @@
 "use strict";
+const path = require("path");
+const fs = require("fs");
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
@@ -179,18 +181,45 @@ module.exports = {
       {
         title: "Selenium logo",
         detail: "",
-        path: "http://localhost:3001/sample/861px-Selenium_Logo.png",
+        path: "http://localhost:3001/uploads/861px-Selenium_Logo.png",
         createdAt: new Date(),
         updatedAt: new Date(),
       },
       {
         title: "vitest logo",
         detail: "",
-        path: "http://localhost:3001/sample/logo-shadow.svg",
+        path: "http://localhost:3001/uploads/logo-shadow.svg",
         createdAt: new Date(),
         updatedAt: new Date(),
-      }
+      },
     ]);
+
+    // copy sample files to uploads folder
+    const sampleFolderPath = "public/sample";
+    const uploadsFolderPath = "public/uploads";
+    const SeleniumLogoFileName = "861px-Selenium_Logo.png";
+    const vitestLogoFileName = "logo-shadow.svg";
+    if (!fs.existsSync(uploadsFolderPath)) {
+      fs.mkdirSync(uploadsFolderPath, { recursive: true });
+    }
+    fs.copyFile(
+      `${sampleFolderPath}/${SeleniumLogoFileName}`,
+      `${uploadsFolderPath}/${SeleniumLogoFileName}`,
+      (err) => {
+        if (err) {
+          console.log(err);
+        }
+      }
+    );
+    fs.copyFile(
+      `${sampleFolderPath}/${vitestLogoFileName}`,
+      `${uploadsFolderPath}/${vitestLogoFileName}`,
+      (err) => {
+        if (err) {
+          console.log(err);
+        }
+      }
+    );
 
     await queryInterface.bulkInsert("caseAttachments", [
       {
@@ -204,7 +233,7 @@ module.exports = {
         attachmentId: 2,
         createdAt: new Date(),
         updatedAt: new Date(),
-      }
+      },
     ]);
   },
 

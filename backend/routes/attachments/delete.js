@@ -20,11 +20,10 @@ module.exports = function (sequelize) {
       }
 
       // delete file from folder
-      const uploadDir = path.join(__dirname, "../../public");
+      const uploadDir = path.join(__dirname, "../../public/uploads");
       const url = attachment.path;
-      const parts = url.split('/');
-      const fileNameWithFolder = parts.slice(-2).join('/');
-      const filePath = path.join(uploadDir, fileNameWithFolder);
+      const fileName = url.substring(url.lastIndexOf("/") + 1);
+      const filePath = path.join(uploadDir, fileName);
       fs.unlink(filePath, (err) => {
         if (err) {
           console.error('Error deleting file:', err);
