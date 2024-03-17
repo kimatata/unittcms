@@ -245,15 +245,23 @@ export default function Page({
     });
   };
 
-  const handleFileUpload = async (event) => {
-    const files = event.target.files;
+  const handleDrop = (event) => {
+    event.preventDefault();
+    handleFileUpload(event.dataTransfer.files);
+  };
+
+  const handleInput = (event) => {
+    handleFileUpload(event.target.files);
+  };
+
+  const handleFileUpload = async (files) => {
     try {
       const formData = new FormData();
       for (let i = 0; i < files.length; i++) {
         formData.append("files", files[i]);
       }
 
-      const url = `${apiServer}/attachments`;
+      const url = `${apiServer}/attachments?parentCaseId=${params.caseId}`;
       const response = await fetch(url, {
         method: "POST",
         body: formData,
@@ -284,6 +292,21 @@ export default function Page({
 
   return (
     <div className="p-5">
+      <div className="mt-6">
+        <Button
+          color="primary"
+          isLoading={isUpdating}
+          onPress={async () => {
+            setIsUpdating(true);
+            await updateCase(testCase);
+            setTimeout(() => {
+              setIsUpdating(false);
+            }, 1000);
+          }}
+        >
+          {isUpdating ? "Updating..." : "Update"}
+        </Button>
+      </div>
       <h6>Basic</h6>
       <Input
         size="sm"
@@ -458,7 +481,11 @@ export default function Page({
         attachments={testCase.Attachments}
         onAttachmentDelete={(id) => console.log(id)}
       />
-      <div className="flex items-center justify-center w-96 mt-3">
+      <div
+        className="flex items-center justify-center w-96 mt-3"
+        onDrop={handleDrop}
+        onDragOver={(event) => event.preventDefault()}
+      >
         <label
           htmlFor="dropzone-file"
           className="flex flex-col items-center justify-center w-full h-32 border-2 border-gray-200 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-bray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600"
@@ -477,26 +504,10 @@ export default function Page({
             id="dropzone-file"
             type="file"
             className="hidden"
-            onChange={handleFileUpload}
+            onChange={handleInput}
             multiple
           />
         </label>
-      </div>
-
-      <div className="mt-6">
-        <Button
-          color="primary"
-          isLoading={isUpdating}
-          onPress={async () => {
-            setIsUpdating(true);
-            await updateCase(testCase);
-            setTimeout(() => {
-              setIsUpdating(false);
-            }, 1000);
-          }}
-        >
-          {isUpdating ? "Updating..." : "Update"}
-        </Button>
       </div>
     </div>
   );

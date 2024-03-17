@@ -11,18 +11,60 @@ export default function AttachmentsEditor({
   attachments = [],
   onAttachmentDelete,
 }: Props) {
+  let images = [];
+  let others = [];
+
+  attachments.forEach((attachment) => {
+    let path = attachment.path;
+    let extension = path.substring(path.lastIndexOf(".") + 1).toLowerCase();
+    if (
+      extension === "png" ||
+      extension === "jpg" ||
+      extension === "jpeg" ||
+      extension === "gif" ||
+      extension === "bmp" ||
+      extension === "svg"
+    ) {
+      images.push(attachment);
+    } else {
+      others.push(attachment);
+    }
+  });
   return (
     <>
-      {attachments.map((attachment, index) => (
+      {images.map((image, index) => (
         <div key={index} className="flex">
-          <Image alt={attachment.title} src={attachment.path} className="object-cover h-40 w-40"/>
+          <Image
+            alt={image.title}
+            src={image.path}
+            className="object-cover h-40 w-40"
+          />
+          <div className="mt-3 ms-1">
+            <Tooltip content="Delete this image file" placement="left">
+              <Button
+                isIconOnly
+                size="sm"
+                className="bg-transparent rounded-full"
+                onPress={() => onAttachmentDelete(image.id)}
+              >
+                <Trash size={16} />
+              </Button>
+            </Tooltip>
+          </div>
+        </div>
+      ))}
+
+      {others.map((file, index) => (
+        <div key={index} className="flex">
+          <div>{file.title}</div>
+          <div>{file.path}</div>
           <div className="mt-3 ms-1">
             <Tooltip content="Delete this attachment file" placement="left">
               <Button
                 isIconOnly
                 size="sm"
                 className="bg-transparent rounded-full"
-                onPress={() => onAttachmentDelete(attachment.id)}
+                onPress={() => onAttachmentDelete(file.id)}
               >
                 <Trash size={16} />
               </Button>
