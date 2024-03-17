@@ -1,5 +1,5 @@
 import { Textarea, Button, Tooltip } from "@nextui-org/react";
-import { StepType } from "./page";
+import { StepType } from "./caseTypes";
 import { Plus, Trash } from "lucide-react";
 
 type Props = {

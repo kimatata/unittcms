@@ -1,5 +1,5 @@
 import { Image, Button, Tooltip } from "@nextui-org/react";
-import { AttachmentType } from "./page";
+import { AttachmentType } from "./caseTypes";
 import { Trash } from "lucide-react";
 
 type Props = {
@@ -7,7 +7,7 @@ type Props = {
   onAttachmentDelete: (attachmentId: number) => void;
 };
 
-export default function AttachmentsEditor({
+export default function CaseAttachmentsEditor({
   attachments = [],
   onAttachmentDelete,
 }: Props) {

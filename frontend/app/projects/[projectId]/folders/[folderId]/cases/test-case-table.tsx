@@ -16,7 +16,7 @@ import {
   SortDescriptor,
   Link,
 } from "@nextui-org/react";
-import { MoreVertical } from "lucide-react";
+import { Plus, MoreVertical } from "lucide-react";
 
 const headerColumns = [
   { name: "ID", uid: "id", sortable: true },
@@ -25,7 +25,7 @@ const headerColumns = [
   { name: "Actions", uid: "actions" },
 ];
 
-import { priorities } from "@/config/selection"
+import { priorities } from "@/config/selection";
 
 type Case = {
   id: number;
@@ -126,37 +126,53 @@ export default function TestCaseTable({ projectId, cases }) {
   );
 
   return (
-    <Table
-      isCompact
-      removeWrapper
-      aria-label="Tese cases table"
-      classNames={classNames}
-      selectedKeys={selectedKeys}
-      selectionMode="multiple"
-      sortDescriptor={sortDescriptor}
-      onSelectionChange={setSelectedKeys}
-      onSortChange={setSortDescriptor}
-    >
-      <TableHeader columns={headerColumns}>
-        {(column) => (
-          <TableColumn
-            key={column.uid}
-            align={column.uid === "actions" ? "center" : "start"}
-            allowsSorting={column.sortable}
-          >
-            {column.name}
-          </TableColumn>
-        )}
-      </TableHeader>
-      <TableBody emptyContent={"No cases found"} items={sortedItems}>
-        {(item) => (
-          <TableRow key={item.id}>
-            {(columnKey) => (
-              <TableCell>{renderCell(item, columnKey)}</TableCell>
-            )}
-          </TableRow>
-        )}
-      </TableBody>
-    </Table>
+    <>
+      <div className="border-b-1 dark:border-neutral-700 w-full p-3 flex items-center justify-between">
+        <h3 className="font-bold">
+          Cases
+        </h3>
+        <Button
+          startContent={<Plus size={16} />}
+          size="sm"
+          color="primary"
+          onClick={() => console.log("create")}
+        >
+          New Test Case
+        </Button>
+      </div>
+
+      <Table
+        isCompact
+        removeWrapper
+        aria-label="Tese cases table"
+        classNames={classNames}
+        selectedKeys={selectedKeys}
+        selectionMode="multiple"
+        sortDescriptor={sortDescriptor}
+        onSelectionChange={setSelectedKeys}
+        onSortChange={setSortDescriptor}
+      >
+        <TableHeader columns={headerColumns}>
+          {(column) => (
+            <TableColumn
+              key={column.uid}
+              align={column.uid === "actions" ? "center" : "start"}
+              allowsSorting={column.sortable}
+            >
+              {column.name}
+            </TableColumn>
+          )}
+        </TableHeader>
+        <TableBody emptyContent={"No cases found"} items={sortedItems}>
+          {(item) => (
+            <TableRow key={item.id}>
+              {(columnKey) => (
+                <TableCell>{renderCell(item, columnKey)}</TableCell>
+              )}
+            </TableRow>
+          )}
+        </TableBody>
+      </Table>
+    </>
   );
 }

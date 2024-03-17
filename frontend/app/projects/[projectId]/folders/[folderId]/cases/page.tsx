@@ -54,20 +54,6 @@ export default function Page({
 
   return (
     <>
-      {/* <Listbox aria-label="Listbox Variants">
-        {cases.map((testCase, index) => (
-          <ListboxItem
-            key={index}
-            onClick={() =>
-              router.push(
-                `/projects/${params.projectId}/folders/${params.folderId}/cases/${testCase.id}`
-              )
-            }
-          >
-            {testCase.title}
-          </ListboxItem>
-        ))}
-      </Listbox> */}
       <TestCaseTable projectId={params.folderId} cases={cases}/>
     </>
   );

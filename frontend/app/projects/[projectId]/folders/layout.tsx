@@ -270,20 +270,6 @@ export default function FoldersLayout({
         </Listbox>
       </div>
       <div className="flex-grow w-full">
-        <div className="border-b-1 dark:border-neutral-700 w-full p-3 flex items-center justify-between">
-          <h3 className="font-bold">
-            {selectedFolder ? selectedFolder.name : "Select Folder"}
-          </h3>
-          <Button
-            startContent={<Plus size={16} />}
-            size="sm"
-            color="primary"
-            isDisabled={!selectedFolder}
-            onClick={() => console.log("create")}
-          >
-            New Test Case
-          </Button>
-        </div>
         {children}
       </div>
 
