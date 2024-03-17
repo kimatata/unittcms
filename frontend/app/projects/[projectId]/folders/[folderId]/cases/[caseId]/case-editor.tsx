@@ -22,6 +22,7 @@ import {
   fetchDeleteStep,
   updateCase,
   fetchCreateAttachments,
+  fetchDeleteAttachment,
 } from "./caseControl";
 
 const defaultTestCase = {
@@ -111,6 +112,10 @@ export default function CaseEditor({
 
   const handleInput = (event) => {
     fetchCreateAttachments(params.caseId, event.target.files);
+  };
+
+  const onAttachmentDelete = async (attachmentId: number) => {
+    await fetchDeleteAttachment(attachmentId);
   };
 
   useEffect(() => {
@@ -334,7 +339,7 @@ export default function CaseEditor({
         <h6>Attachments</h6>
         <CaseAttachmentsEditor
           attachments={testCase.Attachments}
-          onAttachmentDelete={(id) => console.log(id)}
+          onAttachmentDelete={onAttachmentDelete}
         />
         <div
           className="flex items-center justify-center w-96 mt-3"

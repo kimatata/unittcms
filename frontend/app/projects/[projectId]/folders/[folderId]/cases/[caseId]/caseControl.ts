@@ -129,4 +129,35 @@ async function fetchCreateAttachments(caseId: number, files: File[]) {
   }
 }
 
-export { fetchCase, fetchCreateStep, fetchDeleteStep, updateCase, fetchCreateAttachments };
+/**
+ * delete attachment
+ */
+async function fetchDeleteAttachment(attachmentId: number) {
+  const fetchOptions = {
+    method: "DELETE",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  };
+
+  const url = `${apiServer}/attachments/${attachmentId}`;
+
+  try {
+    const response = await fetch(url, fetchOptions);
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+  } catch (error) {
+    console.error("Error deleting project:", error);
+    throw error;
+  }
+}
+
+export {
+  fetchCase,
+  fetchCreateStep,
+  fetchDeleteStep,
+  updateCase,
+  fetchCreateAttachments,
+  fetchDeleteAttachment,
+};
