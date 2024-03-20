@@ -5,7 +5,7 @@ const apiServer = Config.apiServer;
  * fetch case
  */
 async function fetchCase(caseId: number) {
-  const url = `${apiServer}/cases?caseId=${caseId}`;
+  const url = `${apiServer}/cases/${caseId}`;
 
   try {
     const response = await fetch(url, {
