@@ -10,6 +10,10 @@ function defineProject(sequelize, DataTypes) {
     },
   });
 
+  Project.associate = (models) => {
+    Project.hasMany(models.Folder, { foreignKey: "projectId" });
+  };
+
   return Project;
 }
 
