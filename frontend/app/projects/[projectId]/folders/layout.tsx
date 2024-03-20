@@ -6,7 +6,7 @@ import { Button, Listbox, ListboxItem } from "@nextui-org/react";
 import { Folder, Plus } from "lucide-react";
 import { FolderDialog } from "./folder-dialog";
 import FolderEditMenu from "./folder-edit-menu";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import useGetCurrentIds from "@/utils/useGetCurrentIds";
 
 export type FolderType = {
@@ -157,6 +157,7 @@ export default function FoldersLayout({
   params: { projectId: number };
 }) {
   const router = useRouter();
+  const pathname = usePathname()
   const [folders, setFolders] = useState([]);
   const [selectedFolder, setSelectedFolder] = useState<FolderType>({});
 
@@ -221,6 +222,12 @@ export default function FoldersLayout({
           (folder) => folder.id === folderId
         );
         setSelectedFolder(selectedFolderFromUrl);
+
+        // Redirect to the smallest folder ID page if the path is "projects/1/folders
+        if (pathname === `/projects/${params.projectId}/folders`) {
+          const smallestFolderId = Math.min(...data.map((folder) => folder.id));
+          router.push(`/projects/${params.projectId}/folders/${smallestFolderId}/cases`);
+        }
       } catch (error) {
         console.error("Error in effect:", error.message);
       }
