@@ -44,7 +44,7 @@ type AttachmentType = {
   path: string;
   createdAt: Date;
   updatedAt: Date;
-  caseSteps: CaseAttachmentType;
+  caseAttachments: CaseAttachmentType;
 };
 
 export { CaseType, StepType, AttachmentType };

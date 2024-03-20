@@ -15,7 +15,7 @@ import { Save, Plus, ArrowLeft, ArrowUpFromLine } from "lucide-react";
 import { priorities, testTypes, templates } from "@/config/selection";
 import CaseStepsEditor from "./case-steps-editor";
 import CaseAttachmentsEditor from "./case-attachments-editor";
-import { CaseType } from "./caseTypes";
+import { CaseType, AttachmentType } from "./caseTypes";
 import {
   fetchCase,
   fetchCreateStep,
@@ -105,17 +105,48 @@ export default function CaseEditor({
     });
   };
 
-  const handleDrop = (event) => {
+  const handleDrop = async (event) => {
     event.preventDefault();
-    fetchCreateAttachments(params.caseId, event.dataTransfer.files);
+    handleFetchCreateAttachments(params.caseId, event.dataTransfer.files);
   };
 
   const handleInput = (event) => {
-    fetchCreateAttachments(params.caseId, event.target.files);
+    handleFetchCreateAttachments(params.caseId, event.target.files);
+  };
+
+  const handleFetchCreateAttachments = async (
+    caseId: number,
+    files: File[]
+  ) => {
+    const newAttachments = await fetchCreateAttachments(caseId, files);
+
+    if (newAttachments) {
+      const newAttachmentsWithJoinTable = [];
+      newAttachments.forEach((attachment: AttachmentType) => {
+        attachment.caseAttachments = { AttachmentId: attachment.id };
+        newAttachmentsWithJoinTable.push(attachment);
+      });
+      const updatedAttachments = testCase.Attachments;
+      updatedAttachments.push(...newAttachments);
+
+      setTestCase({
+        ...testCase,
+        Attachments: updatedAttachments,
+      });
+    }
   };
 
   const onAttachmentDelete = async (attachmentId: number) => {
     await fetchDeleteAttachment(attachmentId);
+
+    const filteredAttachments = testCase.Attachments.filter(
+      (attachment) => attachment.id !== attachmentId
+    );
+
+    setTestCase({
+      ...testCase,
+      Attachments: filteredAttachments,
+    });
   };
 
   useEffect(() => {
