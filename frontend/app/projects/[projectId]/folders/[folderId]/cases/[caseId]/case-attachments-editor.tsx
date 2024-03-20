@@ -4,11 +4,16 @@ import { Trash, ArrowDownToLine } from "lucide-react";
 
 type Props = {
   attachments: AttachmentType[];
+  onAttachmentDownload: (
+    attachmentId: number,
+    downloadFileName: string
+  ) => void;
   onAttachmentDelete: (attachmentId: number) => void;
 };
 
 export default function CaseAttachmentsEditor({
   attachments = [],
+  onAttachmentDownload,
   onAttachmentDelete,
 }: Props) {
   let images = [];
@@ -70,7 +75,7 @@ export default function CaseAttachmentsEditor({
                     isIconOnly
                     size="sm"
                     className="bg-transparent rounded-full"
-                    onPress={() => console.log("download")}
+                    onPress={() => onAttachmentDownload(file.id, file.title)}
                   >
                     <ArrowDownToLine size={16} />
                   </Button>

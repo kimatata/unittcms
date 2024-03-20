@@ -130,6 +130,40 @@ async function fetchCreateAttachments(caseId: number, files: File[]) {
 }
 
 /**
+ * download attachment
+ */
+async function fetchDownloadAttachment(attachmentId: number, downloadFileName: string) {
+  const fetchOptions = {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  };
+
+  const url = `${apiServer}/attachments/download/${attachmentId}`;
+
+  try {
+    const response = await fetch(url, fetchOptions);
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+
+    const blob = await response.blob();
+    const downloadUrl = window.URL.createObjectURL(blob);
+
+    const link = document.createElement("a");
+    link.href = downloadUrl;
+    link.download = downloadFileName;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  } catch (error) {
+    console.error("Error downloading file:", error);
+    throw error;
+  }
+}
+
+/**
  * delete attachment
  */
 async function fetchDeleteAttachment(attachmentId: number) {
@@ -148,7 +182,7 @@ async function fetchDeleteAttachment(attachmentId: number) {
       throw new Error(`HTTP error! Status: ${response.status}`);
     }
   } catch (error) {
-    console.error("Error deleting project:", error);
+    console.error("Error deleting file:", error);
     throw error;
   }
 }
@@ -159,5 +193,6 @@ export {
   fetchDeleteStep,
   updateCase,
   fetchCreateAttachments,
+  fetchDownloadAttachment,
   fetchDeleteAttachment,
 };

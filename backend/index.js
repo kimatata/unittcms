@@ -64,8 +64,10 @@ app.use("/steps", stepsDeleteRoute);
 // "/attachments"
 const attachmentsNewRoute = require("./routes/attachments/new")(sequelize);
 const attachmentsDeleteRoute = require("./routes/attachments/delete")(sequelize);
+const attachmentsDownloadRoute = require("./routes/attachments/download")(sequelize);
 app.use("/attachments", attachmentsNewRoute);
 app.use("/attachments", attachmentsDeleteRoute);
+app.use("/attachments", attachmentsDownloadRoute);
 
 // "/runs"
 const runsIndexRoute = require("./routes/runs/index")(sequelize);

@@ -22,6 +22,7 @@ import {
   fetchDeleteStep,
   updateCase,
   fetchCreateAttachments,
+  fetchDownloadAttachment,
   fetchDeleteAttachment,
 } from "./caseControl";
 
@@ -370,6 +371,9 @@ export default function CaseEditor({
         <h6>Attachments</h6>
         <CaseAttachmentsEditor
           attachments={testCase.Attachments}
+          onAttachmentDownload={(attachmentId: number, downloadFileName: string) =>
+            fetchDownloadAttachment(attachmentId, downloadFileName)
+          }
           onAttachmentDelete={onAttachmentDelete}
         />
         <div
