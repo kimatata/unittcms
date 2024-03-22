@@ -43,7 +43,13 @@ type Case = {
   updatedAt: string;
 };
 
-export default function TestCaseTable({ projectId, cases }) {
+type Props = {
+  projectId: boolean;
+  cases: Case[];
+  onDeleteCase: (caseId: number) => void;
+};
+
+export default function TestCaseTable({ projectId, cases, onDeleteCase }: Props) {
   const [selectedKeys, setSelectedKeys] = useState<Selection>(new Set([]));
   const [sortDescriptor, setSortDescriptor] = useState<SortDescriptor>({
     column: "id",
@@ -94,8 +100,7 @@ export default function TestCaseTable({ projectId, cases }) {
               </Button>
             </DropdownTrigger>
             <DropdownMenu aria-label="test case actions">
-              <DropdownItem>Edit test case</DropdownItem>
-              <DropdownItem className="text-danger">
+              <DropdownItem className="text-danger" onClick={() => onDeleteCase(testCase.id)}>
                 Delete test case
               </DropdownItem>
             </DropdownMenu>

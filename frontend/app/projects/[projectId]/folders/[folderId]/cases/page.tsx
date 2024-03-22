@@ -31,6 +31,27 @@ async function fetchCases(url) {
   }
 }
 
+async function fetchDeleteCase(caseId: number) {
+  const fetchOptions = {
+    method: "DELETE",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  };
+
+  const url = `${apiServer}/cases/${caseId}`;
+
+  try {
+    const response = await fetch(url, fetchOptions);
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+  } catch (error) {
+    console.error("Error deleting project:", error);
+    throw error;
+  }
+}
+
 export default function Page({
   params,
 }: {
@@ -52,9 +73,19 @@ export default function Page({
     fetchDataEffect();
   }, []);
 
+  const handleDeleteCase = async (caseId: number) => {
+    await fetchDeleteCase(caseId);
+    const data = await fetchCases(url);
+    setCases(data);
+  };
+
   return (
     <>
-      <TestCaseTable projectId={params.folderId} cases={cases}/>
+      <TestCaseTable
+        projectId={params.folderId}
+        cases={cases}
+        onDeleteCase={handleDeleteCase}
+      />
     </>
   );
 }
