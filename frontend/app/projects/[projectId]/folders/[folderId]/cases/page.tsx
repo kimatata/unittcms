@@ -31,6 +31,43 @@ async function fetchCases(url) {
   }
 }
 
+async function fetchCreateCase(folderId: string) {
+  const newCase = {
+    title: "untitled case",
+    state: 0,
+    priority: 2,
+    type: 0,
+    automationStatus: 0,
+    description: "",
+    template: 0,
+    preConditions: "",
+    expectedResults: "",
+    folderId: folderId,
+  };
+
+  const fetchOptions = {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(newCase),
+  };
+
+  const url = `${apiServer}/cases`;
+
+  try {
+    const response = await fetch(url, fetchOptions);
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error("Error creating case:", error);
+    throw error;
+  }
+}
+
 async function fetchDeleteCase(caseId: number) {
   const fetchOptions = {
     method: "DELETE",
@@ -47,7 +84,7 @@ async function fetchDeleteCase(caseId: number) {
       throw new Error(`HTTP error! Status: ${response.status}`);
     }
   } catch (error) {
-    console.error("Error deleting project:", error);
+    console.error("Error deleting case:", error);
     throw error;
   }
 }
@@ -73,6 +110,13 @@ export default function Page({
     fetchDataEffect();
   }, []);
 
+  const handleCreateCase = async (folderId: string) => {
+    const newCase = await fetchCreateCase(folderId);
+    const updateCases = [...cases];
+    updateCases.push(newCase);
+    setCases(updateCases);
+  };
+
   const handleDeleteCase = async (caseId: number) => {
     await fetchDeleteCase(caseId);
     const data = await fetchCases(url);
@@ -84,6 +128,7 @@ export default function Page({
       <TestCaseTable
         projectId={params.folderId}
         cases={cases}
+        onCreateCase={() => handleCreateCase(params.folderId)}
         onDeleteCase={handleDeleteCase}
       />
     </>

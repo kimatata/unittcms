@@ -46,10 +46,11 @@ type Case = {
 type Props = {
   projectId: boolean;
   cases: Case[];
+  onCreateCase: () => void;
   onDeleteCase: (caseId: number) => void;
 };
 
-export default function TestCaseTable({ projectId, cases, onDeleteCase }: Props) {
+export default function TestCaseTable({ projectId, cases, onCreateCase, onDeleteCase }: Props) {
   const [selectedKeys, setSelectedKeys] = useState<Selection>(new Set([]));
   const [sortDescriptor, setSortDescriptor] = useState<SortDescriptor>({
     column: "id",
@@ -141,7 +142,7 @@ export default function TestCaseTable({ projectId, cases, onDeleteCase }: Props)
           startContent={<Plus size={16} />}
           size="sm"
           color="primary"
-          onClick={() => console.log("create")}
+          onClick={onCreateCase}
         >
           New Test Case
         </Button>
