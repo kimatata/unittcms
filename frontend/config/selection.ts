@@ -1,7 +1,7 @@
 const priorities = [
   { name: "Critical", uid: "critical", color: "danger" },
   { name: "High", uid: "high", color: "warning" },
-  { name: "Medium", uid: "medium", color: "primary" },
+  { name: "Medium", uid: "medium", color: "secondary" },
   { name: "Low", uid: "low", color: "success" },
 ];
 
