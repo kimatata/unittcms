@@ -19,12 +19,22 @@ export function ProjectCard({ project, onEditClick, onDeleteClick }) {
       <CardHeader className="flex gap-3 h-[50px] justify-between text-ellipsis overflow-hidden">
         <div className="flex gap-5">
           <div className="flex flex-col gap-1 items-start justify-center">
-            <Link underline="hover" href={`/projects/${project.id}/home`}>{project.name}</Link>
+            <Link
+              underline="hover"
+              className="dark:text-white"
+              href={`/projects/${project.id}/home`}
+            >
+              {project.name}
+            </Link>
           </div>
         </div>
         <Dropdown>
           <DropdownTrigger>
-            <Button isIconOnly size="sm" className="bg-transparent rounded-full">
+            <Button
+              isIconOnly
+              size="sm"
+              className="bg-transparent rounded-full"
+            >
               <MoreVertical size={16} />
             </Button>
           </DropdownTrigger>

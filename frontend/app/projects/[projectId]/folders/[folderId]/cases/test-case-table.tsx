@@ -76,6 +76,7 @@ export default function TestCaseTable({ projectId, cases, onDeleteCase }: Props)
           <Link
             underline="hover"
             href={`/projects/${projectId}/folders/${testCase.folderId}/cases/${testCase.id}`}
+            className="dark:text-white"
           >
             {cellValue}
           </Link>

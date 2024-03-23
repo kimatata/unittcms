@@ -171,7 +171,7 @@ export default function CaseEditor({
             <Button
               isIconOnly
               size="sm"
-              className="rounded-full bg-gray-50 dark:bg-gray-900"
+              className="rounded-full bg-neutral-50 dark:bg-neutral-600"
               onPress={() =>
                 router.push(
                   `/projects/${params.projectId}/folders/${params.folderId}/cases`
@@ -383,15 +383,15 @@ export default function CaseEditor({
         >
           <label
             htmlFor="dropzone-file"
-            className="flex flex-col items-center justify-center w-full h-32 border-2 border-gray-200 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-bray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600"
+            className="flex flex-col items-center justify-center w-full h-32 border-2 border-neutral-200 border-dashed rounded-lg cursor-pointer bg-neutral-50 dark:hover:bg-bray-800 dark:bg-neutral-700 hover:bg-neutral-100 dark:border-neutral-600 dark:hover:border-neutral-500 dark:hover:bg-neutral-600"
           >
             <div className="flex flex-col items-center justify-center pt-5 pb-6">
               <ArrowUpFromLine />
-              <p className="mb-2 text-sm text-gray-500 dark:text-gray-400">
+              <p className="mb-2 text-sm text-neutral-500 dark:text-neutral-400">
                 <span className="font-semibold">Click to upload</span> or drag
                 and drop
               </p>
-              <p className="text-xs text-gray-500 dark:text-gray-400">
+              <p className="text-xs text-neutral-500 dark:text-neutral-400">
                 Max. file size: 50 MB
               </p>
             </div>
