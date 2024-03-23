@@ -157,7 +157,7 @@ export default function FoldersLayout({
   params: { projectId: number };
 }) {
   const router = useRouter();
-  const pathname = usePathname()
+  const pathname = usePathname();
   const [folders, setFolders] = useState([]);
   const [selectedFolder, setSelectedFolder] = useState<FolderType>({});
 
@@ -226,7 +226,9 @@ export default function FoldersLayout({
         // Redirect to the smallest folder ID page if the path is "projects/1/folders
         if (pathname === `/projects/${params.projectId}/folders`) {
           const smallestFolderId = Math.min(...data.map((folder) => folder.id));
-          router.push(`/projects/${params.projectId}/folders/${smallestFolderId}/cases`);
+          router.push(
+            `/projects/${params.projectId}/folders/${smallestFolderId}/cases`
+          );
         }
       } catch (error) {
         console.error("Error in effect:", error.message);
@@ -235,6 +237,9 @@ export default function FoldersLayout({
 
     fetchDataEffect();
   }, [folderId]);
+
+  const baseClass = "p-3 rounded-none";
+  const selectedClass = `${baseClass} bg-neutral-200 dark:bg-neutral-700`;
 
   return (
     <div className="flex w-full">
@@ -248,7 +253,7 @@ export default function FoldersLayout({
         >
           New Folder
         </Button>
-        <Listbox aria-label="Listbox Variants">
+        <Listbox aria-label="Listbox Variants" variant="light" className="p-0">
           {folders.map((folder, index) => (
             <ListboxItem
               key={index}
@@ -257,11 +262,11 @@ export default function FoldersLayout({
                   `/projects/${params.projectId}/folders/${folder.id}/cases`
                 )
               }
-              startContent={<Folder size={20} color="#99ccff" fill="#99ccff" />}
+              startContent={<Folder size={20} color="#F7C24E" fill="#F7C24E" />}
               className={
                 selectedFolder && folder.id === selectedFolder.id
-                  ? "bg-gray-300 dark:bg-gray-700"
-                  : ""
+                  ? selectedClass
+                  : baseClass
               }
               endContent={
                 <FolderEditMenu
@@ -276,9 +281,7 @@ export default function FoldersLayout({
           ))}
         </Listbox>
       </div>
-      <div className="flex-grow w-full">
-        {children}
-      </div>
+      <div className="flex-grow w-full">{children}</div>
 
       <FolderDialog
         isOpen={isFolderDialogOpen}

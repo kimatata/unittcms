@@ -10,7 +10,8 @@ export default function Sidebar() {
   const router = useRouter();
 
   const [currentKey, setCurrentTab] = useState("home");
-  const listBoxItemClassName = "p-3 rounded-none border-l-4 border-transparent";
+  const baseClass = "p-3 rounded-none";
+  const selectedClass = `${baseClass} bg-neutral-200 dark:bg-neutral-700`;
 
   const handleTabClick = (key: string) => {
     setCurrentTab(key);
@@ -45,6 +46,7 @@ export default function Sidebar() {
     <div className="w-64 border-r-1 dark:border-neutral-700">
       <Listbox
         aria-label="Listbox Variants"
+        variant="light"
         className="p-0"
         onClick={() => router.push(`/projects/${projectId}/home`)}
       >
@@ -53,11 +55,7 @@ export default function Sidebar() {
             key={itr.key}
             startContent={itr.startContent}
             onClick={() => handleTabClick(itr.key)}
-            className={
-              currentKey === itr.key
-                ? listBoxItemClassName + " border-gray-600 "
-                : listBoxItemClassName
-            }
+            className={currentKey === itr.key ? selectedClass : baseClass}
           >
             {itr.text}
           </ListboxItem>
