@@ -238,7 +238,7 @@ export default function FoldersLayout({
     fetchDataEffect();
   }, [folderId]);
 
-  const baseClass = "p-3 rounded-none";
+  const baseClass = "px-3 py-2 rounded-none";
   const selectedClass = `${baseClass} bg-neutral-200 dark:bg-neutral-700`;
 
   return (
