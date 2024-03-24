@@ -21,13 +21,11 @@ export type FolderType = {
 
 /**
  * fetch folder records
- *
- * @param {string} url - API endpoint url
- * @returns {Promise<Array>} - project record array
- * @throws {Error}
  */
-async function fetchFolders(url) {
+async function fetchFolders(projectId: string) {
+  // console.log("fetch folders", url)
   try {
+    const url = `${apiServer}/folders?projectId=${projectId}`;
     const response = await fetch(url, {
       method: "GET",
       headers: {
@@ -161,7 +159,6 @@ export default function FoldersLayout({
   const [folders, setFolders] = useState([]);
   const [selectedFolder, setSelectedFolder] = useState<FolderType>({});
 
-  const url = `${apiServer}/folders?projectId=${params.projectId}`;
   const { folderId } = useGetCurrentIds();
 
   const [isFolderDialogOpen, setIsFolderDialogOpen] = useState(false);
@@ -215,7 +212,7 @@ export default function FoldersLayout({
   useEffect(() => {
     async function fetchDataEffect() {
       try {
-        const data = await fetchFolders(url);
+        const data = await fetchFolders(params.projectId);
         setFolders(data);
 
         const selectedFolderFromUrl = data.find(
@@ -223,7 +220,7 @@ export default function FoldersLayout({
         );
         setSelectedFolder(selectedFolderFromUrl);
 
-        // Redirect to the smallest folder ID page if the path is "projects/1/folders
+        // Redirect to the smallest folder ID page if the path is "projects/[projectId]/folders
         if (pathname === `/projects/${params.projectId}/folders`) {
           const smallestFolderId = Math.min(...data.map((folder) => folder.id));
           router.push(

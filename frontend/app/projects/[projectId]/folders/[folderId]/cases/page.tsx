@@ -126,7 +126,7 @@ export default function Page({
   return (
     <>
       <TestCaseTable
-        projectId={params.folderId}
+        projectId={params.projectId}
         cases={cases}
         onCreateCase={() => handleCreateCase(params.folderId)}
         onDeleteCase={handleDeleteCase}
