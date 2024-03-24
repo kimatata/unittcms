@@ -89,6 +89,28 @@ async function fetchDeleteCase(caseId: number) {
   }
 }
 
+async function fetchDeleteCases(deleteCases: string[]) {
+  const fetchOptions = {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ caseIds: deleteCases }),
+  };
+
+  const url = `${apiServer}/cases/bulkdelete`;
+
+  try {
+    const response = await fetch(url, fetchOptions);
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+  } catch (error) {
+    console.error("Error deleting cases:", error);
+    throw error;
+  }
+}
+
 export default function Page({
   params,
 }: {
@@ -123,6 +145,12 @@ export default function Page({
     setCases(data);
   };
 
+  const handleDeleteCases = async (deleteCases: string[]) => {
+    await fetchDeleteCases(deleteCases);
+    const data = await fetchCases(url);
+    setCases(data);
+  }
+
   return (
     <>
       <TestCaseTable
@@ -130,6 +158,7 @@ export default function Page({
         cases={cases}
         onCreateCase={() => handleCreateCase(params.folderId)}
         onDeleteCase={handleDeleteCase}
+        onDeleteCases={handleDeleteCases}
       />
     </>
   );

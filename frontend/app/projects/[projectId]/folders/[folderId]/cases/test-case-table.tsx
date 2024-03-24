@@ -16,7 +16,7 @@ import {
   SortDescriptor,
   Link,
 } from "@nextui-org/react";
-import { Plus, MoreVertical } from "lucide-react";
+import { Plus, MoreVertical, Trash } from "lucide-react";
 
 const headerColumns = [
   { name: "ID", uid: "id", sortable: true },
@@ -48,9 +48,16 @@ type Props = {
   cases: Case[];
   onCreateCase: () => void;
   onDeleteCase: (caseId: number) => void;
+  onDeleteCases: (selectedCases: string[]) => void;
 };
 
-export default function TestCaseTable({ projectId, cases, onCreateCase, onDeleteCase }: Props) {
+export default function TestCaseTable({
+  projectId,
+  cases,
+  onCreateCase,
+  onDeleteCase,
+  onDeleteCases,
+}: Props) {
   const [selectedKeys, setSelectedKeys] = useState<Selection>(new Set([]));
   const [sortDescriptor, setSortDescriptor] = useState<SortDescriptor>({
     column: "id",
@@ -102,7 +109,10 @@ export default function TestCaseTable({ projectId, cases, onCreateCase, onDelete
               </Button>
             </DropdownTrigger>
             <DropdownMenu aria-label="test case actions">
-              <DropdownItem className="text-danger" onClick={() => onDeleteCase(testCase.id)}>
+              <DropdownItem
+                className="text-danger"
+                onClick={() => onDeleteCase(testCase.id)}
+              >
                 Delete test case
               </DropdownItem>
             </DropdownMenu>
@@ -132,20 +142,36 @@ export default function TestCaseTable({ projectId, cases, onCreateCase, onDelete
     []
   );
 
+  const onDeleteCasesClick = async() => {
+    setSelectedKeys(new Set([]));
+    onDeleteCases([...selectedKeys])
+  }
+
   return (
     <>
       <div className="border-b-1 dark:border-neutral-700 w-full p-3 flex items-center justify-between">
-        <h3 className="font-bold">
-          Cases
-        </h3>
-        <Button
-          startContent={<Plus size={16} />}
-          size="sm"
-          color="primary"
-          onClick={onCreateCase}
-        >
-          New Test Case
-        </Button>
+        <h3 className="font-bold">Cases</h3>
+        <div>
+          {selectedKeys.size > 0 && (
+            <Button
+              startContent={<Trash size={16} />}
+              size="sm"
+              color="danger"
+              className="me-2"
+              onClick={onDeleteCasesClick}
+            >
+              Delete
+            </Button>
+          )}
+          <Button
+            startContent={<Plus size={16} />}
+            size="sm"
+            color="primary"
+            onClick={onCreateCase}
+          >
+            New Test Case
+          </Button>
+        </div>
       </div>
 
       <Table
