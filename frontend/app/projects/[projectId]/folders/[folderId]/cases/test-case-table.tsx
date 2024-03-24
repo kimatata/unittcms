@@ -142,17 +142,22 @@ export default function TestCaseTable({
     []
   );
 
-  const onDeleteCasesClick = async() => {
+  const onDeleteCasesClick = async () => {
+    if (selectedKeys === "all") {
+      const allKeys = sortedItems.map((item) => item.id);
+      onDeleteCases(allKeys);
+    } else {
+      onDeleteCases([...selectedKeys]);
+    }
     setSelectedKeys(new Set([]));
-    onDeleteCases([...selectedKeys])
-  }
+  };
 
   return (
     <>
       <div className="border-b-1 dark:border-neutral-700 w-full p-3 flex items-center justify-between">
         <h3 className="font-bold">Cases</h3>
         <div>
-          {selectedKeys.size > 0 && (
+          {(selectedKeys.size > 0 || selectedKeys === "all") && (
             <Button
               startContent={<Trash size={16} />}
               size="sm"
