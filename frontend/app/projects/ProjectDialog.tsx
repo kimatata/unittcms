@@ -11,7 +11,7 @@ import {
   ModalBody,
   ModalFooter,
 } from "@nextui-org/react";
-import { ProjectType } from "./page";
+import { ProjectType } from "@/types/project";
 
 type Props = {
   isOpen: boolean;
@@ -20,7 +20,7 @@ type Props = {
   onSubmit: (name: string, detail: string) => void;
 };
 
-export function ProjectDialog({
+export default function ProjectDialog({
   isOpen,
   editingProject,
   onCancel,
