@@ -20,7 +20,7 @@ type Props = {
   onSubmit: (name: string, detail: string) => void;
 };
 
-export function FolderDialog({
+export default function FolderDialog({
   isOpen,
   editingFolder,
   onCancel,

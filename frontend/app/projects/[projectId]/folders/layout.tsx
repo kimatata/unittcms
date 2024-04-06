@@ -1,13 +1,8 @@
 "use client";
 import { useEffect, useState } from "react";
-import Config from "@/config/config";
-const apiServer = Config.apiServer;
-import { Button, Listbox, ListboxItem } from "@nextui-org/react";
-import { Folder, Plus } from "lucide-react";
-import { FolderDialog } from "./folder-dialog";
-import FolderEditMenu from "./folder-edit-menu";
 import { useRouter, usePathname } from "next/navigation";
 import useGetCurrentIds from "@/utils/useGetCurrentIds";
+import FoldersPane from "./FoldersPane";
 
 export type FolderType = {
   id: number;
@@ -19,140 +14,12 @@ export type FolderType = {
   updatedAt: string;
 };
 
-/**
- * fetch folder records
- */
-async function fetchFolders(projectId: string) {
-  // console.log("fetch folders", url)
-  try {
-    const url = `${apiServer}/folders?projectId=${projectId}`;
-    const response = await fetch(url, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-
-    if (!response.ok) {
-      throw new Error(`HTTP error! Status: ${response.status}`);
-    }
-
-    const data = await response.json();
-    return data;
-  } catch (error) {
-    console.error("Error fetching data:", error.message);
-  }
-}
-
-/**
- * Create project
- */
-async function createFolder(
-  name: string,
-  detail: string,
-  projectId: number,
-  parentFolderId: number
-) {
-  const newFolderData = {
-    name: name,
-    detail: detail,
-    projectId: projectId,
-    parentFolderId: parentFolderId,
-  };
-
-  const fetchOptions = {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(newFolderData),
-  };
-
-  const url = `${apiServer}/folders`;
-
-  try {
-    const response = await fetch(url, fetchOptions);
-    if (!response.ok) {
-      throw new Error(`HTTP error! Status: ${response.status}`);
-    }
-    const data = await response.json();
-    return data;
-  } catch (error) {
-    console.error("Error creating new project:", error);
-    throw error;
-  }
-}
-
-/**
- * Update folder
- */
-async function updateFolder(
-  folderId: number,
-  name: string,
-  detail: string,
-  projectId: number,
-  parentFolderId: number
-) {
-  const updateFolderData = {
-    name: name,
-    detail: detail,
-    projectId: projectId,
-    parentFolderId: parentFolderId,
-  };
-
-  const fetchOptions = {
-    method: "PUT",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(updateFolderData),
-  };
-
-  const url = `${apiServer}/folders/${folderId}`;
-
-  try {
-    const response = await fetch(url, fetchOptions);
-    if (!response.ok) {
-      throw new Error(`HTTP error! Status: ${response.status}`);
-    }
-    const data = await response.json();
-    return data;
-  } catch (error) {
-    console.error("Error updating project:", error);
-    throw error;
-  }
-}
-
-/**
- * Delete folder
- */
-async function deleteFolder(folderId: number) {
-  const fetchOptions = {
-    method: "DELETE",
-    headers: {
-      "Content-Type": "application/json",
-    },
-  };
-
-  const url = `${apiServer}/folders/${folderId}`;
-
-  try {
-    const response = await fetch(url, fetchOptions);
-    if (!response.ok) {
-      throw new Error(`HTTP error! Status: ${response.status}`);
-    }
-  } catch (error) {
-    console.error("Error deleting project:", error);
-    throw error;
-  }
-}
-
 export default function FoldersLayout({
   children,
   params,
 }: {
   children: React.ReactNode;
-  params: { projectId: number };
+  params: { projectId: string };
 }) {
   const router = useRouter();
   const pathname = usePathname();
@@ -235,57 +102,10 @@ export default function FoldersLayout({
     fetchDataEffect();
   }, [folderId]);
 
-  const baseClass = "px-3 py-2 rounded-none";
-  const selectedClass = `${baseClass} bg-neutral-200 dark:bg-neutral-700`;
-
   return (
     <div className="flex w-full">
-      <div className="w-64 min-h-[calc(100vh-64px)] border-r-1 dark:border-neutral-700">
-        <Button
-          startContent={<Plus size={16} />}
-          size="sm"
-          variant="bordered"
-          className="m-2"
-          onClick={openDialogForCreate}
-        >
-          New Folder
-        </Button>
-        <Listbox aria-label="Listbox Variants" variant="light" className="p-0">
-          {folders.map((folder, index) => (
-            <ListboxItem
-              key={index}
-              onClick={() =>
-                router.push(
-                  `/projects/${params.projectId}/folders/${folder.id}/cases`
-                )
-              }
-              startContent={<Folder size={20} color="#F7C24E" fill="#F7C24E" />}
-              className={
-                selectedFolder && folder.id === selectedFolder.id
-                  ? selectedClass
-                  : baseClass
-              }
-              endContent={
-                <FolderEditMenu
-                  folder={folder}
-                  onEditClick={onEditClick}
-                  onDeleteClick={onDeleteClick}
-                />
-              }
-            >
-              {folder.name}
-            </ListboxItem>
-          ))}
-        </Listbox>
-      </div>
+      <FoldersPane projectId={params.projectId}/>
       <div className="flex-grow w-full">{children}</div>
-
-      <FolderDialog
-        isOpen={isFolderDialogOpen}
-        editingFolder={editingFolder}
-        onCancel={closeDialog}
-        onSubmit={onSubmit}
-      />
     </div>
   );
 }
