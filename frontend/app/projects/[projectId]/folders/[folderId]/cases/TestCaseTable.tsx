@@ -44,7 +44,7 @@ type Case = {
 };
 
 type Props = {
-  projectId: boolean;
+  projectId: string;
   cases: Case[];
   onCreateCase: () => void;
   onDeleteCase: (caseId: number) => void;
