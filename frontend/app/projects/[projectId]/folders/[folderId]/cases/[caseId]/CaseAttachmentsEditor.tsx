@@ -1,5 +1,5 @@
 import { Image, Button, Tooltip, Card, CardBody } from "@nextui-org/react";
-import { AttachmentType } from "./caseTypes";
+import { AttachmentType } from "../../../../../../../types/case";
 import { Trash, ArrowDownToLine } from "lucide-react";
 
 type Props = {

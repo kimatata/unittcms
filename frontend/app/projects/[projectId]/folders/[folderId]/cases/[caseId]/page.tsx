@@ -1,4 +1,4 @@
-import CaseEditor from "./case-editor";
+import CaseEditor from "./CaseEditor";
 
 export default function Page({
   params,

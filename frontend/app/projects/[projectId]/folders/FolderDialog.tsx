@@ -11,7 +11,7 @@ import {
   ModalBody,
   ModalFooter,
 } from "@nextui-org/react";
-import { FolderType } from "./layout";
+import { FolderType } from "@/types/folder";
 
 type Props = {
   isOpen: boolean;

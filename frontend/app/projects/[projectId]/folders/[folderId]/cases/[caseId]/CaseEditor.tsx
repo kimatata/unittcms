@@ -13,9 +13,9 @@ import {
 import { useRouter } from "next/navigation";
 import { Save, Plus, ArrowLeft, ArrowUpFromLine } from "lucide-react";
 import { priorities, testTypes, templates } from "@/config/selection";
-import CaseStepsEditor from "./case-steps-editor";
-import CaseAttachmentsEditor from "./case-attachments-editor";
-import { CaseType, AttachmentType } from "./caseTypes";
+import CaseStepsEditor from "./CaseStepsEditor";
+import CaseAttachmentsEditor from "./CaseAttachmentsEditor";
+import { CaseType, AttachmentType } from "@/types/case";
 import {
   fetchCase,
   fetchCreateStep,
