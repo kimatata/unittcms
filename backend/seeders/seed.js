@@ -235,6 +235,23 @@ module.exports = {
         updatedAt: new Date(),
       },
     ]);
+
+    await queryInterface.bulkInsert("runCases", [
+      {
+        runId: 1,
+        caseId: 1,
+        status: 1,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+      {
+        runId: 1,
+        caseId: 2,
+        status: 1,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+    ]);
   },
 
   down: async (queryInterface, Sequelize) => {
