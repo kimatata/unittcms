@@ -1,5 +1,28 @@
 import Config from "@/config/config";
 const apiServer = Config.apiServer;
+import { RunType } from "@/types/run";
+
+async function fetchRun(runId: string) {
+  const url = `${apiServer}/runs/${runId}`;
+
+  try {
+    const response = await fetch(url, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error("Error fetching data:", error.message);
+  }
+}
 
 async function fetchRuns(projectId: string) {
   const url = `${apiServer}/runs?projectId=${projectId}`;
@@ -23,10 +46,13 @@ async function fetchRuns(projectId: string) {
   }
 }
 
-async function createRun(name: string, detail: string) {
-  const newProjectData = {
-    name: name,
-    detail: detail,
+async function createRun(projectId: string) {
+  const newTestRun = {
+    name: "untitled run",
+    configurations: 0,
+    description: "",
+    state: 0,
+    projectId: projectId,
   };
 
   const fetchOptions = {
@@ -34,7 +60,7 @@ async function createRun(name: string, detail: string) {
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify(newProjectData),
+    body: JSON.stringify(newTestRun),
   };
 
   const url = `${apiServer}/runs`;
@@ -47,26 +73,21 @@ async function createRun(name: string, detail: string) {
     const data = await response.json();
     return data;
   } catch (error) {
-    console.error("Error creating new project:", error);
+    console.error("Error creating new test run:", error);
     throw error;
   }
 }
 
-async function updateRun(runId: number, name: string, detail: string) {
-  const updatedProjectData = {
-    name: name,
-    detail: detail,
-  };
-
+async function updateRun(updateTestRun: RunType) {
   const fetchOptions = {
     method: "PUT",
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify(updatedProjectData),
+    body: JSON.stringify(updateTestRun),
   };
 
-  const url = `${apiServer}/runs/${runId}`;
+  const url = `${apiServer}/cases/${updateTestRun.id}`;
 
   try {
     const response = await fetch(url, fetchOptions);
@@ -102,4 +123,4 @@ async function deleteRun(runId: number) {
   }
 }
 
-export { fetchRuns, createRun, updateRun, deleteRun };
+export { fetchRun, fetchRuns, createRun, updateRun, deleteRun };

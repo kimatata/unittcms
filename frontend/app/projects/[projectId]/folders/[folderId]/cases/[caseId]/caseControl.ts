@@ -1,5 +1,6 @@
 import Config from "@/config/config";
 const apiServer = Config.apiServer;
+import { CaseType } from "@/types/case";
 
 /**
  * fetch case
@@ -76,7 +77,7 @@ async function fetchDeleteStep(stepId: number, parentCaseId: number) {
 }
 
 /**
- * Update folder
+ * Update case
  */
 async function updateCase(updateCaseData: CaseType) {
   const fetchOptions = {

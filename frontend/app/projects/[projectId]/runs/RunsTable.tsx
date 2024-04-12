@@ -27,12 +27,12 @@ const headerColumns = [
 ];
 
 type Props = {
+  projectId: string;
   runs: RunType[];
-  onEditRun: (run: RunType) => void;
   onDeleteRun: (runId: number) => void;
 };
 
-export default function RunsTable({ runs, onEditRun, onDeleteRun }: Props) {
+export default function RunsTable({ projectId, runs, onDeleteRun }: Props) {
   const [sortDescriptor, setSortDescriptor] = useState<SortDescriptor>({
     column: "id",
     direction: "ascending",
@@ -62,7 +62,7 @@ export default function RunsTable({ runs, onEditRun, onDeleteRun }: Props) {
         return (
           <Link
             underline="hover"
-            href={`/runs/${run.id}/home`}
+            href={`/projects/${projectId}/runs/${run.id}`}
             className="text-blue-500"
           >
             {cellValue}
@@ -87,9 +87,6 @@ export default function RunsTable({ runs, onEditRun, onDeleteRun }: Props) {
               </Button>
             </DropdownTrigger>
             <DropdownMenu aria-label="run actions">
-              <DropdownItem onClick={() => onEditRun(run)}>
-                Edit run
-              </DropdownItem>
               <DropdownItem
                 className="text-danger"
                 onClick={() => onDeleteRun(run.id)}

@@ -79,8 +79,10 @@ app.use("/attachments", attachmentsDownloadRoute);
 
 // "/runs"
 const runsIndexRoute = require("./routes/runs/index")(sequelize);
+const runsShowRoute = require("./routes/cases/show")(sequelize);
 const runsNewRoute = require("./routes/runs/new")(sequelize);
 app.use("/runs", runsIndexRoute);
+app.use("/runs", runsShowRoute);
 app.use("/runs", runsNewRoute);
 
 const PORT = process.env.PORT || 3001;

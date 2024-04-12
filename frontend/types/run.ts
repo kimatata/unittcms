@@ -1,6 +1,6 @@
 export type RunType = {
   id: number;
-  name: string;
+  title: string;
   configurations: number;
   description: string;
   state: number;

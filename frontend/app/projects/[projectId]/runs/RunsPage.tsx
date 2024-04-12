@@ -2,15 +2,8 @@
 import { useEffect, useState } from "react";
 import { Button } from "@nextui-org/react";
 import { Plus } from "lucide-react";
-import { RunType } from "@/types/run";
 import RunsTable from "./RunsTable";
-import RunDialog from "./RunDialog";
-import {
-  fetchRuns,
-  createRun,
-  updateRun,
-  deleteRun,
-} from "./runsControl";
+import { fetchRuns, createRun, deleteRun } from "./runsControl";
 
 type Props = {
   projectId: string;
@@ -32,42 +25,15 @@ export default function RunsPage({ projectId }: Props) {
     fetchDataEffect();
   }, []);
 
-  // dialog
-  const [isRunDialogOpen, setIsRunDialogOpen] = useState(false);
-  const [editingRun, setEditingRun] = useState<RunType | null>(
-    null
-  );
-  const openDialogForCreate = () => {
-    setIsRunDialogOpen(true);
-    setEditingRun(null);
-  };
-
-  const closeDialog = () => {
-    setIsRunDialogOpen(false);
-    setEditingRun(null);
-  };
-
-  const onSubmit = async (name: string, detail: string) => {
-    if (editingRun) {
-      const updatedRun = await updateRun(
-        editingRun.id,
-        name,
-        detail
-      );
-      const updatedRuns = runs.map((run) =>
-        run.id === updatedRun.id ? updatedRun : run
-      );
-      setRuns(updatedRuns);
-    } else {
-      const newRun = await createRun(name, detail);
-      setRuns([...runs, newRun]);
+  const onCreateClick = async () => {
+    try {
+      const newRun = await createRun(projectId);
+      const updateRuns = [...runs];
+      updateRuns.push(newRun);
+      setRuns(updateRuns);
+    } catch (error) {
+      console.error("Error deleting run:", error);
     }
-    closeDialog();
-  };
-
-  const onEditClick = (run: RunType) => {
-    setEditingRun(run);
-    setIsRunDialogOpen(true);
   };
 
   const onDeleteClick = async (runId: number) => {
@@ -80,7 +46,7 @@ export default function RunsPage({ projectId }: Props) {
   };
 
   return (
-    <div className="container mx-auto max-w-3xl pt-16 px-6 flex-grow">
+    <div className="container mx-auto max-w-3xl pt-6 px-6 flex-grow">
       <div className="w-full p-3 flex items-center justify-between">
         <h3 className="font-bold">Runs</h3>
         <div>
@@ -88,7 +54,7 @@ export default function RunsPage({ projectId }: Props) {
             startContent={<Plus size={16} />}
             size="sm"
             color="primary"
-            onClick={openDialogForCreate}
+            onClick={onCreateClick}
           >
             New Run
           </Button>
@@ -96,16 +62,9 @@ export default function RunsPage({ projectId }: Props) {
       </div>
 
       <RunsTable
+        projectId={projectId}
         runs={runs}
-        onEditRun={onEditClick}
         onDeleteRun={onDeleteClick}
-      />
-
-      <RunDialog
-        isOpen={isRunDialogOpen}
-        editingRun={editingRun}
-        onCancel={closeDialog}
-        onSubmit={onSubmit}
       />
     </div>
   );
