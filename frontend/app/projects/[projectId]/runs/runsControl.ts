@@ -87,7 +87,7 @@ async function updateRun(updateTestRun: RunType) {
     body: JSON.stringify(updateTestRun),
   };
 
-  const url = `${apiServer}/cases/${updateTestRun.id}`;
+  const url = `${apiServer}/runs/${updateTestRun.id}`;
 
   try {
     const response = await fetch(url, fetchOptions);
