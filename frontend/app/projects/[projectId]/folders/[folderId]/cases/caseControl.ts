@@ -1,5 +1,28 @@
 import Config from "@/config/config";
 const apiServer = Config.apiServer;
+import { CaseType } from "@/types/case";
+
+async function fetchCase(caseId: number) {
+  const url = `${apiServer}/cases/${caseId}`;
+
+  try {
+    const response = await fetch(url, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error("Error fetching data:", error.message);
+  }
+}
 
 async function fetchCases(folderId: string) {
   const url = `${apiServer}/cases?folderId=${folderId}`;
@@ -60,6 +83,30 @@ async function createCase(folderId: string) {
   }
 }
 
+async function updateCase(updateCaseData: CaseType) {
+  const fetchOptions = {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(updateCaseData),
+  };
+
+  const url = `${apiServer}/cases/${updateCaseData.id}`;
+
+  try {
+    const response = await fetch(url, fetchOptions);
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error("Error updating project:", error);
+    throw error;
+  }
+}
+
 async function deleteCase(caseId: number) {
   const fetchOptions = {
     method: "DELETE",
@@ -103,4 +150,11 @@ async function deleteCases(deleteCases: string[]) {
   }
 }
 
-export { fetchCases, createCase, deleteCase, deleteCases };
+export {
+  fetchCase,
+  fetchCases,
+  updateCase,
+  createCase,
+  deleteCase,
+  deleteCases,
+};

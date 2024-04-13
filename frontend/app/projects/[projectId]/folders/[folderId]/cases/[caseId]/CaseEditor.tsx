@@ -16,15 +16,13 @@ import { priorities, testTypes, templates } from "@/config/selection";
 import CaseStepsEditor from "./CaseStepsEditor";
 import CaseAttachmentsEditor from "./CaseAttachmentsEditor";
 import { CaseType, AttachmentType } from "@/types/case";
+import { fetchCase, updateCase } from "../caseControl";
+import { fetchCreateStep, fetchDeleteStep } from "./stepControl";
 import {
-  fetchCase,
-  fetchCreateStep,
-  fetchDeleteStep,
-  updateCase,
   fetchCreateAttachments,
   fetchDownloadAttachment,
   fetchDeleteAttachment,
-} from "./caseControl";
+} from "./attachmentControl";
 
 const defaultTestCase = {
   id: 0,
@@ -371,9 +369,10 @@ export default function CaseEditor({
         <h6>Attachments</h6>
         <CaseAttachmentsEditor
           attachments={testCase.Attachments}
-          onAttachmentDownload={(attachmentId: number, downloadFileName: string) =>
-            fetchDownloadAttachment(attachmentId, downloadFileName)
-          }
+          onAttachmentDownload={(
+            attachmentId: number,
+            downloadFileName: string
+          ) => fetchDownloadAttachment(attachmentId, downloadFileName)}
           onAttachmentDelete={onAttachmentDelete}
         />
         <div
