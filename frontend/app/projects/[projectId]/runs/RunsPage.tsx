@@ -39,7 +39,8 @@ export default function RunsPage({ projectId }: Props) {
   const onDeleteClick = async (runId: number) => {
     try {
       await deleteRun(runId);
-      setRuns(runs.filter((run) => run.id !== runId));
+      const data = await fetchRuns(projectId);
+      setRuns(data);
     } catch (error) {
       console.error("Error deleting run:", error);
     }

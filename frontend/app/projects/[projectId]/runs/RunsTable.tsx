@@ -140,7 +140,7 @@ export default function RunsTable({ projectId, runs, onDeleteRun }: Props) {
             </TableColumn>
           )}
         </TableHeader>
-        <TableBody emptyContent={"No cases found"} items={sortedItems}>
+        <TableBody emptyContent={"No runs found"} items={sortedItems}>
           {(item) => (
             <TableRow key={item.id}>
               {(columnKey) => (

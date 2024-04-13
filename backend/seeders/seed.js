@@ -54,8 +54,8 @@ module.exports = {
       {
         name: "Run 1",
         projectId: 1,
-        configurations: null,
-        description: null,
+        configurations: 1,
+        description: "",
         state: 1,
         createdAt: new Date(),
         updatedAt: new Date(),
@@ -63,8 +63,8 @@ module.exports = {
       {
         name: "Run 2",
         projectId: 1,
-        configurations: null,
-        description: null,
+        configurations: 1,
+        description: "",
         state: 1,
         createdAt: new Date(),
         updatedAt: new Date(),
@@ -72,8 +72,8 @@ module.exports = {
       {
         name: "Run 3",
         projectId: 1,
-        configurations: null,
-        description: null,
+        configurations: 1,
+        description: "",
         state: 1,
         createdAt: new Date(),
         updatedAt: new Date(),

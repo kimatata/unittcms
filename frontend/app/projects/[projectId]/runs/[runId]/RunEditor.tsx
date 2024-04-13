@@ -17,7 +17,7 @@ import { fetchRun, updateRun } from "../runsControl";
 
 const defaultTestRun = {
   id: 0,
-  title: "",
+  name: "",
   configurations: 0,
   description: "",
   state: 0,
@@ -31,7 +31,7 @@ type Props = {
 
 export default function RunEditor({ projectId, runId }: Props) {
   const [testRun, setTestRun] = useState<RunType>(defaultTestRun);
-  const [isTitleInvalid, setIsTitleInvalid] = useState<boolean>(false);
+  const [isNameInvalid, setIsNameInvalid] = useState<boolean>(false);
   const [isUpdating, setIsUpdating] = useState<boolean>(false);
   const router = useRouter();
 
@@ -62,7 +62,7 @@ export default function RunEditor({ projectId, runId }: Props) {
               <ArrowLeft size={16} />
             </Button>
           </Tooltip>
-          <h3 className="font-bold ms-2">{testRun.title}</h3>
+          <h3 className="font-bold ms-2">{testRun.name}</h3>
         </div>
         <Button
           startContent={<Save size={16} />}
@@ -84,12 +84,12 @@ export default function RunEditor({ projectId, runId }: Props) {
           size="sm"
           type="text"
           variant="bordered"
-          label="Title"
-          value={testRun.title}
-          isInvalid={isTitleInvalid}
-          errorMessage={isTitleInvalid ? "please enter title" : ""}
+          label="Name"
+          value={testRun.name}
+          isInvalid={isNameInvalid}
+          errorMessage={isNameInvalid ? "please enter name" : ""}
           onChange={(e) => {
-            setTestRun({ ...testRun, title: e.target.value });
+            setTestRun({ ...testRun, name: e.target.value });
           }}
           className="mt-3"
         />

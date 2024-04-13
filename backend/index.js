@@ -79,11 +79,13 @@ app.use("/attachments", attachmentsDownloadRoute);
 
 // "/runs"
 const runsIndexRoute = require("./routes/runs/index")(sequelize);
-const runsShowRoute = require("./routes/cases/show")(sequelize);
+const runsShowRoute = require("./routes/runs/show")(sequelize);
 const runsNewRoute = require("./routes/runs/new")(sequelize);
+const runDeleteRoute = require("./routes/runs/delete")(sequelize);
 app.use("/runs", runsIndexRoute);
 app.use("/runs", runsShowRoute);
 app.use("/runs", runsNewRoute);
+app.use("/runs", runDeleteRoute);
 
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
