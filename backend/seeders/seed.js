@@ -14,11 +14,13 @@ module.exports = {
       },
       {
         name: "Project 2",
+        detail: "",
         createdAt: new Date(),
         updatedAt: new Date(),
       },
       {
         name: "Project 3",
+        detail: "",
         createdAt: new Date(),
         updatedAt: new Date(),
       },
