@@ -97,7 +97,7 @@ export default function FoldersPane({ projectId }: Props) {
     fetchDataEffect();
   }, [folderId]);
 
-  const baseClass = "px-3 py-2 rounded-none";
+  const baseClass = "";
   const selectedClass = `${baseClass} bg-neutral-200 dark:bg-neutral-700`;
 
   return (
@@ -112,7 +112,7 @@ export default function FoldersPane({ projectId }: Props) {
         >
           New Folder
         </Button>
-        <Listbox aria-label="Listbox Variants" variant="light" className="p-0">
+        <Listbox aria-label="Listbox Variants" variant="light">
           {folders.map((folder, index) => (
             <ListboxItem
               key={index}

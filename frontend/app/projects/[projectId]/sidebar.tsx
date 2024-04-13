@@ -1,20 +1,20 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Listbox, ListboxItem } from "@nextui-org/react";
 import { Home, Files, FlaskConical } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import useGetCurrentIds from "@/utils/useGetCurrentIds";
 
 export default function Sidebar() {
   const { projectId } = useGetCurrentIds();
   const router = useRouter();
+  const pathname = usePathname();
 
   const [currentKey, setCurrentTab] = useState("home");
   const baseClass = "p-3 rounded-none";
-  const selectedClass = `${baseClass} bg-neutral-200 dark:bg-neutral-700`;
+  const selectedClass = `${baseClass} bg-neutral-200 dark:bg-neutral-700 border-l-3 border-neutral-800`;
 
   const handleTabClick = (key: string) => {
-    setCurrentTab(key);
     if (key === "home") {
       router.push(`/projects/${projectId}/home`);
     } else if (key === "cases") {
@@ -23,6 +23,20 @@ export default function Sidebar() {
       router.push(`/projects/${projectId}/runs`);
     }
   };
+
+  useEffect(() => {
+    const handleRouteChange = (currentPath: string) => {
+      if (currentPath.includes("home")) {
+        setCurrentTab("home");
+      } else if (currentPath.includes("folders")) {
+        setCurrentTab("cases");
+      } else if (currentPath.includes("runs")) {
+        setCurrentTab("runs");
+      }
+    };
+
+    handleRouteChange(pathname);
+  }, [pathname]);
 
   const tabItems = [
     {
