@@ -42,4 +42,11 @@ const testRunStatus = [
   { name: "Closed", uid: "closed" },
 ]
 
-export { priorities, testTypes, automationStatus, templates, testRunStatus };
+const testResult = [
+  { name: "Untested", uid: "untested", color: "primary" },
+  { name: "Passed", uid: "passed", color: "success" },
+  { name: "Failed", uid: "untested", color: "danger" },
+  { name: "Skipped", uid: "medium", color: "primary" },
+]
+
+export { priorities, testTypes, automationStatus, templates, testRunStatus, testResult };

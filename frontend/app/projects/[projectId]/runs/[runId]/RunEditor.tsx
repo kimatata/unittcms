@@ -29,6 +29,7 @@ import {
 import TestCaseSelector from "./TestCaseSelector";
 import { testRunStatus } from "@/config/selection";
 import { RunType } from "@/types/run";
+import { CaseType } from "@/types/case";
 import { FolderType } from "@/types/folder";
 import { fetchRun, updateRun } from "../runsControl";
 import { fetchFolders } from "../../folders/foldersControl";
@@ -61,8 +62,8 @@ export default function RunEditor({ projectId, runId }: Props) {
   useEffect(() => {
     async function fetchDataEffect() {
       try {
-        const caseData = await fetchRun(runId);
-        setTestRun(caseData);
+        const runData = await fetchRun(runId);
+        setTestRun(runData);
         const foldersData = await fetchFolders(projectId);
         setFolders(foldersData);
       } catch (error) {
@@ -78,6 +79,31 @@ export default function RunEditor({ projectId, runId }: Props) {
       if (selectedFolder && selectedFolder.id) {
         try {
           const testCasesData = await fetchCases(selectedFolder.id);
+
+          // Check if each testCase has an association with testRun
+          // and add "isIncluded" property
+          testCasesData.forEach((itr: CaseType) => {
+            // let included: boolean = testRun.Cases.some(
+            //   (testRun: RunType) => testRun.id === itr.id
+            // );
+
+            // itr.isIncluded = included;
+            // itr.result = included ?
+
+            let isIncluded: boolean = false;
+            let result: number = 0;
+
+            testRun.Cases.forEach((runCaseItr: CaseType) => {
+              if (runCaseItr.id === itr.id) {
+                isIncluded = true;
+                // result = runCaseItr.result;
+              }
+            });
+
+            itr.isIncluded = isIncluded;
+            // itr.result = result;
+          });
+
           setTestCases(testCasesData);
         } catch (error) {
           console.error("Error fetching cases data:", error.message);
@@ -89,7 +115,7 @@ export default function RunEditor({ projectId, runId }: Props) {
   }, [selectedFolder]);
 
   const onIncludeExcludeClick = async (mode: string) => {
-    console.log(mode)
+    console.log(mode);
     if (selectedKeys === "all") {
       const allKeys = testcases.map((item) => item.id);
       console.log(allKeys);

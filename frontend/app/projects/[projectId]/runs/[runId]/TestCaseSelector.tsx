@@ -16,16 +16,17 @@ import {
   SortDescriptor,
   Link,
 } from "@nextui-org/react";
-import { Plus, MoreVertical, Trash } from "lucide-react";
+import { MoreVertical } from "lucide-react";
+import { priorities, testResult } from "@/config/selection";
 
 const headerColumns = [
   { name: "ID", uid: "id", sortable: true },
   { name: "Title", uid: "title", sortable: true },
   { name: "Priority", uid: "priority", sortable: true },
+  { name: "isIncluded", uid: "isIncluded", sortable: true },
+  // { name: "Result", uid: "result", sortable: true },
   { name: "Actions", uid: "actions" },
 ];
-
-import { priorities } from "@/config/selection";
 
 type Case = {
   id: number;
@@ -39,6 +40,8 @@ type Case = {
   preConditions: string;
   expectedResults: string;
   folderId: number;
+  isIncluded: boolean; // additional property
+  result: number; // additional property
   createdAt: string;
   updatedAt: string;
 };
@@ -62,6 +65,7 @@ export default function TestCaseSelector({
   });
 
   const sortedItems = useMemo(() => {
+    console.log(cases)
     return [...cases].sort((a: Case, b: Case) => {
       const first = a[sortDescriptor.column as keyof Case] as number;
       const second = b[sortDescriptor.column as keyof Case] as number;
@@ -72,6 +76,7 @@ export default function TestCaseSelector({
   }, [sortDescriptor, cases]);
   const renderCell = useCallback((testCase: Case, columnKey: Key) => {
     const cellValue = testCase[columnKey as keyof Case];
+    // console.log(columnKey, cellValue)
 
     switch (columnKey) {
       case "id":
@@ -95,6 +100,20 @@ export default function TestCaseSelector({
             variant="dot"
           >
             {priorities[cellValue].name}
+          </Chip>
+        );
+      case "isIncluded":
+        const flag = cellValue ? "true" : "false"
+        return <span>{flag}</span>;
+      case "result":
+        return (
+          <Chip
+            className="border-none gap-1 text-default-600"
+            color={testResult[cellValue].color}
+            size="sm"
+            variant="dot"
+          >
+            {testResult[cellValue].name}
           </Chip>
         );
       case "actions":
@@ -137,8 +156,8 @@ export default function TestCaseSelector({
   );
 
   const handleSelectionChange = (keys: Selection) => {
-    onSelectionChange(keys)
-  }
+    onSelectionChange(keys);
+  };
 
   return (
     <>
