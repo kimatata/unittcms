@@ -1,6 +1,7 @@
 "use client";
 import React from "react";
 import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import {
   Button,
   Input,
@@ -11,9 +12,21 @@ import {
   Listbox,
   ListboxItem,
   Divider,
+  Selection,
+  DropdownTrigger,
+  Dropdown,
+  DropdownMenu,
+  DropdownItem,
 } from "@nextui-org/react";
-import { useRouter } from "next/navigation";
-import { Save, ArrowLeft, Folder } from "lucide-react";
+import {
+  Save,
+  ArrowLeft,
+  Folder,
+  ChevronDown,
+  CopyPlus,
+  CopyMinus,
+} from "lucide-react";
+import TestCaseSelector from "./TestCaseSelector";
 import { testRunStatus } from "@/config/selection";
 import { RunType } from "@/types/run";
 import { FolderType } from "@/types/folder";
@@ -38,8 +51,9 @@ type Props = {
 export default function RunEditor({ projectId, runId }: Props) {
   const [testRun, setTestRun] = useState<RunType>(defaultTestRun);
   const [folders, setFolders] = useState([]);
-  const [testcases, setTestCases] = useState([]);
+  const [selectedKeys, setSelectedKeys] = useState<Selection>(new Set([]));
   const [selectedFolder, setSelectedFolder] = useState<FolderType>({});
+  const [testcases, setTestCases] = useState([]);
   const [isNameInvalid, setIsNameInvalid] = useState<boolean>(false);
   const [isUpdating, setIsUpdating] = useState<boolean>(false);
   const router = useRouter();
@@ -73,6 +87,18 @@ export default function RunEditor({ projectId, runId }: Props) {
 
     fetchCasesData();
   }, [selectedFolder]);
+
+  const onIncludeExcludeClick = async (mode: string) => {
+    console.log(mode)
+    if (selectedKeys === "all") {
+      const allKeys = testcases.map((item) => item.id);
+      console.log(allKeys);
+    } else {
+      console.log([...selectedKeys]);
+    }
+
+    setSelectedKeys(new Set([]));
+  };
 
   const baseClass = "";
   const selectedClass = `${baseClass} bg-neutral-200 dark:bg-neutral-700`;
@@ -160,7 +186,41 @@ export default function RunEditor({ projectId, runId }: Props) {
         </div>
 
         <Divider className="my-6" />
-        <h6>Select test cases</h6>
+        <div className="flex items-center justify-between">
+          <h6 className="h-8">Select test cases</h6>
+          <div>
+            {selectedKeys.size > 0 || selectedKeys === "all" ? (
+              <Dropdown>
+                <DropdownTrigger>
+                  <Button
+                    size="sm"
+                    color="primary"
+                    endContent={<ChevronDown size={16} />}
+                  >
+                    Test case selection
+                  </Button>
+                </DropdownTrigger>
+                <DropdownMenu aria-label="test case select actions">
+                  <DropdownItem
+                    startContent={<CopyPlus size={16} />}
+                    onClick={() => onIncludeExcludeClick("include")}
+                  >
+                    Include in run
+                  </DropdownItem>
+                  <DropdownItem
+                    startContent={<CopyMinus size={16} />}
+                    onClick={() => onIncludeExcludeClick("exclude")}
+                  >
+                    Exclude from run
+                  </DropdownItem>
+                </DropdownMenu>
+              </Dropdown>
+            ) : (
+              <></>
+            )}
+          </div>
+        </div>
+
         <div className="mt-3 flex rounded-small border-2 dark:border-neutral-700">
           <div className="w-3/12 border-r-1 dark:border-neutral-700">
             <Listbox aria-label="Listbox Variants" variant="light">
@@ -182,10 +242,13 @@ export default function RunEditor({ projectId, runId }: Props) {
               ))}
             </Listbox>
           </div>
-          <div className="">
-            {testcases.map((testcase, index) => (
-              <div key={index}>{testcase.title}</div>
-            ))}
+          <div className="w-9/12">
+            <TestCaseSelector
+              projectId={projectId}
+              cases={testcases}
+              selectedKeys={selectedKeys}
+              onSelectionChange={setSelectedKeys}
+            />
           </div>
         </div>
       </div>
