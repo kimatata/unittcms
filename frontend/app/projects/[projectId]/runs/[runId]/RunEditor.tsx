@@ -82,26 +82,19 @@ export default function RunEditor({ projectId, runId }: Props) {
 
           // Check if each testCase has an association with testRun
           // and add "isIncluded" property
-          testCasesData.forEach((itr: CaseType) => {
-            // let included: boolean = testRun.Cases.some(
-            //   (testRun: RunType) => testRun.id === itr.id
-            // );
-
-            // itr.isIncluded = included;
-            // itr.result = included ?
-
+          testCasesData.forEach((caseItr: CaseType) => {
             let isIncluded: boolean = false;
-            let result: number = 0;
+            let runStatus: number = 0;
 
             testRun.Cases.forEach((runCaseItr: CaseType) => {
-              if (runCaseItr.id === itr.id) {
+              if (runCaseItr.id === caseItr.id) {
                 isIncluded = true;
-                // result = runCaseItr.result;
+                runStatus = runCaseItr.runCases.status;
               }
             });
 
-            itr.isIncluded = isIncluded;
-            // itr.result = result;
+            caseItr.isIncluded = isIncluded;
+            caseItr.runStatus = runStatus;
           });
 
           setTestCases(testCasesData);
@@ -160,7 +153,7 @@ export default function RunEditor({ projectId, runId }: Props) {
         </Button>
       </div>
 
-      <div className="container mx-auto max-w-3xl pt-6 px-6 flex-grow">
+      <div className="container mx-auto max-w-5xl pt-6 px-6 flex-grow">
         <h6>Basic</h6>
         <Input
           size="sm"

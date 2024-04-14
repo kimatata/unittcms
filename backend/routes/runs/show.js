@@ -22,6 +22,7 @@ module.exports = function (sequelize) {
         include: [
           {
             model: Case,
+            through: { attributes: ["status"] },
           },
         ],
       });

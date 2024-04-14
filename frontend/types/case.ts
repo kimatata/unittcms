@@ -10,8 +10,10 @@ type CaseType = {
   preConditions: string;
   expectedResults: string;
   folderId: number;
-  Steps: StepType[];
-  Attachments: AttachmentType[];
+  Steps: StepType[]; // additional property
+  Attachments: AttachmentType[]; // additional property
+  isIncluded: boolean; // additional property
+  runStatus: number; // additional property
 };
 
 type CaseStepType = {

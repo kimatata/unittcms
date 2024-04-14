@@ -17,38 +17,21 @@ import {
   Link,
 } from "@nextui-org/react";
 import { MoreVertical } from "lucide-react";
-import { priorities, testResult } from "@/config/selection";
+import { priorities, testRunCaseStatus } from "@/config/selection";
+import { CaseType } from "@/types/case";
 
 const headerColumns = [
   { name: "ID", uid: "id", sortable: true },
   { name: "Title", uid: "title", sortable: true },
   { name: "Priority", uid: "priority", sortable: true },
   { name: "isIncluded", uid: "isIncluded", sortable: true },
-  // { name: "Result", uid: "result", sortable: true },
+  { name: "Status", uid: "runStatus", sortable: true },
   { name: "Actions", uid: "actions" },
 ];
 
-type Case = {
-  id: number;
-  title: string;
-  state: number;
-  priority: number;
-  type: number;
-  automationStatus: number;
-  description: string;
-  template: number;
-  preConditions: string;
-  expectedResults: string;
-  folderId: number;
-  isIncluded: boolean; // additional property
-  result: number; // additional property
-  createdAt: string;
-  updatedAt: string;
-};
-
 type Props = {
   projectId: string;
-  cases: Case[];
+  cases: CaseType[];
   selectedKeys: Selection;
   onSelectionChange: React.Dispatch<React.SetStateAction<Selection>>;
 };
@@ -65,17 +48,16 @@ export default function TestCaseSelector({
   });
 
   const sortedItems = useMemo(() => {
-    console.log(cases)
-    return [...cases].sort((a: Case, b: Case) => {
-      const first = a[sortDescriptor.column as keyof Case] as number;
-      const second = b[sortDescriptor.column as keyof Case] as number;
+    return [...cases].sort((a: CaseType, b: CaseType) => {
+      const first = a[sortDescriptor.column as keyof CaseType] as number;
+      const second = b[sortDescriptor.column as keyof CaseType] as number;
       const cmp = first < second ? -1 : first > second ? 1 : 0;
 
       return sortDescriptor.direction === "descending" ? -cmp : cmp;
     });
   }, [sortDescriptor, cases]);
-  const renderCell = useCallback((testCase: Case, columnKey: Key) => {
-    const cellValue = testCase[columnKey as keyof Case];
+  const renderCell = useCallback((testCase: CaseType, columnKey: Key) => {
+    const cellValue = testCase[columnKey as keyof CaseType];
     // console.log(columnKey, cellValue)
 
     switch (columnKey) {
@@ -105,15 +87,15 @@ export default function TestCaseSelector({
       case "isIncluded":
         const flag = cellValue ? "true" : "false"
         return <span>{flag}</span>;
-      case "result":
+      case "runStatus":
         return (
           <Chip
             className="border-none gap-1 text-default-600"
-            color={testResult[cellValue].color}
+            color={testRunCaseStatus[cellValue].color}
             size="sm"
             variant="dot"
           >
-            {testResult[cellValue].name}
+            {testRunCaseStatus[cellValue].name}
           </Chip>
         );
       case "actions":
