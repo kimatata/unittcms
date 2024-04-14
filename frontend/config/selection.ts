@@ -43,7 +43,6 @@ const testRunStatus = [
 ]
 
 const testRunCaseStatus = [
-  { name: "Not included", uid: "notincluded", color: "primary" },
   { name: "Untested", uid: "untested", color: "primary" },
   { name: "Passed", uid: "passed", color: "success" },
   { name: "Failed", uid: "untested", color: "danger" },

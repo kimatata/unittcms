@@ -263,7 +263,6 @@ export default function RunEditor({ projectId, runId }: Props) {
           </div>
           <div className="w-9/12">
             <TestCaseSelector
-              projectId={projectId}
               cases={testcases}
               selectedKeys={selectedKeys}
               onSelectionChange={setSelectedKeys}

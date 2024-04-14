@@ -14,9 +14,8 @@ import {
   DropdownItem,
   Selection,
   SortDescriptor,
-  Link,
 } from "@nextui-org/react";
-import { MoreVertical } from "lucide-react";
+import { ChevronDown, MoreVertical } from "lucide-react";
 import { priorities, testRunCaseStatus } from "@/config/selection";
 import { CaseType } from "@/types/case";
 
@@ -24,20 +23,17 @@ const headerColumns = [
   { name: "ID", uid: "id", sortable: true },
   { name: "Title", uid: "title", sortable: true },
   { name: "Priority", uid: "priority", sortable: true },
-  { name: "isIncluded", uid: "isIncluded", sortable: true },
   { name: "Status", uid: "runStatus", sortable: true },
   { name: "Actions", uid: "actions" },
 ];
 
 type Props = {
-  projectId: string;
   cases: CaseType[];
   selectedKeys: Selection;
   onSelectionChange: React.Dispatch<React.SetStateAction<Selection>>;
 };
 
 export default function TestCaseSelector({
-  projectId,
   cases,
   selectedKeys,
   onSelectionChange,
@@ -56,27 +52,21 @@ export default function TestCaseSelector({
       return sortDescriptor.direction === "descending" ? -cmp : cmp;
     });
   }, [sortDescriptor, cases]);
+
+  const notIncludedCaseClass = "text-neutral-200 dark:text-neutral-600";
+  const chipBaseClass = "border-none gap-1 text-default-600";
+
   const renderCell = useCallback((testCase: CaseType, columnKey: Key) => {
     const cellValue = testCase[columnKey as keyof CaseType];
-    // console.log(columnKey, cellValue)
+    const isIncluded = testCase.isIncluded;
 
     switch (columnKey) {
-      case "id":
-        return <span>{cellValue}</span>;
-      case "title":
-        return (
-          <Link
-            underline="hover"
-            href={`/projects/${projectId}/folders/${testCase.folderId}/cases/${testCase.id}`}
-            className="dark:text-white"
-          >
-            {cellValue}
-          </Link>
-        );
       case "priority":
         return (
           <Chip
-            className="border-none gap-1 text-default-600"
+            className={
+              isIncluded ? chipBaseClass : chipBaseClass + notIncludedCaseClass
+            }
             color={priorities[cellValue].color}
             size="sm"
             variant="dot"
@@ -84,19 +74,27 @@ export default function TestCaseSelector({
             {priorities[cellValue].name}
           </Chip>
         );
-      case "isIncluded":
-        const flag = cellValue ? "true" : "false"
-        return <span>{flag}</span>;
       case "runStatus":
         return (
-          <Chip
-            className="border-none gap-1 text-default-600"
-            color={testRunCaseStatus[cellValue].color}
-            size="sm"
-            variant="dot"
-          >
-            {testRunCaseStatus[cellValue].name}
-          </Chip>
+          <Dropdown>
+            <DropdownTrigger>
+              <Button
+                size="sm"
+                variant="light"
+                isDisabled={!isIncluded}
+                endContent={isIncluded ? <ChevronDown size={16} /> : <></>}
+              >
+                {isIncluded ? testRunCaseStatus[cellValue].name : <></>}
+              </Button>
+            </DropdownTrigger>
+            <DropdownMenu aria-label="test case actions">
+              {testRunCaseStatus.map((runCaseStatus, index) => (
+                <DropdownItem key={index} onClick={() => {}}>
+                  {testRunCaseStatus[index].name}
+                </DropdownItem>
+              ))}
+            </DropdownMenu>
+          </Dropdown>
         );
       case "actions":
         return (
@@ -167,7 +165,10 @@ export default function TestCaseSelector({
         </TableHeader>
         <TableBody emptyContent={"No cases found"} items={sortedItems}>
           {(item) => (
-            <TableRow key={item.id}>
+            <TableRow
+              key={item.id}
+              className={!item.isIncluded ? notIncludedCaseClass : ""}
+            >
               {(columnKey) => (
                 <TableCell>{renderCell(item, columnKey)}</TableCell>
               )}
