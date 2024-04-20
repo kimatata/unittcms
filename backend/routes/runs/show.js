@@ -1,14 +1,14 @@
 const express = require("express");
 const router = express.Router();
 const defineRun = require("../../models/runs");
-const defineCase = require("../../models/cases");
+// const defineCase = require("../../models/cases");
 const { DataTypes } = require("sequelize");
 
 module.exports = function (sequelize) {
   const Run = defineRun(sequelize, DataTypes);
-  const Case = defineCase(sequelize, DataTypes);
-  Run.belongsToMany(Case, { through: "runCases" });
-  Case.belongsToMany(Run, { through: "runCases" });
+  // const Case = defineCase(sequelize, DataTypes);
+  // Run.belongsToMany(Case, { through: "runCases" });
+  // Case.belongsToMany(Run, { through: "runCases" });
 
   router.get("/:runId", async (req, res) => {
     const runId = req.params.runId;
@@ -18,14 +18,15 @@ module.exports = function (sequelize) {
     }
 
     try {
-      const project = await Run.findByPk(runId, {
-        include: [
-          {
-            model: Case,
-            through: { attributes: ["status"] },
-          },
-        ],
-      });
+      // const project = await Run.findByPk(runId, {
+      //   include: [
+      //     {
+      //       model: Case,
+      //       through: { attributes: ["status"] },
+      //     },
+      //   ],
+      // });
+      const project = await Run.findByPk(runId);
       if (!project) {
         return res.status(404).send("Run not found");
       }

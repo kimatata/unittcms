@@ -123,6 +123,28 @@ async function deleteRun(runId: number) {
   }
 }
 
+async function fetchRunCases(runId: string) {
+  const url = `${apiServer}/runcases?runId=${runId}`;
+
+  try {
+    const response = await fetch(url, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (error: any) {
+    console.error("Error fetching data:", error.message);
+  }
+}
+
 async function createRunCase(runId: string, caseId: number) {
   const fetchOptions = {
     method: "POST",
@@ -167,4 +189,4 @@ async function deleteRunCase(runId: string, caseId: number) {
   }
 }
 
-export { fetchRun, fetchRuns, createRun, updateRun, deleteRun, createRunCase, deleteRunCase };
+export { fetchRun, fetchRuns, createRun, updateRun, deleteRun, fetchRunCases, createRunCase, deleteRunCase };

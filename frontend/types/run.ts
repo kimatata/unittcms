@@ -1,4 +1,4 @@
-export type RunType = {
+type RunType = {
   id: number;
   name: string;
   configurations: number;
@@ -8,3 +8,12 @@ export type RunType = {
   createdAt: string;
   updatedAt: string;
 };
+
+type RunCaseType = {
+  id: number;
+  runId: number;
+  caseId: number;
+  status: number;
+};
+
+export { RunType, RunCaseType };

@@ -28,12 +28,13 @@ import {
 } from "lucide-react";
 import TestCaseSelector from "./TestCaseSelector";
 import { testRunStatus } from "@/config/selection";
-import { RunType } from "@/types/run";
+import { RunType, RunCaseType } from "@/types/run";
 import { CaseType } from "@/types/case";
 import { FolderType } from "@/types/folder";
 import {
   fetchRun,
   updateRun,
+  fetchRunCases,
   createRunCase,
   deleteRunCase,
 } from "../runsControl";
@@ -57,6 +58,7 @@ type Props = {
 export default function RunEditor({ projectId, runId }: Props) {
   const [testRun, setTestRun] = useState<RunType>(defaultTestRun);
   const [folders, setFolders] = useState([]);
+  const [runCases, setRunCases] = useState<RunCaseType[]>([]);
   const [selectedKeys, setSelectedKeys] = useState<Selection>(new Set([]));
   const [selectedFolder, setSelectedFolder] = useState<FolderType>({});
   const [testcases, setTestCases] = useState<CaseType[]>([]);
@@ -71,6 +73,8 @@ export default function RunEditor({ projectId, runId }: Props) {
         setTestRun(runData);
         const foldersData = await fetchFolders(projectId);
         setFolders(foldersData);
+        const runCasesData = await fetchRunCases(runId);
+        setRunCases(runCasesData);
       } catch (error: any) {
         console.error("Error in effect:", error.message);
       }
@@ -82,25 +86,23 @@ export default function RunEditor({ projectId, runId }: Props) {
   const fetchAndUpdateCases = async () => {
     try {
       const testCasesData = await fetchCases(selectedFolder.id);
-
       // Check if each testCase has an association with testRun
       // and add "isIncluded" property
-      testCasesData.forEach((caseItr: CaseType) => {
-        let isIncluded: boolean = false;
-        let runStatus: number = 0;
+      const updatedTestCasesData = testCasesData.map((testCase) => {
+        const runCase = runCases.find(
+          (runCase) => runCase.caseId === testCase.id
+        );
 
-        testRun.Cases.forEach((runCaseItr: CaseType) => {
-          if (runCaseItr.id === caseItr.id) {
-            isIncluded = true;
-            runStatus = runCaseItr.runCases.status;
-          }
-        });
-
-        caseItr.isIncluded = isIncluded;
-        caseItr.runStatus = runStatus;
+        const isIncluded = runCase ? true : false;
+        const runStatus = runCase ? runCase.status : 0;
+        return {
+          ...testCase,
+          isIncluded,
+          runStatus,
+        };
       });
 
-      setTestCases(testCasesData);
+      setTestCases(updatedTestCasesData);
     } catch (error: any) {
       console.error("Error fetching cases data:", error.message);
     }
@@ -109,6 +111,7 @@ export default function RunEditor({ projectId, runId }: Props) {
   useEffect(() => {
     async function fetchCasesData() {
       if (selectedFolder && selectedFolder.id) {
+        console.log("fetchCasesData")
         await fetchAndUpdateCases();
       }
     }
@@ -120,8 +123,9 @@ export default function RunEditor({ projectId, runId }: Props) {
     isInclude: boolean,
     clickedTestCaseId: number
   ) => {
+    let createdRunCase: RunCaseType;
     if (isInclude) {
-      await createRunCase(runId, clickedTestCaseId);
+      createdRunCase = await createRunCase(runId, clickedTestCaseId);
     } else {
       await deleteRunCase(runId, clickedTestCaseId);
     }
@@ -134,6 +138,18 @@ export default function RunEditor({ projectId, runId }: Props) {
         return testCase;
       });
     });
+
+    if (isInclude) {
+      setRunCases((prevRunCases) => {
+        return [...prevRunCases, createdRunCase];
+      });
+    } else {
+      setRunCases((prevRunCases) => {
+        return prevRunCases.filter(
+          (runCase) => runCase.caseId !== clickedTestCaseId
+        );
+      });
+    }
   };
 
   const onIncludeExcludeClick = async (mode: string) => {
