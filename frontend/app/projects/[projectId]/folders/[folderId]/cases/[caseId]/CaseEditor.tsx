@@ -153,7 +153,7 @@ export default function CaseEditor({
       try {
         const data = await fetchCase(params.caseId);
         setTestCase(data);
-      } catch (error) {
+      } catch (error: any) {
         console.error("Error in effect:", error.message);
       }
     }

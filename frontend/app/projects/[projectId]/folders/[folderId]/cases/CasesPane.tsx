@@ -15,7 +15,7 @@ export default function CasesPane({ projectId, folderId }: Props) {
       try {
         const data = await fetchCases(folderId);
         setCases(data);
-      } catch (error) {
+      } catch (error: any) {
         console.error("Error in effect:", error.message);
       }
     }

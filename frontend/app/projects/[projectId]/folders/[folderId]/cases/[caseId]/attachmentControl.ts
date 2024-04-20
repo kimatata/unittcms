@@ -29,7 +29,7 @@ async function fetchDownloadAttachment(
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
-  } catch (error) {
+  } catch (error: any) {
     console.error("Error downloading file:", error);
     throw error;
   }
@@ -54,7 +54,7 @@ async function fetchCreateAttachments(caseId: number, files: File[]) {
 
     const responseData = await response.json();
     return responseData;
-  } catch (error) {
+  } catch (error: any) {
     console.error("Error uploading files:", error);
   }
 }
@@ -74,7 +74,7 @@ async function fetchDeleteAttachment(attachmentId: number) {
     if (!response.ok) {
       throw new Error(`HTTP error! Status: ${response.status}`);
     }
-  } catch (error) {
+  } catch (error: any) {
     console.error("Error deleting file:", error);
     throw error;
   }

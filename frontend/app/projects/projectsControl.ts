@@ -21,7 +21,7 @@ async function fetchProjects() {
 
     const data = await response.json();
     return data;
-  } catch (error) {
+  } catch (error: any) {
     console.error("Error fetching data:", error.message);
   }
 }
@@ -52,7 +52,7 @@ async function createProject(name: string, detail: string) {
     }
     const data = await response.json();
     return data;
-  } catch (error) {
+  } catch (error: any) {
     console.error("Error creating new project:", error);
     throw error;
   }
@@ -84,7 +84,7 @@ async function updateProject(projectId: number, name: string, detail: string) {
     }
     const data = await response.json();
     return data;
-  } catch (error) {
+  } catch (error: any) {
     console.error("Error updating project:", error);
     throw error;
   }
@@ -108,7 +108,7 @@ async function deleteProject(projectId: number) {
     if (!response.ok) {
       throw new Error(`HTTP error! Status: ${response.status}`);
     }
-  } catch (error) {
+  } catch (error: any) {
     console.error("Error deleting project:", error);
     throw error;
   }

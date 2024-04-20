@@ -17,7 +17,7 @@ export default function RunsPage({ projectId }: Props) {
       try {
         const data = await fetchRuns(projectId);
         setRuns(data);
-      } catch (error) {
+      } catch (error: any) {
         console.error("Error in effect:", error.message);
       }
     }
@@ -31,7 +31,7 @@ export default function RunsPage({ projectId }: Props) {
       const updateRuns = [...runs];
       updateRuns.push(newRun);
       setRuns(updateRuns);
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error deleting run:", error);
     }
   };
@@ -41,7 +41,7 @@ export default function RunsPage({ projectId }: Props) {
       await deleteRun(runId);
       const data = await fetchRuns(projectId);
       setRuns(data);
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error deleting run:", error);
     }
   };

@@ -19,7 +19,7 @@ async function fetchRun(runId: string) {
 
     const data = await response.json();
     return data;
-  } catch (error) {
+  } catch (error: any) {
     console.error("Error fetching data:", error.message);
   }
 }
@@ -41,7 +41,7 @@ async function fetchRuns(projectId: string) {
 
     const data = await response.json();
     return data;
-  } catch (error) {
+  } catch (error: any) {
     console.error("Error fetching data:", error.message);
   }
 }
@@ -72,7 +72,7 @@ async function createRun(projectId: string) {
     }
     const data = await response.json();
     return data;
-  } catch (error) {
+  } catch (error: any) {
     console.error("Error creating new test run:", error);
     throw error;
   }
@@ -96,7 +96,7 @@ async function updateRun(updateTestRun: RunType) {
     }
     const data = await response.json();
     return data;
-  } catch (error) {
+  } catch (error: any) {
     console.error("Error updating run:", error);
     throw error;
   }
@@ -117,7 +117,7 @@ async function deleteRun(runId: number) {
     if (!response.ok) {
       throw new Error(`HTTP error! Status: ${response.status}`);
     }
-  } catch (error) {
+  } catch (error: any) {
     console.error("Error deleting run:", error);
     throw error;
   }
@@ -140,7 +140,7 @@ async function createRunCase(runId: string, caseId: number) {
     }
     const data = await response.json();
     return data;
-  } catch (error) {
+  } catch (error: any) {
     console.error("Error creating new runcase:", error);
     throw error;
   }
@@ -161,7 +161,7 @@ async function deleteRunCase(runId: string, caseId: number) {
     if (!response.ok) {
       throw new Error(`HTTP error! Status: ${response.status}`);
     }
-  } catch (error) {
+  } catch (error: any) {
     console.error("Error deleting runcase:", error);
     throw error;
   }

@@ -20,7 +20,7 @@ export default function ProjectsPage() {
       try {
         const data = await fetchProjects();
         setProjects(data);
-      } catch (error) {
+      } catch (error: any) {
         console.error("Error in effect:", error.message);
       }
     }
@@ -70,7 +70,7 @@ export default function ProjectsPage() {
     try {
       await deleteProject(projectId);
       setProjects(projects.filter((project) => project.id !== projectId));
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error deleting project:", error);
     }
   };

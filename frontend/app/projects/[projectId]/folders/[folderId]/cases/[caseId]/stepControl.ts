@@ -17,7 +17,7 @@ async function fetchCreateStep(newStepNo: number, parentCaseId: number) {
       throw new Error(`HTTP error! Status: ${response.status}`);
     }
     return await response.json();
-  } catch (error) {
+  } catch (error: any) {
     console.error("Error deleting project:", error);
     throw error;
   }
@@ -38,7 +38,7 @@ async function fetchDeleteStep(stepId: number, parentCaseId: number) {
     if (!response.ok) {
       throw new Error(`HTTP error! Status: ${response.status}`);
     }
-  } catch (error) {
+  } catch (error: any) {
     console.error("Error deleting project:", error);
     throw error;
   }

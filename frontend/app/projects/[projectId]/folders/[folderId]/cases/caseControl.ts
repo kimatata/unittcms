@@ -19,7 +19,7 @@ async function fetchCase(caseId: number) {
 
     const data = await response.json();
     return data;
-  } catch (error) {
+  } catch (error: any) {
     console.error("Error fetching data:", error.message);
   }
 }
@@ -41,7 +41,7 @@ async function fetchCases(folderId: string) {
 
     const data = await response.json();
     return data;
-  } catch (error) {
+  } catch (error: any) {
     console.error("Error fetching data:", error.message);
   }
 }
@@ -77,7 +77,7 @@ async function createCase(folderId: string) {
     }
     const data = await response.json();
     return data;
-  } catch (error) {
+  } catch (error: any) {
     console.error("Error creating case:", error);
     throw error;
   }
@@ -101,7 +101,7 @@ async function updateCase(updateCaseData: CaseType) {
     }
     const data = await response.json();
     return data;
-  } catch (error) {
+  } catch (error: any) {
     console.error("Error updating project:", error);
     throw error;
   }
@@ -122,7 +122,7 @@ async function deleteCase(caseId: number) {
     if (!response.ok) {
       throw new Error(`HTTP error! Status: ${response.status}`);
     }
-  } catch (error) {
+  } catch (error: any) {
     console.error("Error deleting case:", error);
     throw error;
   }
@@ -144,7 +144,7 @@ async function deleteCases(deleteCases: string[]) {
     if (!response.ok) {
       throw new Error(`HTTP error! Status: ${response.status}`);
     }
-  } catch (error) {
+  } catch (error: any) {
     console.error("Error deleting cases:", error);
     throw error;
   }

@@ -18,7 +18,7 @@ async function fetchProject(url) {
 
     const data = await response.json();
     return data;
-  } catch (error) {
+  } catch (error: any) {
     console.error("Error fetching data:", error.message);
   }
 }
@@ -39,7 +39,7 @@ export function Home({ projectId }: Props) {
         const data = await fetchProject(url);
         setProject(data);
         console.log(data);
-      } catch (error) {
+      } catch (error: any) {
         console.error("Error in effect:", error.message);
       }
     }

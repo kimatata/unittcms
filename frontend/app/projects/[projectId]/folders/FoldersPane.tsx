@@ -89,7 +89,7 @@ export default function FoldersPane({ projectId }: Props) {
             `/projects/${projectId}/folders/${smallestFolderId}/cases`
           );
         }
-      } catch (error) {
+      } catch (error: any) {
         console.error("Error in effect:", error.message);
       }
     }
