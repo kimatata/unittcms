@@ -112,14 +112,14 @@ export default function TestCaseSelector({
               <DropdownItem
                 startContent={<CopyPlus size={16} />}
                 isDisabled={testCase.isIncluded}
-                onClick={() => onIncludeCase(testCase.id)}
+                onPress={() => onIncludeCase(testCase.id)}
               >
                 Include in run
               </DropdownItem>
               <DropdownItem
                 startContent={<CopyMinus size={16} />}
                 isDisabled={!testCase.isIncluded}
-                onClick={() => {onExcludeCase(testCase.id)}}
+                onPress={() => onExcludeCase(testCase.id)}
               >
                 Exclude from run
               </DropdownItem>
