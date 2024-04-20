@@ -15,7 +15,7 @@ import {
   Selection,
   SortDescriptor,
 } from "@nextui-org/react";
-import { ChevronDown, MoreVertical } from "lucide-react";
+import { ChevronDown, MoreVertical, CopyPlus, CopyMinus } from "lucide-react";
 import { priorities, testRunCaseStatus } from "@/config/selection";
 import { CaseType } from "@/types/case";
 
@@ -31,12 +31,16 @@ type Props = {
   cases: CaseType[];
   selectedKeys: Selection;
   onSelectionChange: React.Dispatch<React.SetStateAction<Selection>>;
+  onIncludeCase: (includeCaseId: number) => {};
+  onExcludeCase: (excludeCaseId: number) => {};
 };
 
 export default function TestCaseSelector({
   cases,
   selectedKeys,
   onSelectionChange,
+  onIncludeCase,
+  onExcludeCase
 }: Props) {
   const [sortDescriptor, setSortDescriptor] = useState<SortDescriptor>({
     column: "id",
@@ -104,9 +108,20 @@ export default function TestCaseSelector({
                 <MoreVertical size={16} />
               </Button>
             </DropdownTrigger>
-            <DropdownMenu aria-label="test case actions">
-              <DropdownItem className="text-danger" onClick={() => {}}>
-                status change
+            <DropdownMenu aria-label="include or exclude actions">
+              <DropdownItem
+                startContent={<CopyPlus size={16} />}
+                isDisabled={testCase.isIncluded}
+                onClick={() => onIncludeCase(testCase.id)}
+              >
+                Include in run
+              </DropdownItem>
+              <DropdownItem
+                startContent={<CopyMinus size={16} />}
+                isDisabled={!testCase.isIncluded}
+                onClick={() => {onExcludeCase(testCase.id)}}
+              >
+                Exclude from run
               </DropdownItem>
             </DropdownMenu>
           </Dropdown>

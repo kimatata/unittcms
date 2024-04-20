@@ -89,6 +89,12 @@ app.use("/runs", runsNewRoute);
 app.use("/runs", runsEditRoute);
 app.use("/runs", runDeleteRoute);
 
+// "/runcases"
+const runCaseNewRoute = require("./routes/runcases/new")(sequelize);
+const runCaseDeleteRoute = require("./routes/runcases/delete")(sequelize);
+app.use("/runcases", runCaseNewRoute);
+app.use("/runcases", runCaseDeleteRoute);
+
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);

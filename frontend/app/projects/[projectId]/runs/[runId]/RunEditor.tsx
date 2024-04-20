@@ -31,7 +31,12 @@ import { testRunStatus } from "@/config/selection";
 import { RunType } from "@/types/run";
 import { CaseType } from "@/types/case";
 import { FolderType } from "@/types/folder";
-import { fetchRun, updateRun } from "../runsControl";
+import {
+  fetchRun,
+  updateRun,
+  createRunCase,
+  deleteRunCase,
+} from "../runsControl";
 import { fetchFolders } from "../../folders/foldersControl";
 import { fetchCases } from "../../folders/[folderId]/cases/caseControl";
 
@@ -74,33 +79,37 @@ export default function RunEditor({ projectId, runId }: Props) {
     fetchDataEffect();
   }, []);
 
+  const fetchAndUpdateCases = async () => {
+    try {
+      const testCasesData = await fetchCases(selectedFolder.id);
+
+      // Check if each testCase has an association with testRun
+      // and add "isIncluded" property
+      testCasesData.forEach((caseItr: CaseType) => {
+        let isIncluded: boolean = false;
+        let runStatus: number = 0;
+
+        testRun.Cases.forEach((runCaseItr: CaseType) => {
+          if (runCaseItr.id === caseItr.id) {
+            isIncluded = true;
+            runStatus = runCaseItr.runCases.status;
+          }
+        });
+
+        caseItr.isIncluded = isIncluded;
+        caseItr.runStatus = runStatus;
+      });
+
+      setTestCases(testCasesData);
+    } catch (error) {
+      console.error("Error fetching cases data:", error.message);
+    }
+  };
+
   useEffect(() => {
     async function fetchCasesData() {
       if (selectedFolder && selectedFolder.id) {
-        try {
-          const testCasesData = await fetchCases(selectedFolder.id);
-
-          // Check if each testCase has an association with testRun
-          // and add "isIncluded" property
-          testCasesData.forEach((caseItr: CaseType) => {
-            let isIncluded: boolean = false;
-            let runStatus: number = 0;
-
-            testRun.Cases.forEach((runCaseItr: CaseType) => {
-              if (runCaseItr.id === caseItr.id) {
-                isIncluded = true;
-                runStatus = runCaseItr.runCases.status;
-              }
-            });
-
-            caseItr.isIncluded = isIncluded;
-            caseItr.runStatus = runStatus;
-          });
-
-          setTestCases(testCasesData);
-        } catch (error) {
-          console.error("Error fetching cases data:", error.message);
-        }
+        await fetchAndUpdateCases();
       }
     }
 
@@ -117,6 +126,16 @@ export default function RunEditor({ projectId, runId }: Props) {
     }
 
     setSelectedKeys(new Set([]));
+  };
+
+  const handleIncludeCase = async (includeTestCaseId: number) => {
+    await createRunCase(runId, includeTestCaseId);
+    fetchAndUpdateCases();
+  };
+
+  const handleExcludeCase = async (excludeTestCaseId: number) => {
+    await deleteRunCase(runId, excludeTestCaseId);
+    fetchAndUpdateCases();
   };
 
   const baseClass = "";
@@ -224,13 +243,13 @@ export default function RunEditor({ projectId, runId }: Props) {
                     startContent={<CopyPlus size={16} />}
                     onClick={() => onIncludeExcludeClick("include")}
                   >
-                    Include in run
+                    Include selected cases in run
                   </DropdownItem>
                   <DropdownItem
                     startContent={<CopyMinus size={16} />}
                     onClick={() => onIncludeExcludeClick("exclude")}
                   >
-                    Exclude from run
+                    Exclude selected cases from run
                   </DropdownItem>
                 </DropdownMenu>
               </Dropdown>
@@ -266,6 +285,8 @@ export default function RunEditor({ projectId, runId }: Props) {
               cases={testcases}
               selectedKeys={selectedKeys}
               onSelectionChange={setSelectedKeys}
+              onIncludeCase={handleIncludeCase}
+              onExcludeCase={handleExcludeCase}
             />
           </div>
         </div>
