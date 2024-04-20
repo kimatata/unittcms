@@ -1,4 +1,4 @@
-import { useState, useMemo, useCallback } from "react";
+import { useState, useMemo } from "react";
 import {
   Table,
   TableHeader,
@@ -40,7 +40,7 @@ export default function TestCaseSelector({
   selectedKeys,
   onSelectionChange,
   onIncludeCase,
-  onExcludeCase
+  onExcludeCase,
 }: Props) {
   const [sortDescriptor, setSortDescriptor] = useState<SortDescriptor>({
     column: "id",
@@ -60,7 +60,7 @@ export default function TestCaseSelector({
   const notIncludedCaseClass = "text-neutral-200 dark:text-neutral-600";
   const chipBaseClass = "border-none gap-1 text-default-600";
 
-  const renderCell = useCallback((testCase: CaseType, columnKey: Key) => {
+  const renderCell = (testCase: CaseType, columnKey: Key) => {
     const cellValue = testCase[columnKey as keyof CaseType];
     const isIncluded = testCase.isIncluded;
 
@@ -129,7 +129,7 @@ export default function TestCaseSelector({
       default:
         return cellValue;
     }
-  }, []);
+  };
 
   const classNames = useMemo(
     () => ({

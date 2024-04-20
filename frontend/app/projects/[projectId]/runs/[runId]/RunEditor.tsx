@@ -59,7 +59,7 @@ export default function RunEditor({ projectId, runId }: Props) {
   const [folders, setFolders] = useState([]);
   const [selectedKeys, setSelectedKeys] = useState<Selection>(new Set([]));
   const [selectedFolder, setSelectedFolder] = useState<FolderType>({});
-  const [testcases, setTestCases] = useState([]);
+  const [testcases, setTestCases] = useState<CaseType[]>([]);
   const [isNameInvalid, setIsNameInvalid] = useState<boolean>(false);
   const [isUpdating, setIsUpdating] = useState<boolean>(false);
   const router = useRouter();
@@ -116,6 +116,26 @@ export default function RunEditor({ projectId, runId }: Props) {
     fetchCasesData();
   }, [selectedFolder]);
 
+  const handleIncludeExcludeCase = async (
+    isInclude: boolean,
+    clickedTestCaseId: number
+  ) => {
+    if (isInclude) {
+      await createRunCase(runId, clickedTestCaseId);
+    } else {
+      await deleteRunCase(runId, clickedTestCaseId);
+    }
+
+    setTestCases((prevTestCases) => {
+      return prevTestCases.map((testCase) => {
+        if (testCase.id === clickedTestCaseId) {
+          return { ...testCase, isIncluded: isInclude };
+        }
+        return testCase;
+      });
+    });
+  };
+
   const onIncludeExcludeClick = async (mode: string) => {
     console.log(mode);
     if (selectedKeys === "all") {
@@ -126,16 +146,6 @@ export default function RunEditor({ projectId, runId }: Props) {
     }
 
     setSelectedKeys(new Set([]));
-  };
-
-  const handleIncludeCase = async (includeTestCaseId: number) => {
-    await createRunCase(runId, includeTestCaseId);
-    fetchAndUpdateCases();
-  };
-
-  const handleExcludeCase = async (excludeTestCaseId: number) => {
-    await deleteRunCase(runId, excludeTestCaseId);
-    fetchAndUpdateCases();
   };
 
   const baseClass = "";
@@ -285,8 +295,12 @@ export default function RunEditor({ projectId, runId }: Props) {
               cases={testcases}
               selectedKeys={selectedKeys}
               onSelectionChange={setSelectedKeys}
-              onIncludeCase={handleIncludeCase}
-              onExcludeCase={handleExcludeCase}
+              onIncludeCase={(includeTestId) =>
+                handleIncludeExcludeCase(true, includeTestId)
+              }
+              onExcludeCase={(excludeCaseId) =>
+                handleIncludeExcludeCase(false, excludeCaseId)
+              }
             />
           </div>
         </div>
