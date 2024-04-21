@@ -37,12 +37,14 @@ module.exports = {
       },
       {
         name: "Folder 2",
+        detail: "",
         projectId: 1,
         createdAt: new Date(),
         updatedAt: new Date(),
       },
       {
         name: "Folder 3",
+        detail: "",
         projectId: 1,
         createdAt: new Date(),
         updatedAt: new Date(),
