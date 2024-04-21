@@ -36,6 +36,7 @@ import {
   updateRun,
   fetchRunCases,
   createRunCase,
+  updateRunCase,
   bulkCreateRunCases,
   deleteRunCase,
   bulkDeleteRunCases,
@@ -117,6 +118,18 @@ export default function RunEditor({ projectId, runId }: Props) {
     fetchCasesData();
   }, [selectedFolder]);
 
+  const handleChangeStatus = async (changeCaseId: number, status: number) => {
+    await updateRunCase(runId, changeCaseId, status);
+    setTestCases((prevTestCases) => {
+      return prevTestCases.map((testCase) => {
+        if (testCase.id === changeCaseId) {
+          return { ...testCase, runStatus: status };
+        }
+        return testCase;
+      });
+    });
+  };
+
   const handleIncludeExcludeCase = async (
     isInclude: boolean,
     clickedTestCaseId: number
@@ -152,7 +165,6 @@ export default function RunEditor({ projectId, runId }: Props) {
     } else {
       keys = Array.from(selectedKeys).map(Number);
     }
-    console.log(keys)
 
     const runCaseInfo: RunCaseInfoType[] = keys.map((caseId) => ({
       runId: runId,
@@ -170,14 +182,13 @@ export default function RunEditor({ projectId, runId }: Props) {
       });
     }
 
-    setTestCases((prevTestCases) => {
-      return prevTestCases.map((testCase) => {
-        const isCaseIncluded = isInclude
-          ? keys.includes(testCase.id)
-          : !keys.includes(testCase.id);
-        return { ...testCase, isIncluded: isCaseIncluded };
-      });
+    const updatedTestCases = testcases.map((testcase) => {
+      if (keys.includes(testcase.id)) {
+        return { ...testcase, isIncluded: isInclude };
+      }
+      return testcase;
     });
+    setTestCases(updatedTestCases);
 
     setSelectedKeys(new Set([]));
   };
@@ -329,6 +340,7 @@ export default function RunEditor({ projectId, runId }: Props) {
               cases={testcases}
               selectedKeys={selectedKeys}
               onSelectionChange={setSelectedKeys}
+              onStatusChange={handleChangeStatus}
               onIncludeCase={(includeTestId) =>
                 handleIncludeExcludeCase(true, includeTestId)
               }

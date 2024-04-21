@@ -40,6 +40,7 @@ type Props = {
   cases: CaseType[];
   selectedKeys: Selection;
   onSelectionChange: React.Dispatch<React.SetStateAction<Selection>>;
+  onStatusChange: (changeCaseId: number, status: number) => {};
   onIncludeCase: (includeCaseId: number) => {};
   onExcludeCase: (excludeCaseId: number) => {};
 };
@@ -48,6 +49,7 @@ export default function TestCaseSelector({
   cases,
   selectedKeys,
   onSelectionChange,
+  onStatusChange,
   onIncludeCase,
   onExcludeCase,
 }: Props) {
@@ -121,7 +123,7 @@ export default function TestCaseSelector({
                 <DropdownItem
                   key={index}
                   startContent={renderStatusIcon(runCaseStatus.uid)}
-                  onClick={() => {}}
+                  onPress={() => onStatusChange(testCase.id, index)}
                 >
                   {runCaseStatus.name}
                 </DropdownItem>

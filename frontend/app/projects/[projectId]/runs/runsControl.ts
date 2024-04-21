@@ -168,13 +168,36 @@ async function createRunCase(runId: string, caseId: number) {
   }
 }
 
+async function updateRunCase(runId: string, caseId: number, status: number) {
+  const fetchOptions = {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  };
+
+  const url = `${apiServer}/runcases?runId=${runId}&caseId=${caseId}&status=${status}`;
+
+  try {
+    const response = await fetch(url, fetchOptions);
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+    const data = await response.json();
+    return data;
+  } catch (error: any) {
+    console.error("Error updating runcase:", error);
+    throw error;
+  }
+}
+
 async function bulkCreateRunCases(runCaseInfo: RunCaseInfoType[]) {
   const fetchOptions = {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify(runCaseInfo)
+    body: JSON.stringify(runCaseInfo),
   };
 
   const url = `${apiServer}/runcases/bulknew`;
@@ -219,7 +242,7 @@ async function bulkDeleteRunCases(runCaseInfo: RunCaseInfoType[]) {
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify(runCaseInfo)
+    body: JSON.stringify(runCaseInfo),
   };
 
   const url = `${apiServer}/runcases/bulkdelete`;
@@ -243,6 +266,7 @@ export {
   deleteRun,
   fetchRunCases,
   createRunCase,
+  updateRunCase,
   bulkCreateRunCases,
   deleteRunCase,
   bulkDeleteRunCases,

@@ -92,11 +92,13 @@ app.use("/runs", runDeleteRoute);
 // "/runcases"
 const runCaseIndexRoute = require("./routes/runcases/index")(sequelize);
 const runCaseNewRoute = require("./routes/runcases/new")(sequelize);
+const runCaseEditRoute = require("./routes/runcases/edit")(sequelize);
 const runCaseBuldNewRoute = require("./routes/runcases/bulkNew")(sequelize);
 const runCaseDeleteRoute = require("./routes/runcases/delete")(sequelize);
 const runCaseBulkDeleteRoute = require("./routes/runcases/bulkDelete")(sequelize);
 app.use("/runcases", runCaseIndexRoute);
 app.use("/runcases", runCaseNewRoute);
+app.use("/runcases", runCaseEditRoute);
 app.use("/runcases", runCaseBuldNewRoute);
 app.use("/runcases", runCaseDeleteRoute);
 app.use("/runcases", runCaseBulkDeleteRoute);
