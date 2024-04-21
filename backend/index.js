@@ -92,10 +92,14 @@ app.use("/runs", runDeleteRoute);
 // "/runcases"
 const runCaseIndexRoute = require("./routes/runcases/index")(sequelize);
 const runCaseNewRoute = require("./routes/runcases/new")(sequelize);
+const runCaseBuldNewRoute = require("./routes/runcases/bulkNew")(sequelize);
 const runCaseDeleteRoute = require("./routes/runcases/delete")(sequelize);
+const runCaseBulkDeleteRoute = require("./routes/runcases/bulkDelete")(sequelize);
 app.use("/runcases", runCaseIndexRoute);
 app.use("/runcases", runCaseNewRoute);
+app.use("/runcases", runCaseBuldNewRoute);
 app.use("/runcases", runCaseDeleteRoute);
+app.use("/runcases", runCaseBulkDeleteRoute);
 
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {

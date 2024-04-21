@@ -16,4 +16,9 @@ type RunCaseType = {
   status: number;
 };
 
-export { RunType, RunCaseType };
+type RunCaseInfoType = {
+  runId: number;
+  caseId: number;
+}
+
+export { RunType, RunCaseType, RunCaseInfoType };

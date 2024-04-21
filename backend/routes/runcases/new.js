@@ -11,6 +11,18 @@ module.exports = function (sequelize) {
     const caseId = req.query.caseId;
 
     try {
+      // Check if the record already exists
+      const existingRunCase = await RunCase.findOne({
+        where: {
+          runId: runId,
+          caseId: caseId
+        }
+      });
+
+      if (existingRunCase) {
+        return res.status(400).send("Record already exists");
+      }
+
       const newRunCase = await RunCase.create(
         {
           runId: runId,

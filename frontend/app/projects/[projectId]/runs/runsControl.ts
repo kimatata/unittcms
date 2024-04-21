@@ -1,6 +1,6 @@
 import Config from "@/config/config";
 const apiServer = Config.apiServer;
-import { RunType } from "@/types/run";
+import { RunType, RunCaseInfoType } from "@/types/run";
 
 async function fetchRun(runId: string) {
   const url = `${apiServer}/runs/${runId}`;
@@ -168,6 +168,30 @@ async function createRunCase(runId: string, caseId: number) {
   }
 }
 
+async function bulkCreateRunCases(runCaseInfo: RunCaseInfoType[]) {
+  const fetchOptions = {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(runCaseInfo)
+  };
+
+  const url = `${apiServer}/runcases/bulknew`;
+
+  try {
+    const response = await fetch(url, fetchOptions);
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+    const data = await response.json();
+    return data;
+  } catch (error: any) {
+    console.error("Error creating new runcase:", error);
+    throw error;
+  }
+}
+
 async function deleteRunCase(runId: string, caseId: number) {
   const fetchOptions = {
     method: "DELETE",
@@ -189,4 +213,37 @@ async function deleteRunCase(runId: string, caseId: number) {
   }
 }
 
-export { fetchRun, fetchRuns, createRun, updateRun, deleteRun, fetchRunCases, createRunCase, deleteRunCase };
+async function bulkDeleteRunCases(runCaseInfo: RunCaseInfoType[]) {
+  const fetchOptions = {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(runCaseInfo)
+  };
+
+  const url = `${apiServer}/runcases/bulkdelete`;
+
+  try {
+    const response = await fetch(url, fetchOptions);
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+  } catch (error: any) {
+    console.error("Error deleting runcase:", error);
+    throw error;
+  }
+}
+
+export {
+  fetchRun,
+  fetchRuns,
+  createRun,
+  updateRun,
+  deleteRun,
+  fetchRunCases,
+  createRunCase,
+  bulkCreateRunCases,
+  deleteRunCase,
+  bulkDeleteRunCases,
+};

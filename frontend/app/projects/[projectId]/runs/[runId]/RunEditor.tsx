@@ -28,7 +28,7 @@ import {
 } from "lucide-react";
 import TestCaseSelector from "./TestCaseSelector";
 import { testRunStatus } from "@/config/selection";
-import { RunType, RunCaseType } from "@/types/run";
+import { RunType, RunCaseType, RunCaseInfoType } from "@/types/run";
 import { CaseType } from "@/types/case";
 import { FolderType } from "@/types/folder";
 import {
@@ -36,7 +36,9 @@ import {
   updateRun,
   fetchRunCases,
   createRunCase,
+  bulkCreateRunCases,
   deleteRunCase,
+  bulkDeleteRunCases
 } from "../runsControl";
 import { fetchFolders } from "../../folders/foldersControl";
 import { fetchCases } from "../../folders/[folderId]/cases/caseControl";
@@ -148,13 +150,23 @@ export default function RunEditor({ projectId, runId }: Props) {
     }
   };
 
-  const onIncludeExcludeClick = async (mode: string) => {
-    console.log(mode);
+  const onIncludeExcludeClick = async (isInclude: boolean) => {
+    let keys = [];
     if (selectedKeys === "all") {
-      const allKeys = testcases.map((item) => item.id);
-      console.log(allKeys);
+      keys = testcases.map((item) => item.id);
     } else {
-      console.log([...selectedKeys]);
+      keys = testcases
+    }
+
+    const runCaseInfo: RunCaseInfoType[] = keys.map((caseId) => ({
+      runId: runId,
+      caseId: caseId,
+    }));
+    if (isInclude) {
+      const createdRunCases = await bulkCreateRunCases(runCaseInfo);
+      console.log(createdRunCases)
+    } else {
+      await bulkDeleteRunCases(runCaseInfo);
     }
 
     setSelectedKeys(new Set([]));
@@ -263,13 +275,13 @@ export default function RunEditor({ projectId, runId }: Props) {
                 <DropdownMenu aria-label="test case select actions">
                   <DropdownItem
                     startContent={<CopyPlus size={16} />}
-                    onClick={() => onIncludeExcludeClick("include")}
+                    onClick={() => onIncludeExcludeClick(true)}
                   >
                     Include selected cases in run
                   </DropdownItem>
                   <DropdownItem
                     startContent={<CopyMinus size={16} />}
-                    onClick={() => onIncludeExcludeClick("exclude")}
+                    onClick={() => onIncludeExcludeClick(false)}
                   >
                     Exclude selected cases from run
                   </DropdownItem>
