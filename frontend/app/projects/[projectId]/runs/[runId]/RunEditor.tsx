@@ -73,8 +73,6 @@ export default function RunEditor({ projectId, runId }: Props) {
         setTestRun(runData);
         const foldersData = await fetchFolders(projectId);
         setFolders(foldersData);
-        const runCasesData = await fetchRunCases(runId);
-        setRunCases(runCasesData);
       } catch (error: any) {
         console.error("Error in effect:", error.message);
       }
@@ -83,36 +81,34 @@ export default function RunEditor({ projectId, runId }: Props) {
     fetchDataEffect();
   }, []);
 
-  const fetchAndUpdateCases = async () => {
-    try {
-      const testCasesData = await fetchCases(selectedFolder.id);
-      // Check if each testCase has an association with testRun
-      // and add "isIncluded" property
-      const updatedTestCasesData = testCasesData.map((testCase) => {
-        const runCase = runCases.find(
-          (runCase) => runCase.caseId === testCase.id
-        );
-
-        const isIncluded = runCase ? true : false;
-        const runStatus = runCase ? runCase.status : 0;
-        return {
-          ...testCase,
-          isIncluded,
-          runStatus,
-        };
-      });
-
-      setTestCases(updatedTestCasesData);
-    } catch (error: any) {
-      console.error("Error fetching cases data:", error.message);
-    }
-  };
-
   useEffect(() => {
     async function fetchCasesData() {
       if (selectedFolder && selectedFolder.id) {
-        console.log("fetchCasesData")
-        await fetchAndUpdateCases();
+        try {
+          const latestRunCases = await fetchRunCases(runId);
+          setRunCases(latestRunCases);
+
+          const testCasesData = await fetchCases(selectedFolder.id);
+          // Check if each testCase has an association with testRun
+          // and add "isIncluded" property
+          const updatedTestCasesData = testCasesData.map((testCase) => {
+            const runCase = latestRunCases.find(
+              (runCase) => runCase.caseId === testCase.id
+            );
+
+            const isIncluded = runCase ? true : false;
+            const runStatus = runCase ? runCase.status : 0;
+            return {
+              ...testCase,
+              isIncluded,
+              runStatus,
+            };
+          });
+
+          setTestCases(updatedTestCasesData);
+        } catch (error: any) {
+          console.error("Error fetching cases data:", error.message);
+        }
       }
     }
 
