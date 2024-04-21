@@ -19,16 +19,10 @@ module.exports = function (sequelize) {
         },
       });
 
-      console.log("######bulkDelete")
-      console.log(recordsToDelete)
-
       if (existingRunCases.length === 0) {
         return res.status(400).send("No records found to delete");
       }
 
-      // await RunCase.destroy({
-      //   where: recordsToDelete,
-      // });
       await RunCase.destroy({
         where: {
           [Op.or]: recordsToDelete.map((condition) => ({

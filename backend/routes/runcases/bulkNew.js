@@ -23,11 +23,11 @@ module.exports = function (sequelize) {
       const recordsToCreateFiltered = recordsToCreate.filter((record) => {
         return !existingRunCases.some(
           (existingRecord) =>
-            existingRecord.runId === record.runId &&
-            existingRecord.caseId === record.caseId
+            existingRecord.runId == record.runId &&
+            existingRecord.caseId == record.caseId
         );
       });
-      console.log(recordsToCreateFiltered)
+
       const newRunCases = await RunCase.bulkCreate(
         recordsToCreateFiltered.map((record) => ({
           runId: record.runId,
