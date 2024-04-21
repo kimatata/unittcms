@@ -20,7 +20,7 @@ module.exports = function (sequelize) {
       });
 
       if (existingRunCases.length === 0) {
-        return res.status(400).send("No records found to delete");
+        return res.status(200).send("No records found to delete");
       }
 
       await RunCase.destroy({

@@ -38,7 +38,7 @@ import {
   createRunCase,
   bulkCreateRunCases,
   deleteRunCase,
-  bulkDeleteRunCases
+  bulkDeleteRunCases,
 } from "../runsControl";
 import { fetchFolders } from "../../folders/foldersControl";
 import { fetchCases } from "../../folders/[folderId]/cases/caseControl";
@@ -121,11 +121,18 @@ export default function RunEditor({ projectId, runId }: Props) {
     isInclude: boolean,
     clickedTestCaseId: number
   ) => {
-    let createdRunCase: RunCaseType;
     if (isInclude) {
-      createdRunCase = await createRunCase(runId, clickedTestCaseId);
+      const createdRunCase = await createRunCase(runId, clickedTestCaseId);
+      setRunCases((prevRunCases) => {
+        return [...prevRunCases, createdRunCase];
+      });
     } else {
       await deleteRunCase(runId, clickedTestCaseId);
+      setRunCases((prevRunCases) => {
+        return prevRunCases.filter(
+          (runCase) => runCase.caseId !== clickedTestCaseId
+        );
+      });
     }
 
     setTestCases((prevTestCases) => {
@@ -136,27 +143,16 @@ export default function RunEditor({ projectId, runId }: Props) {
         return testCase;
       });
     });
-
-    if (isInclude) {
-      setRunCases((prevRunCases) => {
-        return [...prevRunCases, createdRunCase];
-      });
-    } else {
-      setRunCases((prevRunCases) => {
-        return prevRunCases.filter(
-          (runCase) => runCase.caseId !== clickedTestCaseId
-        );
-      });
-    }
   };
 
-  const onIncludeExcludeClick = async (isInclude: boolean) => {
-    let keys = [];
+  const handleBulkIncludeExcludeCases = async (isInclude: boolean) => {
+    let keys: number[] = [];
     if (selectedKeys === "all") {
       keys = testcases.map((item) => item.id);
     } else {
-      keys = testcases
+      keys = Array.from(selectedKeys).map(Number);
     }
+    console.log(keys)
 
     const runCaseInfo: RunCaseInfoType[] = keys.map((caseId) => ({
       runId: runId,
@@ -164,10 +160,24 @@ export default function RunEditor({ projectId, runId }: Props) {
     }));
     if (isInclude) {
       const createdRunCases = await bulkCreateRunCases(runCaseInfo);
-      console.log(createdRunCases)
+      setRunCases((prevRunCases) => [...prevRunCases, ...createdRunCases]);
     } else {
       await bulkDeleteRunCases(runCaseInfo);
+      setRunCases((prevRunCases) => {
+        return prevRunCases.filter((runCase) => {
+          return !runCaseInfo.some((info) => info.caseId === runCase.caseId);
+        });
+      });
     }
+
+    setTestCases((prevTestCases) => {
+      return prevTestCases.map((testCase) => {
+        const isCaseIncluded = isInclude
+          ? keys.includes(testCase.id)
+          : !keys.includes(testCase.id);
+        return { ...testCase, isIncluded: isCaseIncluded };
+      });
+    });
 
     setSelectedKeys(new Set([]));
   };
@@ -275,13 +285,13 @@ export default function RunEditor({ projectId, runId }: Props) {
                 <DropdownMenu aria-label="test case select actions">
                   <DropdownItem
                     startContent={<CopyPlus size={16} />}
-                    onClick={() => onIncludeExcludeClick(true)}
+                    onClick={() => handleBulkIncludeExcludeCases(true)}
                   >
                     Include selected cases in run
                   </DropdownItem>
                   <DropdownItem
                     startContent={<CopyMinus size={16} />}
-                    onClick={() => onIncludeExcludeClick(false)}
+                    onClick={() => handleBulkIncludeExcludeCases(false)}
                   >
                     Exclude selected cases from run
                   </DropdownItem>
