@@ -15,7 +15,16 @@ import {
   Selection,
   SortDescriptor,
 } from "@nextui-org/react";
-import { ChevronDown, MoreVertical, CopyPlus, CopyMinus } from "lucide-react";
+import {
+  ChevronDown,
+  MoreVertical,
+  CopyPlus,
+  CopyMinus,
+  Circle,
+  CircleCheck,
+  CircleX,
+  CircleSlash2
+} from "lucide-react";
 import { priorities, testRunCaseStatus } from "@/config/selection";
 import { CaseType } from "@/types/case";
 
@@ -60,6 +69,18 @@ export default function TestCaseSelector({
   const notIncludedCaseClass = "text-neutral-200 dark:text-neutral-600";
   const chipBaseClass = "border-none gap-1 text-default-600";
 
+  const renderStatusIcon = (uid: string) => {
+    if (uid === "untested") {
+      return <Circle size={16} color="#d4d4d8"/>;
+    } else if (uid === "passed") {
+      return <CircleCheck size={16} color="#17c964" />;
+    } else if (uid === "failed") {
+      return <CircleX size={16} color="#f31260" />;
+    } else if (uid === "skipped") {
+      return <CircleSlash2 size={16} color="#d4d4d8" />;
+    }
+  };
+
   const renderCell = (testCase: CaseType, columnKey: Key) => {
     const cellValue = testCase[columnKey as keyof CaseType];
     const isIncluded = testCase.isIncluded;
@@ -86,15 +107,23 @@ export default function TestCaseSelector({
                 size="sm"
                 variant="light"
                 isDisabled={!isIncluded}
-                endContent={isIncluded ? <ChevronDown size={16} /> : <></>}
+                startContent={
+                  isIncluded &&
+                  renderStatusIcon(testRunCaseStatus[cellValue].uid)
+                }
+                endContent={isIncluded && <ChevronDown size={16} />}
               >
-                {isIncluded ? testRunCaseStatus[cellValue].name : <></>}
+                {isIncluded && testRunCaseStatus[cellValue].name}
               </Button>
             </DropdownTrigger>
             <DropdownMenu aria-label="test case actions">
               {testRunCaseStatus.map((runCaseStatus, index) => (
-                <DropdownItem key={index} onClick={() => {}}>
-                  {testRunCaseStatus[index].name}
+                <DropdownItem
+                  key={index}
+                  startContent={renderStatusIcon(runCaseStatus.uid)}
+                  onClick={() => {}}
+                >
+                  {runCaseStatus.name}
                 </DropdownItem>
               ))}
             </DropdownMenu>

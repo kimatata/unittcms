@@ -40,13 +40,20 @@ const testRunStatus = [
   { name: "Rejected", uid: "rejected" },
   { name: "Done", uid: "done" },
   { name: "Closed", uid: "closed" },
-]
+];
 
 const testRunCaseStatus = [
   { name: "Untested", uid: "untested", color: "primary" },
   { name: "Passed", uid: "passed", color: "success" },
-  { name: "Failed", uid: "untested", color: "danger" },
-  { name: "Skipped", uid: "medium", color: "primary" },
-]
+  { name: "Failed", uid: "failed", color: "danger" },
+  { name: "Skipped", uid: "skipped", color: "primary" },
+];
 
-export { priorities, testTypes, automationStatus, templates, testRunStatus, testRunCaseStatus };
+export {
+  priorities,
+  testTypes,
+  automationStatus,
+  templates,
+  testRunStatus,
+  testRunCaseStatus,
+};
