@@ -7,7 +7,6 @@ import {
   TableRow,
   TableCell,
   Button,
-  Chip,
   DropdownTrigger,
   Dropdown,
   DropdownMenu,
@@ -23,7 +22,7 @@ import {
   Circle,
   CircleCheck,
   CircleX,
-  CircleSlash2
+  CircleSlash2,
 } from "lucide-react";
 import { priorities, testRunCaseStatus } from "@/config/selection";
 import { CaseType } from "@/types/case";
@@ -69,11 +68,11 @@ export default function TestCaseSelector({
   }, [sortDescriptor, cases]);
 
   const notIncludedCaseClass = "text-neutral-200 dark:text-neutral-600";
-  const chipBaseClass = "border-none gap-1 text-default-600";
+  const chipBaseClass = "flex items-center text-default-600";
 
   const renderStatusIcon = (uid: string) => {
     if (uid === "untested") {
-      return <Circle size={16} color="#d4d4d8"/>;
+      return <Circle size={16} color="#d4d4d8" />;
     } else if (uid === "passed") {
       return <CircleCheck size={16} color="#17c964" />;
     } else if (uid === "failed") {
@@ -90,16 +89,18 @@ export default function TestCaseSelector({
     switch (columnKey) {
       case "priority":
         return (
-          <Chip
+          <div
             className={
               isIncluded ? chipBaseClass : chipBaseClass + notIncludedCaseClass
             }
-            color={priorities[cellValue].color}
-            size="sm"
-            variant="dot"
           >
-            {priorities[cellValue].name}
-          </Chip>
+            <Circle
+              size={8}
+              color={isIncluded ? priorities[cellValue].color : "#d4d4d8"}
+              fill={isIncluded ? priorities[cellValue].color : "#d4d4d8"}
+            />
+            <div className="ms-3">{priorities[cellValue].name}</div>
+          </div>
         );
       case "runStatus":
         return (
@@ -115,7 +116,9 @@ export default function TestCaseSelector({
                 }
                 endContent={isIncluded && <ChevronDown size={16} />}
               >
-                {isIncluded && testRunCaseStatus[cellValue].name}
+                <span className="w-12">
+                  {isIncluded && testRunCaseStatus[cellValue].name}
+                </span>
               </Button>
             </DropdownTrigger>
             <DropdownMenu aria-label="test case actions">

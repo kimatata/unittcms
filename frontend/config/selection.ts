@@ -1,8 +1,8 @@
 const priorities = [
-  { name: "Critical", uid: "critical", color: "danger" },
-  { name: "High", uid: "high", color: "warning" },
-  { name: "Medium", uid: "medium", color: "secondary" },
-  { name: "Low", uid: "low", color: "success" },
+  { name: "Critical", uid: "critical", color: "#d00002" },
+  { name: "High", uid: "high", color: "#ee6b4e" },
+  { name: "Medium", uid: "medium", color: "#fccb69" },
+  { name: "Low", uid: "low", color: "#0b62e8" },
 ];
 
 const testTypes = [
