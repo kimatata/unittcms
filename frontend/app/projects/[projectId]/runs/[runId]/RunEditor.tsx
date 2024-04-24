@@ -76,6 +76,7 @@ export default function RunEditor({ projectId, runId }: Props) {
         setTestRun(runData);
         const foldersData = await fetchFolders(projectId);
         setFolders(foldersData);
+        setSelectedFolder(foldersData[0]);
       } catch (error: any) {
         console.error("Error in effect:", error.message);
       }
