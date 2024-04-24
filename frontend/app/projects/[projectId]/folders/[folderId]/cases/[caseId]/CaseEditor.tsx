@@ -5,13 +5,12 @@ import {
   Textarea,
   Select,
   SelectItem,
-  Chip,
   Button,
   Divider,
   Tooltip,
 } from "@nextui-org/react";
 import { useRouter } from "next/navigation";
-import { Save, Plus, ArrowLeft, ArrowUpFromLine } from "lucide-react";
+import { Save, Plus, ArrowLeft, ArrowUpFromLine, Circle } from "lucide-react";
 import { priorities, testTypes, templates } from "@/config/selection";
 import CaseStepsEditor from "./CaseStepsEditor";
 import CaseAttachmentsEditor from "./CaseAttachmentsEditor";
@@ -237,12 +236,11 @@ export default function CaseEditor({
               setTestCase({ ...testCase, priority: index });
             }}
             startContent={
-              <Chip
-                className="border-none gap-1 text-default-600"
+              <Circle
+                size={8}
                 color={priorities[testCase.priority].color}
-                size="sm"
-                variant="dot"
-              ></Chip>
+                fill={priorities[testCase.priority].color}
+              />
             }
             label="Priority"
             className="mt-3 max-w-xs"

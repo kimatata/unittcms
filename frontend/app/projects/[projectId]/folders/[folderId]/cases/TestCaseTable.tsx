@@ -7,7 +7,6 @@ import {
   TableRow,
   TableCell,
   Button,
-  Chip,
   DropdownTrigger,
   Dropdown,
   DropdownMenu,
@@ -16,7 +15,7 @@ import {
   SortDescriptor,
   Link,
 } from "@nextui-org/react";
-import { Plus, MoreVertical, Trash } from "lucide-react";
+import { Plus, MoreVertical, Trash, Circle } from "lucide-react";
 
 const headerColumns = [
   { name: "ID", uid: "id", sortable: true },
@@ -91,14 +90,14 @@ export default function TestCaseTable({
         );
       case "priority":
         return (
-          <Chip
-            className="border-none gap-1 text-default-600"
-            color={priorities[cellValue].color}
-            size="sm"
-            variant="dot"
-          >
-            {priorities[cellValue].name}
-          </Chip>
+          <div className="flex items-center">
+            <Circle
+              size={8}
+              color={priorities[cellValue].color}
+              fill={priorities[cellValue].color}
+            />
+            <div className="ms-3">{priorities[cellValue].name}</div>
+          </div>
         );
       case "actions":
         return (
