@@ -319,7 +319,7 @@ export default function RunEditor({ projectId, runId }: Props) {
           </div>
         </div>
 
-        <div className="mt-3 flex rounded-small border-2 dark:border-neutral-700">
+        <div className="mt-3 flex rounded-small border-2 dark:border-neutral-700 mb-12">
           <div className="w-3/12 border-r-1 dark:border-neutral-700">
             <Listbox aria-label="Listbox Variants" variant="light">
               {folders.map((folder, index) => (

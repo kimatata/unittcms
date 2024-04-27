@@ -62,6 +62,11 @@ export default function RunProgressChart() {
           left: -20,
         },
       },
+      tooltip: {
+        x: {
+          show: false,
+        },
+      },
     },
   });
   return (
@@ -72,7 +77,7 @@ export default function RunProgressChart() {
         series={chartData.series}
         type="bar"
         width={500}
-        height={100}
+        height={80}
       />
     </div>
   );
