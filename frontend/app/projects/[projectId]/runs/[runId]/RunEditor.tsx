@@ -26,6 +26,7 @@ import {
   CopyPlus,
   CopyMinus,
 } from "lucide-react";
+import RunProgressChart from "./RunProgressChart";
 import TestCaseSelector from "./TestCaseSelector";
 import { testRunStatus } from "@/config/selection";
 import { RunType, RunCaseType, RunCaseInfoType } from "@/types/run";
@@ -278,6 +279,9 @@ export default function RunEditor({ projectId, runId }: Props) {
             ))}
           </Select>
         </div>
+
+        <Divider className="my-6" />
+        <RunProgressChart />
 
         <Divider className="my-6" />
         <div className="flex items-center justify-between">

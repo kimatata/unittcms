@@ -78,7 +78,7 @@ export default function TestCaseSelector({
     } else if (uid === "failed") {
       return <CircleX size={16} color="#f31260" />;
     } else if (uid === "skipped") {
-      return <CircleSlash2 size={16} color="#d4d4d8" />;
+      return <CircleSlash2 size={16} color="#52525b" />;
     }
   };
 
