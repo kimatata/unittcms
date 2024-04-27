@@ -26,7 +26,7 @@ import {
   CopyPlus,
   CopyMinus,
 } from "lucide-react";
-import RunProgressChart from "./RunProgressChart";
+import RunProgressDounut from "./RunPregressDonutChart";
 import TestCaseSelector from "./TestCaseSelector";
 import { testRunStatus } from "@/config/selection";
 import { RunType, RunCaseType, RunCaseInfoType } from "@/types/run";
@@ -230,58 +230,61 @@ export default function RunEditor({ projectId, runId }: Props) {
       </div>
 
       <div className="container mx-auto max-w-5xl pt-6 px-6 flex-grow">
-        <h6>Basic</h6>
-        <Input
-          size="sm"
-          type="text"
-          variant="bordered"
-          label="Name"
-          value={testRun.name}
-          isInvalid={isNameInvalid}
-          errorMessage={isNameInvalid ? "please enter name" : ""}
-          onChange={(e) => {
-            setTestRun({ ...testRun, name: e.target.value });
-          }}
-          className="mt-3"
-        />
+        <div className="flex">
+          <div>
+            <RunProgressDounut />
+          </div>
+          <div className="flex-grow">
+            <Input
+              size="sm"
+              type="text"
+              variant="bordered"
+              label="Name"
+              value={testRun.name}
+              isInvalid={isNameInvalid}
+              errorMessage={isNameInvalid ? "please enter name" : ""}
+              onChange={(e) => {
+                setTestRun({ ...testRun, name: e.target.value });
+              }}
+              className="mt-3"
+            />
 
-        <Textarea
-          size="sm"
-          variant="bordered"
-          label="Description"
-          placeholder="Test run description"
-          value={testRun.description}
-          onValueChange={(changeValue) => {
-            setTestRun({ ...testRun, description: changeValue });
-          }}
-          className="mt-3"
-        />
+            <Textarea
+              size="sm"
+              variant="bordered"
+              label="Description"
+              placeholder="Test run description"
+              value={testRun.description}
+              onValueChange={(changeValue) => {
+                setTestRun({ ...testRun, description: changeValue });
+              }}
+              className="mt-3"
+            />
 
-        <div>
-          <Select
-            size="sm"
-            variant="bordered"
-            selectedKeys={[testRunStatus[testRun.state].uid]}
-            onSelectionChange={(e) => {
-              const selectedUid = e.anchorKey;
-              const index = testRunStatus.findIndex(
-                (template) => template.uid === selectedUid
-              );
-              setTestRun({ ...testRun, state: index });
-            }}
-            label="status"
-            className="mt-3 max-w-xs"
-          >
-            {testRunStatus.map((state, index) => (
-              <SelectItem key={state.uid} value={index}>
-                {state.name}
-              </SelectItem>
-            ))}
-          </Select>
+            <div>
+              <Select
+                size="sm"
+                variant="bordered"
+                selectedKeys={[testRunStatus[testRun.state].uid]}
+                onSelectionChange={(e) => {
+                  const selectedUid = e.anchorKey;
+                  const index = testRunStatus.findIndex(
+                    (template) => template.uid === selectedUid
+                  );
+                  setTestRun({ ...testRun, state: index });
+                }}
+                label="status"
+                className="mt-3 max-w-xs"
+              >
+                {testRunStatus.map((state, index) => (
+                  <SelectItem key={state.uid} value={index}>
+                    {state.name}
+                  </SelectItem>
+                ))}
+              </Select>
+            </div>
+          </div>
         </div>
-
-        <Divider className="my-6" />
-        <RunProgressChart />
 
         <Divider className="my-6" />
         <div className="flex items-center justify-between">
