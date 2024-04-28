@@ -43,11 +43,11 @@ const testRunStatus = [
 ];
 
 const testRunCaseStatus = [
-  { name: "Untested", uid: "untested", color: "primary" },
-  { name: "Passed", uid: "passed", color: "success" },
-  { name: "Retest", uid: "retest", color: "warning" },
-  { name: "Failed", uid: "failed", color: "danger" },
-  { name: "Skipped", uid: "skipped", color: "primary" },
+  { name: "Untested", uid: "untested", color: "primary", chartColor: "#e5e7eb" },
+  { name: "Passed", uid: "passed", color: "success", chartColor: "#059669" },
+  { name: "Failed", uid: "failed", color: "danger", chartColor: "#f87171" },
+  { name: "Retest", uid: "retest", color: "warning", chartColor: "#fbbf24" },
+  { name: "Skipped", uid: "skipped", color: "primary", chartColor: "#4b5563" },
 ];
 
 export {

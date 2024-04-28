@@ -19,6 +19,11 @@ type RunCaseType = {
 type RunCaseInfoType = {
   runId: number;
   caseId: number;
-}
+};
 
-export { RunType, RunCaseType, RunCaseInfoType };
+type RunStatusCountType = {
+  status: number;
+  count: number;
+};
+
+export { RunType, RunCaseType, RunCaseInfoType, RunStatusCountType };

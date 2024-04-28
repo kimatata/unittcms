@@ -1,14 +1,12 @@
 const express = require("express");
 const router = express.Router();
 const defineRun = require("../../models/runs");
-// const defineCase = require("../../models/cases");
-const { DataTypes } = require("sequelize");
+const defineRunCase = require("../../models/runCases");
+const { DataTypes, literal } = require("sequelize");
 
 module.exports = function (sequelize) {
   const Run = defineRun(sequelize, DataTypes);
-  // const Case = defineCase(sequelize, DataTypes);
-  // Run.belongsToMany(Case, { through: "runCases" });
-  // Case.belongsToMany(Run, { through: "runCases" });
+  const RunCase = defineRunCase(sequelize, DataTypes);
 
   router.get("/:runId", async (req, res) => {
     const runId = req.params.runId;
@@ -18,19 +16,21 @@ module.exports = function (sequelize) {
     }
 
     try {
-      // const project = await Run.findByPk(runId, {
-      //   include: [
-      //     {
-      //       model: Case,
-      //       through: { attributes: ["status"] },
-      //     },
-      //   ],
-      // });
-      const project = await Run.findByPk(runId);
-      if (!project) {
+      const run = await Run.findByPk(runId);
+      if (!run) {
         return res.status(404).send("Run not found");
       }
-      res.json(project);
+
+      // Counts test case status belonging to the run
+      const statusCounts = await RunCase.findAll({
+        attributes: ["status", [literal("COUNT(*)"), "count"]],
+        where: {
+          runId: run.id,
+        },
+        group: ["status"],
+      });
+
+      res.json({ run, statusCounts });
     } catch (error) {
       console.error(error);
       res.status(500).send("Internal Server Error");

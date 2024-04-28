@@ -25,11 +25,17 @@ import {
   ChevronDown,
   CopyPlus,
   CopyMinus,
+  RotateCw,
 } from "lucide-react";
-import RunProgressDounut from "./RunPregressDonutChart";
+import RunProgressChart from "./RunPregressDonutChart";
 import TestCaseSelector from "./TestCaseSelector";
 import { testRunStatus } from "@/config/selection";
-import { RunType, RunCaseType, RunCaseInfoType } from "@/types/run";
+import {
+  RunType,
+  RunCaseType,
+  RunCaseInfoType,
+  RunStatusCountType,
+} from "@/types/run";
 import { CaseType } from "@/types/case";
 import { FolderType } from "@/types/folder";
 import {
@@ -63,6 +69,8 @@ export default function RunEditor({ projectId, runId }: Props) {
   const [testRun, setTestRun] = useState<RunType>(defaultTestRun);
   const [folders, setFolders] = useState([]);
   const [runCases, setRunCases] = useState<RunCaseType[]>([]);
+  const [runStatusCounts, setRunStatusCounts] =
+    useState<RunStatusCountType[]>();
   const [selectedKeys, setSelectedKeys] = useState<Selection>(new Set([]));
   const [selectedFolder, setSelectedFolder] = useState<FolderType>({});
   const [testcases, setTestCases] = useState<CaseType[]>([]);
@@ -70,11 +78,16 @@ export default function RunEditor({ projectId, runId }: Props) {
   const [isUpdating, setIsUpdating] = useState<boolean>(false);
   const router = useRouter();
 
+  const fetchRunAndStatusCount = async () => {
+    const { run, statusCounts } = await fetchRun(runId);
+    setTestRun(run);
+    setRunStatusCounts(statusCounts);
+  };
+
   useEffect(() => {
     async function fetchDataEffect() {
       try {
-        const runData = await fetchRun(runId);
-        setTestRun(runData);
+        await fetchRunAndStatusCount();
         const foldersData = await fetchFolders(projectId);
         setFolders(foldersData);
         setSelectedFolder(foldersData[0]);
@@ -232,7 +245,23 @@ export default function RunEditor({ projectId, runId }: Props) {
       <div className="container mx-auto max-w-5xl pt-6 px-6 flex-grow">
         <div className="flex">
           <div>
-            <RunProgressDounut />
+            <div className="w-96 h-72">
+              <div className="flex items-center">
+                <h4 className="font-bold">Progress</h4>
+                <Tooltip content="Refresh">
+                  <Button
+                    isIconOnly
+                    size="sm"
+                    className="rounded-full bg-transparent ms-1"
+                    onPress={fetchRunAndStatusCount}
+                  >
+                    <RotateCw size={16} />
+                  </Button>
+                </Tooltip>
+              </div>
+
+              <RunProgressChart statusCounts={runStatusCounts} />
+            </div>
           </div>
           <div className="flex-grow">
             <Input
@@ -290,7 +319,7 @@ export default function RunEditor({ projectId, runId }: Props) {
         <div className="flex items-center justify-between">
           <h6 className="h-8 font-bold">Select test cases</h6>
           <div>
-            {selectedKeys.size > 0 || selectedKeys === "all" ? (
+            {(selectedKeys.size > 0 || selectedKeys === "all") && (
               <Dropdown>
                 <DropdownTrigger>
                   <Button
@@ -316,8 +345,6 @@ export default function RunEditor({ projectId, runId }: Props) {
                   </DropdownItem>
                 </DropdownMenu>
               </Dropdown>
-            ) : (
-              <></>
             )}
           </div>
         </div>
