@@ -21,6 +21,7 @@ import {
   CopyMinus,
   Circle,
   CircleCheck,
+  CircleDashed,
   CircleX,
   CircleSlash2,
 } from "lucide-react";
@@ -75,6 +76,8 @@ export default function TestCaseSelector({
       return <Circle size={16} color="#d4d4d8" />;
     } else if (uid === "passed") {
       return <CircleCheck size={16} color="#17c964" />;
+    } else if (uid === "retest") {
+      return <CircleDashed size={16} color="#f5a524" />;
     } else if (uid === "failed") {
       return <CircleX size={16} color="#f31260" />;
     } else if (uid === "skipped") {

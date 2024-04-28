@@ -202,7 +202,7 @@ export default function RunEditor({ projectId, runId }: Props) {
     <>
       <div className="border-b-1 dark:border-neutral-700 w-full p-3 flex items-center justify-between">
         <div className="flex items-center">
-          <Tooltip content="Back to runs" placement="left">
+          <Tooltip content="Back to runs">
             <Button
               isIconOnly
               size="sm"
@@ -288,7 +288,7 @@ export default function RunEditor({ projectId, runId }: Props) {
 
         <Divider className="my-6" />
         <div className="flex items-center justify-between">
-          <h6 className="h-8">Select test cases</h6>
+          <h6 className="h-8 font-bold">Select test cases</h6>
           <div>
             {selectedKeys.size > 0 || selectedKeys === "all" ? (
               <Dropdown>

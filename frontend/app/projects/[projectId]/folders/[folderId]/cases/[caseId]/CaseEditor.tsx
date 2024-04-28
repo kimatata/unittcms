@@ -196,7 +196,7 @@ export default function CaseEditor({
       </div>
 
       <div className="p-5">
-        <h6>Basic</h6>
+        <h6 className="font-bold">Basic</h6>
         <Input
           size="sm"
           type="text"
@@ -302,7 +302,7 @@ export default function CaseEditor({
         <Divider className="my-6" />
         {templates[testCase.template].name === "Text" ? (
           <div>
-            <h6>Test Detail</h6>
+            <h6 className="font-bold">Test Detail</h6>
             <div className="flex">
               <Textarea
                 size="sm"
@@ -332,7 +332,7 @@ export default function CaseEditor({
         ) : (
           <div>
             <div className="flex items-center">
-              <h6>Steps</h6>
+              <h6 className="font-bold">Steps</h6>
               <Button
                 startContent={<Plus size={16} />}
                 size="sm"
@@ -364,7 +364,7 @@ export default function CaseEditor({
         )}
 
         <Divider className="my-6" />
-        <h6>Attachments</h6>
+        <h6 className="font-bold">Attachments</h6>
         <CaseAttachmentsEditor
           attachments={testCase.Attachments}
           onAttachmentDownload={(
