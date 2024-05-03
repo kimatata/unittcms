@@ -1,4 +1,4 @@
-"use client";
+// "use client";
 import { useEffect, useState } from "react";
 import { Button } from "@nextui-org/react";
 import { Plus } from "lucide-react";
@@ -11,8 +11,10 @@ import {
   updateProject,
   deleteProject,
 } from "./projectsControl";
+import { useTranslations } from "next-intl";
 
 export default function ProjectsPage() {
+  const t = useTranslations("ProjectsPage");
   const [projects, setProjects] = useState([]);
 
   useEffect(() => {
@@ -78,7 +80,7 @@ export default function ProjectsPage() {
   return (
     <div className="container mx-auto max-w-3xl pt-16 px-6 flex-grow">
       <div className="w-full p-3 flex items-center justify-between">
-        <h3 className="font-bold">Projects</h3>
+        <h3 className="font-bold">{t("project.project")}</h3>
         <div>
           <Button
             startContent={<Plus size={16} />}
@@ -86,7 +88,7 @@ export default function ProjectsPage() {
             color="primary"
             onClick={openDialogForCreate}
           >
-            New Project
+            {t("newProject")}
           </Button>
         </div>
       </div>

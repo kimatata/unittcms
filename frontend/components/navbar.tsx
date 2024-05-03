@@ -1,20 +1,15 @@
 import {
   Navbar as NextUINavbar,
   NavbarContent,
-  NavbarMenu,
   NavbarMenuToggle,
   NavbarBrand,
   NavbarItem,
-  NavbarMenuItem,
   Kbd,
-  Link,
+  Link as NextUiLink,
   Input,
-  link as linkStyles,
 } from "@nextui-org/react";
-
+import { Link } from "@/src/navigation";
 import { siteConfig } from "@/config/site";
-import NextLink from "next/link";
-
 import { ThemeSwitch } from "@/components/theme-switch";
 import { GithubIcon, SearchIcon } from "@/components/icons";
 
@@ -46,7 +41,7 @@ export const Navbar = () => {
     <NextUINavbar maxWidth="xl" position="sticky" className="bg-inherit">
       <NavbarContent className="basis-1/5 sm:basis-full" justify="start">
         <NavbarBrand as="li" className="gap-3 max-w-fit">
-          <NextLink className="flex justify-start items-center gap-1" href="/">
+          <Link className="flex justify-start items-center gap-1" href="/">
             <Image
               src="/favicon/android-chrome-192x192.png"
               width={32}
@@ -54,17 +49,17 @@ export const Navbar = () => {
               alt="Logo"
             />
             <p className="font-bold text-inherit">Test Case Manager</p>
-          </NextLink>
+          </Link>
         </NavbarBrand>
         <ul className="hidden lg:flex gap-4 justify-start ml-2">
           {siteConfig.navItems.map((item) => (
             <NavbarItem key={item.href}>
-              <NextLink
+              <Link
                 className="data-[active=true]:text-primary data-[active=true]:font-medium"
                 href={item.href}
               >
                 {item.label}
-              </NextLink>
+              </Link>
             </NavbarItem>
           ))}
         </ul>
@@ -75,62 +70,29 @@ export const Navbar = () => {
         justify="end"
       >
         <NavbarItem className="hidden sm:flex gap-2">
-          {/* <Link isExternal href={siteConfig.links.twitter} aria-label="Twitter">
-            <TwitterIcon className="text-default-500" />
-          </Link> */}
-          {/* <Link isExternal href={siteConfig.links.discord} aria-label="Discord">
-            <DiscordIcon className="text-default-500" />
-          </Link> */}
-          <Link isExternal href={siteConfig.links.github} aria-label="Github">
+          <NextUiLink
+            isExternal
+            href={siteConfig.links.github}
+            aria-label="Github"
+          >
             <GithubIcon className="text-default-500" />
-          </Link>
+          </NextUiLink>
           <ThemeSwitch />
         </NavbarItem>
         <NavbarItem className="hidden lg:flex">{searchInput}</NavbarItem>
-        {/* <NavbarItem className="hidden md:flex">
-          <Button
-            isExternal
-            as={Link}
-            className="text-sm font-normal text-default-600 bg-default-100"
-            href={siteConfig.links.sponsor}
-            startContent={<HeartFilledIcon className="text-danger" />}
-            variant="flat"
-          >
-            Sponsor
-          </Button>
-        </NavbarItem> */}
       </NavbarContent>
 
       <NavbarContent className="sm:hidden basis-1 pl-4" justify="end">
-        <Link isExternal href={siteConfig.links.github} aria-label="Github">
+        <NextUiLink
+          isExternal
+          href={siteConfig.links.github}
+          aria-label="Github"
+        >
           <GithubIcon className="text-default-500" />
-        </Link>
+        </NextUiLink>
         <ThemeSwitch />
         <NavbarMenuToggle />
       </NavbarContent>
-
-      <NavbarMenu>
-        {searchInput}
-        <div className="mx-4 mt-2 flex flex-col gap-2">
-          {siteConfig.navMenuItems.map((item, index) => (
-            <NavbarMenuItem key={`${item}-${index}`}>
-              <Link
-                color={
-                  index === 2
-                    ? "primary"
-                    : index === siteConfig.navMenuItems.length - 1
-                    ? "danger"
-                    : "foreground"
-                }
-                href="#"
-                size="lg"
-              >
-                {item.label}
-              </Link>
-            </NavbarMenuItem>
-          ))}
-        </div>
-      </NavbarMenu>
     </NextUINavbar>
   );
 };

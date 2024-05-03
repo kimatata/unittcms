@@ -1,7 +1,11 @@
-import { Link, button as buttonStyles } from "@nextui-org/react";
+import { button as buttonStyles } from "@nextui-org/react";
 import { title, subtitle } from "@/components/primitives";
+import { useTranslations } from "next-intl";
+import { Link } from "@/src/navigation";
 
 export default function Home() {
+  const t = useTranslations("Index");
+
   return (
     <section className="flex flex-col items-center justify-center gap-4 py-8 md:py-10">
       <div className="inline-block max-w-lg text-center justify-center">
@@ -12,6 +16,8 @@ export default function Home() {
           Integrate and manage all your software testing.
         </h2>
       </div>
+
+      <h1>{t("title")}</h1>
 
       <div className="flex gap-3">
         <Link
