@@ -3,7 +3,7 @@ import { Metadata } from "next";
 import { siteConfig } from "@/config/site";
 import { fontSans } from "@/config/fonts";
 import { Providers } from "./providers";
-import { Navbar } from "@/components/navbar";
+import Header from "./Header";
 import clsx from "clsx";
 
 export const metadata: Metadata = {
@@ -41,7 +41,7 @@ export default function RootLayout({
       >
         <Providers themeProps={{ attribute: "class", defaultTheme: "dark" }}>
           <div className="relative flex flex-col min-h-screen light:bg-neutral-50 dark:bg-neutral-800">
-            <Navbar />
+            <Header locale={locale} />
             <main>{children}</main>
             {/* <footer className="w-full flex items-center justify-center py-3">
               <Link

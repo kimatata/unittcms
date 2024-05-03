@@ -2,8 +2,22 @@
   "Index": {
     "title": "Hello world!"
   },
-  "ProjectPage": {
-    "projects": "Projects",
-    "newProject": "New Project"
+  "Projects": {
+    "projects": "プロジェクト",
+    "project": "プロジェクト",
+    "new_project": "新規プロジェクト",
+    "edit_project": "プロジェクトの編集",
+    "delete_project": "プロジェクトの削除",
+    "id": "ID",
+    "name": "名前",
+    "detail": "詳細",
+    "last_update": "最終更新",
+    "actions": "アクション",
+    "project_name": "プロジェクト名",
+    "project_detail": "プロジェクト詳細",
+    "close": "閉じる",
+    "create": "作成",
+    "update": "作成",
+    "please_enter": "プロジェクト名を入力してください"
   }
 }

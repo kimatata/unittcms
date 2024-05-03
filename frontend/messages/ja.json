@@ -2,8 +2,22 @@
   "Index": {
     "title": "はろー"
   },
-  "ProjectPage": {
-    "projects": "プロジェクト",
-    "newProject": "プロジェクトの作成"
+  "Projects": {
+    "projects": "Projects",
+    "project": "Project",
+    "new_project": "New Project",
+    "edit_project": "Edit Project",
+    "delete_project": "Delete Project",
+    "id": "ID",
+    "name": "Name",
+    "detail": "Detail",
+    "last_update": "Last update",
+    "actions": "Actions",
+    "project_name": "Project Name",
+    "project_detail": "Project Detail",
+    "close": "Close",
+    "create": "Create",
+    "update": "Update",
+    "please_enter": "Please enter project name"
   }
 }
