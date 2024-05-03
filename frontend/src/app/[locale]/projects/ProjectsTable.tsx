@@ -15,28 +15,30 @@ import {
   Link,
 } from "@nextui-org/react";
 import { MoreVertical } from "lucide-react";
-import { ProjectType } from "@/types/project";
+import { ProjectType, ProjectsMessages } from "@/types/project";
 import dayjs from "dayjs";
-
-const headerColumns = [
-  { name: "ID", uid: "id", sortable: true },
-  { name: "Name", uid: "name", sortable: true },
-  { name: "Detail", uid: "detail", sortable: true },
-  { name: "Last update", uid: "updatedAt", sortable: true },
-  { name: "Actions", uid: "actions" },
-];
 
 type Props = {
   projects: ProjectType[];
   onEditProject: (project: ProjectType) => void;
   onDeleteProject: (projectId: number) => void;
+  messages: ProjectsMessages;
 };
 
 export default function ProjectsTable({
   projects,
   onEditProject,
   onDeleteProject,
+  messages,
 }: Props) {
+  const headerColumns = [
+    { name: messages.id, uid: "id", sortable: true },
+    { name: messages.name, uid: "name", sortable: true },
+    { name: messages.detail, uid: "detail", sortable: true },
+    { name: messages.lastUpdate, uid: "updatedAt", sortable: true },
+    { name: messages.actions, uid: "actions" },
+  ];
+
   const [sortDescriptor, setSortDescriptor] = useState<SortDescriptor>({
     column: "id",
     direction: "ascending",
@@ -92,13 +94,13 @@ export default function ProjectsTable({
             </DropdownTrigger>
             <DropdownMenu aria-label="project actions">
               <DropdownItem onClick={() => onEditProject(project)}>
-                Edit project
+                {messages.editProject}
               </DropdownItem>
               <DropdownItem
                 className="text-danger"
                 onClick={() => onDeleteProject(project.id)}
               >
-                Delete project
+                {messages.deleteProject}
               </DropdownItem>
             </DropdownMenu>
           </Dropdown>

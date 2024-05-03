@@ -11,13 +11,14 @@ import {
   ModalBody,
   ModalFooter,
 } from "@nextui-org/react";
-import { ProjectType } from "@/types/project";
+import { ProjectType, ProjectsMessages } from "@/types/project";
 
 type Props = {
   isOpen: boolean;
   editingProject: ProjectType;
   onCancel: () => void;
   onSubmit: (name: string, detail: string) => void;
+  messages: ProjectsMessages;
 };
 
 export default function ProjectDialog({
@@ -25,6 +26,7 @@ export default function ProjectDialog({
   editingProject,
   onCancel,
   onSubmit,
+  messages,
 }: Props) {
   const [projectName, setProjectName] = useState({
     text: editingProject ? editingProject.name : "",
@@ -80,7 +82,7 @@ export default function ProjectDialog({
       setProjectName({
         text: "",
         isValid: false,
-        errorMessage: "Please enter project name",
+        errorMessage: messages.pleaseEnter,
       });
 
       return;
@@ -98,11 +100,13 @@ export default function ProjectDialog({
       }}
     >
       <ModalContent>
-        <ModalHeader className="flex flex-col gap-1">Project</ModalHeader>
+        <ModalHeader className="flex flex-col gap-1">
+          {messages.project}
+        </ModalHeader>
         <ModalBody>
           <Input
             type="text"
-            label="Project Name"
+            label={messages.projectName}
             value={projectName.text}
             isInvalid={projectName.isValid}
             errorMessage={projectName.errorMessage}
@@ -114,7 +118,7 @@ export default function ProjectDialog({
             }}
           />
           <Textarea
-            label="Project Detail"
+            label={messages.projectDetail}
             value={projectDetail.text}
             isInvalid={projectDetail.isValid}
             errorMessage={projectDetail.errorMessage}
@@ -128,10 +132,10 @@ export default function ProjectDialog({
         </ModalBody>
         <ModalFooter>
           <Button variant="light" onPress={onCancel}>
-            Close
+            {messages.close}
           </Button>
           <Button color="primary" onPress={validate}>
-            {editingProject ? "Update" : "Create"}
+            {editingProject ? messages.update : messages.create}
           </Button>
         </ModalFooter>
       </ModalContent>

@@ -1,8 +1,8 @@
-// "use client";
+"use client";
 import { useEffect, useState } from "react";
 import { Button } from "@nextui-org/react";
 import { Plus } from "lucide-react";
-import { ProjectType } from "@/types/project";
+import { ProjectType, ProjectsMessages } from "@/types/project";
 import ProjectsTable from "./ProjectsTable";
 import ProjectDialog from "./ProjectDialog";
 import {
@@ -11,10 +11,12 @@ import {
   updateProject,
   deleteProject,
 } from "./projectsControl";
-import { useTranslations } from "next-intl";
 
-export default function ProjectsPage() {
-  const t = useTranslations("ProjectsPage");
+export type Props = {
+  messages: ProjectsMessages;
+};
+
+export default function ProjectsPage({ messages }: Props) {
   const [projects, setProjects] = useState([]);
 
   useEffect(() => {
@@ -78,33 +80,37 @@ export default function ProjectsPage() {
   };
 
   return (
-    <div className="container mx-auto max-w-3xl pt-16 px-6 flex-grow">
-      <div className="w-full p-3 flex items-center justify-between">
-        <h3 className="font-bold">{t("project.project")}</h3>
-        <div>
-          <Button
-            startContent={<Plus size={16} />}
-            size="sm"
-            color="primary"
-            onClick={openDialogForCreate}
-          >
-            {t("newProject")}
-          </Button>
+    <div className="flex justify-center">
+      <div className="container mx-auto max-w-3xl pt-16 px-6 flex-grow">
+        <div className="w-full p-3 flex items-center justify-between">
+          <h3 className="font-bold">{messages.project}</h3>
+          <div>
+            <Button
+              startContent={<Plus size={16} />}
+              size="sm"
+              color="primary"
+              onClick={openDialogForCreate}
+            >
+              {messages.newProject}
+            </Button>
+          </div>
         </div>
+
+        <ProjectsTable
+          projects={projects}
+          onEditProject={onEditClick}
+          onDeleteProject={onDeleteClick}
+          messages={messages}
+        />
+
+        <ProjectDialog
+          isOpen={isProjectDialogOpen}
+          editingProject={editingProject}
+          onCancel={closeDialog}
+          onSubmit={onSubmit}
+          messages={messages}
+        />
       </div>
-
-      <ProjectsTable
-        projects={projects}
-        onEditProject={onEditClick}
-        onDeleteProject={onDeleteClick}
-      />
-
-      <ProjectDialog
-        isOpen={isProjectDialogOpen}
-        editingProject={editingProject}
-        onCancel={closeDialog}
-        onSubmit={onSubmit}
-      />
     </div>
   );
 }

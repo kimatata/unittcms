@@ -1,7 +1,6 @@
 import {
   Navbar as NextUINavbar,
   NavbarContent,
-  NavbarMenuToggle,
   NavbarBrand,
   NavbarItem,
   Link as NextUiLink
@@ -36,7 +35,20 @@ export default function Header(params: { locale: string }) {
             <p className="font-bold text-inherit">Test Case Manager</p>
           </Link>
         </NavbarBrand>
-        {siteConfig.navItems.map((item) => (
+        <ul className="hidden lg:flex gap-4 justify-start ml-2">
+          {siteConfig.navItems.map((item) => (
+            <NavbarItem key={item.href}>
+              <Link
+                className="data-[active=true]:text-primary data-[active=true]:font-medium"
+                href={item.href}
+                locale={params.locale}
+              >
+                {item.label}
+              </Link>
+            </NavbarItem>
+          ))}
+        </ul>
+        {/* {siteConfig.navItems.map((item) => (
           <NavbarItem key={item.href}>
             <Link
               className="data-[active=true]:text-primary data-[active=true]:font-medium"
@@ -46,7 +58,7 @@ export default function Header(params: { locale: string }) {
               {item.label}
             </Link>
           </NavbarItem>
-        ))}
+        ))} */}
       </NavbarContent>
 
       <NavbarContent className="basis-1 pl-4" justify="end">

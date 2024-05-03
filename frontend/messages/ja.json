@@ -3,21 +3,21 @@
     "title": "はろー"
   },
   "Projects": {
-    "projects": "Projects",
-    "project": "Project",
-    "new_project": "New Project",
-    "edit_project": "Edit Project",
-    "delete_project": "Delete Project",
+    "projects": "プロジェクト",
+    "project": "プロジェクト",
+    "new_project": "新規プロジェクト",
+    "edit_project": "プロジェクトの編集",
+    "delete_project": "プロジェクトの削除",
     "id": "ID",
-    "name": "Name",
-    "detail": "Detail",
-    "last_update": "Last update",
-    "actions": "Actions",
-    "project_name": "Project Name",
-    "project_detail": "Project Detail",
-    "close": "Close",
-    "create": "Create",
-    "update": "Update",
-    "please_enter": "Please enter project name"
+    "name": "名前",
+    "detail": "詳細",
+    "last_update": "最終更新",
+    "actions": "アクション",
+    "project_name": "プロジェクト名",
+    "project_detail": "プロジェクト詳細",
+    "close": "閉じる",
+    "create": "作成",
+    "update": "更新",
+    "please_enter": "プロジェクト名を入力してください"
   }
 }

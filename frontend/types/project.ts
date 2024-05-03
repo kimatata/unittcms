@@ -5,3 +5,22 @@ export type ProjectType = {
   createdAt: string;
   updatedAt: string;
 };
+
+export type ProjectsMessages = {
+  project: string;
+  projects: string;
+  newProject: string;
+  editProject: string;
+  deleteProject: string;
+  id: string;
+  name: string;
+  detail: string;
+  lastUpdate: string;
+  actions: string;
+  projectName: string;
+  projectDetail: string;
+  close: string;
+  create: string;
+  update: string;
+  pleaseEnter: string;
+};
