@@ -74,6 +74,7 @@ export default function TestCaseTable({
       return sortDescriptor.direction === "descending" ? -cmp : cmp;
     });
   }, [sortDescriptor, cases]);
+
   const renderCell = useCallback((testCase: Case, columnKey: Key) => {
     const cellValue = testCase[columnKey as keyof Case];
 
@@ -82,13 +83,19 @@ export default function TestCaseTable({
         return <span>{cellValue}</span>;
       case "title":
         return (
-          <Link
-            href={`/projects/${projectId}/folders/${testCase.folderId}/cases/${testCase.id}`}
-            locale={locale}
-            className={NextUiLinkClasses}
+          <Button
+            size="sm"
+            variant="light"
+            className="data-[hover=true]:bg-transparent"
           >
-            {cellValue}
-          </Link>
+            <Link
+              href={`/projects/${projectId}/folders/${testCase.folderId}/cases/${testCase.id}`}
+              locale={locale}
+              className={NextUiLinkClasses}
+            >
+              {cellValue}
+            </Link>
+          </Button>
         );
       case "priority":
         return (

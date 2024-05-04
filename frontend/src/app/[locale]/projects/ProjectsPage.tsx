@@ -81,38 +81,36 @@ export default function ProjectsPage({ messages, locale }: Props) {
   };
 
   return (
-    <div className="flex justify-center">
-      <div className="container mx-auto max-w-3xl pt-16 px-6 flex-grow">
-        <div className="w-full p-3 flex items-center justify-between">
-          <h3 className="font-bold">{messages.project}</h3>
-          <div>
-            <Button
-              startContent={<Plus size={16} />}
-              size="sm"
-              color="primary"
-              onClick={openDialogForCreate}
-            >
-              {messages.newProject}
-            </Button>
-          </div>
+    <div className="container mx-auto max-w-3xl pt-16 px-6 flex-grow">
+      <div className="w-full p-3 flex items-center justify-between">
+        <h3 className="font-bold">{messages.project}</h3>
+        <div>
+          <Button
+            startContent={<Plus size={16} />}
+            size="sm"
+            color="primary"
+            onClick={openDialogForCreate}
+          >
+            {messages.newProject}
+          </Button>
         </div>
-
-        <ProjectsTable
-          projects={projects}
-          onEditProject={onEditClick}
-          onDeleteProject={onDeleteClick}
-          messages={messages}
-          locale={locale}
-        />
-
-        <ProjectDialog
-          isOpen={isProjectDialogOpen}
-          editingProject={editingProject}
-          onCancel={closeDialog}
-          onSubmit={onSubmit}
-          messages={messages}
-        />
       </div>
+
+      <ProjectsTable
+        projects={projects}
+        onEditProject={onEditClick}
+        onDeleteProject={onDeleteClick}
+        messages={messages}
+        locale={locale}
+      />
+
+      <ProjectDialog
+        isOpen={isProjectDialogOpen}
+        editingProject={editingProject}
+        onCancel={closeDialog}
+        onSubmit={onSubmit}
+        messages={messages}
+      />
     </div>
   );
 }
