@@ -27,14 +27,7 @@ import {
 } from "lucide-react";
 import { priorities, testRunCaseStatus } from "@/config/selection";
 import { CaseType } from "@/types/case";
-
-const headerColumns = [
-  { name: "ID", uid: "id", sortable: true },
-  { name: "Title", uid: "title", sortable: true },
-  { name: "Priority", uid: "priority", sortable: true },
-  { name: "Status", uid: "runStatus", sortable: true },
-  { name: "Actions", uid: "actions" },
-];
+import { RunsMessages } from "@/types/run";
 
 type Props = {
   cases: CaseType[];
@@ -43,6 +36,7 @@ type Props = {
   onStatusChange: (changeCaseId: number, status: number) => {};
   onIncludeCase: (includeCaseId: number) => {};
   onExcludeCase: (excludeCaseId: number) => {};
+  messages: RunsMessages;
 };
 
 export default function TestCaseSelector({
@@ -52,7 +46,16 @@ export default function TestCaseSelector({
   onStatusChange,
   onIncludeCase,
   onExcludeCase,
+  messages,
 }: Props) {
+  const headerColumns = [
+    { name: messages.id, uid: "id", sortable: true },
+    { name: messages.title, uid: "title", sortable: true },
+    { name: messages.priority, uid: "priority", sortable: true },
+    { name: messages.status, uid: "runStatus", sortable: true },
+    { name: messages.actions, uid: "actions" },
+  ];
+
   const [sortDescriptor, setSortDescriptor] = useState<SortDescriptor>({
     column: "id",
     direction: "ascending",
@@ -102,7 +105,7 @@ export default function TestCaseSelector({
               color={isIncluded ? priorities[cellValue].color : "#d4d4d8"}
               fill={isIncluded ? priorities[cellValue].color : "#d4d4d8"}
             />
-            <div className="ms-3">{priorities[cellValue].name}</div>
+            <div className="ms-3">{messages[priorities[cellValue].uid]}</div>
           </div>
         );
       case "runStatus":
@@ -120,7 +123,7 @@ export default function TestCaseSelector({
                 endContent={isIncluded && <ChevronDown size={16} />}
               >
                 <span className="w-12">
-                  {isIncluded && testRunCaseStatus[cellValue].name}
+                  {isIncluded && messages[testRunCaseStatus[cellValue].uid]}
                 </span>
               </Button>
             </DropdownTrigger>
@@ -131,7 +134,7 @@ export default function TestCaseSelector({
                   startContent={renderStatusIcon(runCaseStatus.uid)}
                   onPress={() => onStatusChange(testCase.id, index)}
                 >
-                  {runCaseStatus.name}
+                  {messages[runCaseStatus.uid]}
                 </DropdownItem>
               ))}
             </DropdownMenu>
@@ -151,14 +154,14 @@ export default function TestCaseSelector({
                 isDisabled={testCase.isIncluded}
                 onPress={() => onIncludeCase(testCase.id)}
               >
-                Include in run
+                {messages.includeInRun}
               </DropdownItem>
               <DropdownItem
                 startContent={<CopyMinus size={16} />}
                 isDisabled={!testCase.isIncluded}
                 onPress={() => onExcludeCase(testCase.id)}
               >
-                Exclude from run
+                {messages.excludeFromRun}
               </DropdownItem>
             </DropdownMenu>
           </Dropdown>
@@ -215,7 +218,7 @@ export default function TestCaseSelector({
             </TableColumn>
           )}
         </TableHeader>
-        <TableBody emptyContent={"No cases found"} items={sortedItems}>
+        <TableBody emptyContent={messages.noCasesFound} items={sortedItems}>
           {(item) => (
             <TableRow
               key={item.id}

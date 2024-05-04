@@ -40,11 +40,41 @@
   "Cases": {
     "test_cases": "Test Cases",
     "id": "ID",
-    "name": "Name",
+    "title": "Title",
     "priority": "Priority",
     "actions": "Actions",
     "delete_case": "Delete test case",
     "delete": "Delete",
-    "new_test_case": "New Test Case"
+    "new_test_case": "New Test Case",
+    "status": "Status",
+    "critical": "Critical",
+    "high": "High",
+    "medium": "Medium",
+    "low": "Low"
+  },
+  "Case": {
+    "critical": "Critical",
+    "high": "High",
+    "medium": "Medium",
+    "low": "Low"
+  },
+  "Runs": {
+    "id": "ID",
+    "title": "Title",
+    "priority": "Priority",
+    "status": "Status",
+    "actions": "Actions",
+    "critical": "Critical",
+    "high": "High",
+    "medium": "Medium",
+    "low": "Low",
+    "untested": "Untested",
+    "passed": "Passed",
+    "failed": "Failed",
+    "retest": "Retest",
+    "skipped": "Skipped",
+    "include_in_run": "Include in run",
+    "exclude_from_run": "Exclude from run",
+    "no_cases_found": "No cases found"
   }
 }

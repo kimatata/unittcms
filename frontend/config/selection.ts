@@ -1,8 +1,8 @@
 const priorities = [
-  { name: "Critical", uid: "critical", color: "#d00002" },
-  { name: "High", uid: "high", color: "#ee6b4e" },
-  { name: "Medium", uid: "medium", color: "#fccb69" },
-  { name: "Low", uid: "low", color: "#0b62e8" },
+  { uid: "critical", color: "#d00002" },
+  { uid: "high", color: "#ee6b4e" },
+  { uid: "medium", color: "#fccb69" },
+  { uid: "low", color: "#0b62e8" },
 ];
 
 const testTypes = [
@@ -43,11 +43,15 @@ const testRunStatus = [
 ];
 
 const testRunCaseStatus = [
-  { name: "Untested", uid: "untested", color: "primary", chartColor: "#e5e7eb" },
-  { name: "Passed", uid: "passed", color: "success", chartColor: "#059669" },
-  { name: "Failed", uid: "failed", color: "danger", chartColor: "#f87171" },
-  { name: "Retest", uid: "retest", color: "warning", chartColor: "#fbbf24" },
-  { name: "Skipped", uid: "skipped", color: "primary", chartColor: "#4b5563" },
+  {
+    uid: "untested",
+    color: "primary",
+    chartColor: "#e5e7eb",
+  },
+  { uid: "passed", color: "success", chartColor: "#059669" },
+  { uid: "failed", color: "danger", chartColor: "#f87171" },
+  { uid: "retest", color: "warning", chartColor: "#fbbf24" },
+  { uid: "skipped", color: "primary", chartColor: "#4b5563" },
 ];
 
 export {

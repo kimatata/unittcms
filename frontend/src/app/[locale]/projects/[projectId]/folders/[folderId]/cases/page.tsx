@@ -9,10 +9,6 @@ export default function Page({
   const t = useTranslations("Cases");
   const messages = {
     testCases: t("test_cases"),
-    // folder: t("folder"),
-    // newFolder: t("new_folder"),
-    
-    // deleteFolder: t("delete_folder"),
     id: t("id"),
     title: t("title"),
     priority: t("priority"),
@@ -20,12 +16,11 @@ export default function Page({
     deleteCase: t("delete_case"),
     delete: t("delete"),
     newTestCase: t("new_test_case"),
-    // projectName: t("folder_name"),
-    // projectDetail: t("folder_detail"),
-    // close: t("close"),
-    // create: t("create"),
-    // update: t("update"),
-    // pleaseEnter: t("please_enter"),
+    status: t("status"),
+    critical: t("critical"),
+    high: t("high"),
+    medium: t("medium"),
+    low: t("low"),
   };
 
   return (

@@ -14,7 +14,7 @@ import { Save, Plus, ArrowLeft, ArrowUpFromLine, Circle } from "lucide-react";
 import { priorities, testTypes, templates } from "@/config/selection";
 import CaseStepsEditor from "./CaseStepsEditor";
 import CaseAttachmentsEditor from "./CaseAttachmentsEditor";
-import { CaseType, AttachmentType } from "@/types/case";
+import { CaseType, AttachmentType, CaseMessages } from "@/types/case";
 import { fetchCase, updateCase } from "../caseControl";
 import { fetchCreateStep, fetchDeleteStep } from "./stepControl";
 import {
@@ -44,6 +44,7 @@ export default function CaseEditor({
     projectId: string;
     folderId: string;
     caseId: string;
+    messages: CaseMessages;
     locale: string;
   };
 }) {
@@ -253,7 +254,7 @@ export default function CaseEditor({
           >
             {priorities.map((priority, index) => (
               <SelectItem key={priority.uid} value={index}>
-                {priority.name}
+                {params.messages[priority.uid]}
               </SelectItem>
             ))}
           </Select>

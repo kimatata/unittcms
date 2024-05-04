@@ -107,7 +107,7 @@ export default function TestCaseTable({
               color={priorities[cellValue].color}
               fill={priorities[cellValue].color}
             />
-            <div className="ms-3">{priorities[cellValue].name}</div>
+            <div className="ms-3">{messages[priorities[cellValue].uid]}</div>
           </div>
         );
       case "actions":

@@ -45,6 +45,36 @@
     "actions": "アクション",
     "delete_case": "テストケースを削除",
     "delete": "削除",
-    "new_test_case": "新規テストケース"
+    "new_test_case": "新規テストケース",
+    "status": "ステータス",
+    "critical": "致",
+    "high": "高",
+    "medium": "中",
+    "low": "低"
+  },
+  "Case": {
+    "critical": "致",
+    "high": "高",
+    "medium": "中",
+    "low": "低"
+  },
+  "Runs": {
+    "id": "ID",
+    "title": "タイトル",
+    "priority": "優先度",
+    "status": "ステータス",
+    "actions": "アクション",
+    "critical": "致",
+    "high": "高",
+    "medium": "中",
+    "low": "低",
+    "untested": "未実行",
+    "passed": "成功",
+    "failed": "失敗",
+    "retest": "再テスト",
+    "skipped": "スキップ",
+    "include_in_run": "テストランに含める",
+    "exclude_from_run": "テストランから除外する",
+    "no_cases_found": "テストケースが見つかりません"
   }
 }

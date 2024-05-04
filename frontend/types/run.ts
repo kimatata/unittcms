@@ -26,4 +26,30 @@ type RunStatusCountType = {
   count: number;
 };
 
-export { RunType, RunCaseType, RunCaseInfoType, RunStatusCountType };
+export type RunsMessages = {
+  id: string;
+  title: string;
+  priority: string;
+  status: string;
+  actions: string;
+  critical: string;
+  high: string;
+  medium: string;
+  low: string;
+  untested: string;
+  passed: string;
+  failed: string;
+  retest: string;
+  skipped: string;
+  includeInRun: string;
+  excludeFromRun: string;
+  noCasesFound: string;
+};
+
+export {
+  RunType,
+  RunCaseType,
+  RunCaseInfoType,
+  RunStatusCountType,
+  RunsMessages,
+};

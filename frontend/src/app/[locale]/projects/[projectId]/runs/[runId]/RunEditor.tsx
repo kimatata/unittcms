@@ -35,6 +35,7 @@ import {
   RunCaseType,
   RunCaseInfoType,
   RunStatusCountType,
+  RunsMessages,
 } from "@/types/run";
 import { CaseType } from "@/types/case";
 import { FolderType } from "@/types/folder";
@@ -63,10 +64,11 @@ const defaultTestRun = {
 type Props = {
   projectId: string;
   runId: string;
+  messages: RunsMessages;
   locale: string;
 };
 
-export default function RunEditor({ projectId, runId, locale }: Props) {
+export default function RunEditor({ projectId, runId, messages, locale }: Props) {
   const [testRun, setTestRun] = useState<RunType>(defaultTestRun);
   const [folders, setFolders] = useState([]);
   const [runCases, setRunCases] = useState<RunCaseType[]>([]);
@@ -338,13 +340,13 @@ export default function RunEditor({ projectId, runId, locale }: Props) {
                     startContent={<CopyPlus size={16} />}
                     onClick={() => handleBulkIncludeExcludeCases(true)}
                   >
-                    Include selected cases in run
+                    {messages.includeInRun}
                   </DropdownItem>
                   <DropdownItem
                     startContent={<CopyMinus size={16} />}
                     onClick={() => handleBulkIncludeExcludeCases(false)}
                   >
-                    Exclude selected cases from run
+                    {messages.excludeFromRun}
                   </DropdownItem>
                 </DropdownMenu>
               </Dropdown>
@@ -385,6 +387,7 @@ export default function RunEditor({ projectId, runId, locale }: Props) {
               onExcludeCase={(excludeCaseId) =>
                 handleIncludeExcludeCase(false, excludeCaseId)
               }
+              messages={messages}
             />
           </div>
         </div>

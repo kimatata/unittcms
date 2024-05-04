@@ -58,6 +58,18 @@ export type CasesMessages = {
   deleteCase: string;
   delete: string;
   newTestCase: string;
+  status: string;
+  critical: string;
+  high: string;
+  medium: string;
+  low: string;
 };
 
-export { CaseType, StepType, AttachmentType, CasesMessages };
+export type CaseMessages = {
+  critical: string;
+  high: string;
+  medium: string;
+  low: string;
+};
+
+export { CaseType, StepType, AttachmentType, CasesMessages, CaseMessages };
