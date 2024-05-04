@@ -6,9 +6,10 @@ import { fetchCases, createCase, deleteCase, deleteCases } from "./caseControl";
 type Props = {
   projectId: string;
   folderId: string;
+  locale: string;
 };
 
-export default function CasesPane({ projectId, folderId }: Props) {
+export default function CasesPane({ projectId, folderId, locale }: Props) {
   const [cases, setCases] = useState([]);
   useEffect(() => {
     async function fetchDataEffect() {
@@ -50,6 +51,7 @@ export default function CasesPane({ projectId, folderId }: Props) {
         onCreateCase={() => handleCreateCase(folderId)}
         onDeleteCase={handleDeleteCase}
         onDeleteCases={handleDeleteCases}
+        locale={locale}
       />
     </>
   );

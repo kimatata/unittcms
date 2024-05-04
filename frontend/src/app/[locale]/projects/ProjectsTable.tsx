@@ -12,8 +12,8 @@ import {
   DropdownMenu,
   DropdownItem,
   SortDescriptor,
-  Link,
 } from "@nextui-org/react";
+import { Link, NextUiLinkClasses } from "@/src/navigation";
 import { MoreVertical } from "lucide-react";
 import { ProjectType, ProjectsMessages } from "@/types/project";
 import dayjs from "dayjs";
@@ -23,6 +23,7 @@ type Props = {
   onEditProject: (project: ProjectType) => void;
   onDeleteProject: (projectId: number) => void;
   messages: ProjectsMessages;
+  locale: string;
 };
 
 export default function ProjectsTable({
@@ -30,6 +31,7 @@ export default function ProjectsTable({
   onEditProject,
   onDeleteProject,
   messages,
+  locale,
 }: Props) {
   const headerColumns = [
     { name: messages.id, uid: "id", sortable: true },
@@ -67,9 +69,9 @@ export default function ProjectsTable({
       case "name":
         return (
           <Link
-            underline="hover"
             href={`/projects/${project.id}/home`}
-            className="text-blue-500"
+            locale={locale}
+            className={NextUiLinkClasses}
           >
             {cellValue}
           </Link>

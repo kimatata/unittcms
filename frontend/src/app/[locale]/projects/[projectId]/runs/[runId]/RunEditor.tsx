@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter } from "@/src/navigation";
 import {
   Button,
   Input,
@@ -63,9 +63,10 @@ const defaultTestRun = {
 type Props = {
   projectId: string;
   runId: string;
+  locale: string;
 };
 
-export default function RunEditor({ projectId, runId }: Props) {
+export default function RunEditor({ projectId, runId, locale }: Props) {
   const [testRun, setTestRun] = useState<RunType>(defaultTestRun);
   const [folders, setFolders] = useState([]);
   const [runCases, setRunCases] = useState<RunCaseType[]>([]);
@@ -220,7 +221,9 @@ export default function RunEditor({ projectId, runId }: Props) {
               isIconOnly
               size="sm"
               className="rounded-full bg-neutral-50 dark:bg-neutral-600"
-              onPress={() => router.push(`/projects/${projectId}/runs`)}
+              onPress={() =>
+                router.push(`/projects/${projectId}/runs`, { locale: locale })
+              }
             >
               <ArrowLeft size={16} />
             </Button>

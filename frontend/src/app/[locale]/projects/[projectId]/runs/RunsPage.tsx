@@ -7,9 +7,10 @@ import { fetchRuns, createRun, deleteRun } from "./runsControl";
 
 type Props = {
   projectId: string;
+  locale: string;
 };
 
-export default function RunsPage({ projectId }: Props) {
+export default function RunsPage({ projectId, locale }: Props) {
   const [runs, setRuns] = useState([]);
 
   useEffect(() => {
@@ -66,6 +67,7 @@ export default function RunsPage({ projectId }: Props) {
         projectId={projectId}
         runs={runs}
         onDeleteRun={onDeleteClick}
+        locale={locale}
       />
     </div>
   );

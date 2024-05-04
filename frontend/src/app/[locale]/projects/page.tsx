@@ -1,7 +1,7 @@
 import ProjectsPage from "./ProjectsPage";
 import { useTranslations } from "next-intl";
 
-export default function Page() {
+export default function Page(params: { locale }) {
   const t = useTranslations("Projects");
   const messages = {
     projects: t("projects"),
@@ -23,7 +23,7 @@ export default function Page() {
   };
   return (
     <>
-      <ProjectsPage messages={messages} />
+      <ProjectsPage messages={messages} locale={params.locale} />
     </>
   );
 }

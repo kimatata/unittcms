@@ -3,7 +3,12 @@ import CaseEditor from "./CaseEditor";
 export default function Page({
   params,
 }: {
-  params: { projectId: string; folderId: string; caseId: string };
+  params: {
+    projectId: string;
+    folderId: string;
+    caseId: string;
+    locale: string;
+  };
 }) {
   return (
     <CaseEditor
@@ -11,6 +16,7 @@ export default function Page({
         projectId: params.projectId,
         folderId: params.folderId,
         caseId: params.caseId,
+        locale: params.locale,
       }}
     />
   );

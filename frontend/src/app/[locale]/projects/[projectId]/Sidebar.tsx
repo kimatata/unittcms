@@ -2,10 +2,14 @@
 import { useState, useEffect } from "react";
 import { Listbox, ListboxItem } from "@nextui-org/react";
 import { Home, Files, FlaskConical } from "lucide-react";
-import { useRouter, usePathname } from "next/navigation";
+import { usePathname, useRouter } from "@/src/navigation";
 import useGetCurrentIds from "@/utils/useGetCurrentIds";
 
-export default function Sidebar() {
+export type Props = {
+  locale: string;
+};
+
+export default function Sidebar({ locale }: Props) {
   const { projectId } = useGetCurrentIds();
   const router = useRouter();
   const pathname = usePathname();
@@ -16,11 +20,11 @@ export default function Sidebar() {
 
   const handleTabClick = (key: string) => {
     if (key === "home") {
-      router.push(`/projects/${projectId}/home`);
+      router.push(`/projects/${projectId}/home`, { locale: locale });
     } else if (key === "cases") {
-      router.push(`/projects/${projectId}/folders`);
+      router.push(`/projects/${projectId}/folders`, { locale: locale });
     } else if (key === "runs") {
-      router.push(`/projects/${projectId}/runs`);
+      router.push(`/projects/${projectId}/runs`, { locale: locale });
     }
   };
 
@@ -58,13 +62,8 @@ export default function Sidebar() {
 
   return (
     <div className="w-64 border-r-1 dark:border-neutral-700">
-      <Listbox
-        aria-label="Listbox Variants"
-        variant="light"
-        className="p-0"
-        onClick={() => router.push(`/projects/${projectId}/home`)}
-      >
-        {tabItems.map((itr, index) => (
+      <Listbox aria-label="Listbox Variants" variant="light" className="p-0">
+        {tabItems.map((itr) => (
           <ListboxItem
             key={itr.key}
             startContent={itr.startContent}

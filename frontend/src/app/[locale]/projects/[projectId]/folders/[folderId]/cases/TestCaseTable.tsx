@@ -13,8 +13,8 @@ import {
   DropdownItem,
   Selection,
   SortDescriptor,
-  Link,
 } from "@nextui-org/react";
+import { Link, NextUiLinkClasses } from "@/src/navigation";
 import { Plus, MoreVertical, Trash, Circle } from "lucide-react";
 
 const headerColumns = [
@@ -48,6 +48,7 @@ type Props = {
   onCreateCase: () => void;
   onDeleteCase: (caseId: number) => void;
   onDeleteCases: (selectedCases: string[]) => void;
+  locale: string;
 };
 
 export default function TestCaseTable({
@@ -56,6 +57,7 @@ export default function TestCaseTable({
   onCreateCase,
   onDeleteCase,
   onDeleteCases,
+  locale,
 }: Props) {
   const [selectedKeys, setSelectedKeys] = useState<Selection>(new Set([]));
   const [sortDescriptor, setSortDescriptor] = useState<SortDescriptor>({
@@ -81,9 +83,9 @@ export default function TestCaseTable({
       case "title":
         return (
           <Link
-            underline="hover"
             href={`/projects/${projectId}/folders/${testCase.folderId}/cases/${testCase.id}`}
-            className="dark:text-white"
+            locale={locale}
+            className={NextUiLinkClasses}
           >
             {cellValue}
           </Link>

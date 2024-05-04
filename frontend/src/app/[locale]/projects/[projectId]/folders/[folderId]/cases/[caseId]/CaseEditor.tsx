@@ -9,7 +9,7 @@ import {
   Divider,
   Tooltip,
 } from "@nextui-org/react";
-import { useRouter } from "next/navigation";
+import { useRouter } from "@/src/navigation";
 import { Save, Plus, ArrowLeft, ArrowUpFromLine, Circle } from "lucide-react";
 import { priorities, testTypes, templates } from "@/config/selection";
 import CaseStepsEditor from "./CaseStepsEditor";
@@ -40,7 +40,12 @@ const defaultTestCase = {
 export default function CaseEditor({
   params,
 }: {
-  params: { projectId: string; folderId: string; caseId: string };
+  params: {
+    projectId: string;
+    folderId: string;
+    caseId: string;
+    locale: string;
+  };
 }) {
   const [testCase, setTestCase] = useState<CaseType>(defaultTestCase);
   const [isTitleInvalid, setIsTitleInvalid] = useState<boolean>(false);
@@ -171,7 +176,8 @@ export default function CaseEditor({
               className="rounded-full bg-neutral-50 dark:bg-neutral-600"
               onPress={() =>
                 router.push(
-                  `/projects/${params.projectId}/folders/${params.folderId}/cases`
+                  `/projects/${params.projectId}/folders/${params.folderId}/cases`,
+                  { locale: params.locale }
                 )
               }
             >

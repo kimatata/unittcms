@@ -21,7 +21,7 @@ export default function LangSwitch(params: { locale: string }) {
 
   async function changeLocale(nextLocale: string) {
     let newPathname;
-    if (params.locale.length < 4) {
+    if (pathname.length < 4) {
       // when root path
       router.push("/", { locale: nextLocale });
     } else {

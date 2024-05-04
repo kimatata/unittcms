@@ -12,8 +12,8 @@ import {
   DropdownMenu,
   DropdownItem,
   SortDescriptor,
-  Link,
 } from "@nextui-org/react";
+import { Link, NextUiLinkClasses } from "@/src/navigation";
 import { MoreVertical } from "lucide-react";
 import { RunType } from "@/types/run";
 import dayjs from "dayjs";
@@ -30,9 +30,15 @@ type Props = {
   projectId: string;
   runs: RunType[];
   onDeleteRun: (runId: number) => void;
+  locale: string;
 };
 
-export default function RunsTable({ projectId, runs, onDeleteRun }: Props) {
+export default function RunsTable({
+  projectId,
+  runs,
+  onDeleteRun,
+  locale,
+}: Props) {
   const [sortDescriptor, setSortDescriptor] = useState<SortDescriptor>({
     column: "id",
     direction: "ascending",
@@ -61,9 +67,9 @@ export default function RunsTable({ projectId, runs, onDeleteRun }: Props) {
       case "name":
         return (
           <Link
-            underline="hover"
             href={`/projects/${projectId}/runs/${run.id}`}
-            className="text-blue-500"
+            locale={locale}
+            className={NextUiLinkClasses}
           >
             {cellValue}
           </Link>

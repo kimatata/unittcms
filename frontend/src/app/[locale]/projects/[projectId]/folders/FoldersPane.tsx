@@ -4,7 +4,7 @@ import { FolderType } from "@/types/folder";
 import { useEffect, useState } from "react";
 import { Button, Listbox, ListboxItem } from "@nextui-org/react";
 import { Folder, Plus } from "lucide-react";
-import { useRouter, usePathname } from "next/navigation";
+import { usePathname, useRouter } from "@/src/navigation";
 import useGetCurrentIds from "@/utils/useGetCurrentIds";
 import FolderDialog from "./FolderDialog";
 import FolderEditMenu from "./FolderEditMenu";
@@ -18,9 +18,10 @@ import {
 
 type Props = {
   projectId: string;
+  locale: string;
 };
 
-export default function FoldersPane({ projectId }: Props) {
+export default function FoldersPane({ projectId, locale }: Props) {
   const router = useRouter();
   const pathname = usePathname();
   const [folders, setFolders] = useState([]);
@@ -68,7 +69,7 @@ export default function FoldersPane({ projectId }: Props) {
 
   const onDeleteClick = async (folderId: number) => {
     await deleteFolder(folderId);
-    router.push(`/projects/${projectId}/folders`);
+    router.push(`/projects/${projectId}/folders`, { locale: locale });
   };
 
   useEffect(() => {
@@ -86,7 +87,8 @@ export default function FoldersPane({ projectId }: Props) {
         if (pathname === `/projects/${projectId}/folders`) {
           const smallestFolderId = Math.min(...data.map((folder) => folder.id));
           router.push(
-            `/projects/${projectId}/folders/${smallestFolderId}/cases`
+            `/projects/${projectId}/folders/${smallestFolderId}/cases`,
+            { locale: locale }
           );
         }
       } catch (error: any) {
@@ -117,7 +119,10 @@ export default function FoldersPane({ projectId }: Props) {
             <ListboxItem
               key={index}
               onClick={() =>
-                router.push(`/projects/${projectId}/folders/${folder.id}/cases`)
+                router.push(
+                  `/projects/${projectId}/folders/${folder.id}/cases`,
+                  { locale: locale }
+                )
               }
               startContent={<Folder size={20} color="#F7C24E" fill="#F7C24E" />}
               className={

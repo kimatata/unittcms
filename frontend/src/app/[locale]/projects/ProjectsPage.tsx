@@ -14,9 +14,10 @@ import {
 
 export type Props = {
   messages: ProjectsMessages;
+  locale: string;
 };
 
-export default function ProjectsPage({ messages }: Props) {
+export default function ProjectsPage({ messages, locale }: Props) {
   const [projects, setProjects] = useState([]);
 
   useEffect(() => {
@@ -101,6 +102,7 @@ export default function ProjectsPage({ messages }: Props) {
           onEditProject={onEditClick}
           onDeleteProject={onDeleteClick}
           messages={messages}
+          locale={locale}
         />
 
         <ProjectDialog
