@@ -24,3 +24,9 @@ export type ProjectsMessages = {
   update: string;
   pleaseEnter: string;
 };
+
+export type ProjectMessages = {
+  home: string;
+  testCases: string;
+  testRuns: string;
+};

@@ -4,12 +4,14 @@ import { Listbox, ListboxItem } from "@nextui-org/react";
 import { Home, Files, FlaskConical } from "lucide-react";
 import { usePathname, useRouter } from "@/src/navigation";
 import useGetCurrentIds from "@/utils/useGetCurrentIds";
+import { ProjectMessages } from "@/types/project";
 
 export type Props = {
+  messages: ProjectMessages;
   locale: string;
 };
 
-export default function Sidebar({ locale }: Props) {
+export default function Sidebar({ messages, locale }: Props) {
   const { projectId } = useGetCurrentIds();
   const router = useRouter();
   const pathname = usePathname();
@@ -45,17 +47,17 @@ export default function Sidebar({ locale }: Props) {
   const tabItems = [
     {
       key: "home",
-      text: "Home",
+      text: messages.home,
       startContent: <Home strokeWidth={1} size={28} />,
     },
     {
       key: "cases",
-      text: "Test Cases",
+      text: messages.testCases,
       startContent: <Files strokeWidth={1} size={28} />,
     },
     {
       key: "runs",
-      text: "Test Runs",
+      text: messages.testRuns,
       startContent: <FlaskConical strokeWidth={1} size={28} />,
     },
   ];

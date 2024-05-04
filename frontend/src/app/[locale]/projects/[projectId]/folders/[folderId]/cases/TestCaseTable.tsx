@@ -16,14 +16,7 @@ import {
 } from "@nextui-org/react";
 import { Link, NextUiLinkClasses } from "@/src/navigation";
 import { Plus, MoreVertical, Trash, Circle } from "lucide-react";
-
-const headerColumns = [
-  { name: "ID", uid: "id", sortable: true },
-  { name: "Title", uid: "title", sortable: true },
-  { name: "Priority", uid: "priority", sortable: true },
-  { name: "Actions", uid: "actions" },
-];
-
+import { CasesMessages } from "@/types/case";
 import { priorities } from "@/config/selection";
 
 type Case = {
@@ -48,6 +41,7 @@ type Props = {
   onCreateCase: () => void;
   onDeleteCase: (caseId: number) => void;
   onDeleteCases: (selectedCases: string[]) => void;
+  messages: CasesMessages;
   locale: string;
 };
 
@@ -57,8 +51,16 @@ export default function TestCaseTable({
   onCreateCase,
   onDeleteCase,
   onDeleteCases,
+  messages,
   locale,
 }: Props) {
+  const headerColumns = [
+    { name: messages.id, uid: "id", sortable: true },
+    { name: messages.title, uid: "title", sortable: true },
+    { name: messages.priority, uid: "priority", sortable: true },
+    { name: messages.actions, uid: "actions" },
+  ];
+
   const [selectedKeys, setSelectedKeys] = useState<Selection>(new Set([]));
   const [sortDescriptor, setSortDescriptor] = useState<SortDescriptor>({
     column: "id",
@@ -121,7 +123,7 @@ export default function TestCaseTable({
                 className="text-danger"
                 onClick={() => onDeleteCase(testCase.id)}
               >
-                Delete test case
+                {messages.deleteCase}
               </DropdownItem>
             </DropdownMenu>
           </Dropdown>
@@ -163,7 +165,7 @@ export default function TestCaseTable({
   return (
     <>
       <div className="border-b-1 dark:border-neutral-700 w-full p-3 flex items-center justify-between">
-        <h3 className="font-bold">Cases</h3>
+        <h3 className="font-bold">{messages.testCases}</h3>
         <div>
           {(selectedKeys.size > 0 || selectedKeys === "all") && (
             <Button
@@ -173,7 +175,7 @@ export default function TestCaseTable({
               className="me-2"
               onClick={onDeleteCasesClick}
             >
-              Delete
+              {messages.delete}
             </Button>
           )}
           <Button
@@ -182,7 +184,7 @@ export default function TestCaseTable({
             color="primary"
             onClick={onCreateCase}
           >
-            New Test Case
+            {messages.newTestCase}
           </Button>
         </div>
       </div>

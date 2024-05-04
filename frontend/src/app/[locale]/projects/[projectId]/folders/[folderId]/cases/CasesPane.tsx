@@ -2,14 +2,21 @@
 import { useEffect, useState } from "react";
 import TestCaseTable from "./TestCaseTable";
 import { fetchCases, createCase, deleteCase, deleteCases } from "./caseControl";
+import { CasesMessages } from "@/types/case";
 
 type Props = {
   projectId: string;
   folderId: string;
+  messages: CasesMessages;
   locale: string;
 };
 
-export default function CasesPane({ projectId, folderId, locale }: Props) {
+export default function CasesPane({
+  projectId,
+  folderId,
+  messages,
+  locale,
+}: Props) {
   const [cases, setCases] = useState([]);
   useEffect(() => {
     async function fetchDataEffect() {
@@ -51,6 +58,7 @@ export default function CasesPane({ projectId, folderId, locale }: Props) {
         onCreateCase={() => handleCreateCase(folderId)}
         onDeleteCase={handleDeleteCase}
         onDeleteCases={handleDeleteCases}
+        messages={messages}
         locale={locale}
       />
     </>

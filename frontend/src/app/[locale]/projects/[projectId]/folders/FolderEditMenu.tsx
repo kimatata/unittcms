@@ -6,8 +6,21 @@ import {
   DropdownItem,
 } from "@nextui-org/react";
 import { MoreVertical } from "lucide-react";
+import { FolderType, FoldersMessages } from "@/types/folder";
 
-export default function FolderEditMenu({ folder, onEditClick, onDeleteClick }) {
+type Props = {
+  folder: FolderType;
+  onEditClick: (folder: FolderType) => void;
+  onDeleteClick: (folder: FolderType) => void;
+  messages: FoldersMessages;
+};
+
+export default function FolderEditMenu({
+  folder,
+  onEditClick,
+  onDeleteClick,
+  messages,
+}: Props) {
   return (
     <Dropdown>
       <DropdownTrigger>
@@ -17,7 +30,7 @@ export default function FolderEditMenu({ folder, onEditClick, onDeleteClick }) {
       </DropdownTrigger>
       <DropdownMenu aria-label="Static Actions">
         <DropdownItem key="edit" onClick={() => onEditClick(folder)}>
-          Edit folder
+          {messages.editFolder}
         </DropdownItem>
         <DropdownItem
           key="delete"
@@ -25,7 +38,7 @@ export default function FolderEditMenu({ folder, onEditClick, onDeleteClick }) {
           color="danger"
           onClick={() => onDeleteClick(folder.id)}
         >
-          Delete folder
+          {messages.deleteFolder}
         </DropdownItem>
       </DropdownMenu>
     </Dropdown>

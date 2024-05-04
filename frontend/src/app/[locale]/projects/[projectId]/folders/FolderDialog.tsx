@@ -11,13 +11,14 @@ import {
   ModalBody,
   ModalFooter,
 } from "@nextui-org/react";
-import { FolderType } from "@/types/folder";
+import { FolderType, FoldersMessages } from "@/types/folder";
 
 type Props = {
   isOpen: boolean;
   editingFolder: FolderType;
   onCancel: () => void;
   onSubmit: (name: string, detail: string) => void;
+  messages: FoldersMessages;
 };
 
 export default function FolderDialog({
@@ -25,6 +26,7 @@ export default function FolderDialog({
   editingFolder,
   onCancel,
   onSubmit,
+  messages,
 }: Props) {
   const [folderName, setFolderName] = useState({
     text: editingFolder ? editingFolder.name : "",
@@ -80,7 +82,7 @@ export default function FolderDialog({
       setFolderName({
         text: "",
         isValid: false,
-        errorMessage: "Please enter folder name",
+        errorMessage: messages.pleaseEnter,
       });
 
       return;
@@ -98,11 +100,13 @@ export default function FolderDialog({
       }}
     >
       <ModalContent>
-        <ModalHeader className="flex flex-col gap-1">Folder</ModalHeader>
+        <ModalHeader className="flex flex-col gap-1">
+          {messages.folder}
+        </ModalHeader>
         <ModalBody>
           <Input
             type="text"
-            label="Folder Name"
+            label={messages.folderName}
             value={folderName.text}
             isInvalid={folderName.isValid}
             errorMessage={folderName.errorMessage}
@@ -114,7 +118,7 @@ export default function FolderDialog({
             }}
           />
           <Textarea
-            label="Folder Detail"
+            label={messages.folderDetail}
             value={folderDetail.text}
             isInvalid={folderDetail.isValid}
             errorMessage={folderDetail.errorMessage}
@@ -128,10 +132,10 @@ export default function FolderDialog({
         </ModalBody>
         <ModalFooter>
           <Button variant="light" onPress={onCancel}>
-            Close
+            {messages.close}
           </Button>
           <Button color="primary" onPress={validate}>
-            {editingFolder ? "Update" : "Create"}
+            {editingFolder ? messages.update : messages.create}
           </Button>
         </ModalFooter>
       </ModalContent>

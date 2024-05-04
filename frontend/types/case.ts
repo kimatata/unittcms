@@ -49,4 +49,15 @@ type AttachmentType = {
   caseAttachments: CaseAttachmentType;
 };
 
-export { CaseType, StepType, AttachmentType };
+export type CasesMessages = {
+  testCases: string;
+  id: string;
+  title: string;
+  priority: string;
+  actions: string;
+  deleteCase: string;
+  delete: string;
+  newTestCase: string;
+};
+
+export { CaseType, StepType, AttachmentType, CasesMessages };

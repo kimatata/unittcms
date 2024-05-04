@@ -19,5 +19,32 @@
     "create": "作成",
     "update": "更新",
     "please_enter": "プロジェクト名を入力してください"
+  },
+  "Project": {
+    "home": "ホーム",
+    "test_cases": "テストケース",
+    "test_runs": "テストラン"
+  },
+  "Folders": {
+    "folder": "フォルダー",
+    "new_folder": "新規フォルダー",
+    "edit_folder": "フォルダーの編集",
+    "delete_folder": "フォルダーの削除",
+    "folder_name": "フォルダー名",
+    "folder_detail": "フォルダー詳細",
+    "close": "閉じる",
+    "create": "作成",
+    "update": "更新",
+    "please_enter": "フォルダ名を入力してください"
+  },
+  "Cases": {
+    "test_cases": "テストケース",
+    "id": "ID",
+    "title": "タイトル",
+    "priority": "優先度",
+    "actions": "アクション",
+    "delete_case": "テストケースを削除",
+    "delete": "削除",
+    "new_test_case": "新規テストケース"
   }
 }

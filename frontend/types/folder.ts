@@ -7,3 +7,16 @@ export type FolderType = {
   createdAt: string;
   updatedAt: string;
 };
+
+export type FoldersMessages = {
+  folder: string;
+  newFolder: string;
+  editFolder: string;
+  deleteFolder: string;
+  folderName: string;
+  folderDetail: string;
+  close: string;
+  create: string;
+  update: string;
+  pleaseEnter: string;
+};

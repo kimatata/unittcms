@@ -19,5 +19,32 @@
     "create": "Create",
     "update": "Update",
     "please_enter": "Please enter project name"
+  },
+  "Project": {
+    "home": "Home",
+    "test_cases": "Test Cases",
+    "test_run": "Test Runs"
+  },
+  "Folders": {
+    "folder": "Folder",
+    "new_folder": "New Folder",
+    "edit_folder": "Edit Folder",
+    "delete_folder": "Delete Folder",
+    "folder_name": "Folder Name",
+    "folder_detail": "Folder Detail",
+    "close": "Close",
+    "create": "Create",
+    "update": "Update",
+    "please_enter": "Please enter folder name"
+  },
+  "Cases": {
+    "test_cases": "Test Cases",
+    "id": "ID",
+    "name": "Name",
+    "priority": "Priority",
+    "actions": "Actions",
+    "delete_case": "Delete test case",
+    "delete": "Delete",
+    "new_test_case": "New Test Case"
   }
 }

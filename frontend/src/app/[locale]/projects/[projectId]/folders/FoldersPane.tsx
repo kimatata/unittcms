@@ -1,6 +1,6 @@
 "use client";
 import React from "react";
-import { FolderType } from "@/types/folder";
+import { FolderType, FoldersMessages } from "@/types/folder";
 import { useEffect, useState } from "react";
 import { Button, Listbox, ListboxItem } from "@nextui-org/react";
 import { Folder, Plus } from "lucide-react";
@@ -18,10 +18,11 @@ import {
 
 type Props = {
   projectId: string;
+  messages: FoldersMessages;
   locale: string;
 };
 
-export default function FoldersPane({ projectId, locale }: Props) {
+export default function FoldersPane({ projectId, messages, locale }: Props) {
   const router = useRouter();
   const pathname = usePathname();
   const [folders, setFolders] = useState([]);
@@ -112,7 +113,7 @@ export default function FoldersPane({ projectId, locale }: Props) {
           className="m-2"
           onClick={openDialogForCreate}
         >
-          New Folder
+          {messages.newFolder}
         </Button>
         <Listbox aria-label="Listbox Variants" variant="light">
           {folders.map((folder, index) => (
@@ -135,6 +136,7 @@ export default function FoldersPane({ projectId, locale }: Props) {
                   folder={folder}
                   onEditClick={onEditClick}
                   onDeleteClick={onDeleteClick}
+                  messages={messages}
                 />
               }
             >
@@ -149,6 +151,7 @@ export default function FoldersPane({ projectId, locale }: Props) {
         editingFolder={editingFolder}
         onCancel={closeDialog}
         onSubmit={onSubmit}
+        messages={messages}
       />
     </>
   );
