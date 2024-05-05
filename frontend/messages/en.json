@@ -1,9 +1,15 @@
 {
-  "Index": {
-    "title": "Hello world!"
+  "Home": {
+    "get_started": "Get Started",
+    "integrate_and_manage": "Integrate and manage all your software testing."
+  },
+  "Header": {
+    "title": "Open Source Test Case Management Tool",
+    "description": "Integrate and manage all your software testing",
+    "projects": "Projects"
   },
   "Projects": {
-    "projects": "Projects",
+    "projectList": "Project List",
     "project": "Project",
     "new_project": "New Project",
     "edit_project": "Edit Project",
@@ -38,7 +44,7 @@
     "please_enter": "Please enter folder name"
   },
   "Cases": {
-    "test_cases": "Test Cases",
+    "test_case_list": "Test Case List",
     "id": "ID",
     "title": "Title",
     "priority": "Priority",
@@ -100,7 +106,7 @@
     "max_file_size": "Max. file size"
   },
   "Runs": {
-    "runs": "Test Runs",
+    "run_list": "Test Run List",
     "id": "ID",
     "name": "Name",
     "description": "Description",

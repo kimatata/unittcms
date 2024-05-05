@@ -165,7 +165,7 @@ export default function TestCaseTable({
   return (
     <>
       <div className="border-b-1 dark:border-neutral-700 w-full p-3 flex items-center justify-between">
-        <h3 className="font-bold">{messages.testCases}</h3>
+        <h3 className="font-bold">{messages.testCaseList}</h3>
         <div>
           {(selectedKeys.size > 0 || selectedKeys === "all") && (
             <Button

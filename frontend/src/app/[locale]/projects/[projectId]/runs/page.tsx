@@ -8,7 +8,7 @@ export default function Page({
 }) {
   const t = useTranslations("Runs");
   const messages = {
-    runs: t("runs"),
+    runList: t("run_list"),
     id: t("id"),
     name: t("name"),
     description: t("description"),

@@ -1,34 +1,33 @@
 import "@/styles/globals.css";
-import { Metadata } from "next";
-import { siteConfig } from "@/config/site";
 import { fontSans } from "@/config/fonts";
 import { Providers } from "./providers";
 import Header from "./Header";
 import clsx from "clsx";
+import { getTranslations } from "next-intl/server";
 
-export const metadata: Metadata = {
-  title: {
-    default: siteConfig.name,
-    template: `%s - ${siteConfig.name}`,
-  },
-  description: siteConfig.description,
-  themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "white" },
-    { media: "(prefers-color-scheme: dark)", color: "black" },
-  ],
-  icons: {
-    icon: "/favicon/favicon.ico",
-    shortcut: "/favicon/favicon-16x16.png",
-    apple: "/favicon/apple-touch-icon.png",
-  },
-};
+export async function generateMetadata({ params: { locale } }) {
+  const t = await getTranslations({ locale, namespace: "Header" });
+  return {
+    title: t("title"),
+    description: t("description"),
+    themeColor: [
+      { media: "(prefers-color-scheme: light)", color: "white" },
+      { media: "(prefers-color-scheme: dark)", color: "black" },
+    ],
+    icons: {
+      icon: "/favicon/favicon.ico",
+      shortcut: "/favicon/favicon-16x16.png",
+      apple: "/favicon/apple-touch-icon.png",
+    },
+  };
+}
 
 export default function RootLayout({
   children,
-  params: {locale}
+  params: { locale },
 }: {
   children: React.ReactNode;
-  params: {locale: string};
+  params: { locale: string };
 }) {
   return (
     <html lang={locale} suppressHydrationWarning>

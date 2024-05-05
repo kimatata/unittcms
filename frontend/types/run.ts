@@ -27,7 +27,7 @@ type RunStatusCountType = {
 };
 
 type RunsMessages = {
-  runs: string,
+  runList: string,
   id: string;
   name: string;
   description: string;

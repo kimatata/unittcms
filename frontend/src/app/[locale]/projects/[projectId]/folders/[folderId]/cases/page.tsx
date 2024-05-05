@@ -8,7 +8,7 @@ export default function Page({
 }) {
   const t = useTranslations("Cases");
   const messages = {
-    testCases: t("test_cases"),
+    testCaseList: t("test_case_list"),
     id: t("id"),
     title: t("title"),
     priority: t("priority"),

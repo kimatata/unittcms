@@ -50,7 +50,7 @@ type AttachmentType = {
 };
 
 export type CasesMessages = {
-  testCases: string;
+  testCaseList: string;
   id: string;
   title: string;
   priority: string;

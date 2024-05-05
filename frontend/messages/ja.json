@@ -1,9 +1,15 @@
 {
-  "Index": {
-    "title": "はろー"
+  "Home": {
+    "get_started": "テスト管理を始める",
+    "integrate_and_manage": "ソフトウェア開発にかかわるすべてのテストを統合管理"
+  },
+  "Header": {
+    "title": "オープンソーステストケース管理ツール",
+    "description": "ソフトウェア開発にかかわるすべてのテストを統合管理",
+    "projects": "プロジェクト"
   },
   "Projects": {
-    "projects": "プロジェクト",
+    "projectList": "プロジェクト一覧",
     "project": "プロジェクト",
     "new_project": "新規プロジェクト",
     "edit_project": "プロジェクトの編集",
@@ -23,7 +29,7 @@
   "Project": {
     "home": "ホーム",
     "test_cases": "テストケース",
-    "test_runs": "テストラン"
+    "test_runs": "テストの実行"
   },
   "Folders": {
     "folder": "フォルダー",
@@ -38,7 +44,7 @@
     "please_enter": "フォルダ名を入力してください"
   },
   "Cases": {
-    "test_cases": "テストケース",
+    "test_case_list": "テストケース一覧",
     "id": "ID",
     "title": "タイトル",
     "priority": "優先度",
@@ -100,18 +106,18 @@
     "max_file_size": "最大ファイルサイズ"
   },
   "Runs": {
-    "runs": "テストラン",
+    "run_list": "テストの実行一覧",
     "id": "ID",
     "name": "名前",
     "description": "詳細",
     "last_update": "最終更新",
     "actions": "アクション",
-    "new_run": "新規テストラン",
-    "delete_run": "テストランを削除",
-    "no_runs_found": "テストランがありません"
+    "new_run": "新規テストの実行",
+    "delete_run": "テストの実行を削除",
+    "no_runs_found": "テストの実行がありません"
   },
   "Run": {
-    "back_to_runs": "テストラン一覧に戻る",
+    "back_to_runs": "テストの実行一覧に戻る",
     "updating": "更新中...",
     "update": "更新",
     "progress": "進捗",
@@ -140,8 +146,8 @@
     "skipped": "スキップ",
     "select_test_case": "テストケースを選択",
     "test_case_selection": "テストケース選択",
-    "include_in_run": "テストランに含める",
-    "exclude_from_run": "テストランから除外する",
+    "include_in_run": "テストの実行に含める",
+    "exclude_from_run": "テストの実行から除外する",
     "no_cases_found": "テストケースが見つかりません"
   }
 }

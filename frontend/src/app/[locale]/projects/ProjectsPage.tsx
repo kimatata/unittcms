@@ -83,7 +83,7 @@ export default function ProjectsPage({ messages, locale }: Props) {
   return (
     <div className="container mx-auto max-w-3xl pt-16 px-6 flex-grow">
       <div className="w-full p-3 flex items-center justify-between">
-        <h3 className="font-bold">{messages.project}</h3>
+        <h3 className="font-bold">{messages.projectList}</h3>
         <div>
           <Button
             startContent={<Plus size={16} />}

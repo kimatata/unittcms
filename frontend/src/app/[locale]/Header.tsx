@@ -3,10 +3,10 @@ import {
   NavbarContent,
   NavbarBrand,
   NavbarItem,
+  Chip,
   Link as NextUiLink,
 } from "@nextui-org/react";
 import { useTranslations } from "next-intl";
-import { siteConfig } from "@/config/site";
 import { Link } from "@/src/navigation";
 import LangSwitch from "./LangSwitch";
 import { ThemeSwitch } from "@/components/theme-switch";
@@ -15,10 +15,10 @@ import { GithubIcon } from "@/components/icons";
 import Image from "next/image";
 
 export default function Header(params: { locale: string }) {
-  const t = useTranslations("Index");
+  const t = useTranslations("Header");
 
   return (
-    <NextUINavbar maxWidth="xl" position="sticky" className="bg-inherit">
+    <NextUINavbar maxWidth="full" position="sticky" className="bg-inherit">
       <NavbarContent className="basis-1/5 sm:basis-full" justify="start">
         <NavbarBrand as="li" className="gap-3 max-w-fit">
           <Link
@@ -32,20 +32,29 @@ export default function Header(params: { locale: string }) {
               height={32}
               alt="Logo"
             />
-            <p className="font-bold text-inherit">Test Case Manager</p>
+            <p className="font-bold text-inherit">Platest</p>
           </Link>
         </NavbarBrand>
-        {siteConfig.navItems.map((item) => (
-          <NavbarItem key={item.href}>
+        <NavbarItem>
+          <Chip size="sm" variant="flat">
             <Link
               className="data-[active=true]:text-primary data-[active=true]:font-medium"
-              href={item.href}
+              href="/about"
               locale={params.locale}
             >
-              {item.label}
+              1.0.0-alpha.3
             </Link>
-          </NavbarItem>
-        ))}
+          </Chip>
+        </NavbarItem>
+        <NavbarItem>
+          <Link
+            className="data-[active=true]:text-primary data-[active=true]:font-medium"
+            href="/projects"
+            locale={params.locale}
+          >
+            {t("projects")}
+          </Link>
+        </NavbarItem>
       </NavbarContent>
 
       <NavbarContent className="basis-1 pl-4" justify="end">

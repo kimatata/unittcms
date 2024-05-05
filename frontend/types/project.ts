@@ -7,7 +7,7 @@ export type ProjectType = {
 };
 
 export type ProjectsMessages = {
-  project: string;
+  projectList: string;
   projects: string;
   newProject: string;
   editProject: string;

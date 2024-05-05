@@ -4,7 +4,7 @@ import { useTranslations } from "next-intl";
 export default function Page(params: { locale }) {
   const t = useTranslations("Projects");
   const messages = {
-    projects: t("projects"),
+    projectList: t("projectList"),
     project: t("project"),
     newProject: t("new_project"),
     editProject: t("edit_project"),

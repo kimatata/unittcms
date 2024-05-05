@@ -4,7 +4,7 @@ import { useTranslations } from "next-intl";
 import { Link } from "@/src/navigation";
 
 export default function Home() {
-  const t = useTranslations("Index");
+  const t = useTranslations("Home");
 
   return (
     <section className="flex flex-col items-center justify-center gap-4 py-8 md:py-10">
@@ -13,11 +13,9 @@ export default function Home() {
         <h1 className={title()}>Test Case Management Tool&nbsp;</h1>
         <br />
         <h2 className={subtitle({ class: "text-inherit mt-4" })}>
-          Integrate and manage all your software testing.
+          {t("integrate_and_manage")}
         </h2>
       </div>
-
-      <h1>{t("title")}</h1>
 
       <div className="flex gap-3">
         <Link
@@ -28,7 +26,7 @@ export default function Home() {
             variant: "shadow",
           })}
         >
-          Create first test project
+          {t("get_started")}
         </Link>
       </div>
     </section>
