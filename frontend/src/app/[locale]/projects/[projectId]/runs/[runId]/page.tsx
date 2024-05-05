@@ -6,10 +6,22 @@ export default function Page({
 }: {
   params: { projectId: string; runId: string; locale: string };
 }) {
-  const t = useTranslations("Runs");
+  const t = useTranslations("Run");
   const messages = {
+    backToRuns: t("back_to_runs"),
+    updating: t("updating"),
+    update: t("update"),
+    progress: t("progress"),
     id: t("id"),
     title: t("title"),
+    pleaseEnter: t("please_enter"),
+    description: t("description"),
+    new: t("new"),
+    inProgress: t("inProgress"),
+    underReview: t("underReview"),
+    rejected: t("rejected"),
+    done: t("done"),
+    closed: t("closed"),
     priority: t("priority"),
     actions: t("actions"),
     status: t("status"),
@@ -22,6 +34,8 @@ export default function Page({
     failed: t("failed"),
     retest: t("retest"),
     skipped: t("skipped"),
+    selectTestCase: t("select_test_case"),
+    testCaseSelection: t("test_case_selection"),
     includeInRun: t("include_in_run"),
     excludeFromRun: t("exclude_from_run"),
     noCasesFound: t("no_cases_found"),

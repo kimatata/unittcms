@@ -35,7 +35,7 @@ import {
   RunCaseType,
   RunCaseInfoType,
   RunStatusCountType,
-  RunsMessages,
+  RunMessages,
 } from "@/types/run";
 import { CaseType } from "@/types/case";
 import { FolderType } from "@/types/folder";
@@ -64,11 +64,16 @@ const defaultTestRun = {
 type Props = {
   projectId: string;
   runId: string;
-  messages: RunsMessages;
+  messages: RunMessages;
   locale: string;
 };
 
-export default function RunEditor({ projectId, runId, messages, locale }: Props) {
+export default function RunEditor({
+  projectId,
+  runId,
+  messages,
+  locale,
+}: Props) {
   const [testRun, setTestRun] = useState<RunType>(defaultTestRun);
   const [folders, setFolders] = useState([]);
   const [runCases, setRunCases] = useState<RunCaseType[]>([]);
@@ -218,7 +223,7 @@ export default function RunEditor({ projectId, runId, messages, locale }: Props)
     <>
       <div className="border-b-1 dark:border-neutral-700 w-full p-3 flex items-center justify-between">
         <div className="flex items-center">
-          <Tooltip content="Back to runs">
+          <Tooltip content={messages.backToRuns}>
             <Button
               isIconOnly
               size="sm"
@@ -243,7 +248,7 @@ export default function RunEditor({ projectId, runId, messages, locale }: Props)
             setIsUpdating(false);
           }}
         >
-          {isUpdating ? "Updating..." : "Update"}
+          {isUpdating ? messages.updating : messages.update}
         </Button>
       </div>
 
@@ -252,7 +257,7 @@ export default function RunEditor({ projectId, runId, messages, locale }: Props)
           <div>
             <div className="w-96 h-72">
               <div className="flex items-center">
-                <h4 className="font-bold">Progress</h4>
+                <h4 className="font-bold">{messages.progress}</h4>
                 <Tooltip content="Refresh">
                   <Button
                     isIconOnly
@@ -273,10 +278,10 @@ export default function RunEditor({ projectId, runId, messages, locale }: Props)
               size="sm"
               type="text"
               variant="bordered"
-              label="Name"
+              label={messages.title}
               value={testRun.name}
               isInvalid={isNameInvalid}
-              errorMessage={isNameInvalid ? "please enter name" : ""}
+              errorMessage={isNameInvalid ? messages.pleaseEnter : ""}
               onChange={(e) => {
                 setTestRun({ ...testRun, name: e.target.value });
               }}
@@ -286,8 +291,7 @@ export default function RunEditor({ projectId, runId, messages, locale }: Props)
             <Textarea
               size="sm"
               variant="bordered"
-              label="Description"
-              placeholder="Test run description"
+              label={messages.description}
               value={testRun.description}
               onValueChange={(changeValue) => {
                 setTestRun({ ...testRun, description: changeValue });
@@ -307,12 +311,12 @@ export default function RunEditor({ projectId, runId, messages, locale }: Props)
                   );
                   setTestRun({ ...testRun, state: index });
                 }}
-                label="status"
+                label={messages.status}
                 className="mt-3 max-w-xs"
               >
-                {testRunStatus.map((state, index) => (
-                  <SelectItem key={state.uid} value={index}>
-                    {state.name}
+                {testRunStatus.map((status, index) => (
+                  <SelectItem key={status.uid} value={index}>
+                    {messages[status.uid]}
                   </SelectItem>
                 ))}
               </Select>
@@ -322,7 +326,7 @@ export default function RunEditor({ projectId, runId, messages, locale }: Props)
 
         <Divider className="my-6" />
         <div className="flex items-center justify-between">
-          <h6 className="h-8 font-bold">Select test cases</h6>
+          <h6 className="h-8 font-bold">{messages.selectTestCase}</h6>
           <div>
             {(selectedKeys.size > 0 || selectedKeys === "all") && (
               <Dropdown>
@@ -332,7 +336,7 @@ export default function RunEditor({ projectId, runId, messages, locale }: Props)
                     color="primary"
                     endContent={<ChevronDown size={16} />}
                   >
-                    Test case selection
+                    {messages.testCaseSelection}
                   </Button>
                 </DropdownTrigger>
                 <DropdownMenu aria-label="test case select actions">

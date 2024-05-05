@@ -31,12 +31,12 @@ const automationStatus = [
 const templates = [{ uid: "text" }, { uid: "step" }];
 
 const testRunStatus = [
-  { name: "New", uid: "new" },
-  { name: "In progress", uid: "in-progress" },
-  { name: "Under review", uid: "under-review" },
-  { name: "Rejected", uid: "rejected" },
-  { name: "Done", uid: "done" },
-  { name: "Closed", uid: "closed" },
+  { uid: "new" },
+  { uid: "inProgress" },
+  { uid: "underReview" },
+  { uid: "rejected" },
+  { uid: "done" },
+  { uid: "closed" },
 ];
 
 const testRunCaseStatus = [

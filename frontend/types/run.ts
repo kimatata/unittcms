@@ -26,9 +26,33 @@ type RunStatusCountType = {
   count: number;
 };
 
-export type RunsMessages = {
+type RunsMessages = {
+  runs: string,
+  id: string;
+  name: string;
+  description: string;
+  lastUpdate: string;
+  actions: string;
+  newRun: string;
+  deleteRun: string;
+  noRunsFound: string;
+};
+
+type RunMessages = {
+  backToRuns: string,
+  updating: string;
+  update: string;
+  progress: string,
   id: string;
   title: string;
+  pleaseEnter: string;
+  description: string;
+  new: string;
+  inProgress: string;
+  underReview: string;
+  rejected: string;
+  done: string;
+  closed: string;
   priority: string;
   status: string;
   actions: string;
@@ -41,6 +65,8 @@ export type RunsMessages = {
   failed: string;
   retest: string;
   skipped: string;
+  selectTestCase: string;
+  testCaseSelection: string;
   includeInRun: string;
   excludeFromRun: string;
   noCasesFound: string;
@@ -52,4 +78,5 @@ export {
   RunCaseInfoType,
   RunStatusCountType,
   RunsMessages,
+  RunMessages,
 };

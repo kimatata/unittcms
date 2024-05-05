@@ -4,13 +4,15 @@ import { Button } from "@nextui-org/react";
 import { Plus } from "lucide-react";
 import RunsTable from "./RunsTable";
 import { fetchRuns, createRun, deleteRun } from "./runsControl";
+import { RunsMessages } from "@/types/run";
 
 type Props = {
   projectId: string;
   locale: string;
+  messages: RunsMessages;
 };
 
-export default function RunsPage({ projectId, locale }: Props) {
+export default function RunsPage({ projectId, locale, messages }: Props) {
   const [runs, setRuns] = useState([]);
 
   useEffect(() => {
@@ -50,7 +52,7 @@ export default function RunsPage({ projectId, locale }: Props) {
   return (
     <div className="container mx-auto max-w-3xl pt-6 px-6 flex-grow">
       <div className="w-full p-3 flex items-center justify-between">
-        <h3 className="font-bold">Runs</h3>
+        <h3 className="font-bold">{messages.runs}</h3>
         <div>
           <Button
             startContent={<Plus size={16} />}
@@ -58,7 +60,7 @@ export default function RunsPage({ projectId, locale }: Props) {
             color="primary"
             onClick={onCreateClick}
           >
-            New Run
+            {messages.newRun}
           </Button>
         </div>
       </div>
@@ -67,6 +69,7 @@ export default function RunsPage({ projectId, locale }: Props) {
         projectId={projectId}
         runs={runs}
         onDeleteRun={onDeleteClick}
+        messages={messages}
         locale={locale}
       />
     </div>

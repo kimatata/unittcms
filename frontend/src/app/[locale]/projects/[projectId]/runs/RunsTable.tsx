@@ -15,21 +15,14 @@ import {
 } from "@nextui-org/react";
 import { Link, NextUiLinkClasses } from "@/src/navigation";
 import { MoreVertical } from "lucide-react";
-import { RunType } from "@/types/run";
+import { RunsMessages, RunType } from "@/types/run";
 import dayjs from "dayjs";
-
-const headerColumns = [
-  { name: "ID", uid: "id", sortable: true },
-  { name: "Name", uid: "name", sortable: true },
-  { name: "Description", uid: "description", sortable: true },
-  { name: "Last update", uid: "updatedAt", sortable: true },
-  { name: "Actions", uid: "actions" },
-];
 
 type Props = {
   projectId: string;
   runs: RunType[];
   onDeleteRun: (runId: number) => void;
+  messages: RunsMessages;
   locale: string;
 };
 
@@ -37,8 +30,17 @@ export default function RunsTable({
   projectId,
   runs,
   onDeleteRun,
+  messages,
   locale,
 }: Props) {
+  const headerColumns = [
+    { name: messages.id, uid: "id", sortable: true },
+    { name: messages.name, uid: "name", sortable: true },
+    { name: messages.description, uid: "description", sortable: true },
+    { name: messages.lastUpdate, uid: "updatedAt", sortable: true },
+    { name: messages.actions, uid: "actions" },
+  ];
+
   const [sortDescriptor, setSortDescriptor] = useState<SortDescriptor>({
     column: "id",
     direction: "ascending",
@@ -97,7 +99,7 @@ export default function RunsTable({
                 className="text-danger"
                 onClick={() => onDeleteRun(run.id)}
               >
-                Delete run
+                {messages.deleteRun}
               </DropdownItem>
             </DropdownMenu>
           </Dropdown>
@@ -146,7 +148,7 @@ export default function RunsTable({
             </TableColumn>
           )}
         </TableHeader>
-        <TableBody emptyContent={"No runs found"} items={sortedItems}>
+        <TableBody emptyContent={messages.noRunsFound} items={sortedItems}>
           {(item) => (
             <TableRow key={item.id}>
               {(columnKey) => (
