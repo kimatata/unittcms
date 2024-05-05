@@ -1,5 +1,5 @@
 import { Image, Button, Tooltip, Card, CardBody } from "@nextui-org/react";
-import { AttachmentType } from "../../../../../../../../types/case";
+import { AttachmentType, CaseMessages } from "@/types/case";
 import { Trash, ArrowDownToLine } from "lucide-react";
 
 type Props = {
@@ -9,12 +9,14 @@ type Props = {
     downloadFileName: string
   ) => void;
   onAttachmentDelete: (attachmentId: number) => void;
+  messages: CaseMessages,
 };
 
 export default function CaseAttachmentsEditor({
   attachments = [],
   onAttachmentDownload,
   onAttachmentDelete,
+  messages,
 }: Props) {
   let images = [];
   let others = [];
@@ -48,7 +50,7 @@ export default function CaseAttachmentsEditor({
               />
               <div className="flex items-center justify-between">
                 <p>{image.title}</p>
-                <Tooltip content="Delete">
+                <Tooltip content={messages.delete}>
                   <Button
                     isIconOnly
                     size="sm"
@@ -70,7 +72,7 @@ export default function CaseAttachmentsEditor({
             <div className="flex items-center justify-between">
               <p>{file.title}</p>
               <div>
-                <Tooltip content="Download">
+                <Tooltip content={messages.download}>
                   <Button
                     isIconOnly
                     size="sm"
@@ -80,7 +82,7 @@ export default function CaseAttachmentsEditor({
                     <ArrowDownToLine size={16} />
                   </Button>
                 </Tooltip>
-                <Tooltip content="Delete">
+                <Tooltip content={messages.delete}>
                   <Button
                     isIconOnly
                     size="sm"

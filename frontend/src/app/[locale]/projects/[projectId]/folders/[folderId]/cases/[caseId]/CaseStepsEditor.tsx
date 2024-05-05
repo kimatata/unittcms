@@ -1,5 +1,5 @@
 import { Textarea, Button, Tooltip } from "@nextui-org/react";
-import { StepType } from "../../../../../../../../types/case";
+import { CaseMessages, StepType } from "@/types/case";
 import { Plus, Trash } from "lucide-react";
 
 type Props = {
@@ -7,6 +7,7 @@ type Props = {
   onStepUpdate: (stepId: number, step: StepType) => void;
   onStepPlus: (newStepNo: number) => void;
   onStepDelete: (stepId: number) => void;
+  messages: CaseMessages;
 };
 
 export default function StepsEditor({
@@ -14,6 +15,7 @@ export default function StepsEditor({
   onStepUpdate,
   onStepPlus,
   onStepDelete,
+  messages,
 }: Props) {
   // sort steps by junction table's column
   const sortedSteps = steps.slice().sort((a, b) => {
@@ -32,8 +34,7 @@ export default function StepsEditor({
           <Textarea
             size="sm"
             variant="bordered"
-            label="Details of the step"
-            placeholder="Details of the step"
+            label={messages.detailsOfTheStep}
             value={step.step}
             onValueChange={(changeValue) => {
               onStepUpdate(step.id, { ...step, step: changeValue });
@@ -44,8 +45,7 @@ export default function StepsEditor({
           <Textarea
             size="sm"
             variant="bordered"
-            label="Expected Result"
-            placeholder="Expected Result"
+            label={messages.expectedResult}
             value={step.result}
             onValueChange={(changeValue) => {
               onStepUpdate(step.id, { ...step, result: changeValue });
@@ -53,7 +53,7 @@ export default function StepsEditor({
             className="mt-3 ms-1"
           />
           <div className="mt-3 ms-1">
-            <Tooltip content="Delete this step" placement="left">
+            <Tooltip content={messages.deleteThisStep} placement="left">
               <Button
                 isIconOnly
                 size="sm"
@@ -63,7 +63,7 @@ export default function StepsEditor({
                 <Trash size={16} />
               </Button>
             </Tooltip>
-            <Tooltip content="Insert step" placement="left">
+            <Tooltip content={messages.insertStep} placement="left">
               <Button
                 isIconOnly
                 size="sm"

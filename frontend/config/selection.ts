@@ -6,19 +6,19 @@ const priorities = [
 ];
 
 const testTypes = [
-  { name: "Other", uid: "other" },
-  { name: "Security", uid: "security" },
-  { name: "Performance", uid: "performance" },
-  { name: "Accessibility", uid: "accessibility" },
-  { name: "Functional", uid: "functional" },
-  { name: "Acceptance", uid: "acceptance" },
-  { name: "Usability", uid: "usability" },
-  { name: "Smoke&Sanity", uid: "smoke-sanity" },
-  { name: "Compatibility", uid: "compatibility" },
-  { name: "Destructive", uid: "destructive" },
-  { name: "Regression", uid: "regression" },
-  { name: "Automated", uid: "automated" },
-  { name: "Manual", uid: "manual" },
+  { uid: "other" },
+  { uid: "security" },
+  { uid: "performance" },
+  { uid: "accessibility" },
+  { uid: "functional" },
+  { uid: "acceptance" },
+  { uid: "usability" },
+  { uid: "smokeSanity" },
+  { uid: "compatibility" },
+  { uid: "destructive" },
+  { uid: "regression" },
+  { uid: "automated" },
+  { uid: "manual" },
 ];
 
 const automationStatus = [
@@ -28,10 +28,7 @@ const automationStatus = [
   { name: "Obsolete", uid: "obsolete" },
 ];
 
-const templates = [
-  { name: "Text", uid: "text-template" },
-  { name: "Step", uid: "step-template" },
-];
+const templates = [{ uid: "text" }, { uid: "step" }];
 
 const testRunStatus = [
   { name: "New", uid: "new" },

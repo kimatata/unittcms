@@ -170,7 +170,7 @@ export default function CaseEditor({
     <>
       <div className="border-b-1 dark:border-neutral-700 w-full p-3 flex items-center justify-between">
         <div className="flex items-center">
-          <Tooltip content="Back to cases" placement="left">
+          <Tooltip content={params.messages.backToCases} placement="left">
             <Button
               isIconOnly
               size="sm"
@@ -198,20 +198,20 @@ export default function CaseEditor({
             setIsUpdating(false);
           }}
         >
-          {isUpdating ? "Updating..." : "Update"}
+          {isUpdating ? params.messages.updating : params.messages.update}
         </Button>
       </div>
 
       <div className="p-5">
-        <h6 className="font-bold">Basic</h6>
+        <h6 className="font-bold">{params.messages.basic}</h6>
         <Input
           size="sm"
           type="text"
           variant="bordered"
-          label="Title"
+          label={params.messages.title}
           value={testCase.title}
           isInvalid={isTitleInvalid}
-          errorMessage={isTitleInvalid ? "please enter title" : ""}
+          errorMessage={isTitleInvalid ? params.messages.pleaseEnterTitle : ""}
           onChange={(e) => {
             setTestCase({ ...testCase, title: e.target.value });
           }}
@@ -221,8 +221,8 @@ export default function CaseEditor({
         <Textarea
           size="sm"
           variant="bordered"
-          label="Description"
-          placeholder="Test case description"
+          label={params.messages.description}
+          placeholder={params.messages.testCaseDescription}
           value={testCase.description}
           onValueChange={(changeValue) => {
             setTestCase({ ...testCase, description: changeValue });
@@ -249,7 +249,7 @@ export default function CaseEditor({
                 fill={priorities[testCase.priority].color}
               />
             }
-            label="Priority"
+            label={params.messages.priority}
             className="mt-3 max-w-xs"
           >
             {priorities.map((priority, index) => (
@@ -272,12 +272,12 @@ export default function CaseEditor({
               );
               setTestCase({ ...testCase, type: index });
             }}
-            label="type"
+            label={params.messages.type}
             className="mt-3 max-w-xs"
           >
             {testTypes.map((type, index) => (
               <SelectItem key={type.uid} value={index}>
-                {type.name}
+                {params.messages[type.uid]}
               </SelectItem>
             ))}
           </Select>
@@ -295,27 +295,26 @@ export default function CaseEditor({
               );
               setTestCase({ ...testCase, template: index });
             }}
-            label="template"
+            label={params.messages.template}
             className="mt-3 max-w-xs"
           >
             {templates.map((template, index) => (
               <SelectItem key={template.uid} value={index}>
-                {template.name}
+                {params.messages[template.uid]}
               </SelectItem>
             ))}
           </Select>
         </div>
 
         <Divider className="my-6" />
-        {templates[testCase.template].name === "Text" ? (
+        {templates[testCase.template].uid === "text" ? (
           <div>
-            <h6 className="font-bold">Test Detail</h6>
+            <h6 className="font-bold">{params.messages.testDetail}</h6>
             <div className="flex">
               <Textarea
                 size="sm"
                 variant="bordered"
-                label="PreConditions"
-                placeholder="PreConditions"
+                label={params.messages.preconditions}
                 value={testCase.preConditions}
                 onValueChange={(changeValue) => {
                   setTestCase({ ...testCase, preConditions: changeValue });
@@ -326,8 +325,7 @@ export default function CaseEditor({
               <Textarea
                 size="sm"
                 variant="bordered"
-                label="ExpectedResults"
-                placeholder="ExpectedResults"
+                label={params.messages.expectedResult}
                 value={testCase.expectedResults}
                 onValueChange={(changeValue) => {
                   setTestCase({ ...testCase, expectedResults: changeValue });
@@ -339,7 +337,7 @@ export default function CaseEditor({
         ) : (
           <div>
             <div className="flex items-center">
-              <h6 className="font-bold">Steps</h6>
+              <h6 className="font-bold">{params.messages.steps}</h6>
               <Button
                 startContent={<Plus size={16} />}
                 size="sm"
@@ -347,7 +345,7 @@ export default function CaseEditor({
                 className="ms-3"
                 onPress={() => onPlusClick(1)}
               >
-                New Step
+                {params.messages.newStep}
               </Button>
             </div>
             <CaseStepsEditor
@@ -366,12 +364,13 @@ export default function CaseEditor({
               }}
               onStepPlus={onPlusClick}
               onStepDelete={onDeleteClick}
+              messages={params.messages}
             />
           </div>
         )}
 
         <Divider className="my-6" />
-        <h6 className="font-bold">Attachments</h6>
+        <h6 className="font-bold">{params.messages.attachments}</h6>
         <CaseAttachmentsEditor
           attachments={testCase.Attachments}
           onAttachmentDownload={(
@@ -379,6 +378,7 @@ export default function CaseEditor({
             downloadFileName: string
           ) => fetchDownloadAttachment(attachmentId, downloadFileName)}
           onAttachmentDelete={onAttachmentDelete}
+          messages={params.messages}
         />
         <div
           className="flex items-center justify-center w-96 mt-3"
@@ -392,11 +392,13 @@ export default function CaseEditor({
             <div className="flex flex-col items-center justify-center pt-5 pb-6">
               <ArrowUpFromLine />
               <p className="mb-2 text-sm text-neutral-500 dark:text-neutral-400">
-                <span className="font-semibold">Click to upload</span> or drag
-                and drop
+                <span className="font-semibold">
+                  {params.messages.clickToUpload}
+                </span>
+                <span>{params.messages.orDragAndDrop}</span>
               </p>
               <p className="text-xs text-neutral-500 dark:text-neutral-400">
-                Max. file size: 50 MB
+                {params.messages.maxFileSize}: 50 MB
               </p>
             </div>
             <input
