@@ -258,7 +258,7 @@ export default function RunEditor({
             <div className="w-96 h-72">
               <div className="flex items-center">
                 <h4 className="font-bold">{messages.progress}</h4>
-                <Tooltip content="Refresh">
+                <Tooltip content={messages.refresh}>
                   <Button
                     isIconOnly
                     size="sm"
@@ -270,7 +270,10 @@ export default function RunEditor({
                 </Tooltip>
               </div>
 
-              <RunProgressChart statusCounts={runStatusCounts} />
+              <RunProgressChart
+                statusCounts={runStatusCounts}
+                messages={messages}
+              />
             </div>
           </div>
           <div className="flex-grow">

@@ -12,6 +12,7 @@ export default function Page({
     updating: t("updating"),
     update: t("update"),
     progress: t("progress"),
+    refresh: t("refresh"),
     id: t("id"),
     title: t("title"),
     pleaseEnter: t("please_enter"),

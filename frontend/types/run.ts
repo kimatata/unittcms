@@ -43,6 +43,7 @@ type RunMessages = {
   updating: string;
   update: string;
   progress: string,
+  refresh: string,
   id: string;
   title: string;
   pleaseEnter: string;
