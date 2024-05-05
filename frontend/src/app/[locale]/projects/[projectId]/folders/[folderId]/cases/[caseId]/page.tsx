@@ -62,13 +62,11 @@ export default function Page({
 
   return (
     <CaseEditor
-      params={{
-        projectId: params.projectId,
-        folderId: params.folderId,
-        caseId: params.caseId,
-        messages: messages,
-        locale: params.locale,
-      }}
+      projectId={params.projectId}
+      folderId={params.folderId}
+      caseId={params.caseId}
+      messages={messages}
+      locale={params.locale}
     />
   );
 }
