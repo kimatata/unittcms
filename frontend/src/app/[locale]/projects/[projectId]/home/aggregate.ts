@@ -1,5 +1,5 @@
 import { ProjectType } from "@/types/project";
-import { testTypes, priorities } from "@/config/selection";
+import { testTypes, priorities, testRunCaseStatus } from "@/config/selection";
 
 // aggregate folder, case, run mum
 function aggregateBasicInfo(project: ProjectType) {
@@ -49,4 +49,44 @@ function aggregateTestPriority(project: ProjectType) {
   return result;
 }
 
-export { aggregateBasicInfo, aggregateTestType, aggregateTestPriority };
+function aggregateProgress(project: ProjectType) {
+  let series = testRunCaseStatus.map((status) => {
+    return { name: status.uid, data: [] };
+  });
+  let categories = [];
+
+  project.Runs.forEach((run) => {
+    run.RunCases.forEach((runCase) => {
+      const createdAtDate = new Date(runCase.createdAt);
+      const dateString = createdAtDate.toISOString().slice(0, 10);
+
+      const alreadyExists = categories.includes(dateString);
+      if (!alreadyExists) {
+        categories.push(dateString);
+        series.forEach((itr) => {
+          itr.data.push(0);
+        });
+      }
+    });
+  });
+
+  project.Runs.forEach((run) => {
+    run.RunCases.forEach((runCase) => {
+      const createdAtDate = new Date(runCase.createdAt);
+      const dateString = createdAtDate.toISOString().slice(0, 10);
+      const index = categories.indexOf(dateString);
+
+      const target = series[runCase.status];
+      target.data[index]++;
+    });
+  });
+
+  return { series, categories };
+}
+
+export {
+  aggregateBasicInfo,
+  aggregateTestType,
+  aggregateTestPriority,
+  aggregateProgress,
+};

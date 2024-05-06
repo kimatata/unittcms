@@ -5,14 +5,17 @@ import { title } from "@/components/primitives";
 import { Card, CardBody, Chip } from "@nextui-org/react";
 import { Folder, Clipboard, FlaskConical } from "lucide-react";
 import { CaseTypeCountType, CasePriorityCountType } from "@/types/case";
+import { ProgressSeriesType } from "@/types/run";
 import { HomeMessages } from "./page";
 import {
   aggregateBasicInfo,
   aggregateTestPriority,
   aggregateTestType,
+  aggregateProgress,
 } from "./aggregate";
 import TestTypesChart from "./TestTypesDonutChart";
 import TestPriorityChart from "./TestPriorityDonutChart";
+import TestProgressBarChart from "./TestProgressColumnChart";
 import Config from "@/config/config";
 const apiServer = Config.apiServer;
 
@@ -54,6 +57,8 @@ export function Home({ projectId, messages }: Props) {
   const [typesCounts, setTypesCounts] = useState<CaseTypeCountType[]>();
   const [priorityCounts, setPriorityCounts] =
     useState<CasePriorityCountType[]>();
+  const [progressCategories, setProgressCategories] = useState<string[]>();
+  const [progressSeries, setProgressSeries] = useState<ProgressSeriesType[]>();
   const url = `${apiServer}/home/${projectId}`;
 
   useEffect(() => {
@@ -82,6 +87,10 @@ export function Home({ projectId, messages }: Props) {
 
       const priorityRet = aggregateTestPriority(project);
       setPriorityCounts([...priorityRet]);
+
+      const { series, categories } = aggregateProgress(project);
+      setProgressSeries([...series]);
+      setProgressCategories([...categories]);
     }
 
     aggregate();
@@ -119,7 +128,16 @@ export function Home({ projectId, messages }: Props) {
       </Card>
 
       <Divider className="my-6" />
-      <div className="flex">
+      <div style={{ height: "20rem" }}>
+        <h3>{messages.progress}</h3>
+        <TestProgressBarChart
+          progressSeries={progressSeries}
+          progressCategories={progressCategories}
+        />
+      </div>
+
+      <Divider className="my-6" />
+      <div className="flex pb-20">
         <div style={{ width: "32rem", height: "18rem" }}>
           <h3>{messages.testTypes}</h3>
           <TestTypesChart typesCounts={typesCounts} messages={messages} />
@@ -132,8 +150,6 @@ export function Home({ projectId, messages }: Props) {
           />
         </div>
       </div>
-
-      <Divider className="my-6" />
     </div>
   );
 }

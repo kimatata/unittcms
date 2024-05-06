@@ -5,6 +5,7 @@ export type HomeMessages = {
   folders: string;
   testCases: string;
   testRuns: string;
+  progress: string;
   testTypes: string;
   other: string;
   security: string;
@@ -32,6 +33,7 @@ export default function Page({ params }: { params: { projectId: string } }) {
     folders: t("Folders"),
     testCases: t("test_cases"),
     testRuns: t("test_runs"),
+    progress: t("progress"),
     testTypes: t("test_types"),
     other: t("other"),
     security: t("security"),

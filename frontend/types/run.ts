@@ -26,6 +26,11 @@ type RunStatusCountType = {
   count: number;
 };
 
+type ProgressSeriesType = {
+  name: string;
+  data: number[];
+}
+
 type RunsMessages = {
   runList: string,
   id: string;
@@ -78,6 +83,7 @@ export {
   RunCaseType,
   RunCaseInfoType,
   RunStatusCountType,
+  ProgressSeriesType,
   RunsMessages,
   RunMessages,
 };
