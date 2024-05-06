@@ -49,7 +49,12 @@
     "destructive": "破壊",
     "regression": "回帰",
     "automated": "自動",
-    "manual": "手動"
+    "manual": "手動",
+    "priority": "優先度",
+    "critical": "致",
+    "high": "高",
+    "medium": "中",
+    "low": "低"
   },
   "Folders": {
     "folder": "フォルダー",

@@ -54,6 +54,11 @@ type CaseTypeCountType = {
   count: number;
 };
 
+type CasePriorityCountType = {
+  priority: number;
+  count: number;
+};
+
 export type CasesMessages = {
   testCaseList: string;
   id: string;
@@ -119,4 +124,4 @@ export type CaseMessages = {
   maxFileSize: string;
 };
 
-export { CaseType, StepType, AttachmentType, CaseTypeCountType, CasesMessages, CaseMessages };
+export { CaseType, StepType, AttachmentType, CaseTypeCountType, CasePriorityCountType, CasesMessages, CaseMessages };

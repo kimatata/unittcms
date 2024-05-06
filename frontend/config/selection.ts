@@ -1,8 +1,8 @@
 const priorities = [
-  { uid: "critical", color: "#d00002" },
-  { uid: "high", color: "#ee6b4e" },
-  { uid: "medium", color: "#fccb69" },
-  { uid: "low", color: "#0b62e8" },
+  { uid: "critical", color: "#d00002", chartColor: "#d00002" },
+  { uid: "high", color: "#ee6b4e", chartColor: "#ee6b4e" },
+  { uid: "medium", color: "#fccb69", chartColor: "#fccb69" },
+  { uid: "low", color: "#0b62e8", chartColor: "#0b62e8" },
 ];
 
 const testTypes = [

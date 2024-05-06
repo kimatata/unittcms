@@ -1,3 +1,5 @@
+import { CaseType } from "./case";
+
 export type FolderType = {
   id: number;
   name: string;
@@ -6,6 +8,7 @@ export type FolderType = {
   parentFolderId: number | null;
   createdAt: string;
   updatedAt: string;
+  Cases: CaseType[]; // additional property
 };
 
 export type FoldersMessages = {

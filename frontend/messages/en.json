@@ -30,7 +30,7 @@
   "Project": {
     "home": "Home",
     "test_cases": "Test Cases",
-    "test_run": "Test Runs"
+    "test_runs": "Test Runs"
   },
   "Home": {
     "Folders": "Folders",
@@ -49,7 +49,12 @@
     "destructive": "Destructive",
     "regression": "Regression",
     "automated": "Automated",
-    "manual": "Manual"
+    "manual": "Manual",
+    "priority": "Priority",
+    "critical": "Critical",
+    "high": "High",
+    "medium": "Medium",
+    "low": "Low"
   },
   "Folders": {
     "folder": "Folder",

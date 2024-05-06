@@ -1,9 +1,14 @@
+import { FolderType } from "./folder";
+import { RunType } from "./run";
+
 export type ProjectType = {
   id: number;
   name: string;
   detail: string;
   createdAt: string;
   updatedAt: string;
+  Folders: FolderType[]; // additional property
+  Runs: RunType[]; // additional property
 };
 
 export type ProjectsMessages = {

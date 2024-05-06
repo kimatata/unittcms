@@ -19,6 +19,11 @@ export type HomeMessages = {
   regression: string;
   automated: string;
   manual: string;
+  priority: string;
+  critical: string;
+  high: string;
+  medium: string;
+  low: string;
 };
 
 export default function Page({ params }: { params: { projectId: string } }) {
@@ -41,6 +46,11 @@ export default function Page({ params }: { params: { projectId: string } }) {
     regression: t("regression"),
     automated: t("automated"),
     manual: t("manual"),
+    priority: t("priority"),
+    critical: t("critical"),
+    high: t("high"),
+    medium: t("medium"),
+    low: t("low"),
   };
   return (
     <>
