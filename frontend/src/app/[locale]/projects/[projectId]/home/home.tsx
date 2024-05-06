@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import { Divider } from "@nextui-org/react";
-import { title } from "@/components/primitives";
+import { title, subtitle } from "@/components/primitives";
 import { Card, CardBody, Chip } from "@nextui-org/react";
 import { Folder, Clipboard, FlaskConical } from "lucide-react";
 import { CaseTypeCountType, CasePriorityCountType } from "@/types/case";
@@ -66,7 +66,6 @@ export function Home({ projectId, messages }: Props) {
       try {
         const data = await fetchProject(url);
         setProject(data);
-        console.log(data);
       } catch (error: any) {
         console.error("Error in effect:", error.message);
       }
@@ -88,7 +87,7 @@ export function Home({ projectId, messages }: Props) {
       const priorityRet = aggregateTestPriority(project);
       setPriorityCounts([...priorityRet]);
 
-      const { series, categories } = aggregateProgress(project);
+      const { series, categories } = aggregateProgress(project, messages);
       setProgressSeries([...series]);
       setProgressCategories([...categories]);
     }
@@ -123,27 +122,30 @@ export function Home({ projectId, messages }: Props) {
         </Chip>
       </div>
 
-      <Card className="mt-3 bg-neutral-100" shadow="none">
-        <CardBody>{project.detail}</CardBody>
-      </Card>
+      {project.detail && (
+        <Card className="mt-3 bg-neutral-100" shadow="none">
+          <CardBody>{project.detail}</CardBody>
+        </Card>
+      )}
 
-      <Divider className="my-6" />
-      <div style={{ height: "20rem" }}>
-        <h3>{messages.progress}</h3>
+      <Divider className="my-8" />
+      <h2 className={subtitle()}>{messages.progress}</h2>
+      <div style={{ height: "18rem" }}>
         <TestProgressBarChart
           progressSeries={progressSeries}
           progressCategories={progressCategories}
         />
       </div>
 
-      <Divider className="my-6" />
+      <Divider className="my-12" />
+      <h2 className={subtitle()}>{messages.testClassification}</h2>
       <div className="flex pb-20">
         <div style={{ width: "32rem", height: "18rem" }}>
-          <h3>{messages.testTypes}</h3>
+          <h3>{messages.byType}</h3>
           <TestTypesChart typesCounts={typesCounts} messages={messages} />
         </div>
         <div style={{ width: "30rem", height: "18rem" }}>
-          <h3>{messages.priority}</h3>
+          <h3>{messages.byPriority}</h3>
           <TestPriorityChart
             priorityCounts={priorityCounts}
             messages={messages}

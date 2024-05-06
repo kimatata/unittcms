@@ -1,24 +1,35 @@
+const categoricalPalette = [
+  "#fba91e",
+  "#6ea56c",
+  "#3ac6e1",
+  "#feda2f",
+  "#f15f47",
+  "#244470",
+  "#9c80bb",
+  "#f595a6",
+];
+
 const priorities = [
-  { uid: "critical", color: "#d00002", chartColor: "#d00002" },
-  { uid: "high", color: "#ee6b4e", chartColor: "#ee6b4e" },
-  { uid: "medium", color: "#fccb69", chartColor: "#fccb69" },
-  { uid: "low", color: "#0b62e8", chartColor: "#0b62e8" },
+  { uid: "critical", color: "#bb3e03", chartColor: "#bb3e03" },
+  { uid: "high", color: "#ca6702", chartColor: "#ca6702" },
+  { uid: "medium", color: "#ee9b00", chartColor: "#ee9b00" },
+  { uid: "low", color: "#94d2bd", chartColor: "#94d2bd" },
 ];
 
 const testTypes = [
-  { uid: "other", chartColor: "#688ae8" },
-  { uid: "security", chartColor: "#c33d69" },
-  { uid: "performance", chartColor: "#2ea597" },
-  { uid: "accessibility", chartColor: "#8456ce" },
-  { uid: "functional", chartColor: "#e07941" },
-  { uid: "acceptance", chartColor: "#3759ce" },
-  { uid: "usability", chartColor: "#962249" },
-  { uid: "smokeSanity", chartColor: "#096f64" },
-  { uid: "compatibility", chartColor: "#6237a7" },
-  { uid: "destructive", chartColor: "#a84401" },
-  { uid: "regression", chartColor: "#273ea5" },
-  { uid: "automated", chartColor: "#780d35" },
-  { uid: "manual", chartColor: "#03524a" },
+  { uid: "other", chartColor: categoricalPalette[0] },
+  { uid: "security", chartColor: categoricalPalette[1] },
+  { uid: "performance", chartColor: categoricalPalette[2] },
+  { uid: "accessibility", chartColor: categoricalPalette[3] },
+  { uid: "functional", chartColor: categoricalPalette[4] },
+  { uid: "acceptance", chartColor: categoricalPalette[5] },
+  { uid: "usability", chartColor: categoricalPalette[6] },
+  { uid: "smokeSanity", chartColor: categoricalPalette[7] },
+  { uid: "compatibility", chartColor: categoricalPalette[0] },
+  { uid: "destructive", chartColor: categoricalPalette[1] },
+  { uid: "regression", chartColor: categoricalPalette[2] },
+  { uid: "automated", chartColor: categoricalPalette[3] },
+  { uid: "manual", chartColor: categoricalPalette[4] },
 ];
 
 const automationStatus = [
@@ -43,12 +54,12 @@ const testRunCaseStatus = [
   {
     uid: "untested",
     color: "primary",
-    chartColor: "#e5e7eb",
+    chartColor: "#3ac6e1",
   },
-  { uid: "passed", color: "success", chartColor: "#059669" },
-  { uid: "failed", color: "danger", chartColor: "#f87171" },
-  { uid: "retest", color: "warning", chartColor: "#fbbf24" },
-  { uid: "skipped", color: "primary", chartColor: "#4b5563" },
+  { uid: "passed", color: "success", chartColor: "#6ea56c" },
+  { uid: "failed", color: "danger", chartColor: "#f15f47" },
+  { uid: "retest", color: "warning", chartColor: "#fba91e" },
+  { uid: "skipped", color: "primary", chartColor: "#805aab" },
 ];
 
 export {

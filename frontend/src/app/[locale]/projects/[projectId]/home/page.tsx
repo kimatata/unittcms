@@ -6,6 +6,14 @@ export type HomeMessages = {
   testCases: string;
   testRuns: string;
   progress: string;
+  untested: string;
+  passed: string;
+  failed: string;
+  retest: string;
+  skipped: string;
+  testClassification: string;
+  byType: string;
+  byPriority: string;
   testTypes: string;
   other: string;
   security: string;
@@ -20,7 +28,6 @@ export type HomeMessages = {
   regression: string;
   automated: string;
   manual: string;
-  priority: string;
   critical: string;
   high: string;
   medium: string;
@@ -34,6 +41,14 @@ export default function Page({ params }: { params: { projectId: string } }) {
     testCases: t("test_cases"),
     testRuns: t("test_runs"),
     progress: t("progress"),
+    untested: t("untested"),
+    passed: t("passed"),
+    failed: t("failed"),
+    retest: t("retest"),
+    skipped: t("skipped"),
+    testClassification: t("test_classification"),
+    byType: t("by_type"),
+    byPriority: t("by_priority"),
     testTypes: t("test_types"),
     other: t("other"),
     security: t("security"),

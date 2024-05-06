@@ -2,6 +2,7 @@ import React from "react";
 import { useState, useEffect } from "react";
 import dynamic from "next/dynamic";
 import { ProgressSeriesType } from "@/types/run";
+import { testRunCaseStatus } from "@/config/selection";
 const Chart = dynamic(() => import("react-apexcharts"), { ssr: false });
 
 type Props = {
@@ -36,6 +37,9 @@ export default function TestProgressBarChart({
             legend: {
               position: "right",
             },
+            colors: testRunCaseStatus.map((itr) => {
+              return itr.chartColor;
+            }),
             xaxis: {
               type: "datetime",
               categories: progressCategories,

@@ -1,5 +1,6 @@
 import { ProjectType } from "@/types/project";
 import { testTypes, priorities, testRunCaseStatus } from "@/config/selection";
+import { HomeMessages } from "./page";
 
 // aggregate folder, case, run mum
 function aggregateBasicInfo(project: ProjectType) {
@@ -49,9 +50,9 @@ function aggregateTestPriority(project: ProjectType) {
   return result;
 }
 
-function aggregateProgress(project: ProjectType) {
+function aggregateProgress(project: ProjectType, messages: HomeMessages) {
   let series = testRunCaseStatus.map((status) => {
-    return { name: status.uid, data: [] };
+    return { name: messages[status.uid], data: [] };
   });
   let categories = [];
 
