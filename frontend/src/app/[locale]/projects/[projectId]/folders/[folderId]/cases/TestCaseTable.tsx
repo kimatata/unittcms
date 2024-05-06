@@ -211,7 +211,7 @@ export default function TestCaseTable({
             </TableColumn>
           )}
         </TableHeader>
-        <TableBody emptyContent={"No cases found"} items={sortedItems}>
+        <TableBody emptyContent={messages.noCasesFound} items={sortedItems}>
           {(item) => (
             <TableRow key={item.id}>
               {(columnKey) => (

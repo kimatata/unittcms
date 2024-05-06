@@ -1,5 +1,5 @@
 {
-  "Home": {
+  "Index": {
     "get_started": "Get Started",
     "integrate_and_manage": "Integrate and manage all your software testing."
   },
@@ -24,12 +24,32 @@
     "close": "Close",
     "create": "Create",
     "update": "Update",
-    "please_enter": "Please enter project name"
+    "please_enter": "Please enter project name",
+    "no_projects_found": "No projects found"
   },
   "Project": {
     "home": "Home",
     "test_cases": "Test Cases",
     "test_run": "Test Runs"
+  },
+  "Home": {
+    "Folders": "Folders",
+    "test_cases": "Test Cases",
+    "test_runs": "Test Runs",
+    "test_types": "Test types",
+    "other": "Other",
+    "security": "Security",
+    "performance": "Performance",
+    "accessibility": "Accessibility",
+    "functional": "Functional",
+    "acceptance": "Acceptance",
+    "usability": "Usability",
+    "smoke_sanity": "Smoke&Sanity",
+    "compatibility": "Compatibility",
+    "destructive": "Destructive",
+    "regression": "Regression",
+    "automated": "Automated",
+    "manual": "Manual"
   },
   "Folders": {
     "folder": "Folder",
@@ -56,7 +76,8 @@
     "critical": "Critical",
     "high": "High",
     "medium": "Medium",
-    "low": "Low"
+    "low": "Low",
+    "no_cases_found": "No test cases found"
   },
   "Case": {
     "back_to_cases": "Back to test cases",

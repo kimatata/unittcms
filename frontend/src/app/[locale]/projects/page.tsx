@@ -20,6 +20,7 @@ export default function Page(params: { locale }) {
     create: t("create"),
     update: t("update"),
     pleaseEnter: t("please_enter"),
+    noProjectsFound: t("no_projects_found"),
   };
   return (
     <>

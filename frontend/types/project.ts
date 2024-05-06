@@ -8,7 +8,6 @@ export type ProjectType = {
 
 export type ProjectsMessages = {
   projectList: string;
-  projects: string;
   newProject: string;
   editProject: string;
   deleteProject: string;
@@ -23,6 +22,7 @@ export type ProjectsMessages = {
   create: string;
   update: string;
   pleaseEnter: string;
+  noProjectsFound: string;
 };
 
 export type ProjectMessages = {

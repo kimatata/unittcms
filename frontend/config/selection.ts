@@ -6,19 +6,19 @@ const priorities = [
 ];
 
 const testTypes = [
-  { uid: "other" },
-  { uid: "security" },
-  { uid: "performance" },
-  { uid: "accessibility" },
-  { uid: "functional" },
-  { uid: "acceptance" },
-  { uid: "usability" },
-  { uid: "smokeSanity" },
-  { uid: "compatibility" },
-  { uid: "destructive" },
-  { uid: "regression" },
-  { uid: "automated" },
-  { uid: "manual" },
+  { uid: "other", chartColor: "#688ae8" },
+  { uid: "security", chartColor: "#c33d69" },
+  { uid: "performance", chartColor: "#2ea597" },
+  { uid: "accessibility", chartColor: "#8456ce" },
+  { uid: "functional", chartColor: "#e07941" },
+  { uid: "acceptance", chartColor: "#3759ce" },
+  { uid: "usability", chartColor: "#962249" },
+  { uid: "smokeSanity", chartColor: "#096f64" },
+  { uid: "compatibility", chartColor: "#6237a7" },
+  { uid: "destructive", chartColor: "#a84401" },
+  { uid: "regression", chartColor: "#273ea5" },
+  { uid: "automated", chartColor: "#780d35" },
+  { uid: "manual", chartColor: "#03524a" },
 ];
 
 const automationStatus = [

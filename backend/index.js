@@ -103,6 +103,10 @@ app.use("/runcases", runCaseBuldNewRoute);
 app.use("/runcases", runCaseDeleteRoute);
 app.use("/runcases", runCaseBulkDeleteRoute);
 
+// "/home"
+const homeIndexRoute = require("./routes/home/index")(sequelize);
+app.use("/home", homeIndexRoute);
+
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);

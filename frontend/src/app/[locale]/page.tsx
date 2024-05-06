@@ -4,7 +4,7 @@ import { useTranslations } from "next-intl";
 import { Link } from "@/src/navigation";
 
 export default function Home() {
-  const t = useTranslations("Home");
+  const t = useTranslations("Index");
 
   return (
     <section className="flex flex-col items-center justify-center gap-4 py-8 md:py-10">

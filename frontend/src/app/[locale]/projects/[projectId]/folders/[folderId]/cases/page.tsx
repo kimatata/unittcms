@@ -21,6 +21,7 @@ export default function Page({
     high: t("high"),
     medium: t("medium"),
     low: t("low"),
+    noCasesFound: t("no_cases_found"),
   };
 
   return (

@@ -151,7 +151,7 @@ export default function ProjectsTable({
             </TableColumn>
           )}
         </TableHeader>
-        <TableBody emptyContent={"No cases found"} items={sortedItems}>
+        <TableBody emptyContent={messages.noProjectsFound} items={sortedItems}>
           {(item) => (
             <TableRow key={item.id}>
               {(columnKey) => (

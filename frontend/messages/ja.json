@@ -1,5 +1,5 @@
 {
-  "Home": {
+  "Index": {
     "get_started": "テスト管理を始める",
     "integrate_and_manage": "ソフトウェア開発にかかわるすべてのテストを統合管理"
   },
@@ -24,12 +24,32 @@
     "close": "閉じる",
     "create": "作成",
     "update": "更新",
-    "please_enter": "プロジェクト名を入力してください"
+    "please_enter": "プロジェクト名を入力してください",
+    "no_projects_found": "プロジェクトがありません"
   },
   "Project": {
     "home": "ホーム",
     "test_cases": "テストケース",
     "test_runs": "テストの実行"
+  },
+  "Home": {
+    "Folders": "フォルダー",
+    "test_cases": "テストケース",
+    "test_runs": "テスト実行",
+    "test_types": "テスト種別",
+    "other": "その他",
+    "security": "セキュリティ",
+    "performance": "パフォーマンス",
+    "accessibility": "アクセシビリティ",
+    "functional": "機能",
+    "acceptance": "受け入れ",
+    "usability": "ユーザビリティ",
+    "smoke_sanity": "スモーク/サニティ",
+    "compatibility": "互換性",
+    "destructive": "破壊",
+    "regression": "回帰",
+    "automated": "自動",
+    "manual": "手動"
   },
   "Folders": {
     "folder": "フォルダー",
@@ -56,7 +76,8 @@
     "critical": "致",
     "high": "高",
     "medium": "中",
-    "low": "低"
+    "low": "低",
+    "no_cases_found": "テストケースがありません"
   },
   "Case": {
     "back_to_cases": "テストケース一覧に戻る",
