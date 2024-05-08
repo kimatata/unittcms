@@ -9,9 +9,14 @@ const Chart = dynamic(() => import("react-apexcharts"), { ssr: false });
 type Props = {
   typesCounts: CaseTypeCountType[];
   messages: HomeMessages;
+  theme: string;
 };
 
-export default function TestTypesDonutChart({ typesCounts, messages }: Props) {
+export default function TestTypesDonutChart({
+  typesCounts,
+  messages,
+  theme,
+}: Props) {
   const [chartData, setChartData] = useState({
     series: [],
     options: {
@@ -30,16 +35,27 @@ export default function TestTypesDonutChart({ typesCounts, messages }: Props) {
 
         const labels = testTypes.map((entry) => messages[entry.uid]);
         const colors = testTypes.map((entry) => entry.chartColor);
+        const legend = {
+          labels: {
+            colors: testTypes.map((entry) => {
+              if (theme === "light") {
+                return "black";
+              } else {
+                return "white";
+              }
+            }),
+          },
+        };
 
         setChartData({
           series,
-          options: { labels, colors },
+          options: { labels, colors, legend },
         });
       }
     };
 
     updateChartDate();
-  }, [typesCounts]);
+  }, [typesCounts, theme]);
 
   return (
     <Chart

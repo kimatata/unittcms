@@ -9,11 +9,13 @@ const Chart = dynamic(() => import("react-apexcharts"), { ssr: false });
 type Props = {
   priorityCounts: CasePriorityCountType[];
   messages: HomeMessages;
+  theme: string;
 };
 
 export default function TestPriorityDonutChart({
   priorityCounts,
   messages,
+  theme,
 }: Props) {
   const [chartData, setChartData] = useState({
     series: [],
@@ -33,16 +35,27 @@ export default function TestPriorityDonutChart({
 
         const labels = priorities.map((entry) => messages[entry.uid]);
         const colors = priorities.map((entry) => entry.chartColor);
+        const legend = {
+          labels: {
+            colors: priorities.map((entry) => {
+              if (theme === "light") {
+                return "black";
+              } else {
+                return "white";
+              }
+            }),
+          },
+        };
 
         setChartData({
           series,
-          options: { labels, colors },
+          options: { labels, colors, legend },
         });
       }
     };
 
     updateChartDate();
-  }, [priorityCounts]);
+  }, [priorityCounts, theme]);
 
   return (
     <Chart

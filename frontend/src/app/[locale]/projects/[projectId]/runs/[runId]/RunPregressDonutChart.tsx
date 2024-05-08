@@ -8,9 +8,14 @@ const Chart = dynamic(() => import("react-apexcharts"), { ssr: false });
 type Props = {
   statusCounts: RunStatusCountType[];
   messages: RunMessages;
+  theme: string;
 };
 
-export default function RunProgressDounut({ statusCounts, messages }: Props) {
+export default function RunProgressDounut({
+  statusCounts,
+  messages,
+  theme,
+}: Props) {
   const [chartData, setChartData] = useState({
     series: [],
     options: {
@@ -29,16 +34,27 @@ export default function RunProgressDounut({ statusCounts, messages }: Props) {
 
         const labels = testRunCaseStatus.map((entry) => messages[entry.uid]);
         const colors = testRunCaseStatus.map((entry) => entry.chartColor);
+        const legend = {
+          labels: {
+            colors: testRunCaseStatus.map((entry) => {
+              if (theme === "light") {
+                return "black";
+              } else {
+                return "white";
+              }
+            }),
+          },
+        };
 
         setChartData({
           series,
-          options: { labels, colors },
+          options: { labels, colors, legend },
         });
       }
     };
 
     updateChartDate();
-  }, [statusCounts]);
+  }, [statusCounts, theme]);
 
   return (
     <Chart

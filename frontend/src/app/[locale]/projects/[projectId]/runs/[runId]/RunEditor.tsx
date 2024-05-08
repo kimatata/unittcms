@@ -51,6 +51,7 @@ import {
 } from "../runsControl";
 import { fetchFolders } from "../../folders/foldersControl";
 import { fetchCases } from "../../folders/[folderId]/cases/caseControl";
+import { useTheme } from "next-themes";
 
 const defaultTestRun = {
   id: 0,
@@ -74,6 +75,7 @@ export default function RunEditor({
   messages,
   locale,
 }: Props) {
+  const { theme, setTheme } = useTheme();
   const [testRun, setTestRun] = useState<RunType>(defaultTestRun);
   const [folders, setFolders] = useState([]);
   const [runCases, setRunCases] = useState<RunCaseType[]>([]);
@@ -273,6 +275,7 @@ export default function RunEditor({
               <RunProgressChart
                 statusCounts={runStatusCounts}
                 messages={messages}
+                theme={theme}
               />
             </div>
           </div>

@@ -17,6 +17,7 @@ import TestTypesChart from "./TestTypesDonutChart";
 import TestPriorityChart from "./TestPriorityDonutChart";
 import TestProgressBarChart from "./TestProgressColumnChart";
 import Config from "@/config/config";
+import { useTheme } from "next-themes";
 const apiServer = Config.apiServer;
 
 async function fetchProject(url) {
@@ -45,6 +46,7 @@ type Props = {
 };
 
 export function Home({ projectId, messages }: Props) {
+  const { theme, setTheme } = useTheme();
   const [project, setProject] = useState({
     name: "",
     detail: "",
@@ -123,7 +125,10 @@ export function Home({ projectId, messages }: Props) {
       </div>
 
       {project.detail && (
-        <Card className="mt-3 bg-neutral-100" shadow="none">
+        <Card
+          className="mt-3 bg-neutral-100 dark:bg-neutral-700 dark:text-white"
+          shadow="none"
+        >
           <CardBody>{project.detail}</CardBody>
         </Card>
       )}
@@ -134,6 +139,7 @@ export function Home({ projectId, messages }: Props) {
         <TestProgressBarChart
           progressSeries={progressSeries}
           progressCategories={progressCategories}
+          theme={theme}
         />
       </div>
 
@@ -142,13 +148,18 @@ export function Home({ projectId, messages }: Props) {
       <div className="flex pb-20">
         <div style={{ width: "32rem", height: "18rem" }}>
           <h3>{messages.byType}</h3>
-          <TestTypesChart typesCounts={typesCounts} messages={messages} />
+          <TestTypesChart
+            typesCounts={typesCounts}
+            messages={messages}
+            theme={theme}
+          />
         </div>
         <div style={{ width: "30rem", height: "18rem" }}>
           <h3>{messages.byPriority}</h3>
           <TestPriorityChart
             priorityCounts={priorityCounts}
             messages={messages}
+            theme={theme}
           />
         </div>
       </div>

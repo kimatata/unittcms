@@ -8,11 +8,13 @@ const Chart = dynamic(() => import("react-apexcharts"), { ssr: false });
 type Props = {
   progressSeries: ProgressSeriesType[];
   progressCategories: string[];
+  theme: string;
 };
 
 export default function TestProgressBarChart({
   progressSeries,
   progressCategories,
+  theme,
 }: Props) {
   const [chartData, setChartData] = useState({
     series: [],
@@ -25,6 +27,16 @@ export default function TestProgressBarChart({
   useEffect(() => {
     const updateChartDate = () => {
       if (progressSeries) {
+        const legendsLabelColors = testRunCaseStatus.map((itr) => {
+          if (theme === "light") {
+            return "black";
+          } else {
+            return "white";
+          }
+        });
+
+        const xaxisLabelColor = theme === "light" ? "black" : "white";
+
         setChartData({
           series: progressSeries,
           options: {
@@ -36,6 +48,9 @@ export default function TestProgressBarChart({
             },
             legend: {
               position: "right",
+              labels: {
+                colors: legendsLabelColors,
+              },
             },
             colors: testRunCaseStatus.map((itr) => {
               return itr.chartColor;
@@ -43,6 +58,14 @@ export default function TestProgressBarChart({
             xaxis: {
               type: "datetime",
               categories: progressCategories,
+              labels: {
+                style: {
+                  colors: xaxisLabelColor,
+                },
+              },
+            },
+            tooltip: {
+              theme: theme,
             },
           },
         });
@@ -50,7 +73,7 @@ export default function TestProgressBarChart({
     };
 
     updateChartDate();
-  }, [progressSeries, progressCategories]);
+  }, [progressSeries, progressCategories, theme]);
 
   return (
     <Chart
