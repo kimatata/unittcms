@@ -17,8 +17,8 @@ export default function Sidebar({ messages, locale }: Props) {
   const pathname = usePathname();
 
   const [currentKey, setCurrentTab] = useState("home");
-  const baseClass = "p-3 rounded-none";
-  const selectedClass = `${baseClass} bg-neutral-200 dark:bg-neutral-700 border-l-3 border-neutral-800`;
+  const baseClass = "p-3";
+  const selectedClass = `${baseClass} bg-neutral-200 dark:bg-neutral-700`;
 
   const handleTabClick = (key: string) => {
     if (key === "home") {
@@ -64,7 +64,7 @@ export default function Sidebar({ messages, locale }: Props) {
 
   return (
     <div className="w-64 border-r-1 dark:border-neutral-700">
-      <Listbox aria-label="Listbox Variants" variant="light" className="p-0">
+      <Listbox aria-label="Listbox Variants" variant="light">
         {tabItems.map((itr) => (
           <ListboxItem
             key={itr.key}
