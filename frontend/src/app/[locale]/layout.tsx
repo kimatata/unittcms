@@ -10,10 +10,6 @@ export async function generateMetadata({ params: { locale } }) {
   return {
     title: t("title"),
     description: t("description"),
-    themeColor: [
-      { media: "(prefers-color-scheme: light)", color: "white" },
-      { media: "(prefers-color-scheme: dark)", color: "black" },
-    ],
     icons: {
       icon: "/favicon/favicon.ico",
       shortcut: "/favicon/favicon-16x16.png",
