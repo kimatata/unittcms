@@ -16,14 +16,27 @@
     "case_edit": "Test Cases",
     "case_home": "Dashboard",
     "case_run": "Test Runs",
-    "self_host": "Self host the application",
+    "roadmap": "Roadmap"
+  },
+  "Guide": {
+    "self_host": "Self Host",
+    "docker": "Docker",
+    "manual": "Manual",
+    "self_host_app": "Self host the application",
     "run_as_docker": "Running TestPlat as a Docker container",
     "run_by_manually": "Running TestPlat manually",
-    "roadmap": "Roadmap"
+    "move_to_back": "Moves to backend directory",
+    "backend_install": "Install dependencies",
+    "init_db": "Initialize Database",
+    "backend_start": "Start backend server",
+    "move_to_front": "Moves to frontend directory",
+    "front_install": "Install dependencies",
+    "front_start": "Start frontend server"
   },
   "Header": {
     "title": "Open Source Test Case Management Tool",
     "description": "Integrate and manage all your software testing",
+    "guide": "Guide",
     "projects": "Projects"
   },
   "Projects": {

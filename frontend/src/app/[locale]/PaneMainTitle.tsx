@@ -38,7 +38,7 @@ export default function MainTitle({ locale }: Props) {
 
       <div className="mt-5">
         <Button color="primary" radius="full">
-          <Link href={`/projects/`} locale={locale}>
+          <Link href={`/guide/selfhost`} locale={locale}>
             {t("get_started")}
           </Link>
         </Button>

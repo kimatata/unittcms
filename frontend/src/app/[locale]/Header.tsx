@@ -49,6 +49,15 @@ export default function Header(params: { locale: string }) {
         <NavbarItem className="hidden sm:block">
           <Link
             className="data-[active=true]:text-primary data-[active=true]:font-medium"
+            href="/guide/selfhost"
+            locale={params.locale}
+          >
+            {t("guide")}
+          </Link>
+        </NavbarItem>
+        <NavbarItem className="hidden sm:block">
+          <Link
+            className="data-[active=true]:text-primary data-[active=true]:font-medium"
             href="/projects"
             locale={params.locale}
           >

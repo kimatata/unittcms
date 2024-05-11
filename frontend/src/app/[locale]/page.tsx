@@ -4,7 +4,6 @@ import { Divider } from "@nextui-org/react";
 import PaneMainTitle from "./PaneMainTitle";
 import PaneMainFeatures from "./PaneMainFeatures";
 import PaneDemoImages from "./PaneDemoImages";
-import PaneSelfHostProcedure from "./PaneSelfHostProcedure";
 
 export default function Home(params: { locale: string }) {
   const t = useTranslations("Index");
@@ -67,17 +66,6 @@ export default function Home(params: { locale: string }) {
 
       <Divider className="my-12" />
       <PaneDemoImages messages={messages} />
-
-      <Divider className="my-12" />
-      <div className="flex flex-wrap mt-12">
-        <div className="w-full md:w-4/12 order-last md:order-first p-4">
-          <h2 className={title({ size: "sm" })}>{t("self_host")}</h2>
-        </div>
-
-        <div className="w-full md:w-8/12 p-4">
-          <PaneSelfHostProcedure />
-        </div>
-      </div>
 
       <Divider className="my-12" />
       <div className="flex flex-wrap mt-12">
