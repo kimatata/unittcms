@@ -32,10 +32,10 @@ export default function Header(params: { locale: string }) {
               height={32}
               alt="Logo"
             />
-            <p className="font-bold text-inherit">Platest</p>
+            <p className="font-bold text-inherit">TestPlat</p>
           </Link>
         </NavbarBrand>
-        <NavbarItem>
+        <NavbarItem className="hidden sm:block">
           <Chip size="sm" variant="flat">
             <Link
               className="data-[active=true]:text-primary data-[active=true]:font-medium"
@@ -46,7 +46,7 @@ export default function Header(params: { locale: string }) {
             </Link>
           </Chip>
         </NavbarItem>
-        <NavbarItem>
+        <NavbarItem className="hidden sm:block">
           <Link
             className="data-[active=true]:text-primary data-[active=true]:font-medium"
             href="/projects"

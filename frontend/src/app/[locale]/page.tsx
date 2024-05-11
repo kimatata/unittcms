@@ -17,8 +17,20 @@ export default function Home() {
         </div>
 
         <div className="w-full md:w-5/12 p-4">
-          <div style={{ position: "relative", textAlign: "center", padding: "1rem" }}>
-            <span style={{ fontSize: "10rem", position: "relative", zIndex: 1 }}>
+          <div
+            style={{
+              position: "relative",
+              textAlign: "center",
+            }}
+          >
+            <span
+              style={{
+                fontSize: "10rem",
+                position: "relative",
+                zIndex: 1,
+                marginLeft: "2.5rem",
+              }}
+            >
               ⚗️
             </span>
             <div
