@@ -1,7 +1,8 @@
 {
   "Index": {
     "get_started": "テスト管理を始める",
-    "oss_tcmt": "オープンソーステストケース管理ツール",
+    "oss_tcmt": "オープンソーステストケース管理",
+    "web_application": "ウェブアプリケーション",
     "integrate_and_manage": "ソフトウェア開発にかかわるすべてのテストを統合管理",
     "oss_title": "オープンソース",
     "oss_detail": "TestPlatは無料でオープンソースです。アプリケーションをセルフホストすることができます。セキュリティ要件の厳しい環境でも導入することができます。",
@@ -12,9 +13,13 @@
     "universal_title": "ユニバーサル",
     "universal_detail": "多言語対応やダークテーマ機能により誰もが不自由なく使うことができます。",
     "organize_test_cases": "テストケースを整理とグラフィカルなテスト管理",
+    "case_edit": "テストケース",
+    "case_home": "ダッシュボード",
+    "case_run": "テスト実行",
     "self_host": "アプリのセルフホスト",
     "run_as_docker": "Docker containerによる実行",
-    "run_by_manually": "手動での実行"
+    "run_by_manually": "手動での実行",
+    "roadmap": "ロードマップ"
   },
   "Header": {
     "title": "オープンソーステストケース管理ツール",

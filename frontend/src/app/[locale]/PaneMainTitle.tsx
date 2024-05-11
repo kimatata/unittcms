@@ -29,6 +29,8 @@ export default function MainTitle({ locale }: Props) {
         })}
       >
         {t("oss_tcmt")}
+        <br />
+        {t("web_application")}
       </h1>
       <h4 className={subtitle({ class: "mt-4" })}>
         {t("integrate_and_manage")}

@@ -1,20 +1,26 @@
 import { useTranslations } from "next-intl";
 import { title, subtitle } from "@/components/primitives";
 import { Divider } from "@nextui-org/react";
-import Image from "next/image";
-import heroImage from "./hero.png";
-import MainTitle from "./MainTitle";
-import MainFeatures from "./MainFeatures";
-import SelfHostProcedure from "./SelfHostProcedure";
+import PaneMainTitle from "./PaneMainTitle";
+import PaneMainFeatures from "./PaneMainFeatures";
+import PaneDemoImages from "./PaneDemoImages";
+import PaneSelfHostProcedure from "./PaneSelfHostProcedure";
 
 export default function Home(params: { locale: string }) {
   const t = useTranslations("Index");
+
+  const messages = {
+    title: t("organize_test_cases"),
+    caseEdit: t("case_edit"),
+    caseHome: t("case_home"),
+    caseRun: t("case_run"),
+  };
 
   return (
     <section className="mx-auto max-w-screen-xl my-12">
       <div className="flex flex-wrap">
         <div className="w-full md:w-7/12 order-last md:order-first p-4">
-          <MainTitle locale={params.locale} />
+          <PaneMainTitle locale={params.locale} />
         </div>
 
         <div className="w-full md:w-5/12 p-4">
@@ -51,35 +57,34 @@ export default function Home(params: { locale: string }) {
       </div>
 
       <div
-        className="flex flex-wrap flex-col items-center sm:flex-row sm:items-start"
+        className="flex flex-wrap flex-col items-center"
         style={{
           marginTop: "6rem",
         }}
       >
-        <MainFeatures />
+        <PaneMainFeatures />
       </div>
 
       <Divider className="my-12" />
-
-      <div className="flex flex-wrap mt-12">
-        <div className="w-full md:w-4/12 order-last md:order-first p-4">
-          <h2 className={title({ size: "sm" })}>{t("organize_test_cases")}</h2>
-        </div>
-        <div className="w-full md:w-8/12 p-4">
-          <Image src={heroImage} alt="Hero" className="max-w-2xl" />
-        </div>
-      </div>
+      <PaneDemoImages messages={messages} />
 
       <Divider className="my-12" />
-
       <div className="flex flex-wrap mt-12">
         <div className="w-full md:w-4/12 order-last md:order-first p-4">
           <h2 className={title({ size: "sm" })}>{t("self_host")}</h2>
         </div>
 
         <div className="w-full md:w-8/12 p-4">
-          <SelfHostProcedure />
+          <PaneSelfHostProcedure />
         </div>
+      </div>
+
+      <Divider className="my-12" />
+      <div className="flex flex-wrap mt-12">
+        <div className="w-full md:w-4/12 order-last md:order-first p-4">
+          <h2 className={title({ size: "sm" })}>{t("roadmap")}</h2>
+        </div>
+        <div className="w-full md:w-8/12 p-4"></div>
       </div>
     </section>
   );
