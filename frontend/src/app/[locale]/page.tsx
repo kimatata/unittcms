@@ -1,14 +1,17 @@
 import { useTranslations } from "next-intl";
-import { title } from "@/components/primitives";
+import { title, subtitle } from "@/components/primitives";
+import { Divider } from "@nextui-org/react";
 import Image from "next/image";
 import heroImage from "./hero.png";
 import MainTitle from "./MainTitle";
+import MainFeatures from "./MainFeatures";
+import SelfHostProcedure from "./SelfHostProcedure";
 
 export default function Home(params: { locale: string }) {
   const t = useTranslations("Index");
 
   return (
-    <section className="mx-auto max-w-screen-lg my-12">
+    <section className="mx-auto max-w-screen-xl my-12">
       <div className="flex flex-wrap">
         <div className="w-full md:w-7/12 order-last md:order-first p-4">
           <MainTitle locale={params.locale} />
@@ -48,23 +51,34 @@ export default function Home(params: { locale: string }) {
       </div>
 
       <div
-        className="flex flex-wrap"
+        className="flex flex-wrap flex-col items-center sm:flex-row sm:items-start"
         style={{
-          marginTop: "10rem",
+          marginTop: "6rem",
         }}
       >
-        <h2 className={title()}>{t("features")}</h2>
+        <MainFeatures />
       </div>
 
-      <div
-        className="flex flex-wrap"
-        style={{
-          marginTop: "10rem",
-        }}
-      >
-        <h2 className={title()}>{t("demo_screen")}</h2>
-        <div className="mt-12">
-          <Image src={heroImage} alt="Hero" />
+      <Divider className="my-12" />
+
+      <div className="flex flex-wrap mt-12">
+        <div className="w-full md:w-4/12 order-last md:order-first p-4">
+          <h2 className={title({ size: "sm" })}>{t("organize_test_cases")}</h2>
+        </div>
+        <div className="w-full md:w-8/12 p-4">
+          <Image src={heroImage} alt="Hero" className="max-w-2xl" />
+        </div>
+      </div>
+
+      <Divider className="my-12" />
+
+      <div className="flex flex-wrap mt-12">
+        <div className="w-full md:w-4/12 order-last md:order-first p-4">
+          <h2 className={title({ size: "sm" })}>{t("self_host")}</h2>
+        </div>
+
+        <div className="w-full md:w-8/12 p-4">
+          <SelfHostProcedure />
         </div>
       </div>
     </section>

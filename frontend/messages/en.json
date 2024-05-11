@@ -3,8 +3,18 @@
     "get_started": "Get Started",
     "oss_tcmt": "Open Source Test Case Management Tool",
     "integrate_and_manage": "Integrate and manage all your software testing.",
-    "features": "Features",
-    "demo_screen": "Demo Screen"
+    "oss_title": "Open Source",
+    "oss_detail": "TestPlat is free and open source. The application can be self-hosted. It can be deployed in environments with strict security requirements.",
+    "organize_title": "Organize Test Cases",
+    "organize_detail": "Test cases can be organized by projects and folders. Modern UI framework makes them fast.",
+    "usability_title": "Usability",
+    "usability_detail": "The defined test cases can be used over and over again in test runs. The status of test runs and projects can be viewed graphically.",
+    "universal_title": "Universal",
+    "universal_detail": "Multi language support and dark theme allow anyone to use the system without any inconvenience.",
+    "organize_test_cases": "Organize test cases and manage tests graphically",
+    "self_host": "Self host the application",
+    "run_as_docker": "Running TestPlat as a Docker container",
+    "run_by_manually": "Running TestPlat manually"
   },
   "Header": {
     "title": "Open Source Test Case Management Tool",

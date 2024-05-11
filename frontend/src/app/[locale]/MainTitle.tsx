@@ -41,7 +41,12 @@ export default function MainTitle({ locale }: Props) {
           </Link>
         </Button>
 
-        <Button color="primary" radius="full" className="ms-3">
+        <Button
+          color="primary"
+          radius="full"
+          variant="bordered"
+          className="ms-3"
+        >
           <Link href={`/projects/`} locale={locale}>
             GitHub
           </Link>
@@ -50,7 +55,7 @@ export default function MainTitle({ locale }: Props) {
             href="https://github.com/kimatata/TestCaseManager"
             aria-label="Github"
             showAnchorIcon
-            anchorIcon={<ExternalLink size={16} color="#fff" />}
+            anchorIcon={<ExternalLink size={16} />}
           ></NextUiLink>
         </Button>
       </div>
