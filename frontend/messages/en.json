@@ -2,7 +2,9 @@
   "Index": {
     "get_started": "Get Started",
     "oss_tcmt": "Open Source Test Case Management Tool",
-    "integrate_and_manage": "Integrate and manage all your software testing."
+    "integrate_and_manage": "Integrate and manage all your software testing.",
+    "features": "Features",
+    "demo_screen": "Demo Screen"
   },
   "Header": {
     "title": "Open Source Test Case Management Tool",

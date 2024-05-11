@@ -1,19 +1,17 @@
 import { useTranslations } from "next-intl";
-import MainTitle from "./MainTitle";
+import { title } from "@/components/primitives";
 import Image from "next/image";
 import heroImage from "./hero.png";
+import MainTitle from "./MainTitle";
 
-export default function Home() {
+export default function Home(params: { locale: string }) {
   const t = useTranslations("Index");
 
   return (
-    // <section className="flex flex-col items-center justify-center gap-4 py-8 md:py-10">
-    //   <MainTitle />
-    // </section>
     <section className="mx-auto max-w-screen-lg my-12">
       <div className="flex flex-wrap">
         <div className="w-full md:w-7/12 order-last md:order-first p-4">
-          <MainTitle />
+          <MainTitle locale={params.locale} />
         </div>
 
         <div className="w-full md:w-5/12 p-4">
@@ -49,8 +47,25 @@ export default function Home() {
         </div>
       </div>
 
-      <div className="mt-12">
-        <Image src={heroImage} alt="Hero" />
+      <div
+        className="flex flex-wrap"
+        style={{
+          marginTop: "10rem",
+        }}
+      >
+        <h2 className={title()}>{t("features")}</h2>
+      </div>
+
+      <div
+        className="flex flex-wrap"
+        style={{
+          marginTop: "10rem",
+        }}
+      >
+        <h2 className={title()}>{t("demo_screen")}</h2>
+        <div className="mt-12">
+          <Image src={heroImage} alt="Hero" />
+        </div>
       </div>
     </section>
   );

@@ -2,7 +2,9 @@
   "Index": {
     "get_started": "テスト管理を始める",
     "oss_tcmt": "オープンソーステストケース管理ツール",
-    "integrate_and_manage": "ソフトウェア開発にかかわるすべてのテストを統合管理"
+    "integrate_and_manage": "ソフトウェア開発にかかわるすべてのテストを統合管理",
+    "features": "機能",
+    "demo_screen": "デモ画面"
   },
   "Header": {
     "title": "オープンソーステストケース管理ツール",
