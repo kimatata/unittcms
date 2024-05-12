@@ -1,0 +1,21 @@
+# TestPlat Document
+
+### Install dependencies
+
+```
+$ npm ci
+```
+
+### Start document server locally
+
+```
+$ npm run start
+```
+
+## Deploy to Github pages
+
+The following command builds the pages and then deploys them to GitHub Pages.
+
+```
+$ npm run deploy
+```
