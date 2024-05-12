@@ -68,11 +68,9 @@ export default function Home(params: { locale: string }) {
       <PaneDemoImages messages={messages} />
 
       <Divider className="my-12" />
-      <div className="flex flex-wrap mt-12">
-        <div className="w-full md:w-4/12 order-last md:order-first p-4">
-          <h2 className={title({ size: "sm" })}>{t("roadmap")}</h2>
-        </div>
-        <div className="w-full md:w-8/12 p-4"></div>
+      <div className="w-full text-center py-2">
+        <div>Released under the MIT License.</div>
+        <div>Copyright © 2024 TestPlat</div>
       </div>
     </section>
   );

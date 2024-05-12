@@ -67,12 +67,16 @@ export default function DemoImages({ messages }: Props) {
           </Tabs>
         </div>
 
-        <div className="flex justify-center w-full lg:w-7/12 p-4 min-h-96">
+        <div
+          className="flex justify-center w-full lg:w-7/12"
+          style={{ height: "32rem" }}
+        >
           <Image
             isBlurred
             src={currentImage.src}
             alt={currentImage.alt}
-            className="max-w-full px-5"
+            shadow="md"
+            className="max-w-full max-h-full"
           />
         </div>
       </div>

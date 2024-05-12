@@ -15,8 +15,7 @@
     "organize_test_cases": "Organize test cases and manage tests graphically",
     "case_edit": "Test Cases",
     "case_home": "Dashboard",
-    "case_run": "Test Runs",
-    "roadmap": "Roadmap"
+    "case_run": "Test Runs"
   },
   "Guide": {
     "self_host": "Self Host",

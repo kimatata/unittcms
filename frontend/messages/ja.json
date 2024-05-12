@@ -15,8 +15,7 @@
     "organize_test_cases": "テストケースを整理とグラフィカルなテスト管理",
     "case_edit": "テストケース",
     "case_home": "ダッシュボード",
-    "case_run": "テスト実行",
-    "roadmap": "ロードマップ"
+    "case_run": "テスト実行"
   },
   "Guide": {
     "self_host": "セルフホスト",
