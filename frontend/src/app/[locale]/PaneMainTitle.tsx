@@ -54,7 +54,7 @@ export default function MainTitle({ locale }: Props) {
           </Link>
           <NextUiLink
             isExternal
-            href="https://github.com/kimatata/TestCaseManager"
+            href="https://github.com/kimatata/TestPlat"
             aria-label="Github"
             showAnchorIcon
             anchorIcon={<ExternalLink size={16} />}

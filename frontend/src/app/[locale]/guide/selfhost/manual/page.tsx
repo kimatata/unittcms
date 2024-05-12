@@ -8,7 +8,7 @@ export default function Page() {
     {
       uid: "clone",
       detail: "",
-      code: "git clone git@github.com:kimatata/TestCaseManager.git",
+      code: "git clone git@github.com:kimatata/TestPlat.git",
     },
     {
       uid: "move-to-backend",

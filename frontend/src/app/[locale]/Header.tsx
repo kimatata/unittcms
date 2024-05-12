@@ -69,7 +69,7 @@ export default function Header(params: { locale: string }) {
       <NavbarContent className="basis-1 pl-4" justify="end">
         <NextUiLink
           isExternal
-          href="https://github.com/kimatata/TestCaseManager"
+          href="https://github.com/kimatata/TestPlat"
           aria-label="Github"
         >
           <GithubIcon className="text-default-500" />
