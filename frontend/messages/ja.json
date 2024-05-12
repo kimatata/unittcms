@@ -1,6 +1,7 @@
 {
   "Index": {
     "get_started": "テスト管理を始める",
+    "demo": "デモ",
     "oss_tcmt": "オープンソーステストケース管理",
     "web_application": "ウェブアプリケーション",
     "integrate_and_manage": "ソフトウェア開発にかかわるすべてのテストを統合管理",
@@ -17,25 +18,10 @@
     "case_home": "ダッシュボード",
     "case_run": "テスト実行"
   },
-  "Guide": {
-    "self_host": "セルフホスト",
-    "docker": "Docker",
-    "manual": "マニュアル",
-    "self_host_app": "アプリのセルフホスト",
-    "run_as_docker": "Docker containerによる実行",
-    "run_by_manually": "手動での実行",
-    "move_to_back": "backendディレクトリに遷移",
-    "backend_install": "依存関係をインストール",
-    "init_db": "データベースの初期化",
-    "backend_start": "バックエンドサーバーの起動",
-    "move_to_front": "frontendディレクトリに遷移",
-    "front_install": "依存関係をインストール",
-    "front_start": "フロントエンドサーバーの起動"
-  },
   "Header": {
     "title": "オープンソーステストケース管理ツール",
     "description": "ソフトウェア開発にかかわるすべてのテストを統合管理",
-    "guide": "ガイド",
+    "docs": "ドキュメント",
     "projects": "プロジェクト"
   },
   "Projects": {

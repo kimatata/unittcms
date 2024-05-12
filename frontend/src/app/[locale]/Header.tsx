@@ -6,12 +6,12 @@ import {
   Chip,
   Link as NextUiLink,
 } from "@nextui-org/react";
+import { MoveUpRight } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { Link } from "@/src/navigation";
 import LangSwitch from "./LangSwitch";
 import { ThemeSwitch } from "@/components/theme-switch";
 import { GithubIcon } from "@/components/icons";
-
 import Image from "next/image";
 
 export default function Header(params: { locale: string }) {
@@ -49,20 +49,22 @@ export default function Header(params: { locale: string }) {
         <NavbarItem className="hidden sm:block">
           <Link
             className="data-[active=true]:text-primary data-[active=true]:font-medium"
-            href="/guide/selfhost"
-            locale={params.locale}
-          >
-            {t("guide")}
-          </Link>
-        </NavbarItem>
-        <NavbarItem className="hidden sm:block">
-          <Link
-            className="data-[active=true]:text-primary data-[active=true]:font-medium"
             href="/projects"
             locale={params.locale}
           >
             {t("projects")}
           </Link>
+        </NavbarItem>
+        <NavbarItem className="hidden sm:block">
+          <NextUiLink
+            isExternal
+            href="https://kimatata.github.io/TestPlat/docs/selfhost"
+            aria-label="docs"
+            showAnchorIcon
+            anchorIcon={<MoveUpRight size={12} className="ms-1" />}
+          >
+            {t("docs")}
+          </NextUiLink>
         </NavbarItem>
       </NavbarContent>
 
