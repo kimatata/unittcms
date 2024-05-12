@@ -1,8 +1,11 @@
 import {
   Navbar as NextUINavbar,
   NavbarContent,
+  NavbarMenu,
+  NavbarMenuToggle,
   NavbarBrand,
   NavbarItem,
+  NavbarMenuItem,
   Chip,
   Link as NextUiLink,
 } from "@nextui-org/react";
@@ -16,6 +19,22 @@ import Image from "next/image";
 
 export default function Header(params: { locale: string }) {
   const t = useTranslations("Header");
+
+  // Links shown Header or slider
+  const commonLinks = [
+    {
+      uid: "projects",
+      href: "/projects",
+      label: t("projects"),
+      isExternal: false,
+    },
+    {
+      uid: "docs",
+      href: "https://kimatata.github.io/TestPlat/docs/getstarted/selfhost",
+      label: t("docs"),
+      isExternal: true,
+    },
+  ];
 
   return (
     <NextUINavbar maxWidth="full" position="sticky" className="bg-inherit">
@@ -35,7 +54,7 @@ export default function Header(params: { locale: string }) {
             <p className="font-bold text-inherit">TestPlat</p>
           </Link>
         </NavbarBrand>
-        <NavbarItem className="hidden sm:block">
+        <NavbarItem className="hidden md:block">
           <Chip size="sm" variant="flat">
             <Link
               className="data-[active=true]:text-primary data-[active=true]:font-medium"
@@ -46,26 +65,31 @@ export default function Header(params: { locale: string }) {
             </Link>
           </Chip>
         </NavbarItem>
-        <NavbarItem className="hidden sm:block">
-          <Link
-            className="data-[active=true]:text-primary data-[active=true]:font-medium"
-            href="/projects"
-            locale={params.locale}
-          >
-            {t("projects")}
-          </Link>
-        </NavbarItem>
-        <NavbarItem className="hidden sm:block">
-          <NextUiLink
-            isExternal
-            href="https://kimatata.github.io/TestPlat/docs/getstarted/selfhost"
-            aria-label="docs"
-            showAnchorIcon
-            anchorIcon={<MoveUpRight size={12} className="ms-1" />}
-          >
-            {t("docs")}
-          </NextUiLink>
-        </NavbarItem>
+        {commonLinks.map((link) =>
+          link.isExternal ? (
+            <NavbarItem key={link.uid} className="hidden md:block">
+              <NextUiLink
+                isExternal
+                href="https://kimatata.github.io/TestPlat/docs/getstarted/selfhost"
+                aria-label="docs"
+                showAnchorIcon
+                anchorIcon={<MoveUpRight size={12} className="ms-1" />}
+              >
+                {t("docs")}
+              </NextUiLink>
+            </NavbarItem>
+          ) : (
+            <NavbarItem key={link.uid} className="hidden md:block">
+              <Link
+                className="data-[active=true]:text-primary data-[active=true]:font-medium"
+                href={link.href}
+                locale={params.locale}
+              >
+                {link.label}
+              </Link>
+            </NavbarItem>
+          )
+        )}
       </NavbarContent>
 
       <NavbarContent className="basis-1 pl-4" justify="end">
@@ -73,12 +97,42 @@ export default function Header(params: { locale: string }) {
           isExternal
           href="https://github.com/kimatata/TestPlat"
           aria-label="Github"
+          className="hidden md:flex"
         >
           <GithubIcon className="text-default-500" />
         </NextUiLink>
-        <ThemeSwitch />
+        <ThemeSwitch className="hidden md:flex" />
         <LangSwitch locale={params.locale} />
+        <NavbarMenuToggle className="md:hidden" />
       </NavbarContent>
+
+      <NavbarMenu>
+        <div className="mx-4 mt-2 flex flex-col gap-2">
+          {commonLinks.map((link) =>
+            link.isExternal ? (
+              <NavbarMenuItem key={link.uid}>
+                <NextUiLink
+                  href={link.href}
+                  showAnchorIcon
+                  anchorIcon={<MoveUpRight size={12} className="ms-1" />}
+                >
+                  {t("docs")}
+                </NextUiLink>
+              </NavbarMenuItem>
+            ) : (
+              <NavbarMenuItem key={link.uid}>
+                <Link
+                  className="data-[active=true]:text-primary data-[active=true]:font-medium"
+                  href={link.href}
+                  locale={params.locale}
+                >
+                  {link.label}
+                </Link>
+              </NavbarMenuItem>
+            )
+          )}
+        </div>
+      </NavbarMenu>
     </NextUINavbar>
   );
 }
