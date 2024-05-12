@@ -1,43 +1,53 @@
-import clsx from 'clsx';
-import Heading from '@theme/Heading';
-import styles from './styles.module.css';
+import clsx from "clsx";
+import Heading from "@theme/Heading";
+import styles from "./styles.module.css";
 
 const FeatureList = [
   {
-    title: 'Easy to Use',
-    Svg: require('@site/static/img/undraw_docusaurus_mountain.svg').default,
+    title: "Open Source",
+    Svg: require("@site/static/img/certificate-svgrepo-com.svg").default,
     description: (
       <>
-        Docusaurus was designed from the ground up to be easily installed and
-        used to get your website up and running quickly.
+        TestPlat is free and open source. The application can be self-hosted. It
+        can be deployed in environments with strict security requirements.
       </>
     ),
   },
   {
-    title: 'Focus on What Matters',
-    Svg: require('@site/static/img/undraw_docusaurus_tree.svg').default,
+    title: "Organize Test Cases",
+    Svg: require("@site/static/img/chemical-svgrepo-com.svg").default,
     description: (
       <>
-        Docusaurus lets you focus on your docs, and we&apos;ll do the chores. Go
-        ahead and move your docs into the <code>docs</code> directory.
+        Test cases can be organized by projects and folders. Modern UI framework
+        makes them fast.
       </>
     ),
   },
   {
-    title: 'Powered by React',
-    Svg: require('@site/static/img/undraw_docusaurus_react.svg').default,
+    title: "Usability",
+    Svg: require("@site/static/img/statistics-svgrepo-com.svg").default,
     description: (
       <>
-        Extend or customize your website layout by reusing React. Docusaurus can
-        be extended while reusing the same header and footer.
+        The defined test cases can be used over and over again in test runs. The
+        status of test runs and projects can be viewed graphically.
+      </>
+    ),
+  },
+  {
+    title: "Universal",
+    Svg: require("@site/static/img/question-and-answer-svgrepo-com.svg").default,
+    description: (
+      <>
+        Multi language support and dark theme allow anyone to use the system
+        without any inconvenience.
       </>
     ),
   },
 ];
 
-function Feature({Svg, title, description}) {
+function Feature({ Svg, title, description }) {
   return (
-    <div className={clsx('col col--4')}>
+    <div className={clsx("col col--3")}>
       <div className="text--center">
         <Svg className={styles.featureSvg} role="img" />
       </div>
