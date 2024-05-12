@@ -39,10 +39,10 @@ export default function Header(params: { locale: string }) {
           <Chip size="sm" variant="flat">
             <Link
               className="data-[active=true]:text-primary data-[active=true]:font-medium"
-              href="/about"
+              href="/"
               locale={params.locale}
             >
-              1.0.0-alpha.3
+              1.0.0-alpha.4
             </Link>
           </Chip>
         </NavbarItem>
@@ -58,7 +58,7 @@ export default function Header(params: { locale: string }) {
         <NavbarItem className="hidden sm:block">
           <NextUiLink
             isExternal
-            href="https://kimatata.github.io/TestPlat/docs/selfhost"
+            href="https://kimatata.github.io/TestPlat/docs/getstarted/selfhost"
             aria-label="docs"
             showAnchorIcon
             anchorIcon={<MoveUpRight size={12} className="ms-1" />}

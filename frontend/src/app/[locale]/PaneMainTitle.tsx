@@ -1,5 +1,6 @@
 import { title, subtitle } from "@/components/primitives";
 import { Button, Link as NextUiLink } from "@nextui-org/react";
+import { MoveUpRight } from "lucide-react";
 import { Link } from "@/src/navigation";
 import { useTranslations } from "next-intl";
 
@@ -37,29 +38,41 @@ export default function MainTitle({ locale }: Props) {
 
       <div className="mt-5">
         <Button color="primary" radius="full">
-          <NextUiLink
-            isExternal
-            href="https://kimatata.github.io/TestPlat/docs/selfhost"
-            aria-label="docs"
-            className="text-white"
-          >
-            {t("get_started")}
-          </NextUiLink>
-        </Button>
-
-        <Button color="primary" radius="full" className="ms-2">
           <Link href={`/projects/`} locale={locale}>
             {t("demo")}
           </Link>
         </Button>
 
-        <Button color="primary" radius="full" className="ms-2">
+        <Button
+          color="primary"
+          variant="bordered"
+          radius="full"
+          className="ms-2"
+        >
+          <NextUiLink
+            isExternal
+            href="https://kimatata.github.io/TestPlat/docs/getstarted/selfhost"
+            aria-label="docs"
+            showAnchorIcon
+            anchorIcon={<MoveUpRight size={12} className="ms-1" />}
+          >
+            {t("get_started")}
+          </NextUiLink>
+        </Button>
+
+        <Button
+          color="primary"
+          variant="bordered"
+          radius="full"
+          className="ms-2"
+        >
           <NextUiLink
             size="sm"
             isExternal
             href="https://github.com/kimatata/TestPlat"
             aria-label="Github"
-            className="text-white"
+            showAnchorIcon
+            anchorIcon={<MoveUpRight size={12} className="ms-1" />}
           >
             GitHub
           </NextUiLink>
