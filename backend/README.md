@@ -1,15 +1,17 @@
-# Test Case Manager Backend
-
-## Technologies
-
-- Node.js
-- Express
-- SQLite
+# TestPlat Backend
 
 ## Install dependencies
 
 ```bash
 npm install
+```
+
+## Set Environmental variable
+
+Create `.env` File
+
+```
+NEXT_PUBLIC_BACKEND_ORIGIN=http://localhost:3001
 ```
 
 ## Set up database

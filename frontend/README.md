@@ -1,11 +1,4 @@
-# Test Case Manager Frontend
-
-## Technologies
-
-- React
-- Next.js
-- Tailwind CSS
-- NextUI
+# TestPlat Frontend
 
 ## Install dependencies
 
@@ -13,16 +6,16 @@
 npm install
 ```
 
-## Run the development server
-
-```bash
-npm run dev
-```
-
-## Edit Environmental variable
+## Set Environmental variable
 
 Create `.env` File
 
 ```
-NEXT_PUBLIC_API_SERVER=http://localhost:3001
+NEXT_PUBLIC_BACKEND_ORIGIN=http://localhost:3001
+```
+
+## Run the development server
+
+```bash
+npm run dev
 ```

@@ -5,8 +5,9 @@ const app = express();
 
 // enable frontend access
 const cors = require("cors");
+const frontendOrigin = process.env.FRONTEND_ORIGIN || 'http://localhost:3000';
 const corsOptions = {
-  origin: "http://localhost:3000",
+  origin: frontendOrigin,
   methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
 };
 app.use(cors(corsOptions));
