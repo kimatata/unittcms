@@ -1,6 +1,7 @@
 import { Image, Button, Tooltip, Card, CardBody } from "@nextui-org/react";
 import { AttachmentType, CaseMessages } from "@/types/case";
 import { Trash, ArrowDownToLine } from "lucide-react";
+import { isImage } from "./isImage";
 
 type Props = {
   attachments: AttachmentType[];
@@ -22,16 +23,7 @@ export default function CaseAttachmentsEditor({
   let others = [];
 
   attachments.forEach((attachment) => {
-    let path = attachment.path;
-    let extension = path.substring(path.lastIndexOf(".") + 1).toLowerCase();
-    if (
-      extension === "png" ||
-      extension === "jpg" ||
-      extension === "jpeg" ||
-      extension === "gif" ||
-      extension === "bmp" ||
-      extension === "svg"
-    ) {
+    if (isImage(attachment)) {
       images.push(attachment);
     } else {
       others.push(attachment);
