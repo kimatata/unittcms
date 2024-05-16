@@ -12,6 +12,23 @@ type Props = {
   messages: CaseMessages,
 };
 
+export function isImg(attachmentFile: AttachmentType) {
+  let path = attachmentFile.path;
+  let extension = path.substring(path.lastIndexOf(".") + 1).toLowerCase();
+  if (
+    extension === "png" ||
+    extension === "jpg" ||
+    extension === "jpeg" ||
+    extension === "gif" ||
+    extension === "bmp" ||
+    extension === "svg"
+  ) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
 export default function CaseAttachmentsEditor({
   attachments = [],
   onAttachmentDownload,
@@ -22,16 +39,8 @@ export default function CaseAttachmentsEditor({
   let others = [];
 
   attachments.forEach((attachment) => {
-    let path = attachment.path;
-    let extension = path.substring(path.lastIndexOf(".") + 1).toLowerCase();
-    if (
-      extension === "png" ||
-      extension === "jpg" ||
-      extension === "jpeg" ||
-      extension === "gif" ||
-      extension === "bmp" ||
-      extension === "svg"
-    ) {
+    const isImage = isImg(attachment)
+    if (isImage) {
       images.push(attachment);
     } else {
       others.push(attachment);
