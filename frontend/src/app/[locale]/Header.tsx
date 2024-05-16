@@ -97,11 +97,10 @@ export default function Header(params: { locale: string }) {
           isExternal
           href="https://github.com/kimatata/TestPlat"
           aria-label="Github"
-          className="hidden md:flex"
         >
           <GithubIcon className="text-default-500" />
         </NextUiLink>
-        <ThemeSwitch className="hidden md:flex" />
+        <ThemeSwitch />
         <LangSwitch locale={params.locale} />
         <NavbarMenuToggle className="md:hidden" />
       </NavbarContent>
