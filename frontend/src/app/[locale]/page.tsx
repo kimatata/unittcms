@@ -1,5 +1,4 @@
 import { useTranslations } from "next-intl";
-import { title, subtitle } from "@/components/primitives";
 import { Divider } from "@nextui-org/react";
 import PaneMainTitle from "./PaneMainTitle";
 import PaneMainFeatures from "./PaneMainFeatures";

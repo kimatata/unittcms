@@ -37,46 +37,44 @@ export default function MainTitle({ locale }: Props) {
       </h4>
 
       <div className="mt-5">
-        <Button color="primary" radius="full">
-          <Link href={`/projects/`} locale={locale}>
+        <Link href={`/projects/`} locale={locale}>
+          <Button color="primary" radius="full" className="px-0">
             {t("demo")}
-          </Link>
-        </Button>
+          </Button>
+        </Link>
 
-        <Button
-          color="primary"
-          variant="bordered"
-          radius="full"
-          className="ms-2"
+        <NextUiLink
+          isExternal
+          href="https://kimatata.github.io/TestPlat/docs/getstarted/selfhost"
+          aria-label="docs"
         >
-          <NextUiLink
-            isExternal
-            href="https://kimatata.github.io/TestPlat/docs/getstarted/selfhost"
-            aria-label="docs"
-            showAnchorIcon
-            anchorIcon={<MoveUpRight size={12} className="ms-1" />}
+          <Button
+            color="primary"
+            variant="bordered"
+            radius="full"
+            className="ms-2"
+            endContent={<MoveUpRight size={12} />}
           >
             {t("get_started")}
-          </NextUiLink>
-        </Button>
+          </Button>
+        </NextUiLink>
 
-        <Button
-          color="primary"
-          variant="bordered"
-          radius="full"
-          className="ms-2"
+        <NextUiLink
+          size="sm"
+          isExternal
+          href="https://github.com/kimatata/TestPlat"
+          aria-label="Github"
         >
-          <NextUiLink
-            size="sm"
-            isExternal
-            href="https://github.com/kimatata/TestPlat"
-            aria-label="Github"
-            showAnchorIcon
-            anchorIcon={<MoveUpRight size={12} className="ms-1" />}
+          <Button
+            color="primary"
+            variant="bordered"
+            radius="full"
+            className="ms-2"
+            endContent={<MoveUpRight size={12} />}
           >
             GitHub
-          </NextUiLink>
-        </Button>
+          </Button>
+        </NextUiLink>
       </div>
     </div>
   );
