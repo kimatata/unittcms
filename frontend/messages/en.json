@@ -24,6 +24,10 @@
     "docs": "Docs",
     "projects": "Projects"
   },
+  "Auth": {
+    "signup": "Sign up",
+    "signin": "Sign in"
+  },
   "Projects": {
     "projectList": "Project List",
     "project": "Project",

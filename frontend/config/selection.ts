@@ -1,3 +1,5 @@
+const roles = [{ uid: "admin" }, { uid: "moderator" }, { uid: "user" }];
+
 const categoricalPalette = [
   "#fba91e",
   "#6ea56c",
@@ -63,6 +65,7 @@ const testRunCaseStatus = [
 ];
 
 export {
+  roles,
   priorities,
   testTypes,
   automationStatus,

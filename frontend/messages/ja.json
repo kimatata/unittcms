@@ -24,6 +24,10 @@
     "docs": "ドキュメント",
     "projects": "プロジェクト"
   },
+  "Auth": {
+    "signup": "サインアップ",
+    "signin": "サインイン"
+  },
   "Projects": {
     "projectList": "プロジェクト一覧",
     "project": "プロジェクト",
