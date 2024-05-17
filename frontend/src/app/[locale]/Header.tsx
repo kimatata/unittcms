@@ -61,7 +61,7 @@ export default function Header(params: { locale: string }) {
               href="/"
               locale={params.locale}
             >
-              1.0.0-alpha.5
+              1.0.0-alpha.6
             </Link>
           </Chip>
         </NavbarItem>
