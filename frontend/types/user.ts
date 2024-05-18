@@ -8,6 +8,19 @@ export type UserType = {
 };
 
 export type AuthMessages = {
-  signup: string;
-  signin: string;
+  title: string;
+  linkTitle: string;
+  submitTitle: string;
+  email: string;
+  username: string;
+  password: string;
+  confirmPassword: string;
+  invalidEmail: string;
+  invalidPassword: string;
+  usernameEmpty: string;
+  passwordDoesNotMatch: string;
+  EmailAlreadyExist: string;
+  emailNotExist: string;
+  signupError: string;
+  signinError: string;
 };

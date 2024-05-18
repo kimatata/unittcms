@@ -3,11 +3,12 @@ const router = express.Router();
 const defineUser = require("../../models/users");
 const { DataTypes } = require("sequelize");
 const roles = require("./roles");
+const bcrypt = require('bcrypt');
 
 module.exports = function (sequelize) {
   const User = defineUser(sequelize, DataTypes);
 
-  router.post("/auth/signup", async (req, res) => {
+  router.post("/signup", async (req, res) => {
     try {
       const { email, password, username } = req.body;
       const hashedPassword = await bcrypt.hash(password, 10);

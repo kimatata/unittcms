@@ -25,8 +25,22 @@
     "projects": "プロジェクト"
   },
   "Auth": {
-    "signup": "サインアップ",
-    "signin": "サインイン"
+    "signup": "新規登録",
+    "signin": "サインイン",
+    "or_signup": "新規登録ページ",
+    "or_signin": "サインインページ",
+    "email": "メールアドレス",
+    "username": "ユーザー名",
+    "password": "パスワード",
+    "confirm_password": "パスワード（確認）",
+    "invalid_email": "無効なメールアドレスです",
+    "invalid_password": "パスワードは8文字以上である必要があります",
+    "username_empty": "ユーザー名が入力されていません",
+    "password_not_match": "パスワードが一致しません",
+    "email_already_exist": "登録済みのメールアドレスです",
+    "email_not_exist": "メールアドレスが見つかりません",
+    "signup_error": "新規登録できません",
+    "signin_error": "サインインできません"
   },
   "Projects": {
     "projectList": "プロジェクト一覧",

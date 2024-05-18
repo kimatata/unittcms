@@ -26,7 +26,22 @@
   },
   "Auth": {
     "signup": "Sign up",
-    "signin": "Sign in"
+    "signin": "Sign in",
+    "or_signup": "You need sign up?",
+    "or_signin": "You need sign in?",
+    "email": "Email",
+    "username": "User name",
+    "password": "Password",
+    "confirm_password": "Password (confirm)",
+    "invalid_email": "Invalid email",
+    "invalid_password": "Password must be at least 8 characters",
+    "username_empty": "username is empty",
+    "password_empty": "password is empty",
+    "password_not_match": "Pasword does not match",
+    "email_already_exist": "Already registered email",
+    "email_not_exist": "Email address not found",
+    "signup_error": "Sign up failed",
+    "signin_error": "Sign in failed"
   },
   "Projects": {
     "projectList": "Project List",

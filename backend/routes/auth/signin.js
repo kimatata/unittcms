@@ -2,11 +2,13 @@ const express = require("express");
 const router = express.Router();
 const defineUser = require("../../models/users");
 const { DataTypes } = require("sequelize");
+const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 
 module.exports = function (sequelize) {
   const User = defineUser(sequelize, DataTypes);
 
-  router.post("/auth/signin", async (req, res) => {
+  router.post("/signin", async (req, res) => {
     try {
       const { email, password } = req.body;
       const user = await User.findOne({
