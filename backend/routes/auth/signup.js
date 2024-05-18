@@ -3,7 +3,8 @@ const router = express.Router();
 const defineUser = require("../../models/users");
 const { DataTypes } = require("sequelize");
 const roles = require("./roles");
-const bcrypt = require('bcrypt');
+const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
 
 module.exports = function (sequelize) {
   const User = defineUser(sequelize, DataTypes);
@@ -19,14 +20,20 @@ module.exports = function (sequelize) {
           ? roles.findIndex((entry) => entry.uid === "user")
           : roles.findIndex((entry) => entry.uid === "admin");
 
-      await User.create({
+      const user = await User.create({
         email,
         password: hashedPassword,
         username: username,
         role: initialRole,
         avatarPath: null,
       });
-      res.status(201).json({ message: "User registered successfully" });
+
+      const accessToken = jwt.sign({ userId: user.id }, "your-secret-key", {
+        expiresIn: "1h",
+      });
+
+      user.password = undefined;;
+      res.status(200).json({ access_token: accessToken, user });
     } catch (error) {
       console.error(error);
       res.status(500).send("Sign up failed");

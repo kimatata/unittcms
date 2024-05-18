@@ -39,8 +39,8 @@
     "password_not_match": "パスワードが一致しません",
     "email_already_exist": "登録済みのメールアドレスです",
     "email_not_exist": "メールアドレスが見つかりません",
-    "signup_error": "新規登録できません",
-    "signin_error": "サインインできません"
+    "signup_error": "新規登録に失敗しました",
+    "signin_error": "サインインに失敗しました"
   },
   "Projects": {
     "projectList": "プロジェクト一覧",

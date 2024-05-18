@@ -18,10 +18,10 @@ async function signUp(newUser: UserType) {
     if (!response.ok) {
       throw new Error(`HTTP error! Status: ${response.status}`);
     }
-    const data = await response.json();
-    return data;
+    const accessToken = await response.json();
+    storeToken(accessToken);
   } catch (error: any) {
-    console.error("Error creating sign up:", error);
+    console.error("Error sign up:", error);
     throw error;
   }
 }
@@ -42,12 +42,20 @@ async function signIn(signInUser: UserType) {
     if (!response.ok) {
       throw new Error(`HTTP error! Status: ${response.status}`);
     }
-    const data = await response.json();
-    return data;
+    const accessToken = await response.json();
+    storeToken(accessToken);
   } catch (error: any) {
     console.error("Error sign in:", error);
     throw error;
   }
 }
 
-export { signUp, signIn };
+function storeToken(accessToken: Object) {
+  localStorage.setItem("testplat-auth-token", JSON.stringify(accessToken));
+}
+
+function signOut() {
+  localStorage.removeItem("testplat-auth-token");
+}
+
+export { signUp, signIn, signOut };

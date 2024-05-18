@@ -58,13 +58,19 @@ export default function AuthPage({ isSignup, messages, locale }: Props) {
 
   const submit = async () => {
     if (isSignup) {
-      const signUpRet = await signUp(user);
-      console.log(signUpRet);
-      // if success, move to signin page
+      try {
+        await signUp(user);
+        // Move to signin page
+      } catch {
+        setErrorMessage(messages.signupError);
+      }
     } else {
-      const signInRet = await signIn(user);
-      console.log(signInRet);
-      // if success, move to account page
+      try {
+        signIn(user);
+        // Move to signin page
+      } catch {
+        setErrorMessage(messages.signinError);
+      }
     }
   };
 
