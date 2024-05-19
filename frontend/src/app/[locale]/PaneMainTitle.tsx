@@ -1,22 +1,22 @@
-import { title, subtitle } from "@/components/primitives";
-import { Button, Link as NextUiLink } from "@nextui-org/react";
-import { MoveUpRight } from "lucide-react";
-import { Link } from "@/src/navigation";
-import { useTranslations } from "next-intl";
+import { title, subtitle } from '@/components/primitives';
+import { Button, Link as NextUiLink } from '@nextui-org/react';
+import { MoveUpRight } from 'lucide-react';
+import { Link } from '@/src/navigation';
+import { useTranslations } from 'next-intl';
 
 type Props = {
   locale: string;
 };
 
 export default function MainTitle({ locale }: Props) {
-  const t = useTranslations("Index");
+  const t = useTranslations('Index');
 
   return (
     <div className="md:text-left text-center">
       <h1
         className={title({
-          color: "green",
-          class: "lg:text-7xl md:text-7xl sm:text-7xl text-7xl",
+          color: 'green',
+          class: 'lg:text-7xl md:text-7xl sm:text-7xl text-7xl',
         })}
       >
         TestPlat
@@ -25,29 +25,23 @@ export default function MainTitle({ locale }: Props) {
       <br />
       <h1
         className={title({
-          class: "lg:text-5xl md:text-5xl sm:text-5xl text-5xl",
+          class: 'lg:text-5xl md:text-5xl sm:text-5xl text-5xl',
         })}
       >
-        {t("oss_tcmt")}
+        {t('oss_tcmt')}
         <br />
-        {t("web_application")}
+        {t('web_application')}
       </h1>
-      <h4 className={subtitle({ class: "mt-4" })}>
-        {t("integrate_and_manage")}
-      </h4>
+      <h4 className={subtitle({ class: 'mt-4' })}>{t('integrate_and_manage')}</h4>
 
       <div className="mt-5">
         <Link href={`/projects/`} locale={locale}>
           <Button color="primary" radius="full" className="px-0">
-            {t("demo")}
+            {t('demo')}
           </Button>
         </Link>
 
-        <NextUiLink
-          isExternal
-          href="https://kimatata.github.io/TestPlat/docs/getstarted/selfhost"
-          aria-label="docs"
-        >
+        <NextUiLink isExternal href="https://kimatata.github.io/TestPlat/docs/getstarted/selfhost" aria-label="docs">
           <Button
             color="primary"
             variant="bordered"
@@ -55,16 +49,11 @@ export default function MainTitle({ locale }: Props) {
             className="ms-2"
             endContent={<MoveUpRight size={12} />}
           >
-            {t("get_started")}
+            {t('get_started')}
           </Button>
         </NextUiLink>
 
-        <NextUiLink
-          size="sm"
-          isExternal
-          href="https://github.com/kimatata/TestPlat"
-          aria-label="Github"
-        >
+        <NextUiLink size="sm" isExternal href="https://github.com/kimatata/TestPlat" aria-label="Github">
           <Button
             color="primary"
             variant="bordered"

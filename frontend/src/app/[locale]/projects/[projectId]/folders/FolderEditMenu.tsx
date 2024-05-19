@@ -1,12 +1,6 @@
-import {
-  Button,
-  Dropdown,
-  DropdownTrigger,
-  DropdownMenu,
-  DropdownItem,
-} from "@nextui-org/react";
-import { MoreVertical } from "lucide-react";
-import { FolderType, FoldersMessages } from "@/types/folder";
+import { Button, Dropdown, DropdownTrigger, DropdownMenu, DropdownItem } from '@nextui-org/react';
+import { MoreVertical } from 'lucide-react';
+import { FolderType, FoldersMessages } from '@/types/folder';
 
 type Props = {
   folder: FolderType;
@@ -15,12 +9,7 @@ type Props = {
   messages: FoldersMessages;
 };
 
-export default function FolderEditMenu({
-  folder,
-  onEditClick,
-  onDeleteClick,
-  messages,
-}: Props) {
+export default function FolderEditMenu({ folder, onEditClick, onDeleteClick, messages }: Props) {
   return (
     <Dropdown>
       <DropdownTrigger>
@@ -32,12 +21,7 @@ export default function FolderEditMenu({
         <DropdownItem key="edit" onClick={() => onEditClick(folder)}>
           {messages.editFolder}
         </DropdownItem>
-        <DropdownItem
-          key="delete"
-          className="text-danger"
-          color="danger"
-          onClick={() => onDeleteClick(folder.id)}
-        >
+        <DropdownItem key="delete" className="text-danger" color="danger" onClick={() => onDeleteClick(folder.id)}>
           {messages.deleteFolder}
         </DropdownItem>
       </DropdownMenu>

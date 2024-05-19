@@ -1,10 +1,10 @@
-"use client";
-import { useState, useEffect } from "react";
-import { Listbox, ListboxItem } from "@nextui-org/react";
-import { Home, Files, FlaskConical } from "lucide-react";
-import { usePathname, useRouter } from "@/src/navigation";
-import useGetCurrentIds from "@/utils/useGetCurrentIds";
-import { ProjectMessages } from "@/types/project";
+'use client';
+import { useState, useEffect } from 'react';
+import { Listbox, ListboxItem } from '@nextui-org/react';
+import { Home, Files, FlaskConical } from 'lucide-react';
+import { usePathname, useRouter } from '@/src/navigation';
+import useGetCurrentIds from '@/utils/useGetCurrentIds';
+import { ProjectMessages } from '@/types/project';
 
 export type Props = {
   messages: ProjectMessages;
@@ -16,28 +16,28 @@ export default function Sidebar({ messages, locale }: Props) {
   const router = useRouter();
   const pathname = usePathname();
 
-  const [currentKey, setCurrentTab] = useState("home");
-  const baseClass = "p-3";
+  const [currentKey, setCurrentTab] = useState('home');
+  const baseClass = 'p-3';
   const selectedClass = `${baseClass} bg-neutral-200 dark:bg-neutral-700`;
 
   const handleTabClick = (key: string) => {
-    if (key === "home") {
+    if (key === 'home') {
       router.push(`/projects/${projectId}/home`, { locale: locale });
-    } else if (key === "cases") {
+    } else if (key === 'cases') {
       router.push(`/projects/${projectId}/folders`, { locale: locale });
-    } else if (key === "runs") {
+    } else if (key === 'runs') {
       router.push(`/projects/${projectId}/runs`, { locale: locale });
     }
   };
 
   useEffect(() => {
     const handleRouteChange = (currentPath: string) => {
-      if (currentPath.includes("home")) {
-        setCurrentTab("home");
-      } else if (currentPath.includes("folders")) {
-        setCurrentTab("cases");
-      } else if (currentPath.includes("runs")) {
-        setCurrentTab("runs");
+      if (currentPath.includes('home')) {
+        setCurrentTab('home');
+      } else if (currentPath.includes('folders')) {
+        setCurrentTab('cases');
+      } else if (currentPath.includes('runs')) {
+        setCurrentTab('runs');
       }
     };
 
@@ -46,17 +46,17 @@ export default function Sidebar({ messages, locale }: Props) {
 
   const tabItems = [
     {
-      key: "home",
+      key: 'home',
       text: messages.home,
       startContent: <Home strokeWidth={1} size={28} />,
     },
     {
-      key: "cases",
+      key: 'cases',
       text: messages.testCases,
       startContent: <Files strokeWidth={1} size={28} />,
     },
     {
-      key: "runs",
+      key: 'runs',
       text: messages.testRuns,
       startContent: <FlaskConical strokeWidth={1} size={28} />,
     },

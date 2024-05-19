@@ -1,6 +1,6 @@
-import { Textarea, Button, Tooltip } from "@nextui-org/react";
-import { CaseMessages, StepType } from "@/types/case";
-import { Plus, Trash } from "lucide-react";
+import { Textarea, Button, Tooltip } from '@nextui-org/react';
+import { CaseMessages, StepType } from '@/types/case';
+import { Plus, Trash } from 'lucide-react';
 
 type Props = {
   steps: StepType[];
@@ -10,13 +10,7 @@ type Props = {
   messages: CaseMessages;
 };
 
-export default function StepsEditor({
-  steps,
-  onStepUpdate,
-  onStepPlus,
-  onStepDelete,
-  messages,
-}: Props) {
+export default function StepsEditor({ steps, onStepUpdate, onStepPlus, onStepDelete, messages }: Props) {
   // sort steps by junction table's column
   const sortedSteps = steps.slice().sort((a, b) => {
     const stepNoA = a.caseSteps.stepNo;

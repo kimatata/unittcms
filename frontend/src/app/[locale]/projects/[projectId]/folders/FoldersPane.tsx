@@ -1,20 +1,15 @@
-"use client";
-import React from "react";
-import { FolderType, FoldersMessages } from "@/types/folder";
-import { useEffect, useState } from "react";
-import { Button, Listbox, ListboxItem } from "@nextui-org/react";
-import { Folder, Plus } from "lucide-react";
-import { usePathname, useRouter } from "@/src/navigation";
-import useGetCurrentIds from "@/utils/useGetCurrentIds";
-import FolderDialog from "./FolderDialog";
-import FolderEditMenu from "./FolderEditMenu";
+'use client';
+import React from 'react';
+import { FolderType, FoldersMessages } from '@/types/folder';
+import { useEffect, useState } from 'react';
+import { Button, Listbox, ListboxItem } from '@nextui-org/react';
+import { Folder, Plus } from 'lucide-react';
+import { usePathname, useRouter } from '@/src/navigation';
+import useGetCurrentIds from '@/utils/useGetCurrentIds';
+import FolderDialog from './FolderDialog';
+import FolderEditMenu from './FolderEditMenu';
 
-import {
-  fetchFolders,
-  createFolder,
-  updateFolder,
-  deleteFolder,
-} from "./foldersControl";
+import { fetchFolders, createFolder, updateFolder, deleteFolder } from './foldersControl';
 
 type Props = {
   projectId: string;
@@ -45,16 +40,8 @@ export default function FoldersPane({ projectId, messages, locale }: Props) {
 
   const onSubmit = async (name: string, detail: string) => {
     if (editingFolder) {
-      const updatedProject = await updateFolder(
-        editingFolder.id,
-        name,
-        detail,
-        projectId,
-        null
-      );
-      const updatedProjects = folders.map((project) =>
-        project.id === updatedProject.id ? updatedProject : project
-      );
+      const updatedProject = await updateFolder(editingFolder.id, name, detail, projectId, null);
+      const updatedProjects = folders.map((project) => (project.id === updatedProject.id ? updatedProject : project));
       setFolders(updatedProjects);
     } else {
       const newProject = await createFolder(name, detail, projectId, null);
@@ -79,28 +66,23 @@ export default function FoldersPane({ projectId, messages, locale }: Props) {
         const data = await fetchFolders(projectId);
         setFolders(data);
 
-        const selectedFolderFromUrl = data.find(
-          (folder) => folder.id === folderId
-        );
+        const selectedFolderFromUrl = data.find((folder) => folder.id === folderId);
         setSelectedFolder(selectedFolderFromUrl);
 
         // Redirect to the smallest folder ID page if the path is "projects/[projectId]/folders
         if (pathname === `/projects/${projectId}/folders`) {
           const smallestFolderId = Math.min(...data.map((folder) => folder.id));
-          router.push(
-            `/projects/${projectId}/folders/${smallestFolderId}/cases`,
-            { locale: locale }
-          );
+          router.push(`/projects/${projectId}/folders/${smallestFolderId}/cases`, { locale: locale });
         }
       } catch (error: any) {
-        console.error("Error in effect:", error.message);
+        console.error('Error in effect:', error.message);
       }
     }
 
     fetchDataEffect();
   }, [folderId]);
 
-  const baseClass = "";
+  const baseClass = '';
   const selectedClass = `${baseClass} bg-neutral-200 dark:bg-neutral-700`;
 
   return (
@@ -119,18 +101,9 @@ export default function FoldersPane({ projectId, messages, locale }: Props) {
           {folders.map((folder, index) => (
             <ListboxItem
               key={index}
-              onClick={() =>
-                router.push(
-                  `/projects/${projectId}/folders/${folder.id}/cases`,
-                  { locale: locale }
-                )
-              }
+              onClick={() => router.push(`/projects/${projectId}/folders/${folder.id}/cases`, { locale: locale })}
               startContent={<Folder size={20} color="#F7C24E" fill="#F7C24E" />}
-              className={
-                selectedFolder && folder.id === selectedFolder.id
-                  ? selectedClass
-                  : baseClass
-              }
+              className={selectedFolder && folder.id === selectedFolder.id ? selectedClass : baseClass}
               endContent={
                 <FolderEditMenu
                   folder={folder}

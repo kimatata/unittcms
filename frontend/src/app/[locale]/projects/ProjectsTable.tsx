@@ -1,4 +1,4 @@
-import { useState, useMemo, useCallback } from "react";
+import { useState, useMemo, useCallback } from 'react';
 import {
   Table,
   TableHeader,
@@ -12,11 +12,11 @@ import {
   DropdownMenu,
   DropdownItem,
   SortDescriptor,
-} from "@nextui-org/react";
-import { Link, NextUiLinkClasses } from "@/src/navigation";
-import { MoreVertical } from "lucide-react";
-import { ProjectType, ProjectsMessages } from "@/types/project";
-import dayjs from "dayjs";
+} from '@nextui-org/react';
+import { Link, NextUiLinkClasses } from '@/src/navigation';
+import { MoreVertical } from 'lucide-react';
+import { ProjectType, ProjectsMessages } from '@/types/project';
+import dayjs from 'dayjs';
 
 type Props = {
   projects: ProjectType[];
@@ -26,24 +26,18 @@ type Props = {
   locale: string;
 };
 
-export default function ProjectsTable({
-  projects,
-  onEditProject,
-  onDeleteProject,
-  messages,
-  locale,
-}: Props) {
+export default function ProjectsTable({ projects, onEditProject, onDeleteProject, messages, locale }: Props) {
   const headerColumns = [
-    { name: messages.id, uid: "id", sortable: true },
-    { name: messages.name, uid: "name", sortable: true },
-    { name: messages.detail, uid: "detail", sortable: true },
-    { name: messages.lastUpdate, uid: "updatedAt", sortable: true },
-    { name: messages.actions, uid: "actions" },
+    { name: messages.id, uid: 'id', sortable: true },
+    { name: messages.name, uid: 'name', sortable: true },
+    { name: messages.detail, uid: 'detail', sortable: true },
+    { name: messages.lastUpdate, uid: 'updatedAt', sortable: true },
+    { name: messages.actions, uid: 'actions' },
   ];
 
   const [sortDescriptor, setSortDescriptor] = useState<SortDescriptor>({
-    column: "id",
-    direction: "ascending",
+    column: 'id',
+    direction: 'ascending',
   });
 
   const sortedItems = useMemo(() => {
@@ -52,31 +46,27 @@ export default function ProjectsTable({
       const second = b[sortDescriptor.column as keyof ProjectType] as number;
       const cmp = first < second ? -1 : first > second ? 1 : 0;
 
-      return sortDescriptor.direction === "descending" ? -cmp : cmp;
+      return sortDescriptor.direction === 'descending' ? -cmp : cmp;
     });
   }, [sortDescriptor, projects]);
 
   const truncateText = (text: string, maxLength: number) => {
-    return text.length > maxLength ? text.slice(0, maxLength) + "..." : text;
+    return text.length > maxLength ? text.slice(0, maxLength) + '...' : text;
   };
 
   const renderCell = useCallback((project: ProjectType, columnKey: Key) => {
     const cellValue = project[columnKey as keyof ProjectType];
 
     switch (columnKey) {
-      case "id":
+      case 'id':
         return <span>{cellValue}</span>;
-      case "name":
+      case 'name':
         return (
-          <Link
-            href={`/projects/${project.id}/home`}
-            locale={locale}
-            className={NextUiLinkClasses}
-          >
+          <Link href={`/projects/${project.id}/home`} locale={locale} className={NextUiLinkClasses}>
             {cellValue}
           </Link>
         );
-      case "detail":
+      case 'detail':
         const maxLength = 20;
         const truncatedValue = truncateText(cellValue, maxLength);
         return (
@@ -84,9 +74,9 @@ export default function ProjectsTable({
             <div>{truncatedValue}</div>
           </div>
         );
-      case "updatedAt":
-        return <span>{dayjs(cellValue).format("YYYY/MM/DD HH:mm")}</span>;
-      case "actions":
+      case 'updatedAt':
+        return <span>{dayjs(cellValue).format('YYYY/MM/DD HH:mm')}</span>;
+      case 'actions':
         return (
           <Dropdown>
             <DropdownTrigger>
@@ -95,13 +85,8 @@ export default function ProjectsTable({
               </Button>
             </DropdownTrigger>
             <DropdownMenu aria-label="project actions">
-              <DropdownItem onClick={() => onEditProject(project)}>
-                {messages.editProject}
-              </DropdownItem>
-              <DropdownItem
-                className="text-danger"
-                onClick={() => onDeleteProject(project.id)}
-              >
+              <DropdownItem onClick={() => onEditProject(project)}>{messages.editProject}</DropdownItem>
+              <DropdownItem className="text-danger" onClick={() => onDeleteProject(project.id)}>
                 {messages.deleteProject}
               </DropdownItem>
             </DropdownMenu>
@@ -114,18 +99,18 @@ export default function ProjectsTable({
 
   const classNames = useMemo(
     () => ({
-      wrapper: ["max-w-3xl"],
-      th: ["bg-transparent", "text-default-500", "border-b", "border-divider"],
+      wrapper: ['max-w-3xl'],
+      th: ['bg-transparent', 'text-default-500', 'border-b', 'border-divider'],
       td: [
         // changing the rows border radius
         // first
-        "group-data-[first=true]:first:before:rounded-none",
-        "group-data-[first=true]:last:before:rounded-none",
+        'group-data-[first=true]:first:before:rounded-none',
+        'group-data-[first=true]:last:before:rounded-none',
         // middle
-        "group-data-[middle=true]:before:rounded-none",
+        'group-data-[middle=true]:before:rounded-none',
         // last
-        "group-data-[last=true]:first:before:rounded-none",
-        "group-data-[last=true]:last:before:rounded-none",
+        'group-data-[last=true]:first:before:rounded-none',
+        'group-data-[last=true]:last:before:rounded-none',
       ],
     }),
     []
@@ -144,7 +129,7 @@ export default function ProjectsTable({
           {(column) => (
             <TableColumn
               key={column.uid}
-              align={column.uid === "actions" ? "center" : "start"}
+              align={column.uid === 'actions' ? 'center' : 'start'}
               allowsSorting={column.sortable}
             >
               {column.name}
@@ -153,11 +138,7 @@ export default function ProjectsTable({
         </TableHeader>
         <TableBody emptyContent={messages.noProjectsFound} items={sortedItems}>
           {(item) => (
-            <TableRow key={item.id}>
-              {(columnKey) => (
-                <TableCell>{renderCell(item, columnKey)}</TableCell>
-              )}
-            </TableRow>
+            <TableRow key={item.id}>{(columnKey) => <TableCell>{renderCell(item, columnKey)}</TableCell>}</TableRow>
           )}
         </TableBody>
       </Table>

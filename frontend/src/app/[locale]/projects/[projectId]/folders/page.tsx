@@ -1,7 +1,3 @@
 export default function Page() {
-  return (
-    <>
-      This is folders page.
-    </>
-  );
+  return <>This is folders page.</>;
 }

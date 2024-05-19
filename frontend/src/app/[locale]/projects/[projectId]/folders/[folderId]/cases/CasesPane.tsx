@@ -1,8 +1,8 @@
-"use client";
-import { useEffect, useState } from "react";
-import TestCaseTable from "./TestCaseTable";
-import { fetchCases, createCase, deleteCase, deleteCases } from "./caseControl";
-import { CasesMessages } from "@/types/case";
+'use client';
+import { useEffect, useState } from 'react';
+import TestCaseTable from './TestCaseTable';
+import { fetchCases, createCase, deleteCase, deleteCases } from './caseControl';
+import { CasesMessages } from '@/types/case';
 
 type Props = {
   projectId: string;
@@ -11,12 +11,7 @@ type Props = {
   locale: string;
 };
 
-export default function CasesPane({
-  projectId,
-  folderId,
-  messages,
-  locale,
-}: Props) {
+export default function CasesPane({ projectId, folderId, messages, locale }: Props) {
   const [cases, setCases] = useState([]);
   useEffect(() => {
     async function fetchDataEffect() {
@@ -24,7 +19,7 @@ export default function CasesPane({
         const data = await fetchCases(folderId);
         setCases(data);
       } catch (error: any) {
-        console.error("Error in effect:", error.message);
+        console.error('Error in effect:', error.message);
       }
     }
 

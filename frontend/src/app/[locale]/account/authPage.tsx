@@ -1,15 +1,15 @@
-"use client";
-import React from "react";
-import { useState, useContext } from "react";
-import { Input, Button, Card, CardHeader, CardBody } from "@nextui-org/react";
-import { Link } from "@/src/navigation";
-import { ChevronRight, Eye, EyeOff } from "lucide-react";
-import { UserType, AuthMessages } from "@/types/user";
-import { roles } from "@/config/selection";
-import { signUp, signIn, getRandomAvatarPath } from "./authControl";
-import { isValidEmail, isValidPassword } from "./validate";
-import { TokenContext } from "../TokenProvider";
-import { useRouter } from "@/src/navigation";
+'use client';
+import React from 'react';
+import { useState, useContext } from 'react';
+import { Input, Button, Card, CardHeader, CardBody } from '@nextui-org/react';
+import { Link } from '@/src/navigation';
+import { ChevronRight, Eye, EyeOff } from 'lucide-react';
+import { UserType, AuthMessages } from '@/types/user';
+import { roles } from '@/config/selection';
+import { signUp, signIn, getRandomAvatarPath } from './authControl';
+import { isValidEmail, isValidPassword } from './validate';
+import { TokenContext } from '../TokenProvider';
+import { useRouter } from '@/src/navigation';
 
 type Props = {
   isSignup: Boolean;
@@ -22,18 +22,17 @@ export default function AuthPage({ isSignup, messages, locale }: Props) {
   const context = useContext(TokenContext);
   const [user, setUser] = useState<UserType>({
     id: null,
-    email: "",
-    password: "",
-    username: "",
-    role: roles.findIndex((entry) => entry.uid === "user"),
-    avatarPath: "",
+    email: '',
+    password: '',
+    username: '',
+    role: roles.findIndex((entry) => entry.uid === 'user'),
+    avatarPath: '',
   });
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [errorMessage, setErrorMessage] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
 
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
-  const togglePasswordVisibility = () =>
-    setIsPasswordVisible(!isPasswordVisible);
+  const togglePasswordVisibility = () => setIsPasswordVisible(!isPasswordVisible);
 
   const validate = async () => {
     if (!isValidEmail(user.email)) {
@@ -83,31 +82,22 @@ export default function AuthPage({ isSignup, messages, locale }: Props) {
 
     context.setToken(token);
     context.storeTokenToLocalStorage(token);
-    router.push("/account", { locale: locale });
+    router.push('/account', { locale: locale });
   };
 
   return (
     <Card className="w-[480px] mt-16">
       <CardHeader className="px-4 pt-4 pb-0 flex justify-between">
         <h4 className="font-bold text-large">{messages.title}</h4>
-        <Link
-          href={isSignup ? "/account/signin" : "/account/signup"}
-          locale={locale}
-        >
-          <Button
-            color="primary"
-            variant="light"
-            endContent={<ChevronRight size={16} />}
-          >
+        <Link href={isSignup ? '/account/signin' : '/account/signup'} locale={locale}>
+          <Button color="primary" variant="light" endContent={<ChevronRight size={16} />}>
             {messages.linkTitle}
           </Button>
         </Link>
       </CardHeader>
       <CardBody className="overflow-visible px-4 pt-0 pb-4">
         <form>
-          {errorMessage && (
-            <div className="my-3 text-danger">{errorMessage}</div>
-          )}
+          {errorMessage && <div className="my-3 text-danger">{errorMessage}</div>}
           <Input
             isRequired
             type="email"
@@ -139,15 +129,11 @@ export default function AuthPage({ isSignup, messages, locale }: Props) {
           <Input
             label={messages.password}
             variant="bordered"
-            autoComplete={isSignup ? "new-password" : "current-password"}
+            autoComplete={isSignup ? 'new-password' : 'current-password'}
             className="mt-3"
-            type={isPasswordVisible ? "text" : "password"}
+            type={isPasswordVisible ? 'text' : 'password'}
             endContent={
-              <button
-                className="focus:outline-none"
-                type="button"
-                onClick={togglePasswordVisibility}
-              >
+              <button className="focus:outline-none" type="button" onClick={togglePasswordVisibility}>
                 {isPasswordVisible ? <Eye size={20} /> : <EyeOff size={20} />}
               </button>
             }
@@ -164,13 +150,9 @@ export default function AuthPage({ isSignup, messages, locale }: Props) {
               variant="bordered"
               autoComplete="new-password"
               className="mt-3"
-              type={isPasswordVisible ? "text" : "password"}
+              type={isPasswordVisible ? 'text' : 'password'}
               endContent={
-                <button
-                  className="focus:outline-none"
-                  type="button"
-                  onClick={togglePasswordVisibility}
-                >
+                <button className="focus:outline-none" type="button" onClick={togglePasswordVisibility}>
                   {isPasswordVisible ? <Eye size={20} /> : <EyeOff size={20} />}
                 </button>
               }

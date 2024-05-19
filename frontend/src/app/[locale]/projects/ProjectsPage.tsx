@@ -1,16 +1,11 @@
-"use client";
-import { useEffect, useState } from "react";
-import { Button } from "@nextui-org/react";
-import { Plus } from "lucide-react";
-import { ProjectType, ProjectsMessages } from "@/types/project";
-import ProjectsTable from "./ProjectsTable";
-import ProjectDialog from "./ProjectDialog";
-import {
-  fetchProjects,
-  createProject,
-  updateProject,
-  deleteProject,
-} from "./projectsControl";
+'use client';
+import { useEffect, useState } from 'react';
+import { Button } from '@nextui-org/react';
+import { Plus } from 'lucide-react';
+import { ProjectType, ProjectsMessages } from '@/types/project';
+import ProjectsTable from './ProjectsTable';
+import ProjectDialog from './ProjectDialog';
+import { fetchProjects, createProject, updateProject, deleteProject } from './projectsControl';
 
 export type Props = {
   messages: ProjectsMessages;
@@ -26,7 +21,7 @@ export default function ProjectsPage({ messages, locale }: Props) {
         const data = await fetchProjects();
         setProjects(data);
       } catch (error: any) {
-        console.error("Error in effect:", error.message);
+        console.error('Error in effect:', error.message);
       }
     }
 
@@ -35,9 +30,7 @@ export default function ProjectsPage({ messages, locale }: Props) {
 
   // dialog
   const [isProjectDialogOpen, setIsProjectDialogOpen] = useState(false);
-  const [editingProject, setEditingProject] = useState<ProjectType | null>(
-    null
-  );
+  const [editingProject, setEditingProject] = useState<ProjectType | null>(null);
   const openDialogForCreate = () => {
     setIsProjectDialogOpen(true);
     setEditingProject(null);
@@ -50,14 +43,8 @@ export default function ProjectsPage({ messages, locale }: Props) {
 
   const onSubmit = async (name: string, detail: string) => {
     if (editingProject) {
-      const updatedProject = await updateProject(
-        editingProject.id,
-        name,
-        detail
-      );
-      const updatedProjects = projects.map((project) =>
-        project.id === updatedProject.id ? updatedProject : project
-      );
+      const updatedProject = await updateProject(editingProject.id, name, detail);
+      const updatedProjects = projects.map((project) => (project.id === updatedProject.id ? updatedProject : project));
       setProjects(updatedProjects);
     } else {
       const newProject = await createProject(name, detail);
@@ -76,7 +63,7 @@ export default function ProjectsPage({ messages, locale }: Props) {
       await deleteProject(projectId);
       setProjects(projects.filter((project) => project.id !== projectId));
     } catch (error: any) {
-      console.error("Error deleting project:", error);
+      console.error('Error deleting project:', error);
     }
   };
 
@@ -85,12 +72,7 @@ export default function ProjectsPage({ messages, locale }: Props) {
       <div className="w-full p-3 flex items-center justify-between">
         <h3 className="font-bold">{messages.projectList}</h3>
         <div>
-          <Button
-            startContent={<Plus size={16} />}
-            size="sm"
-            color="primary"
-            onClick={openDialogForCreate}
-          >
+          <Button startContent={<Plus size={16} />} size="sm" color="primary" onClick={openDialogForCreate}>
             {messages.newProject}
           </Button>
         </div>

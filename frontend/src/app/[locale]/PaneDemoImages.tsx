@@ -1,7 +1,7 @@
-"use client";
-import { title } from "@/components/primitives";
-import { useState, useEffect } from "react";
-import { Tabs, Tab, Image } from "@nextui-org/react";
+'use client';
+import { title } from '@/components/primitives';
+import { useState, useEffect } from 'react';
+import { Tabs, Tab, Image } from '@nextui-org/react';
 
 type PaneDemoImagesMessages = {
   title: string;
@@ -14,28 +14,28 @@ type Props = {
 };
 
 export default function DemoImages({ messages }: Props) {
-  const [currentTab, setcurrentTab] = useState("edit");
+  const [currentTab, setcurrentTab] = useState('edit');
   const [currentImage, setcurrentImage] = useState({
-    src: "/top/caseEdit.png",
+    src: '/top/caseEdit.png',
     alt: messages.caseEdit,
   });
   const tabs = [
     {
-      key: "edit",
+      key: 'edit',
       title: messages.caseEdit,
-      src: "/top/caseEdit.png",
+      src: '/top/caseEdit.png',
       alt: messages.caseEdit,
     },
     {
-      key: "home",
+      key: 'home',
       title: messages.caseHome,
-      src: "/top/caseHome.png",
+      src: '/top/caseHome.png',
       alt: messages.caseHome,
     },
     {
-      key: "run",
+      key: 'run',
       title: messages.caseRun,
-      src: "/top/caseRun.png",
+      src: '/top/caseRun.png',
       alt: messages.caseRun,
     },
   ];
@@ -50,11 +50,11 @@ export default function DemoImages({ messages }: Props) {
     <>
       <div className="flex flex-wrap lg:text-left text-center">
         <div className="w-full lg:w-5/12 p-4">
-          <h2 className={title({ size: "sm" })}>{messages.title}</h2>
+          <h2 className={title({ size: 'sm' })}>{messages.title}</h2>
           <br />
           <Tabs
             aria-label="Options"
-            color={"primary"}
+            color={'primary'}
             radius="full"
             size="md"
             className="mt-8"
@@ -68,13 +68,7 @@ export default function DemoImages({ messages }: Props) {
         </div>
 
         <div className="flex justify-center w-full lg:w-7/12 p-4">
-          <Image
-            src={currentImage.src}
-            alt={currentImage.alt}
-            shadow="md"
-            height={500}
-            className="max-w-full"
-          />
+          <Image src={currentImage.src} alt={currentImage.alt} shadow="md" height={500} className="max-w-full" />
         </div>
       </div>
     </>

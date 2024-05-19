@@ -8,37 +8,37 @@ import {
   NavbarMenuItem,
   Chip,
   Link as NextUiLink,
-} from "@nextui-org/react";
-import { MoveUpRight } from "lucide-react";
-import { useTranslations } from "next-intl";
-import { Link } from "@/src/navigation";
-import { ThemeSwitch } from "@/components/theme-switch";
-import { GithubIcon } from "@/components/icons";
-import Image from "next/image";
-import DropdownAccount from "./DropdownAccount";
-import DropdownLanguage from "./DropdownLanguage";
+} from '@nextui-org/react';
+import { MoveUpRight } from 'lucide-react';
+import { useTranslations } from 'next-intl';
+import { Link } from '@/src/navigation';
+import { ThemeSwitch } from '@/components/theme-switch';
+import { GithubIcon } from '@/components/icons';
+import Image from 'next/image';
+import DropdownAccount from './DropdownAccount';
+import DropdownLanguage from './DropdownLanguage';
 
 export default function Header(params: { locale: string }) {
-  const t = useTranslations("Header");
+  const t = useTranslations('Header');
   const messages = {
-    account: t("account"),
-    signUp: t("signup"),
-    signIn: t("signin"),
-    signOut: t("signout"),
+    account: t('account'),
+    signUp: t('signup'),
+    signIn: t('signin'),
+    signOut: t('signout'),
   };
 
   // Links shown Header or slider
   const commonLinks = [
     {
-      uid: "projects",
-      href: "/projects",
-      label: t("projects"),
+      uid: 'projects',
+      href: '/projects',
+      label: t('projects'),
       isExternal: false,
     },
     {
-      uid: "docs",
-      href: "https://kimatata.github.io/TestPlat/docs/getstarted/selfhost",
-      label: t("docs"),
+      uid: 'docs',
+      href: 'https://kimatata.github.io/TestPlat/docs/getstarted/selfhost',
+      label: t('docs'),
       isExternal: true,
     },
   ];
@@ -47,17 +47,8 @@ export default function Header(params: { locale: string }) {
     <NextUINavbar maxWidth="full" position="sticky" className="bg-inherit">
       <NavbarContent className="basis-1/5 sm:basis-full" justify="start">
         <NavbarBrand as="li" className="gap-3 max-w-fit">
-          <Link
-            className="flex justify-start items-center gap-1"
-            href="/"
-            locale={params.locale}
-          >
-            <Image
-              src="/favicon/android-chrome-192x192.png"
-              width={32}
-              height={32}
-              alt="Logo"
-            />
+          <Link className="flex justify-start items-center gap-1" href="/" locale={params.locale}>
+            <Image src="/favicon/android-chrome-192x192.png" width={32} height={32} alt="Logo" />
             <p className="font-bold text-inherit">TestPlat</p>
           </Link>
         </NavbarBrand>
@@ -82,7 +73,7 @@ export default function Header(params: { locale: string }) {
                 showAnchorIcon
                 anchorIcon={<MoveUpRight size={12} className="ms-1" />}
               >
-                {t("docs")}
+                {t('docs')}
               </NextUiLink>
             </NavbarItem>
           ) : (
@@ -100,11 +91,7 @@ export default function Header(params: { locale: string }) {
       </NavbarContent>
 
       <NavbarContent className="basis-1 pl-4" justify="end">
-        <NextUiLink
-          isExternal
-          href="https://github.com/kimatata/TestPlat"
-          aria-label="Github"
-        >
+        <NextUiLink isExternal href="https://github.com/kimatata/TestPlat" aria-label="Github">
           <GithubIcon className="text-default-500" />
         </NextUiLink>
         <ThemeSwitch />
@@ -126,12 +113,8 @@ export default function Header(params: { locale: string }) {
           {commonLinks.map((link) =>
             link.isExternal ? (
               <NavbarMenuItem key={link.uid}>
-                <NextUiLink
-                  href={link.href}
-                  showAnchorIcon
-                  anchorIcon={<MoveUpRight size={12} className="ms-1" />}
-                >
-                  {t("docs")}
+                <NextUiLink href={link.href} showAnchorIcon anchorIcon={<MoveUpRight size={12} className="ms-1" />}>
+                  {t('docs')}
                 </NextUiLink>
               </NavbarMenuItem>
             ) : (

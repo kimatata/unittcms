@@ -1,4 +1,4 @@
-import { useState, useMemo, useCallback } from "react";
+import { useState, useMemo, useCallback } from 'react';
 import {
   Table,
   TableHeader,
@@ -13,11 +13,11 @@ import {
   DropdownItem,
   Selection,
   SortDescriptor,
-} from "@nextui-org/react";
-import { Link, NextUiLinkClasses } from "@/src/navigation";
-import { Plus, MoreVertical, Trash, Circle } from "lucide-react";
-import { CasesMessages } from "@/types/case";
-import { priorities } from "@/config/selection";
+} from '@nextui-org/react';
+import { Link, NextUiLinkClasses } from '@/src/navigation';
+import { Plus, MoreVertical, Trash, Circle } from 'lucide-react';
+import { CasesMessages } from '@/types/case';
+import { priorities } from '@/config/selection';
 
 type Case = {
   id: number;
@@ -55,16 +55,16 @@ export default function TestCaseTable({
   locale,
 }: Props) {
   const headerColumns = [
-    { name: messages.id, uid: "id", sortable: true },
-    { name: messages.title, uid: "title", sortable: true },
-    { name: messages.priority, uid: "priority", sortable: true },
-    { name: messages.actions, uid: "actions" },
+    { name: messages.id, uid: 'id', sortable: true },
+    { name: messages.title, uid: 'title', sortable: true },
+    { name: messages.priority, uid: 'priority', sortable: true },
+    { name: messages.actions, uid: 'actions' },
   ];
 
   const [selectedKeys, setSelectedKeys] = useState<Selection>(new Set([]));
   const [sortDescriptor, setSortDescriptor] = useState<SortDescriptor>({
-    column: "id",
-    direction: "ascending",
+    column: 'id',
+    direction: 'ascending',
   });
 
   const sortedItems = useMemo(() => {
@@ -73,7 +73,7 @@ export default function TestCaseTable({
       const second = b[sortDescriptor.column as keyof Case] as number;
       const cmp = first < second ? -1 : first > second ? 1 : 0;
 
-      return sortDescriptor.direction === "descending" ? -cmp : cmp;
+      return sortDescriptor.direction === 'descending' ? -cmp : cmp;
     });
   }, [sortDescriptor, cases]);
 
@@ -81,15 +81,11 @@ export default function TestCaseTable({
     const cellValue = testCase[columnKey as keyof Case];
 
     switch (columnKey) {
-      case "id":
+      case 'id':
         return <span>{cellValue}</span>;
-      case "title":
+      case 'title':
         return (
-          <Button
-            size="sm"
-            variant="light"
-            className="data-[hover=true]:bg-transparent"
-          >
+          <Button size="sm" variant="light" className="data-[hover=true]:bg-transparent">
             <Link
               href={`/projects/${projectId}/folders/${testCase.folderId}/cases/${testCase.id}`}
               locale={locale}
@@ -99,18 +95,14 @@ export default function TestCaseTable({
             </Link>
           </Button>
         );
-      case "priority":
+      case 'priority':
         return (
           <div className="flex items-center">
-            <Circle
-              size={8}
-              color={priorities[cellValue].color}
-              fill={priorities[cellValue].color}
-            />
+            <Circle size={8} color={priorities[cellValue].color} fill={priorities[cellValue].color} />
             <div className="ms-3">{messages[priorities[cellValue].uid]}</div>
           </div>
         );
-      case "actions":
+      case 'actions':
         return (
           <Dropdown>
             <DropdownTrigger>
@@ -119,10 +111,7 @@ export default function TestCaseTable({
               </Button>
             </DropdownTrigger>
             <DropdownMenu aria-label="test case actions">
-              <DropdownItem
-                className="text-danger"
-                onClick={() => onDeleteCase(testCase.id)}
-              >
+              <DropdownItem className="text-danger" onClick={() => onDeleteCase(testCase.id)}>
                 {messages.deleteCase}
               </DropdownItem>
             </DropdownMenu>
@@ -135,25 +124,25 @@ export default function TestCaseTable({
 
   const classNames = useMemo(
     () => ({
-      wrapper: ["max-w-3xl"],
-      th: ["bg-transparent", "text-default-500", "border-b", "border-divider"],
+      wrapper: ['max-w-3xl'],
+      th: ['bg-transparent', 'text-default-500', 'border-b', 'border-divider'],
       td: [
         // changing the rows border radius
         // first
-        "group-data-[first=true]:first:before:rounded-none",
-        "group-data-[first=true]:last:before:rounded-none",
+        'group-data-[first=true]:first:before:rounded-none',
+        'group-data-[first=true]:last:before:rounded-none',
         // middle
-        "group-data-[middle=true]:before:rounded-none",
+        'group-data-[middle=true]:before:rounded-none',
         // last
-        "group-data-[last=true]:first:before:rounded-none",
-        "group-data-[last=true]:last:before:rounded-none",
+        'group-data-[last=true]:first:before:rounded-none',
+        'group-data-[last=true]:last:before:rounded-none',
       ],
     }),
     []
   );
 
   const onDeleteCasesClick = async () => {
-    if (selectedKeys === "all") {
+    if (selectedKeys === 'all') {
       const allKeys = sortedItems.map((item) => item.id);
       onDeleteCases(allKeys);
     } else {
@@ -167,7 +156,7 @@ export default function TestCaseTable({
       <div className="border-b-1 dark:border-neutral-700 w-full p-3 flex items-center justify-between">
         <h3 className="font-bold">{messages.testCaseList}</h3>
         <div>
-          {(selectedKeys.size > 0 || selectedKeys === "all") && (
+          {(selectedKeys.size > 0 || selectedKeys === 'all') && (
             <Button
               startContent={<Trash size={16} />}
               size="sm"
@@ -178,12 +167,7 @@ export default function TestCaseTable({
               {messages.delete}
             </Button>
           )}
-          <Button
-            startContent={<Plus size={16} />}
-            size="sm"
-            color="primary"
-            onClick={onCreateCase}
-          >
+          <Button startContent={<Plus size={16} />} size="sm" color="primary" onClick={onCreateCase}>
             {messages.newTestCase}
           </Button>
         </div>
@@ -204,7 +188,7 @@ export default function TestCaseTable({
           {(column) => (
             <TableColumn
               key={column.uid}
-              align={column.uid === "actions" ? "center" : "start"}
+              align={column.uid === 'actions' ? 'center' : 'start'}
               allowsSorting={column.sortable}
             >
               {column.name}
@@ -213,11 +197,7 @@ export default function TestCaseTable({
         </TableHeader>
         <TableBody emptyContent={messages.noCasesFound} items={sortedItems}>
           {(item) => (
-            <TableRow key={item.id}>
-              {(columnKey) => (
-                <TableCell>{renderCell(item, columnKey)}</TableCell>
-              )}
-            </TableRow>
+            <TableRow key={item.id}>{(columnKey) => <TableCell>{renderCell(item, columnKey)}</TableCell>}</TableRow>
           )}
         </TableBody>
       </Table>

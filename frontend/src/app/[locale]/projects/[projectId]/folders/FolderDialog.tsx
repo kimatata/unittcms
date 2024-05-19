@@ -1,17 +1,8 @@
-"use client";
-import React from "react";
-import { useState, useEffect } from "react";
-import {
-  Button,
-  Input,
-  Textarea,
-  Modal,
-  ModalContent,
-  ModalHeader,
-  ModalBody,
-  ModalFooter,
-} from "@nextui-org/react";
-import { FolderType, FoldersMessages } from "@/types/folder";
+'use client';
+import React from 'react';
+import { useState, useEffect } from 'react';
+import { Button, Input, Textarea, Modal, ModalContent, ModalHeader, ModalBody, ModalFooter } from '@nextui-org/react';
+import { FolderType, FoldersMessages } from '@/types/folder';
 
 type Props = {
   isOpen: boolean;
@@ -21,23 +12,17 @@ type Props = {
   messages: FoldersMessages;
 };
 
-export default function FolderDialog({
-  isOpen,
-  editingFolder,
-  onCancel,
-  onSubmit,
-  messages,
-}: Props) {
+export default function FolderDialog({ isOpen, editingFolder, onCancel, onSubmit, messages }: Props) {
   const [folderName, setFolderName] = useState({
-    text: editingFolder ? editingFolder.name : "",
+    text: editingFolder ? editingFolder.name : '',
     isValid: false,
-    errorMessage: "",
+    errorMessage: '',
   });
 
   const [folderDetail, setFolderDetail] = useState({
-    text: editingFolder ? editingFolder.detail : "",
+    text: editingFolder ? editingFolder.detail : '',
     isValid: false,
-    errorMessage: "",
+    errorMessage: '',
   });
 
   useEffect(() => {
@@ -49,17 +34,17 @@ export default function FolderDialog({
 
       setFolderDetail({
         ...folderDetail,
-        text: editingFolder.detail ? editingFolder.detail : "",
+        text: editingFolder.detail ? editingFolder.detail : '',
       });
     } else {
       setFolderName({
         ...folderName,
-        text: "",
+        text: '',
       });
 
       setFolderDetail({
         ...folderDetail,
-        text: "",
+        text: '',
       });
     }
   }, [editingFolder]);
@@ -67,20 +52,20 @@ export default function FolderDialog({
   const clear = () => {
     setFolderName({
       isValid: false,
-      text: "",
-      errorMessage: "",
+      text: '',
+      errorMessage: '',
     });
     setFolderDetail({
       isValid: false,
-      text: "",
-      errorMessage: "",
+      text: '',
+      errorMessage: '',
     });
   };
 
   const validate = () => {
     if (!folderName.text) {
       setFolderName({
-        text: "",
+        text: '',
         isValid: false,
         errorMessage: messages.pleaseEnter,
       });
@@ -100,9 +85,7 @@ export default function FolderDialog({
       }}
     >
       <ModalContent>
-        <ModalHeader className="flex flex-col gap-1">
-          {messages.folder}
-        </ModalHeader>
+        <ModalHeader className="flex flex-col gap-1">{messages.folder}</ModalHeader>
         <ModalBody>
           <Input
             type="text"

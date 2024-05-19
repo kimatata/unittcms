@@ -1,17 +1,8 @@
-"use client";
-import React from "react";
-import { useState, useEffect } from "react";
-import {
-  Button,
-  Input,
-  Textarea,
-  Modal,
-  ModalContent,
-  ModalHeader,
-  ModalBody,
-  ModalFooter,
-} from "@nextui-org/react";
-import { ProjectType, ProjectsMessages } from "@/types/project";
+'use client';
+import React from 'react';
+import { useState, useEffect } from 'react';
+import { Button, Input, Textarea, Modal, ModalContent, ModalHeader, ModalBody, ModalFooter } from '@nextui-org/react';
+import { ProjectType, ProjectsMessages } from '@/types/project';
 
 type Props = {
   isOpen: boolean;
@@ -21,23 +12,17 @@ type Props = {
   messages: ProjectsMessages;
 };
 
-export default function ProjectDialog({
-  isOpen,
-  editingProject,
-  onCancel,
-  onSubmit,
-  messages,
-}: Props) {
+export default function ProjectDialog({ isOpen, editingProject, onCancel, onSubmit, messages }: Props) {
   const [projectName, setProjectName] = useState({
-    text: editingProject ? editingProject.name : "",
+    text: editingProject ? editingProject.name : '',
     isValid: false,
-    errorMessage: "",
+    errorMessage: '',
   });
 
   const [projectDetail, setProjectDetail] = useState({
-    text: editingProject ? editingProject.detail : "",
+    text: editingProject ? editingProject.detail : '',
     isValid: false,
-    errorMessage: "",
+    errorMessage: '',
   });
 
   useEffect(() => {
@@ -49,17 +34,17 @@ export default function ProjectDialog({
 
       setProjectDetail({
         ...projectDetail,
-        text: editingProject.detail ? editingProject.detail : "",
+        text: editingProject.detail ? editingProject.detail : '',
       });
     } else {
       setProjectName({
         ...projectName,
-        text: "",
+        text: '',
       });
 
       setProjectDetail({
         ...projectDetail,
-        text: "",
+        text: '',
       });
     }
   }, [editingProject]);
@@ -67,20 +52,20 @@ export default function ProjectDialog({
   const clear = () => {
     setProjectName({
       isValid: false,
-      text: "",
-      errorMessage: "",
+      text: '',
+      errorMessage: '',
     });
     setProjectDetail({
       isValid: false,
-      text: "",
-      errorMessage: "",
+      text: '',
+      errorMessage: '',
     });
   };
 
   const validate = () => {
     if (!projectName.text) {
       setProjectName({
-        text: "",
+        text: '',
         isValid: false,
         errorMessage: messages.pleaseEnter,
       });
@@ -100,9 +85,7 @@ export default function ProjectDialog({
       }}
     >
       <ModalContent>
-        <ModalHeader className="flex flex-col gap-1">
-          {messages.project}
-        </ModalHeader>
+        <ModalHeader className="flex flex-col gap-1">{messages.project}</ModalHeader>
         <ModalBody>
           <Input
             type="text"

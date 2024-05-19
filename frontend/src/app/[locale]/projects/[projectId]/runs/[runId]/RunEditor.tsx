@@ -1,7 +1,7 @@
-"use client";
-import React from "react";
-import { useState, useEffect } from "react";
-import { useRouter } from "@/src/navigation";
+'use client';
+import React from 'react';
+import { useState, useEffect } from 'react';
+import { useRouter } from '@/src/navigation';
 import {
   Button,
   Input,
@@ -17,28 +17,14 @@ import {
   Dropdown,
   DropdownMenu,
   DropdownItem,
-} from "@nextui-org/react";
-import {
-  Save,
-  ArrowLeft,
-  Folder,
-  ChevronDown,
-  CopyPlus,
-  CopyMinus,
-  RotateCw,
-} from "lucide-react";
-import RunProgressChart from "./RunPregressDonutChart";
-import TestCaseSelector from "./TestCaseSelector";
-import { testRunStatus } from "@/config/selection";
-import {
-  RunType,
-  RunCaseType,
-  RunCaseInfoType,
-  RunStatusCountType,
-  RunMessages,
-} from "@/types/run";
-import { CaseType } from "@/types/case";
-import { FolderType } from "@/types/folder";
+} from '@nextui-org/react';
+import { Save, ArrowLeft, Folder, ChevronDown, CopyPlus, CopyMinus, RotateCw } from 'lucide-react';
+import RunProgressChart from './RunPregressDonutChart';
+import TestCaseSelector from './TestCaseSelector';
+import { testRunStatus } from '@/config/selection';
+import { RunType, RunCaseType, RunCaseInfoType, RunStatusCountType, RunMessages } from '@/types/run';
+import { CaseType } from '@/types/case';
+import { FolderType } from '@/types/folder';
 import {
   fetchRun,
   updateRun,
@@ -48,16 +34,16 @@ import {
   bulkCreateRunCases,
   deleteRunCase,
   bulkDeleteRunCases,
-} from "../runsControl";
-import { fetchFolders } from "../../folders/foldersControl";
-import { fetchCases } from "../../folders/[folderId]/cases/caseControl";
-import { useTheme } from "next-themes";
+} from '../runsControl';
+import { fetchFolders } from '../../folders/foldersControl';
+import { fetchCases } from '../../folders/[folderId]/cases/caseControl';
+import { useTheme } from 'next-themes';
 
 const defaultTestRun = {
   id: 0,
-  name: "",
+  name: '',
   configurations: 0,
-  description: "",
+  description: '',
   state: 0,
   projectId: 0,
 };
@@ -69,18 +55,12 @@ type Props = {
   locale: string;
 };
 
-export default function RunEditor({
-  projectId,
-  runId,
-  messages,
-  locale,
-}: Props) {
+export default function RunEditor({ projectId, runId, messages, locale }: Props) {
   const { theme, setTheme } = useTheme();
   const [testRun, setTestRun] = useState<RunType>(defaultTestRun);
   const [folders, setFolders] = useState([]);
   const [runCases, setRunCases] = useState<RunCaseType[]>([]);
-  const [runStatusCounts, setRunStatusCounts] =
-    useState<RunStatusCountType[]>();
+  const [runStatusCounts, setRunStatusCounts] = useState<RunStatusCountType[]>();
   const [selectedKeys, setSelectedKeys] = useState<Selection>(new Set([]));
   const [selectedFolder, setSelectedFolder] = useState<FolderType>({});
   const [testcases, setTestCases] = useState<CaseType[]>([]);
@@ -102,7 +82,7 @@ export default function RunEditor({
         setFolders(foldersData);
         setSelectedFolder(foldersData[0]);
       } catch (error: any) {
-        console.error("Error in effect:", error.message);
+        console.error('Error in effect:', error.message);
       }
     }
 
@@ -120,9 +100,7 @@ export default function RunEditor({
           // Check if each testCase has an association with testRun
           // and add "isIncluded" property
           const updatedTestCasesData = testCasesData.map((testCase) => {
-            const runCase = latestRunCases.find(
-              (runCase) => runCase.caseId === testCase.id
-            );
+            const runCase = latestRunCases.find((runCase) => runCase.caseId === testCase.id);
 
             const isIncluded = runCase ? true : false;
             const runStatus = runCase ? runCase.status : 0;
@@ -135,7 +113,7 @@ export default function RunEditor({
 
           setTestCases(updatedTestCasesData);
         } catch (error: any) {
-          console.error("Error fetching cases data:", error.message);
+          console.error('Error fetching cases data:', error.message);
         }
       }
     }
@@ -155,10 +133,7 @@ export default function RunEditor({
     });
   };
 
-  const handleIncludeExcludeCase = async (
-    isInclude: boolean,
-    clickedTestCaseId: number
-  ) => {
+  const handleIncludeExcludeCase = async (isInclude: boolean, clickedTestCaseId: number) => {
     if (isInclude) {
       const createdRunCase = await createRunCase(runId, clickedTestCaseId);
       setRunCases((prevRunCases) => {
@@ -167,9 +142,7 @@ export default function RunEditor({
     } else {
       await deleteRunCase(runId, clickedTestCaseId);
       setRunCases((prevRunCases) => {
-        return prevRunCases.filter(
-          (runCase) => runCase.caseId !== clickedTestCaseId
-        );
+        return prevRunCases.filter((runCase) => runCase.caseId !== clickedTestCaseId);
       });
     }
 
@@ -185,7 +158,7 @@ export default function RunEditor({
 
   const handleBulkIncludeExcludeCases = async (isInclude: boolean) => {
     let keys: number[] = [];
-    if (selectedKeys === "all") {
+    if (selectedKeys === 'all') {
       keys = testcases.map((item) => item.id);
     } else {
       keys = Array.from(selectedKeys).map(Number);
@@ -218,7 +191,7 @@ export default function RunEditor({
     setSelectedKeys(new Set([]));
   };
 
-  const baseClass = "";
+  const baseClass = '';
   const selectedClass = `${baseClass} bg-neutral-200 dark:bg-neutral-700`;
 
   return (
@@ -230,9 +203,7 @@ export default function RunEditor({
               isIconOnly
               size="sm"
               className="rounded-full bg-neutral-50 dark:bg-neutral-600"
-              onPress={() =>
-                router.push(`/projects/${projectId}/runs`, { locale: locale })
-              }
+              onPress={() => router.push(`/projects/${projectId}/runs`, { locale: locale })}
             >
               <ArrowLeft size={16} />
             </Button>
@@ -272,11 +243,7 @@ export default function RunEditor({
                 </Tooltip>
               </div>
 
-              <RunProgressChart
-                statusCounts={runStatusCounts}
-                messages={messages}
-                theme={theme}
-              />
+              <RunProgressChart statusCounts={runStatusCounts} messages={messages} theme={theme} />
             </div>
           </div>
           <div className="flex-grow">
@@ -287,7 +254,7 @@ export default function RunEditor({
               label={messages.title}
               value={testRun.name}
               isInvalid={isNameInvalid}
-              errorMessage={isNameInvalid ? messages.pleaseEnter : ""}
+              errorMessage={isNameInvalid ? messages.pleaseEnter : ''}
               onChange={(e) => {
                 setTestRun({ ...testRun, name: e.target.value });
               }}
@@ -312,9 +279,7 @@ export default function RunEditor({
                 selectedKeys={[testRunStatus[testRun.state].uid]}
                 onSelectionChange={(e) => {
                   const selectedUid = e.anchorKey;
-                  const index = testRunStatus.findIndex(
-                    (template) => template.uid === selectedUid
-                  );
+                  const index = testRunStatus.findIndex((template) => template.uid === selectedUid);
                   setTestRun({ ...testRun, state: index });
                 }}
                 label={messages.status}
@@ -334,14 +299,10 @@ export default function RunEditor({
         <div className="flex items-center justify-between">
           <h6 className="h-8 font-bold">{messages.selectTestCase}</h6>
           <div>
-            {(selectedKeys.size > 0 || selectedKeys === "all") && (
+            {(selectedKeys.size > 0 || selectedKeys === 'all') && (
               <Dropdown>
                 <DropdownTrigger>
-                  <Button
-                    size="sm"
-                    color="primary"
-                    endContent={<ChevronDown size={16} />}
-                  >
+                  <Button size="sm" color="primary" endContent={<ChevronDown size={16} />}>
                     {messages.testCaseSelection}
                   </Button>
                 </DropdownTrigger>
@@ -371,14 +332,8 @@ export default function RunEditor({
                 <ListboxItem
                   key={index}
                   onClick={() => setSelectedFolder(folder)}
-                  startContent={
-                    <Folder size={20} color="#F7C24E" fill="#F7C24E" />
-                  }
-                  className={
-                    selectedFolder && folder.id === selectedFolder.id
-                      ? selectedClass
-                      : baseClass
-                  }
+                  startContent={<Folder size={20} color="#F7C24E" fill="#F7C24E" />}
+                  className={selectedFolder && folder.id === selectedFolder.id ? selectedClass : baseClass}
                 >
                   {folder.name}
                 </ListboxItem>
@@ -391,12 +346,8 @@ export default function RunEditor({
               selectedKeys={selectedKeys}
               onSelectionChange={setSelectedKeys}
               onStatusChange={handleChangeStatus}
-              onIncludeCase={(includeTestId) =>
-                handleIncludeExcludeCase(true, includeTestId)
-              }
-              onExcludeCase={(excludeCaseId) =>
-                handleIncludeExcludeCase(false, excludeCaseId)
-              }
+              onIncludeCase={(includeTestId) => handleIncludeExcludeCase(true, includeTestId)}
+              onExcludeCase={(excludeCaseId) => handleIncludeExcludeCase(false, excludeCaseId)}
               messages={messages}
             />
           </div>

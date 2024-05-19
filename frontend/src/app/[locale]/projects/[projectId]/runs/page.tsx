@@ -1,31 +1,23 @@
-import RunsPage from "./RunsPage";
-import { useTranslations } from "next-intl";
+import RunsPage from './RunsPage';
+import { useTranslations } from 'next-intl';
 
-export default function Page({
-  params,
-}: {
-  params: { projectId: string; locale: string };
-}) {
-  const t = useTranslations("Runs");
+export default function Page({ params }: { params: { projectId: string; locale: string } }) {
+  const t = useTranslations('Runs');
   const messages = {
-    runList: t("run_list"),
-    id: t("id"),
-    name: t("name"),
-    description: t("description"),
-    lastUpdate: t("last_update"),
-    actions: t("actions"),
-    newRun: t("new_run"),
-    deleteRun: t("delete_run"),
-    noRunsFound: t("no_runs_found"),
+    runList: t('run_list'),
+    id: t('id'),
+    name: t('name'),
+    description: t('description'),
+    lastUpdate: t('last_update'),
+    actions: t('actions'),
+    newRun: t('new_run'),
+    deleteRun: t('delete_run'),
+    noRunsFound: t('no_runs_found'),
   };
 
   return (
     <>
-      <RunsPage
-        projectId={params.projectId}
-        locale={params.locale}
-        messages={messages}
-      />
+      <RunsPage projectId={params.projectId} locale={params.locale} messages={messages} />
     </>
   );
 }

@@ -1,10 +1,10 @@
-import React from "react";
-import { useState, useEffect } from "react";
-import dynamic from "next/dynamic";
-import { priorities } from "@/config/selection";
-import { CasePriorityCountType } from "@/types/case";
-import { HomeMessages } from "./page";
-const Chart = dynamic(() => import("react-apexcharts"), { ssr: false });
+import React from 'react';
+import { useState, useEffect } from 'react';
+import dynamic from 'next/dynamic';
+import { priorities } from '@/config/selection';
+import { CasePriorityCountType } from '@/types/case';
+import { HomeMessages } from './page';
+const Chart = dynamic(() => import('react-apexcharts'), { ssr: false });
 
 type Props = {
   priorityCounts: CasePriorityCountType[];
@@ -12,11 +12,7 @@ type Props = {
   theme: string;
 };
 
-export default function TestPriorityDonutChart({
-  priorityCounts,
-  messages,
-  theme,
-}: Props) {
+export default function TestPriorityDonutChart({ priorityCounts, messages, theme }: Props) {
   const [chartData, setChartData] = useState({
     series: [],
     options: {
@@ -38,10 +34,10 @@ export default function TestPriorityDonutChart({
         const legend = {
           labels: {
             colors: priorities.map((entry) => {
-              if (theme === "light") {
-                return "black";
+              if (theme === 'light') {
+                return 'black';
               } else {
-                return "white";
+                return 'white';
               }
             }),
           },
@@ -57,13 +53,5 @@ export default function TestPriorityDonutChart({
     updateChartDate();
   }, [priorityCounts, theme]);
 
-  return (
-    <Chart
-      options={chartData.options}
-      series={chartData.series}
-      type="donut"
-      width={"100%"}
-      height={"100%"}
-    />
-  );
+  return <Chart options={chartData.options} series={chartData.series} type="donut" width={'100%'} height={'100%'} />;
 }

@@ -1,10 +1,10 @@
-"use client";
-import { useEffect, useState } from "react";
-import { Button } from "@nextui-org/react";
-import { Plus } from "lucide-react";
-import RunsTable from "./RunsTable";
-import { fetchRuns, createRun, deleteRun } from "./runsControl";
-import { RunsMessages } from "@/types/run";
+'use client';
+import { useEffect, useState } from 'react';
+import { Button } from '@nextui-org/react';
+import { Plus } from 'lucide-react';
+import RunsTable from './RunsTable';
+import { fetchRuns, createRun, deleteRun } from './runsControl';
+import { RunsMessages } from '@/types/run';
 
 type Props = {
   projectId: string;
@@ -21,7 +21,7 @@ export default function RunsPage({ projectId, locale, messages }: Props) {
         const data = await fetchRuns(projectId);
         setRuns(data);
       } catch (error: any) {
-        console.error("Error in effect:", error.message);
+        console.error('Error in effect:', error.message);
       }
     }
 
@@ -35,7 +35,7 @@ export default function RunsPage({ projectId, locale, messages }: Props) {
       updateRuns.push(newRun);
       setRuns(updateRuns);
     } catch (error: any) {
-      console.error("Error deleting run:", error);
+      console.error('Error deleting run:', error);
     }
   };
 
@@ -45,7 +45,7 @@ export default function RunsPage({ projectId, locale, messages }: Props) {
       const data = await fetchRuns(projectId);
       setRuns(data);
     } catch (error: any) {
-      console.error("Error deleting run:", error);
+      console.error('Error deleting run:', error);
     }
   };
 
@@ -54,24 +54,13 @@ export default function RunsPage({ projectId, locale, messages }: Props) {
       <div className="w-full p-3 flex items-center justify-between">
         <h3 className="font-bold">{messages.runList}</h3>
         <div>
-          <Button
-            startContent={<Plus size={16} />}
-            size="sm"
-            color="primary"
-            onClick={onCreateClick}
-          >
+          <Button startContent={<Plus size={16} />} size="sm" color="primary" onClick={onCreateClick}>
             {messages.newRun}
           </Button>
         </div>
       </div>
 
-      <RunsTable
-        projectId={projectId}
-        runs={runs}
-        onDeleteRun={onDeleteClick}
-        messages={messages}
-        locale={locale}
-      />
+      <RunsTable projectId={projectId} runs={runs} onDeleteRun={onDeleteClick} messages={messages} locale={locale} />
     </div>
   );
 }

@@ -1,5 +1,5 @@
-import Sidebar from "./Sidebar";
-import { useTranslations } from "next-intl";
+import Sidebar from './Sidebar';
+import { useTranslations } from 'next-intl';
 
 export default function SidebarLayout({
   children,
@@ -8,11 +8,11 @@ export default function SidebarLayout({
   children: React.ReactNode;
   params: { locale: string };
 }) {
-  const t = useTranslations("Project");
+  const t = useTranslations('Project');
   const messages = {
-    home: t("home"),
-    testCases: t("test_cases"),
-    testRuns: t("test_runs"),
+    home: t('home'),
+    testCases: t('test_cases'),
+    testRuns: t('test_runs'),
   };
 
   return (

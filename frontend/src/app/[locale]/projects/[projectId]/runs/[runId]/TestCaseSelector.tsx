@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo } from 'react';
 import {
   Table,
   TableHeader,
@@ -13,7 +13,7 @@ import {
   DropdownItem,
   Selection,
   SortDescriptor,
-} from "@nextui-org/react";
+} from '@nextui-org/react';
 import {
   ChevronDown,
   MoreVertical,
@@ -24,10 +24,10 @@ import {
   CircleDashed,
   CircleX,
   CircleSlash2,
-} from "lucide-react";
-import { priorities, testRunCaseStatus } from "@/config/selection";
-import { CaseType } from "@/types/case";
-import { RunsMessages } from "@/types/run";
+} from 'lucide-react';
+import { priorities, testRunCaseStatus } from '@/config/selection';
+import { CaseType } from '@/types/case';
+import { RunsMessages } from '@/types/run';
 
 type Props = {
   cases: CaseType[];
@@ -49,16 +49,16 @@ export default function TestCaseSelector({
   messages,
 }: Props) {
   const headerColumns = [
-    { name: messages.id, uid: "id", sortable: true },
-    { name: messages.title, uid: "title", sortable: true },
-    { name: messages.priority, uid: "priority", sortable: true },
-    { name: messages.status, uid: "runStatus", sortable: true },
-    { name: messages.actions, uid: "actions" },
+    { name: messages.id, uid: 'id', sortable: true },
+    { name: messages.title, uid: 'title', sortable: true },
+    { name: messages.priority, uid: 'priority', sortable: true },
+    { name: messages.status, uid: 'runStatus', sortable: true },
+    { name: messages.actions, uid: 'actions' },
   ];
 
   const [sortDescriptor, setSortDescriptor] = useState<SortDescriptor>({
-    column: "id",
-    direction: "ascending",
+    column: 'id',
+    direction: 'ascending',
   });
 
   const sortedItems = useMemo(() => {
@@ -67,23 +67,23 @@ export default function TestCaseSelector({
       const second = b[sortDescriptor.column as keyof CaseType] as number;
       const cmp = first < second ? -1 : first > second ? 1 : 0;
 
-      return sortDescriptor.direction === "descending" ? -cmp : cmp;
+      return sortDescriptor.direction === 'descending' ? -cmp : cmp;
     });
   }, [sortDescriptor, cases]);
 
-  const notIncludedCaseClass = "text-neutral-200 dark:text-neutral-600";
-  const chipBaseClass = "flex items-center text-default-600";
+  const notIncludedCaseClass = 'text-neutral-200 dark:text-neutral-600';
+  const chipBaseClass = 'flex items-center text-default-600';
 
   const renderStatusIcon = (uid: string) => {
-    if (uid === "untested") {
+    if (uid === 'untested') {
       return <Circle size={16} color="#d4d4d8" />;
-    } else if (uid === "passed") {
+    } else if (uid === 'passed') {
       return <CircleCheck size={16} color="#17c964" />;
-    } else if (uid === "retest") {
+    } else if (uid === 'retest') {
       return <CircleDashed size={16} color="#f5a524" />;
-    } else if (uid === "failed") {
+    } else if (uid === 'failed') {
       return <CircleX size={16} color="#f31260" />;
-    } else if (uid === "skipped") {
+    } else if (uid === 'skipped') {
       return <CircleSlash2 size={16} color="#52525b" />;
     }
   };
@@ -93,22 +93,18 @@ export default function TestCaseSelector({
     const isIncluded = testCase.isIncluded;
 
     switch (columnKey) {
-      case "priority":
+      case 'priority':
         return (
-          <div
-            className={
-              isIncluded ? chipBaseClass : chipBaseClass + notIncludedCaseClass
-            }
-          >
+          <div className={isIncluded ? chipBaseClass : chipBaseClass + notIncludedCaseClass}>
             <Circle
               size={8}
-              color={isIncluded ? priorities[cellValue].color : "#d4d4d8"}
-              fill={isIncluded ? priorities[cellValue].color : "#d4d4d8"}
+              color={isIncluded ? priorities[cellValue].color : '#d4d4d8'}
+              fill={isIncluded ? priorities[cellValue].color : '#d4d4d8'}
             />
             <div className="ms-3">{messages[priorities[cellValue].uid]}</div>
           </div>
         );
-      case "runStatus":
+      case 'runStatus':
         return (
           <Dropdown>
             <DropdownTrigger>
@@ -116,15 +112,10 @@ export default function TestCaseSelector({
                 size="sm"
                 variant="light"
                 isDisabled={!isIncluded}
-                startContent={
-                  isIncluded &&
-                  renderStatusIcon(testRunCaseStatus[cellValue].uid)
-                }
+                startContent={isIncluded && renderStatusIcon(testRunCaseStatus[cellValue].uid)}
                 endContent={isIncluded && <ChevronDown size={16} />}
               >
-                <span className="w-12">
-                  {isIncluded && messages[testRunCaseStatus[cellValue].uid]}
-                </span>
+                <span className="w-12">{isIncluded && messages[testRunCaseStatus[cellValue].uid]}</span>
               </Button>
             </DropdownTrigger>
             <DropdownMenu aria-label="test case actions">
@@ -140,7 +131,7 @@ export default function TestCaseSelector({
             </DropdownMenu>
           </Dropdown>
         );
-      case "actions":
+      case 'actions':
         return (
           <Dropdown>
             <DropdownTrigger>
@@ -173,18 +164,18 @@ export default function TestCaseSelector({
 
   const classNames = useMemo(
     () => ({
-      wrapper: ["min-w-3xl"],
-      th: ["bg-transparent", "text-default-500", "border-b", "border-divider"],
+      wrapper: ['min-w-3xl'],
+      th: ['bg-transparent', 'text-default-500', 'border-b', 'border-divider'],
       td: [
         // changing the rows border radius
         // first
-        "group-data-[first=true]:first:before:rounded-none",
-        "group-data-[first=true]:last:before:rounded-none",
+        'group-data-[first=true]:first:before:rounded-none',
+        'group-data-[first=true]:last:before:rounded-none',
         // middle
-        "group-data-[middle=true]:before:rounded-none",
+        'group-data-[middle=true]:before:rounded-none',
         // last
-        "group-data-[last=true]:first:before:rounded-none",
-        "group-data-[last=true]:last:before:rounded-none",
+        'group-data-[last=true]:first:before:rounded-none',
+        'group-data-[last=true]:last:before:rounded-none',
       ],
     }),
     []
@@ -211,7 +202,7 @@ export default function TestCaseSelector({
           {(column) => (
             <TableColumn
               key={column.uid}
-              align={column.uid === "actions" ? "center" : "start"}
+              align={column.uid === 'actions' ? 'center' : 'start'}
               allowsSorting={column.sortable}
             >
               {column.name}
@@ -220,13 +211,8 @@ export default function TestCaseSelector({
         </TableHeader>
         <TableBody emptyContent={messages.noCasesFound} items={sortedItems}>
           {(item) => (
-            <TableRow
-              key={item.id}
-              className={!item.isIncluded ? notIncludedCaseClass : ""}
-            >
-              {(columnKey) => (
-                <TableCell>{renderCell(item, columnKey)}</TableCell>
-              )}
+            <TableRow key={item.id} className={!item.isIncluded ? notIncludedCaseClass : ''}>
+              {(columnKey) => <TableCell>{renderCell(item, columnKey)}</TableCell>}
             </TableRow>
           )}
         </TableBody>

@@ -1,9 +1,9 @@
-import React from "react";
-import { useState, useEffect } from "react";
-import dynamic from "next/dynamic";
-import { ProgressSeriesType } from "@/types/run";
-import { testRunCaseStatus } from "@/config/selection";
-const Chart = dynamic(() => import("react-apexcharts"), { ssr: false });
+import React from 'react';
+import { useState, useEffect } from 'react';
+import dynamic from 'next/dynamic';
+import { ProgressSeriesType } from '@/types/run';
+import { testRunCaseStatus } from '@/config/selection';
+const Chart = dynamic(() => import('react-apexcharts'), { ssr: false });
 
 type Props = {
   progressSeries: ProgressSeriesType[];
@@ -11,11 +11,7 @@ type Props = {
   theme: string;
 };
 
-export default function TestProgressBarChart({
-  progressSeries,
-  progressCategories,
-  theme,
-}: Props) {
+export default function TestProgressBarChart({ progressSeries, progressCategories, theme }: Props) {
   const [chartData, setChartData] = useState({
     series: [],
     options: {
@@ -28,14 +24,14 @@ export default function TestProgressBarChart({
     const updateChartDate = () => {
       if (progressSeries) {
         const legendsLabelColors = testRunCaseStatus.map((itr) => {
-          if (theme === "light") {
-            return "black";
+          if (theme === 'light') {
+            return 'black';
           } else {
-            return "white";
+            return 'white';
           }
         });
 
-        const xaxisLabelColor = theme === "light" ? "black" : "white";
+        const xaxisLabelColor = theme === 'light' ? 'black' : 'white';
 
         setChartData({
           series: progressSeries,
@@ -47,7 +43,7 @@ export default function TestProgressBarChart({
               stacked: true,
             },
             legend: {
-              position: "right",
+              position: 'right',
               labels: {
                 colors: legendsLabelColors,
               },
@@ -56,7 +52,7 @@ export default function TestProgressBarChart({
               return itr.chartColor;
             }),
             xaxis: {
-              type: "datetime",
+              type: 'datetime',
               categories: progressCategories,
               labels: {
                 style: {
@@ -75,13 +71,5 @@ export default function TestProgressBarChart({
     updateChartDate();
   }, [progressSeries, progressCategories, theme]);
 
-  return (
-    <Chart
-      options={chartData.options}
-      series={chartData.series}
-      type="bar"
-      width={"100%"}
-      height={"100%"}
-    />
-  );
+  return <Chart options={chartData.options} series={chartData.series} type="bar" width={'100%'} height={'100%'} />;
 }

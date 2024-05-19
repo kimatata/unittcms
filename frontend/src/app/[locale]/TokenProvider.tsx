@@ -1,11 +1,11 @@
-"use client";
-import { createContext, useState, useEffect } from "react";
-import { TokenType } from "@/types/user";
-import { TokenProps } from "@/types/user";
-import { useRouter, usePathname } from "@/src/navigation";
+'use client';
+import { createContext, useState, useEffect } from 'react';
+import { TokenType } from '@/types/user';
+import { TokenProps } from '@/types/user';
+import { useRouter, usePathname } from '@/src/navigation';
 
-const LOCAL_STORAGE_KEY = "testplat-auth-token";
-const privatePaths = ["/account"];
+const LOCAL_STORAGE_KEY = 'testplat-auth-token';
+const privatePaths = ['/account'];
 
 function storeTokenToLocalStorage(token: TokenType) {
   localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(token));
@@ -23,7 +23,7 @@ const TokenProvider = ({ locale, children }: TokenProps) => {
   const pathname = usePathname();
 
   const [token, setToken] = useState<TokenType>({
-    access_token: "",
+    access_token: '',
     user: null,
   });
   const tokenContext = {
@@ -57,11 +57,7 @@ const TokenProvider = ({ locale, children }: TokenProps) => {
     restoreTokenFromLocalStorage();
   }, []);
 
-  return (
-    <TokenContext.Provider value={tokenContext}>
-      {children}
-    </TokenContext.Provider>
-  );
+  return <TokenContext.Provider value={tokenContext}>{children}</TokenContext.Provider>;
 };
 
 export { TokenContext };

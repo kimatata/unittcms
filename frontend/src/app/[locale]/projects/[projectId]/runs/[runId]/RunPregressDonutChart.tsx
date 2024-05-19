@@ -1,9 +1,9 @@
-import React from "react";
-import { useState, useEffect } from "react";
-import dynamic from "next/dynamic";
-import { testRunCaseStatus } from "@/config/selection";
-import { RunStatusCountType, RunMessages } from "@/types/run";
-const Chart = dynamic(() => import("react-apexcharts"), { ssr: false });
+import React from 'react';
+import { useState, useEffect } from 'react';
+import dynamic from 'next/dynamic';
+import { testRunCaseStatus } from '@/config/selection';
+import { RunStatusCountType, RunMessages } from '@/types/run';
+const Chart = dynamic(() => import('react-apexcharts'), { ssr: false });
 
 type Props = {
   statusCounts: RunStatusCountType[];
@@ -11,11 +11,7 @@ type Props = {
   theme: string;
 };
 
-export default function RunProgressDounut({
-  statusCounts,
-  messages,
-  theme,
-}: Props) {
+export default function RunProgressDounut({ statusCounts, messages, theme }: Props) {
   const [chartData, setChartData] = useState({
     series: [],
     options: {
@@ -37,10 +33,10 @@ export default function RunProgressDounut({
         const legend = {
           labels: {
             colors: testRunCaseStatus.map((entry) => {
-              if (theme === "light") {
-                return "black";
+              if (theme === 'light') {
+                return 'black';
               } else {
-                return "white";
+                return 'white';
               }
             }),
           },
@@ -56,13 +52,5 @@ export default function RunProgressDounut({
     updateChartDate();
   }, [statusCounts, theme]);
 
-  return (
-    <Chart
-      options={chartData.options}
-      series={chartData.series}
-      type="donut"
-      width={"100%"}
-      height={"100%"}
-    />
-  );
+  return <Chart options={chartData.options} series={chartData.series} type="donut" width={'100%'} height={'100%'} />;
 }

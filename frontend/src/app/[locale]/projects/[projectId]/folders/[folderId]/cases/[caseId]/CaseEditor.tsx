@@ -1,39 +1,27 @@
-"use client";
-import { useEffect, useState } from "react";
-import {
-  Input,
-  Textarea,
-  Select,
-  SelectItem,
-  Button,
-  Divider,
-  Tooltip,
-} from "@nextui-org/react";
-import { useRouter } from "@/src/navigation";
-import { Save, Plus, ArrowLeft, ArrowUpFromLine, Circle } from "lucide-react";
-import { priorities, testTypes, templates } from "@/config/selection";
-import CaseStepsEditor from "./CaseStepsEditor";
-import CaseAttachmentsEditor from "./CaseAttachmentsEditor";
-import { CaseType, AttachmentType, CaseMessages } from "@/types/case";
-import { fetchCase, updateCase } from "../caseControl";
-import { fetchCreateStep, fetchDeleteStep } from "./stepControl";
-import {
-  fetchCreateAttachments,
-  fetchDownloadAttachment,
-  fetchDeleteAttachment,
-} from "./attachmentControl";
+'use client';
+import { useEffect, useState } from 'react';
+import { Input, Textarea, Select, SelectItem, Button, Divider, Tooltip } from '@nextui-org/react';
+import { useRouter } from '@/src/navigation';
+import { Save, Plus, ArrowLeft, ArrowUpFromLine, Circle } from 'lucide-react';
+import { priorities, testTypes, templates } from '@/config/selection';
+import CaseStepsEditor from './CaseStepsEditor';
+import CaseAttachmentsEditor from './CaseAttachmentsEditor';
+import { CaseType, AttachmentType, CaseMessages } from '@/types/case';
+import { fetchCase, updateCase } from '../caseControl';
+import { fetchCreateStep, fetchDeleteStep } from './stepControl';
+import { fetchCreateAttachments, fetchDownloadAttachment, fetchDeleteAttachment } from './attachmentControl';
 
 const defaultTestCase = {
   id: 0,
-  title: "",
+  title: '',
   state: 0,
   priority: 0,
   type: 0,
   automationStatus: 0,
-  description: "",
+  description: '',
   template: 0,
-  preConditions: "",
-  expectedResults: "",
+  preConditions: '',
+  expectedResults: '',
   folderId: 0,
 };
 
@@ -45,13 +33,7 @@ type Props = {
   locale: string;
 };
 
-export default function CaseEditor({
-  projectId,
-  folderId,
-  caseId,
-  messages,
-  locale,
-}: Props) {
+export default function CaseEditor({ projectId, folderId, caseId, messages, locale }: Props) {
   const [testCase, setTestCase] = useState<CaseType>(defaultTestCase);
   const [isTitleInvalid, setIsTitleInvalid] = useState<boolean>(false);
   const [isUpdating, setIsUpdating] = useState<boolean>(false);
@@ -122,10 +104,7 @@ export default function CaseEditor({
     handleFetchCreateAttachments(caseId, event.target.files);
   };
 
-  const handleFetchCreateAttachments = async (
-    caseId: number,
-    files: File[]
-  ) => {
+  const handleFetchCreateAttachments = async (caseId: number, files: File[]) => {
     const newAttachments = await fetchCreateAttachments(caseId, files);
 
     if (newAttachments) {
@@ -147,9 +126,7 @@ export default function CaseEditor({
   const onAttachmentDelete = async (attachmentId: number) => {
     await fetchDeleteAttachment(attachmentId);
 
-    const filteredAttachments = testCase.Attachments.filter(
-      (attachment) => attachment.id !== attachmentId
-    );
+    const filteredAttachments = testCase.Attachments.filter((attachment) => attachment.id !== attachmentId);
 
     setTestCase({
       ...testCase,
@@ -163,7 +140,7 @@ export default function CaseEditor({
         const data = await fetchCase(caseId);
         setTestCase(data);
       } catch (error: any) {
-        console.error("Error in effect:", error.message);
+        console.error('Error in effect:', error.message);
       }
     }
 
@@ -179,12 +156,7 @@ export default function CaseEditor({
               isIconOnly
               size="sm"
               className="rounded-full bg-neutral-50 dark:bg-neutral-600"
-              onPress={() =>
-                router.push(
-                  `/projects/${projectId}/folders/${folderId}/cases`,
-                  { locale: locale }
-                )
-              }
+              onPress={() => router.push(`/projects/${projectId}/folders/${folderId}/cases`, { locale: locale })}
             >
               <ArrowLeft size={16} />
             </Button>
@@ -215,7 +187,7 @@ export default function CaseEditor({
           label={messages.title}
           value={testCase.title}
           isInvalid={isTitleInvalid}
-          errorMessage={isTitleInvalid ? messages.pleaseEnterTitle : ""}
+          errorMessage={isTitleInvalid ? messages.pleaseEnterTitle : ''}
           onChange={(e) => {
             setTestCase({ ...testCase, title: e.target.value });
           }}
@@ -241,17 +213,11 @@ export default function CaseEditor({
             selectedKeys={[priorities[testCase.priority].uid]}
             onSelectionChange={(e) => {
               const selectedUid = e.anchorKey;
-              const index = priorities.findIndex(
-                (priority) => priority.uid === selectedUid
-              );
+              const index = priorities.findIndex((priority) => priority.uid === selectedUid);
               setTestCase({ ...testCase, priority: index });
             }}
             startContent={
-              <Circle
-                size={8}
-                color={priorities[testCase.priority].color}
-                fill={priorities[testCase.priority].color}
-              />
+              <Circle size={8} color={priorities[testCase.priority].color} fill={priorities[testCase.priority].color} />
             }
             label={messages.priority}
             className="mt-3 max-w-xs"
@@ -271,9 +237,7 @@ export default function CaseEditor({
             selectedKeys={[testTypes[testCase.type].uid]}
             onSelectionChange={(e) => {
               const selectedUid = e.anchorKey;
-              const index = testTypes.findIndex(
-                (type) => type.uid === selectedUid
-              );
+              const index = testTypes.findIndex((type) => type.uid === selectedUid);
               setTestCase({ ...testCase, type: index });
             }}
             label={messages.type}
@@ -294,9 +258,7 @@ export default function CaseEditor({
             selectedKeys={[templates[testCase.template].uid]}
             onSelectionChange={(e) => {
               const selectedUid = e.anchorKey;
-              const index = templates.findIndex(
-                (template) => template.uid === selectedUid
-              );
+              const index = templates.findIndex((template) => template.uid === selectedUid);
               setTestCase({ ...testCase, template: index });
             }}
             label={messages.template}
@@ -311,7 +273,7 @@ export default function CaseEditor({
         </div>
 
         <Divider className="my-6" />
-        {templates[testCase.template].uid === "text" ? (
+        {templates[testCase.template].uid === 'text' ? (
           <div>
             <h6 className="font-bold">{messages.testDetail}</h6>
             <div className="flex">
@@ -377,10 +339,9 @@ export default function CaseEditor({
         <h6 className="font-bold">{messages.attachments}</h6>
         <CaseAttachmentsEditor
           attachments={testCase.Attachments}
-          onAttachmentDownload={(
-            attachmentId: number,
-            downloadFileName: string
-          ) => fetchDownloadAttachment(attachmentId, downloadFileName)}
+          onAttachmentDownload={(attachmentId: number, downloadFileName: string) =>
+            fetchDownloadAttachment(attachmentId, downloadFileName)
+          }
           onAttachmentDelete={onAttachmentDelete}
           messages={messages}
         />
@@ -399,17 +360,9 @@ export default function CaseEditor({
                 <span className="font-semibold">{messages.clickToUpload}</span>
                 <span>{messages.orDragAndDrop}</span>
               </p>
-              <p className="text-xs text-neutral-500 dark:text-neutral-400">
-                {messages.maxFileSize}: 50 MB
-              </p>
+              <p className="text-xs text-neutral-500 dark:text-neutral-400">{messages.maxFileSize}: 50 MB</p>
             </div>
-            <input
-              id="dropzone-file"
-              type="file"
-              className="hidden"
-              onChange={handleInput}
-              multiple
-            />
+            <input id="dropzone-file" type="file" className="hidden" onChange={handleInput} multiple />
           </label>
         </div>
       </div>

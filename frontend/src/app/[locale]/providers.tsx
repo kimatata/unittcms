@@ -1,13 +1,13 @@
-"use client";
+'use client';
 
-import * as React from "react";
-import { NextUIProvider } from "@nextui-org/react";
-import { useRouter } from "next/navigation";
-import { ThemeProvider as NextThemesProvider } from "next-themes";
-import { ThemeProviderProps } from "next-themes/dist/types";
+import * as React from 'react';
+import { NextUIProvider } from '@nextui-org/react';
+import { useRouter } from 'next/navigation';
+import { ThemeProvider as NextThemesProvider } from 'next-themes';
+import { ThemeProviderProps } from 'next-themes/dist/types';
 
-import TokenProvider from "./TokenProvider";
-import { TokenProps } from "@/types/user";
+import TokenProvider from './TokenProvider';
+import { TokenProps } from '@/types/user';
 
 export interface ProvidersProps {
   children: React.ReactNode;
