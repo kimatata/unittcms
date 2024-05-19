@@ -6,9 +6,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint",
-    "test": "vitest",
-    "coverage": "vitest run --coverage"
+    "lint": "next lint"
   },
   "dependencies": {
     "@nextui-org/react": "^2.2.9",
@@ -36,9 +34,5 @@
     "tailwind-variants": "^0.1.18",
     "tailwindcss": "3.3.5",
     "typescript": "5.0.4"
-  },
-  "devDependencies": {
-    "@vitest/coverage-v8": "^1.6.0",
-    "vitest": "^1.6.0"
   }
 }
