@@ -25,6 +25,7 @@
     "projects": "プロジェクト"
   },
   "Auth": {
+    "account": "アカウント",
     "signup": "新規登録",
     "signin": "サインイン",
     "or_signup": "新規登録ページ",

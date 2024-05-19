@@ -25,6 +25,7 @@
     "projects": "Projects"
   },
   "Auth": {
+    "account": "Account",
     "signup": "Sign up",
     "signin": "Sign in",
     "or_signup": "You need sign up?",

@@ -20,6 +20,7 @@ async function signUp(newUser: UserType) {
     }
     const accessToken = await response.json();
     storeToken(accessToken);
+    return accessToken;
   } catch (error: any) {
     console.error("Error sign up:", error);
     throw error;
@@ -44,6 +45,7 @@ async function signIn(signInUser: UserType) {
     }
     const accessToken = await response.json();
     storeToken(accessToken);
+    return accessToken;
   } catch (error: any) {
     console.error("Error sign in:", error);
     throw error;

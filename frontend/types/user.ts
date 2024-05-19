@@ -5,6 +5,18 @@ export type UserType = {
   username: string;
   role: number;
   avatarPath: string;
+} | null;
+
+export type TokenProps = {
+  children?: React.ReactNode;
+};
+
+export type TokenType = {
+  token: {
+    access_token: string;
+    user: UserType;
+  };
+  setToken: () => {};
 };
 
 export type AuthMessages = {

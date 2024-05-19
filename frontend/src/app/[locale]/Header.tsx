@@ -16,6 +16,7 @@ import LangSwitch from "./LangSwitch";
 import { ThemeSwitch } from "@/components/theme-switch";
 import { GithubIcon } from "@/components/icons";
 import Image from "next/image";
+import DropdownAccount from "./DropdownAccount";
 
 export default function Header(params: { locale: string }) {
   const t = useTranslations("Header");
@@ -102,6 +103,7 @@ export default function Header(params: { locale: string }) {
         </NextUiLink>
         <ThemeSwitch />
         <LangSwitch locale={params.locale} />
+        <DropdownAccount locale={params.locale} />
         <NavbarMenuToggle className="md:hidden" />
       </NavbarContent>
 

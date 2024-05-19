@@ -1,6 +1,6 @@
 "use client";
 import React from "react";
-import { useState } from "react";
+import { useState, useContext } from "react";
 import { Input, Button, Card, CardHeader, CardBody } from "@nextui-org/react";
 import { Link } from "@/src/navigation";
 import { ChevronRight, Eye, EyeOff } from "lucide-react";
@@ -8,6 +8,7 @@ import { UserType, AuthMessages } from "@/types/user";
 import { roles } from "@/config/selection";
 import { signUp, signIn } from "./authControl";
 import { isValidEmail, isValidPassword } from "./validate";
+import { TokenContext } from "../TokenProvider";
 type Props = {
   isSignup: Boolean;
   messages: AuthMessages;
@@ -15,6 +16,7 @@ type Props = {
 };
 
 export default function AuthPage({ isSignup, messages, locale }: Props) {
+  const context = useContext(TokenContext);
   const [user, setUser] = useState<UserType>({
     id: null,
     email: "",
@@ -59,14 +61,16 @@ export default function AuthPage({ isSignup, messages, locale }: Props) {
   const submit = async () => {
     if (isSignup) {
       try {
-        await signUp(user);
+        const token = await signUp(user);
+        context.setToken(token);
         // Move to signin page
       } catch {
         setErrorMessage(messages.signupError);
       }
     } else {
       try {
-        signIn(user);
+        const token = await signIn(user);
+        context.setToken(token);
         // Move to signin page
       } catch {
         setErrorMessage(messages.signinError);
