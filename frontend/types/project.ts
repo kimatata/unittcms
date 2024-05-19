@@ -1,5 +1,5 @@
-import { FolderType } from "./folder";
-import { RunType } from "./run";
+import { FolderType } from './folder';
+import { RunType } from './run';
 
 export type ProjectType = {
   id: number;

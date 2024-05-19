@@ -1,15 +1,15 @@
-import Config from "@/config/config";
+import Config from '@/config/config';
 const apiServer = Config.apiServer;
-import { RunType, RunCaseInfoType } from "@/types/run";
+import { RunType, RunCaseInfoType } from '@/types/run';
 
 async function fetchRun(runId: string) {
   const url = `${apiServer}/runs/${runId}`;
 
   try {
     const response = await fetch(url, {
-      method: "GET",
+      method: 'GET',
       headers: {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
       },
     });
 
@@ -20,7 +20,7 @@ async function fetchRun(runId: string) {
     const data = await response.json();
     return data;
   } catch (error: any) {
-    console.error("Error fetching data:", error.message);
+    console.error('Error fetching data:', error.message);
   }
 }
 
@@ -29,9 +29,9 @@ async function fetchRuns(projectId: string) {
 
   try {
     const response = await fetch(url, {
-      method: "GET",
+      method: 'GET',
       headers: {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
       },
     });
 
@@ -42,23 +42,23 @@ async function fetchRuns(projectId: string) {
     const data = await response.json();
     return data;
   } catch (error: any) {
-    console.error("Error fetching data:", error.message);
+    console.error('Error fetching data:', error.message);
   }
 }
 
 async function createRun(projectId: string) {
   const newTestRun = {
-    name: "untitled run",
+    name: 'untitled run',
     configurations: 0,
-    description: "",
+    description: '',
     state: 0,
     projectId: projectId,
   };
 
   const fetchOptions = {
-    method: "POST",
+    method: 'POST',
     headers: {
-      "Content-Type": "application/json",
+      'Content-Type': 'application/json',
     },
     body: JSON.stringify(newTestRun),
   };
@@ -73,16 +73,16 @@ async function createRun(projectId: string) {
     const data = await response.json();
     return data;
   } catch (error: any) {
-    console.error("Error creating new test run:", error);
+    console.error('Error creating new test run:', error);
     throw error;
   }
 }
 
 async function updateRun(updateTestRun: RunType) {
   const fetchOptions = {
-    method: "PUT",
+    method: 'PUT',
     headers: {
-      "Content-Type": "application/json",
+      'Content-Type': 'application/json',
     },
     body: JSON.stringify(updateTestRun),
   };
@@ -97,16 +97,16 @@ async function updateRun(updateTestRun: RunType) {
     const data = await response.json();
     return data;
   } catch (error: any) {
-    console.error("Error updating run:", error);
+    console.error('Error updating run:', error);
     throw error;
   }
 }
 
 async function deleteRun(runId: number) {
   const fetchOptions = {
-    method: "DELETE",
+    method: 'DELETE',
     headers: {
-      "Content-Type": "application/json",
+      'Content-Type': 'application/json',
     },
   };
 
@@ -118,7 +118,7 @@ async function deleteRun(runId: number) {
       throw new Error(`HTTP error! Status: ${response.status}`);
     }
   } catch (error: any) {
-    console.error("Error deleting run:", error);
+    console.error('Error deleting run:', error);
     throw error;
   }
 }
@@ -128,9 +128,9 @@ async function fetchRunCases(runId: string) {
 
   try {
     const response = await fetch(url, {
-      method: "GET",
+      method: 'GET',
       headers: {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
       },
     });
 
@@ -141,15 +141,15 @@ async function fetchRunCases(runId: string) {
     const data = await response.json();
     return data;
   } catch (error: any) {
-    console.error("Error fetching data:", error.message);
+    console.error('Error fetching data:', error.message);
   }
 }
 
 async function createRunCase(runId: string, caseId: number) {
   const fetchOptions = {
-    method: "POST",
+    method: 'POST',
     headers: {
-      "Content-Type": "application/json",
+      'Content-Type': 'application/json',
     },
   };
 
@@ -163,16 +163,16 @@ async function createRunCase(runId: string, caseId: number) {
     const data = await response.json();
     return data;
   } catch (error: any) {
-    console.error("Error creating new runcase:", error);
+    console.error('Error creating new runcase:', error);
     throw error;
   }
 }
 
 async function updateRunCase(runId: string, caseId: number, status: number) {
   const fetchOptions = {
-    method: "PUT",
+    method: 'PUT',
     headers: {
-      "Content-Type": "application/json",
+      'Content-Type': 'application/json',
     },
   };
 
@@ -186,16 +186,16 @@ async function updateRunCase(runId: string, caseId: number, status: number) {
     const data = await response.json();
     return data;
   } catch (error: any) {
-    console.error("Error updating runcase:", error);
+    console.error('Error updating runcase:', error);
     throw error;
   }
 }
 
 async function bulkCreateRunCases(runCaseInfo: RunCaseInfoType[]) {
   const fetchOptions = {
-    method: "POST",
+    method: 'POST',
     headers: {
-      "Content-Type": "application/json",
+      'Content-Type': 'application/json',
     },
     body: JSON.stringify(runCaseInfo),
   };
@@ -210,16 +210,16 @@ async function bulkCreateRunCases(runCaseInfo: RunCaseInfoType[]) {
     const data = await response.json();
     return data;
   } catch (error: any) {
-    console.error("Error creating new runcase:", error);
+    console.error('Error creating new runcase:', error);
     throw error;
   }
 }
 
 async function deleteRunCase(runId: string, caseId: number) {
   const fetchOptions = {
-    method: "DELETE",
+    method: 'DELETE',
     headers: {
-      "Content-Type": "application/json",
+      'Content-Type': 'application/json',
     },
   };
 
@@ -231,16 +231,16 @@ async function deleteRunCase(runId: string, caseId: number) {
       throw new Error(`HTTP error! Status: ${response.status}`);
     }
   } catch (error: any) {
-    console.error("Error deleting runcase:", error);
+    console.error('Error deleting runcase:', error);
     throw error;
   }
 }
 
 async function bulkDeleteRunCases(runCaseInfo: RunCaseInfoType[]) {
   const fetchOptions = {
-    method: "POST",
+    method: 'POST',
     headers: {
-      "Content-Type": "application/json",
+      'Content-Type': 'application/json',
     },
     body: JSON.stringify(runCaseInfo),
   };
@@ -253,7 +253,7 @@ async function bulkDeleteRunCases(runCaseInfo: RunCaseInfoType[]) {
       throw new Error(`HTTP error! Status: ${response.status}`);
     }
   } catch (error: any) {
-    console.error("Error deleting runcase:", error);
+    console.error('Error deleting runcase:', error);
     throw error;
   }
 }

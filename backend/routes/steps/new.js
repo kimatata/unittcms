@@ -1,14 +1,14 @@
-const express = require("express");
+const express = require('express');
 const router = express.Router();
-const defineStep = require("../../models/steps");
-const defineCaseStep = require("../../models/caseSteps");
-const { DataTypes, Op } = require("sequelize");
+const defineStep = require('../../models/steps');
+const defineCaseStep = require('../../models/caseSteps');
+const { DataTypes, Op } = require('sequelize');
 
 module.exports = function (sequelize) {
   const Step = defineStep(sequelize, DataTypes);
   const CaseStep = defineCaseStep(sequelize, DataTypes);
 
-  router.post("/", async (req, res) => {
+  router.post('/', async (req, res) => {
     const newStepNo = req.query.newStepNo;
     const caseId = req.query.parentCaseId;
 
@@ -16,13 +16,13 @@ module.exports = function (sequelize) {
 
     try {
       // Update existing stepNo for steps with stepNo greater than or equal to newStepNo
-      const maxStepNo = await CaseStep.max("stepNo", {
+      const maxStepNo = await CaseStep.max('stepNo', {
         where: { caseId: caseId },
         transaction: t,
       });
       if (maxStepNo >= newStepNo) {
         await CaseStep.update(
-          { stepNo: sequelize.literal("stepNo + 1") },
+          { stepNo: sequelize.literal('stepNo + 1') },
           {
             where: {
               caseId: caseId,
@@ -35,8 +35,8 @@ module.exports = function (sequelize) {
 
       const newStep = await Step.create(
         {
-          step: "",
-          result: "",
+          step: '',
+          result: '',
         },
         { transaction: t }
       );
@@ -55,7 +55,7 @@ module.exports = function (sequelize) {
     } catch (error) {
       console.error(error);
       await t.rollback();
-      res.status(500).send("Internal Server Error");
+      res.status(500).send('Internal Server Error');
     }
   });
 

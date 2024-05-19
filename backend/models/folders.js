@@ -1,5 +1,5 @@
 function defineFolder(sequelize, DataTypes) {
-  const Folder = sequelize.define("Folder", {
+  const Folder = sequelize.define('Folder', {
     name: {
       type: DataTypes.STRING,
       allowNull: false,
@@ -17,10 +17,10 @@ function defineFolder(sequelize, DataTypes) {
       allowNull: false,
       references: {
         model: 'project',
-        key: 'id'
+        key: 'id',
       },
-      onDelete: 'CASCADE'
-    }
+      onDelete: 'CASCADE',
+    },
   });
 
   Folder.associate = (models) => {

@@ -29,10 +29,10 @@ type RunStatusCountType = {
 type ProgressSeriesType = {
   name: string;
   data: number[];
-}
+};
 
 type RunsMessages = {
-  runList: string,
+  runList: string;
   id: string;
   name: string;
   description: string;
@@ -44,11 +44,11 @@ type RunsMessages = {
 };
 
 type RunMessages = {
-  backToRuns: string,
+  backToRuns: string;
   updating: string;
   update: string;
-  progress: string,
-  refresh: string,
+  progress: string;
+  refresh: string;
   id: string;
   title: string;
   pleaseEnter: string;
@@ -78,12 +78,4 @@ type RunMessages = {
   noCasesFound: string;
 };
 
-export {
-  RunType,
-  RunCaseType,
-  RunCaseInfoType,
-  RunStatusCountType,
-  ProgressSeriesType,
-  RunsMessages,
-  RunMessages,
-};
+export { RunType, RunCaseType, RunCaseInfoType, RunStatusCountType, ProgressSeriesType, RunsMessages, RunMessages };

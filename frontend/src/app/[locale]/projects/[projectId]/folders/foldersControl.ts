@@ -1,4 +1,4 @@
-import Config from "@/config/config";
+import Config from '@/config/config';
 const apiServer = Config.apiServer;
 
 /**
@@ -8,9 +8,9 @@ async function fetchFolders(projectId: string) {
   try {
     const url = `${apiServer}/folders?projectId=${projectId}`;
     const response = await fetch(url, {
-      method: "GET",
+      method: 'GET',
       headers: {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
       },
     });
 
@@ -21,19 +21,14 @@ async function fetchFolders(projectId: string) {
     const data = await response.json();
     return data;
   } catch (error: any) {
-    console.error("Error fetching data:", error.message);
+    console.error('Error fetching data:', error.message);
   }
 }
 
 /**
  * Create project
  */
-async function createFolder(
-  name: string,
-  detail: string,
-  projectId: strting,
-  parentFolderId: number
-) {
+async function createFolder(name: string, detail: string, projectId: strting, parentFolderId: number) {
   const newFolderData = {
     name: name,
     detail: detail,
@@ -42,9 +37,9 @@ async function createFolder(
   };
 
   const fetchOptions = {
-    method: "POST",
+    method: 'POST',
     headers: {
-      "Content-Type": "application/json",
+      'Content-Type': 'application/json',
     },
     body: JSON.stringify(newFolderData),
   };
@@ -59,7 +54,7 @@ async function createFolder(
     const data = await response.json();
     return data;
   } catch (error: any) {
-    console.error("Error creating new project:", error);
+    console.error('Error creating new project:', error);
     throw error;
   }
 }
@@ -67,13 +62,7 @@ async function createFolder(
 /**
  * Update folder
  */
-async function updateFolder(
-  folderId: number,
-  name: string,
-  detail: string,
-  projectId: string,
-  parentFolderId: number
-) {
+async function updateFolder(folderId: number, name: string, detail: string, projectId: string, parentFolderId: number) {
   const updateFolderData = {
     name: name,
     detail: detail,
@@ -82,9 +71,9 @@ async function updateFolder(
   };
 
   const fetchOptions = {
-    method: "PUT",
+    method: 'PUT',
     headers: {
-      "Content-Type": "application/json",
+      'Content-Type': 'application/json',
     },
     body: JSON.stringify(updateFolderData),
   };
@@ -99,7 +88,7 @@ async function updateFolder(
     const data = await response.json();
     return data;
   } catch (error: any) {
-    console.error("Error updating project:", error);
+    console.error('Error updating project:', error);
     throw error;
   }
 }
@@ -109,9 +98,9 @@ async function updateFolder(
  */
 async function deleteFolder(folderId: number) {
   const fetchOptions = {
-    method: "DELETE",
+    method: 'DELETE',
     headers: {
-      "Content-Type": "application/json",
+      'Content-Type': 'application/json',
     },
   };
 
@@ -123,7 +112,7 @@ async function deleteFolder(folderId: number) {
       throw new Error(`HTTP error! Status: ${response.status}`);
     }
   } catch (error: any) {
-    console.error("Error deleting project:", error);
+    console.error('Error deleting project:', error);
     throw error;
   }
 }

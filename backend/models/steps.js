@@ -1,5 +1,5 @@
 function defineStep(sequelize, DataTypes) {
-  const Step = sequelize.define("Step", {
+  const Step = sequelize.define('Step', {
     step: {
       type: DataTypes.STRING,
       allowNull: false,
@@ -12,7 +12,7 @@ function defineStep(sequelize, DataTypes) {
 
   Step.associate = (models) => {
     Step.belongsToMany(models.Case, {
-      through: "caseSteps"
+      through: 'caseSteps',
     });
   };
 

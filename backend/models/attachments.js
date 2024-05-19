@@ -1,5 +1,5 @@
 function defineAttachment(sequelize, DataTypes) {
-  const Attachment = sequelize.define("Attachment", {
+  const Attachment = sequelize.define('Attachment', {
     title: {
       type: DataTypes.STRING,
       allowNull: false,
@@ -16,7 +16,7 @@ function defineAttachment(sequelize, DataTypes) {
 
   Attachment.associate = (models) => {
     Attachment.belongsToMany(models.Case, {
-      through: "caseAttachments"
+      through: 'caseAttachments',
     });
   };
 

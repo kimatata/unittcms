@@ -1,15 +1,15 @@
-import Config from "@/config/config";
+import Config from '@/config/config';
 const apiServer = Config.apiServer;
-import { CaseType } from "@/types/case";
+import { CaseType } from '@/types/case';
 
 async function fetchCase(caseId: number) {
   const url = `${apiServer}/cases/${caseId}`;
 
   try {
     const response = await fetch(url, {
-      method: "GET",
+      method: 'GET',
       headers: {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
       },
     });
 
@@ -20,7 +20,7 @@ async function fetchCase(caseId: number) {
     const data = await response.json();
     return data;
   } catch (error: any) {
-    console.error("Error fetching data:", error.message);
+    console.error('Error fetching data:', error.message);
   }
 }
 
@@ -29,9 +29,9 @@ async function fetchCases(folderId: string) {
 
   try {
     const response = await fetch(url, {
-      method: "GET",
+      method: 'GET',
       headers: {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
       },
     });
 
@@ -42,28 +42,28 @@ async function fetchCases(folderId: string) {
     const data = await response.json();
     return data;
   } catch (error: any) {
-    console.error("Error fetching data:", error.message);
+    console.error('Error fetching data:', error.message);
   }
 }
 
 async function createCase(folderId: string) {
   const newCase = {
-    title: "untitled case",
+    title: 'untitled case',
     state: 0,
     priority: 2,
     type: 0,
     automationStatus: 0,
-    description: "",
+    description: '',
     template: 0,
-    preConditions: "",
-    expectedResults: "",
+    preConditions: '',
+    expectedResults: '',
     folderId: folderId,
   };
 
   const fetchOptions = {
-    method: "POST",
+    method: 'POST',
     headers: {
-      "Content-Type": "application/json",
+      'Content-Type': 'application/json',
     },
     body: JSON.stringify(newCase),
   };
@@ -78,16 +78,16 @@ async function createCase(folderId: string) {
     const data = await response.json();
     return data;
   } catch (error: any) {
-    console.error("Error creating case:", error);
+    console.error('Error creating case:', error);
     throw error;
   }
 }
 
 async function updateCase(updateCaseData: CaseType) {
   const fetchOptions = {
-    method: "PUT",
+    method: 'PUT',
     headers: {
-      "Content-Type": "application/json",
+      'Content-Type': 'application/json',
     },
     body: JSON.stringify(updateCaseData),
   };
@@ -102,16 +102,16 @@ async function updateCase(updateCaseData: CaseType) {
     const data = await response.json();
     return data;
   } catch (error: any) {
-    console.error("Error updating project:", error);
+    console.error('Error updating project:', error);
     throw error;
   }
 }
 
 async function deleteCase(caseId: number) {
   const fetchOptions = {
-    method: "DELETE",
+    method: 'DELETE',
     headers: {
-      "Content-Type": "application/json",
+      'Content-Type': 'application/json',
     },
   };
 
@@ -123,16 +123,16 @@ async function deleteCase(caseId: number) {
       throw new Error(`HTTP error! Status: ${response.status}`);
     }
   } catch (error: any) {
-    console.error("Error deleting case:", error);
+    console.error('Error deleting case:', error);
     throw error;
   }
 }
 
 async function deleteCases(deleteCases: string[]) {
   const fetchOptions = {
-    method: "POST",
+    method: 'POST',
     headers: {
-      "Content-Type": "application/json",
+      'Content-Type': 'application/json',
     },
     body: JSON.stringify({ caseIds: deleteCases }),
   };
@@ -145,16 +145,9 @@ async function deleteCases(deleteCases: string[]) {
       throw new Error(`HTTP error! Status: ${response.status}`);
     }
   } catch (error: any) {
-    console.error("Error deleting cases:", error);
+    console.error('Error deleting cases:', error);
     throw error;
   }
 }
 
-export {
-  fetchCase,
-  fetchCases,
-  updateCase,
-  createCase,
-  deleteCase,
-  deleteCases,
-};
+export { fetchCase, fetchCases, updateCase, createCase, deleteCase, deleteCases };

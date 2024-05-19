@@ -1,5 +1,5 @@
 function defineCaseStep(sequelize, DataTypes) {
-  const CaseStep = sequelize.define("CaseStep", {
+  const CaseStep = sequelize.define('CaseStep', {
     caseId: {
       type: DataTypes.INTEGER,
       allowNull: false,
@@ -16,12 +16,12 @@ function defineCaseStep(sequelize, DataTypes) {
 
   CaseStep.associate = (models) => {
     CaseStep.belongsTo(models.Case, {
-      foreignKey: "caseId",
-      onDelete: "CASCADE",
+      foreignKey: 'caseId',
+      onDelete: 'CASCADE',
     });
     CaseStep.belongsTo(models.Step, {
-      foreignKey: "stepId",
-      onDelete: "CASCADE",
+      foreignKey: 'stepId',
+      onDelete: 'CASCADE',
     });
   };
 

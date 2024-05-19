@@ -1,16 +1,16 @@
-const express = require("express");
+const express = require('express');
 const router = express.Router();
-const defineCase = require("../../models/cases");
-const { DataTypes } = require("sequelize");
+const defineCase = require('../../models/cases');
+const { DataTypes } = require('sequelize');
 
 module.exports = function (sequelize) {
   const Case = defineCase(sequelize, DataTypes);
 
-  router.get("/", async (req, res) => {
+  router.get('/', async (req, res) => {
     const { folderId } = req.query;
 
     if (!folderId) {
-      return res.status(400).json({ error: "folderId is required" });
+      return res.status(400).json({ error: 'folderId is required' });
     }
 
     try {
@@ -22,7 +22,7 @@ module.exports = function (sequelize) {
       res.json(cases);
     } catch (error) {
       console.error(error);
-      res.status(500).send("Internal Server Error");
+      res.status(500).send('Internal Server Error');
     }
   });
 

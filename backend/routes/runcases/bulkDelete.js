@@ -1,12 +1,12 @@
-const express = require("express");
+const express = require('express');
 const router = express.Router();
-const defineRunCase = require("../../models/runCases");
-const { DataTypes, Op } = require("sequelize");
+const defineRunCase = require('../../models/runCases');
+const { DataTypes, Op } = require('sequelize');
 
 module.exports = function (sequelize) {
   const RunCase = defineRunCase(sequelize, DataTypes);
 
-  router.post("/bulkdelete", async (req, res) => {
+  router.post('/bulkdelete', async (req, res) => {
     const recordsToDelete = req.body;
 
     try {
@@ -20,7 +20,7 @@ module.exports = function (sequelize) {
       });
 
       if (existingRunCases.length === 0) {
-        return res.status(200).send("No records found to delete");
+        return res.status(200).send('No records found to delete');
       }
 
       await RunCase.destroy({
@@ -32,10 +32,10 @@ module.exports = function (sequelize) {
         },
       });
 
-      res.status(200).send("Records deleted successfully");
+      res.status(200).send('Records deleted successfully');
     } catch (error) {
-      console.error("Error deleting run cases:", error);
-      res.status(500).send("Internal Server Error");
+      console.error('Error deleting run cases:', error);
+      res.status(500).send('Internal Server Error');
     }
   });
 

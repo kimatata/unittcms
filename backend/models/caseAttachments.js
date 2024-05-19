@@ -1,5 +1,5 @@
 function defineCaseAttachment(sequelize, DataTypes) {
-  const CaseAttachment = sequelize.define("CaseAttachment", {
+  const CaseAttachment = sequelize.define('CaseAttachment', {
     caseId: {
       type: DataTypes.INTEGER,
       allowNull: false,
@@ -12,12 +12,12 @@ function defineCaseAttachment(sequelize, DataTypes) {
 
   CaseAttachment.associate = (models) => {
     CaseAttachment.belongsTo(models.Case, {
-      foreignKey: "caseId",
-      onDelete: "CASCADE",
+      foreignKey: 'caseId',
+      onDelete: 'CASCADE',
     });
     CaseAttachment.belongsTo(models.Attachment, {
-      foreignKey: "attachmentId",
-      onDelete: "CASCADE",
+      foreignKey: 'attachmentId',
+      onDelete: 'CASCADE',
     });
   };
 

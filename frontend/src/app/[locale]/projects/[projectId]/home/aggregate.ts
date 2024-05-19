@@ -1,6 +1,6 @@
-import { ProjectType } from "@/types/project";
-import { testTypes, priorities, testRunCaseStatus } from "@/config/selection";
-import { HomeMessages } from "./page";
+import { ProjectType } from '@/types/project';
+import { testTypes, priorities, testRunCaseStatus } from '@/config/selection';
+import { HomeMessages } from './page';
 
 // aggregate folder, case, run mum
 function aggregateBasicInfo(project: ProjectType) {
@@ -85,9 +85,4 @@ function aggregateProgress(project: ProjectType, messages: HomeMessages) {
   return { series, categories };
 }
 
-export {
-  aggregateBasicInfo,
-  aggregateTestType,
-  aggregateTestPriority,
-  aggregateProgress,
-};
+export { aggregateBasicInfo, aggregateTestType, aggregateTestPriority, aggregateProgress };

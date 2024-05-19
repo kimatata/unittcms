@@ -1,12 +1,12 @@
-const express = require("express");
+const express = require('express');
 const router = express.Router();
-const defineRunCase = require("../../models/runCases");
+const defineRunCase = require('../../models/runCases');
 const { DataTypes } = require('sequelize');
 
-module.exports = function(sequelize) {
-  const RunCase = defineRunCase(sequelize, DataTypes)
+module.exports = function (sequelize) {
+  const RunCase = defineRunCase(sequelize, DataTypes);
 
-  router.get("/", async (req, res) => {
+  router.get('/', async (req, res) => {
     const { runId } = req.query;
 
     if (!runId) {
@@ -16,13 +16,13 @@ module.exports = function(sequelize) {
     try {
       const runCases = await RunCase.findAll({
         where: {
-          runId: runId
-        }
+          runId: runId,
+        },
       });
       res.json(runCases);
     } catch (error) {
       console.error(error);
-      res.status(500).send("Internal Server Error");
+      res.status(500).send('Internal Server Error');
     }
   });
 

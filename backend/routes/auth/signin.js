@@ -1,14 +1,14 @@
-const express = require("express");
+const express = require('express');
 const router = express.Router();
-const defineUser = require("../../models/users");
-const { DataTypes } = require("sequelize");
+const defineUser = require('../../models/users');
+const { DataTypes } = require('sequelize');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
 module.exports = function (sequelize) {
   const User = defineUser(sequelize, DataTypes);
 
-  router.post("/signin", async (req, res) => {
+  router.post('/signin', async (req, res) => {
     try {
       const { email, password } = req.body;
       const user = await User.findOne({
@@ -17,20 +17,20 @@ module.exports = function (sequelize) {
         },
       });
       if (!user) {
-        return res.status(401).json({ error: "Authentication failed" });
+        return res.status(401).json({ error: 'Authentication failed' });
       }
 
       const passwordMatch = await bcrypt.compare(password, user.password);
       if (!passwordMatch) {
-        return res.status(401).json({ error: "Authentication failed" });
+        return res.status(401).json({ error: 'Authentication failed' });
       }
-      const accessToken = jwt.sign({ userId: user.id }, "your-secret-key", {
-        expiresIn: "1h",
+      const accessToken = jwt.sign({ userId: user.id }, 'your-secret-key', {
+        expiresIn: '1h',
       });
       res.status(200).json({ access_token: accessToken, user });
     } catch (error) {
       console.error(error);
-      res.status(500).send("Sign up failed");
+      res.status(500).send('Sign up failed');
     }
   });
 

@@ -1,18 +1,18 @@
-const express = require("express");
+const express = require('express');
 const router = express.Router();
-const defineFolder = require("../../models/folders");
-const { DataTypes } = require("sequelize");
+const defineFolder = require('../../models/folders');
+const { DataTypes } = require('sequelize');
 
 module.exports = function (sequelize) {
   const Folder = defineFolder(sequelize, DataTypes);
 
-  router.put("/:folderId", async (req, res) => {
+  router.put('/:folderId', async (req, res) => {
     const folderId = req.params.folderId;
     const { name, detail, projectId, parentFolderId } = req.body;
     try {
       const folder = await Folder.findByPk(folderId);
       if (!folder) {
-        return res.status(404).send("Folder not found");
+        return res.status(404).send('Folder not found');
       }
       await folder.update({
         name,
@@ -23,7 +23,7 @@ module.exports = function (sequelize) {
       res.json(folder);
     } catch (error) {
       console.error(error);
-      res.status(500).send("Internal Server Error");
+      res.status(500).send('Internal Server Error');
     }
   });
 

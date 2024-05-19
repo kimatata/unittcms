@@ -1,13 +1,13 @@
-import { UserType } from "@/types/user";
-import { avatars } from "@/config/selection";
-import Config from "@/config/config";
+import { UserType } from '@/types/user';
+import { avatars } from '@/config/selection';
+import Config from '@/config/config';
 const apiServer = Config.apiServer;
 
 async function signUp(newUser: UserType) {
   const fetchOptions = {
-    method: "POST",
+    method: 'POST',
     headers: {
-      "Content-Type": "application/json",
+      'Content-Type': 'application/json',
     },
     body: JSON.stringify(newUser),
   };
@@ -22,16 +22,16 @@ async function signUp(newUser: UserType) {
     const token = await response.json();
     return token;
   } catch (error: any) {
-    console.error("Error sign up:", error);
+    console.error('Error sign up:', error);
     throw error;
   }
 }
 
 async function signIn(signInUser: UserType) {
   const fetchOptions = {
-    method: "POST",
+    method: 'POST',
     headers: {
-      "Content-Type": "application/json",
+      'Content-Type': 'application/json',
     },
     body: JSON.stringify(signInUser),
   };
@@ -46,7 +46,7 @@ async function signIn(signInUser: UserType) {
     const token = await response.json();
     return token;
   } catch (error: any) {
-    console.error("Error sign in:", error);
+    console.error('Error sign in:', error);
     throw error;
   }
 }

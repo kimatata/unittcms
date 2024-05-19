@@ -1,5 +1,5 @@
 function defineCase(sequelize, DataTypes) {
-  const Case = sequelize.define("Case", {
+  const Case = sequelize.define('Case', {
     title: {
       type: DataTypes.STRING,
       allowNull: false,
@@ -40,20 +40,20 @@ function defineCase(sequelize, DataTypes) {
       type: DataTypes.INTEGER,
       allowNull: false,
       references: {
-        model: "folder",
-        key: "id",
+        model: 'folder',
+        key: 'id',
       },
-      onDelete: "CASCADE",
+      onDelete: 'CASCADE',
     },
   });
 
   Case.associate = (models) => {
     Case.belongsTo(models.Folder, {
-      foreignKey: "folderId",
-      onDelete: "CASCADE",
+      foreignKey: 'folderId',
+      onDelete: 'CASCADE',
     });
     Case.belongsToMany(models.Step, {
-      through: "caseSteps"
+      through: 'caseSteps',
     });
   };
 

@@ -1,11 +1,11 @@
-const express = require("express");
+const express = require('express');
 const router = express.Router();
-const defineProject = require("../../models/projects");
-const defineFolder = require("../../models/folders");
-const defineCase = require("../../models/cases");
-const defineRun = require("../../models/runs");
-const defineRunCase = require("../../models/runCases");
-const { DataTypes } = require("sequelize");
+const defineProject = require('../../models/projects');
+const defineFolder = require('../../models/folders');
+const defineCase = require('../../models/cases');
+const defineRun = require('../../models/runs');
+const defineRunCase = require('../../models/runCases');
+const { DataTypes } = require('sequelize');
 
 module.exports = function (sequelize) {
   const Project = defineProject(sequelize, DataTypes);
@@ -13,16 +13,16 @@ module.exports = function (sequelize) {
   const Case = defineCase(sequelize, DataTypes);
   const Run = defineRun(sequelize, DataTypes);
   const RunCase = defineRunCase(sequelize, DataTypes);
-  Project.hasMany(Folder, { foreignKey: "projectId" });
-  Folder.hasMany(Case, { foreignKey: "folderId" });
-  Project.hasMany(Run, { foreignKey: "projectId" });
-  Run.hasMany(RunCase, { foreignKey: "runId" });
+  Project.hasMany(Folder, { foreignKey: 'projectId' });
+  Folder.hasMany(Case, { foreignKey: 'folderId' });
+  Project.hasMany(Run, { foreignKey: 'projectId' });
+  Run.hasMany(RunCase, { foreignKey: 'runId' });
 
-  router.get("/:projectId", async (req, res) => {
+  router.get('/:projectId', async (req, res) => {
     const projectId = req.params.projectId;
 
     if (!projectId) {
-      return res.status(400).json({ error: "projectId is required" });
+      return res.status(400).json({ error: 'projectId is required' });
     }
 
     try {
@@ -36,12 +36,12 @@ module.exports = function (sequelize) {
         ],
       });
       if (!project) {
-        return res.status(404).send("Project not found");
+        return res.status(404).send('Project not found');
       }
       res.json(project);
     } catch (error) {
       console.error(error);
-      res.status(500).send("Internal Server Error");
+      res.status(500).send('Internal Server Error');
     }
   });
 

@@ -1,11 +1,11 @@
-import Config from "@/config/config";
+import Config from '@/config/config';
 const apiServer = Config.apiServer;
 
 async function fetchCreateStep(newStepNo: number, parentCaseId: number) {
   const fetchOptions = {
-    method: "POST",
+    method: 'POST',
     headers: {
-      "Content-Type": "application/json",
+      'Content-Type': 'application/json',
     },
   };
 
@@ -18,16 +18,16 @@ async function fetchCreateStep(newStepNo: number, parentCaseId: number) {
     }
     return await response.json();
   } catch (error: any) {
-    console.error("Error deleting project:", error);
+    console.error('Error deleting project:', error);
     throw error;
   }
 }
 
 async function fetchDeleteStep(stepId: number, parentCaseId: number) {
   const fetchOptions = {
-    method: "DELETE",
+    method: 'DELETE',
     headers: {
-      "Content-Type": "application/json",
+      'Content-Type': 'application/json',
     },
   };
 
@@ -39,12 +39,9 @@ async function fetchDeleteStep(stepId: number, parentCaseId: number) {
       throw new Error(`HTTP error! Status: ${response.status}`);
     }
   } catch (error: any) {
-    console.error("Error deleting project:", error);
+    console.error('Error deleting project:', error);
     throw error;
   }
 }
 
-export {
-  fetchCreateStep,
-  fetchDeleteStep,
-};
+export { fetchCreateStep, fetchDeleteStep };

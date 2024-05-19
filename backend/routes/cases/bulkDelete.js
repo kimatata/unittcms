@@ -1,15 +1,15 @@
-const express = require("express");
+const express = require('express');
 const router = express.Router();
-const defineCase = require("../../models/cases");
-const { DataTypes } = require("sequelize");
+const defineCase = require('../../models/cases');
+const { DataTypes } = require('sequelize');
 
 module.exports = function (sequelize) {
   const Case = defineCase(sequelize, DataTypes);
 
-  router.post("/bulkdelete", async (req, res) => {
+  router.post('/bulkdelete', async (req, res) => {
     const { caseIds } = req.body;
     if (!caseIds || !Array.isArray(caseIds)) {
-      return res.status(400).send("Invalid caseIds array");
+      return res.status(400).send('Invalid caseIds array');
     }
 
     try {
@@ -17,7 +17,7 @@ module.exports = function (sequelize) {
       res.status(204).send();
     } catch (error) {
       console.error(error);
-      res.status(500).send("Internal Server Error");
+      res.status(500).send('Internal Server Error');
     }
   });
 

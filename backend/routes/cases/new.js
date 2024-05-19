@@ -1,17 +1,9 @@
-const express = require("express");
+const express = require('express');
 const router = express.Router();
-const defineCase = require("../../models/cases");
-const { DataTypes } = require("sequelize");
+const defineCase = require('../../models/cases');
+const { DataTypes } = require('sequelize');
 
-const requiredFields = [
-  "title",
-  "state",
-  "priority",
-  "type",
-  "automationStatus",
-  "template",
-  "folderId",
-];
+const requiredFields = ['title', 'state', 'priority', 'type', 'automationStatus', 'template', 'folderId'];
 
 function isEmpty(value) {
   if (value === null || value === undefined) {
@@ -24,7 +16,7 @@ function isEmpty(value) {
 module.exports = function (sequelize) {
   const Case = defineCase(sequelize, DataTypes);
 
-  router.post("/", async (req, res) => {
+  router.post('/', async (req, res) => {
     try {
       if (
         requiredFields.some((field) => {
@@ -32,8 +24,7 @@ module.exports = function (sequelize) {
         })
       ) {
         return res.status(400).json({
-          error:
-            "Title, state, priority, type, automationStatus, template, and folderId are required",
+          error: 'Title, state, priority, type, automationStatus, template, and folderId are required',
         });
       }
 
@@ -65,7 +56,7 @@ module.exports = function (sequelize) {
 
       res.json(newCase);
     } catch (error) {
-      res.status(500).json({ error: "Internal server error" });
+      res.status(500).json({ error: 'Internal server error' });
     }
   });
 

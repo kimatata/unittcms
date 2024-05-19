@@ -1,18 +1,18 @@
-const express = require("express");
+const express = require('express');
 const router = express.Router();
-const path = require("path");
-const fs = require("fs");
-const multer = require("multer");
-const defineAttachment = require("../../models/attachments");
-const defineCaseAttachment = require("../../models/caseAttachments");
-const { DataTypes } = require("sequelize");
+const path = require('path');
+const fs = require('fs');
+const multer = require('multer');
+const defineAttachment = require('../../models/attachments');
+const defineCaseAttachment = require('../../models/caseAttachments');
+const { DataTypes } = require('sequelize');
 
 module.exports = function (sequelize) {
   const Attachment = defineAttachment(sequelize, DataTypes);
   const CaseAttachment = defineCaseAttachment(sequelize, DataTypes);
 
   // Create uploads folder if it does not exist
-  const uploadDir = path.join(__dirname, "../../public/uploads");
+  const uploadDir = path.join(__dirname, '../../public/uploads');
   if (!fs.existsSync(uploadDir)) {
     fs.mkdirSync(uploadDir, { recursive: true });
   }
@@ -46,16 +46,16 @@ module.exports = function (sequelize) {
 
   const upload = multer({ storage });
 
-  router.post("/", upload.array("files", 10), async (req, res) => {
+  router.post('/', upload.array('files', 10), async (req, res) => {
     const t = await sequelize.transaction();
     try {
       const caseId = req.query.parentCaseId;
       const files = req.files;
       if (files.length === 0) {
-        return res.status(400).json({ error: "No files uploaded" });
+        return res.status(400).json({ error: 'No files uploaded' });
       }
 
-      const host = req.get("host");
+      const host = req.get('host');
       const protocol = req.protocol;
       const attachmentsData = files.map((file) => ({
         title: file.originalname,
@@ -75,7 +75,7 @@ module.exports = function (sequelize) {
       res.json(newAttachments);
     } catch (error) {
       await t.rollback();
-      res.status(500).json({ error: "Internal server error" });
+      res.status(500).json({ error: 'Internal server error' });
     }
   });
 

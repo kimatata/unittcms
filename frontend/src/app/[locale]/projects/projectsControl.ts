@@ -1,4 +1,4 @@
-import Config from "@/config/config";
+import Config from '@/config/config';
 const apiServer = Config.apiServer;
 
 /**
@@ -9,9 +9,9 @@ async function fetchProjects() {
 
   try {
     const response = await fetch(url, {
-      method: "GET",
+      method: 'GET',
       headers: {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
       },
     });
 
@@ -22,7 +22,7 @@ async function fetchProjects() {
     const data = await response.json();
     return data;
   } catch (error: any) {
-    console.error("Error fetching data:", error.message);
+    console.error('Error fetching data:', error.message);
   }
 }
 
@@ -36,9 +36,9 @@ async function createProject(name: string, detail: string) {
   };
 
   const fetchOptions = {
-    method: "POST",
+    method: 'POST',
     headers: {
-      "Content-Type": "application/json",
+      'Content-Type': 'application/json',
     },
     body: JSON.stringify(newProjectData),
   };
@@ -53,7 +53,7 @@ async function createProject(name: string, detail: string) {
     const data = await response.json();
     return data;
   } catch (error: any) {
-    console.error("Error creating new project:", error);
+    console.error('Error creating new project:', error);
     throw error;
   }
 }
@@ -68,9 +68,9 @@ async function updateProject(projectId: number, name: string, detail: string) {
   };
 
   const fetchOptions = {
-    method: "PUT",
+    method: 'PUT',
     headers: {
-      "Content-Type": "application/json",
+      'Content-Type': 'application/json',
     },
     body: JSON.stringify(updatedProjectData),
   };
@@ -85,7 +85,7 @@ async function updateProject(projectId: number, name: string, detail: string) {
     const data = await response.json();
     return data;
   } catch (error: any) {
-    console.error("Error updating project:", error);
+    console.error('Error updating project:', error);
     throw error;
   }
 }
@@ -95,9 +95,9 @@ async function updateProject(projectId: number, name: string, detail: string) {
  */
 async function deleteProject(projectId: number) {
   const fetchOptions = {
-    method: "DELETE",
+    method: 'DELETE',
     headers: {
-      "Content-Type": "application/json",
+      'Content-Type': 'application/json',
     },
   };
 
@@ -109,7 +109,7 @@ async function deleteProject(projectId: number) {
       throw new Error(`HTTP error! Status: ${response.status}`);
     }
   } catch (error: any) {
-    console.error("Error deleting project:", error);
+    console.error('Error deleting project:', error);
     throw error;
   }
 }

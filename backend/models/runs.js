@@ -21,10 +21,10 @@ function defineRun(sequelize, DataTypes) {
       allowNull: false,
       references: {
         model: 'project',
-        key: 'id'
+        key: 'id',
       },
-      onDelete: 'CASCADE'
-    }
+      onDelete: 'CASCADE',
+    },
   });
 
   Run.associate = (models) => {

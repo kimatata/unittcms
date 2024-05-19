@@ -1,5 +1,5 @@
 function defineProject(sequelize, DataTypes) {
-  const Project = sequelize.define("Project", {
+  const Project = sequelize.define('Project', {
     name: {
       type: DataTypes.STRING,
       allowNull: false,
@@ -11,7 +11,7 @@ function defineProject(sequelize, DataTypes) {
   });
 
   Project.associate = (models) => {
-    Project.hasMany(models.Folder, { foreignKey: "projectId" });
+    Project.hasMany(models.Folder, { foreignKey: 'projectId' });
   };
 
   return Project;

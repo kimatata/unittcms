@@ -1,4 +1,4 @@
-import { CaseType } from "./case";
+import { CaseType } from './case';
 
 export type FolderType = {
   id: number;

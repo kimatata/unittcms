@@ -1,9 +1,9 @@
-"use strict";
+'use strict';
 
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.createTable("caseSteps", {
+    await queryInterface.createTable('caseSteps', {
       id: {
         type: Sequelize.INTEGER,
         primaryKey: true,
@@ -12,20 +12,20 @@ module.exports = {
       caseId: {
         type: Sequelize.INTEGER,
         references: {
-          model: "cases",
-          key: "id",
+          model: 'cases',
+          key: 'id',
         },
-        onUpdate: "CASCADE",
-        onDelete: "CASCADE",
+        onUpdate: 'CASCADE',
+        onDelete: 'CASCADE',
       },
       stepId: {
         type: Sequelize.INTEGER,
         references: {
-          model: "steps",
-          key: "id",
+          model: 'steps',
+          key: 'id',
         },
-        onUpdate: "CASCADE",
-        onDelete: "CASCADE",
+        onUpdate: 'CASCADE',
+        onDelete: 'CASCADE',
       },
       stepNo: {
         type: Sequelize.INTEGER,
@@ -41,12 +41,12 @@ module.exports = {
       },
     });
 
-    await queryInterface.addIndex("caseSteps", ["caseId", "stepId"], {
+    await queryInterface.addIndex('caseSteps', ['caseId', 'stepId'], {
       unique: true,
     });
   },
 
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.dropTable("caseSteps");
+    await queryInterface.dropTable('caseSteps');
   },
 };

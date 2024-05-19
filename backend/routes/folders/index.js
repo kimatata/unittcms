@@ -1,12 +1,12 @@
-const express = require("express");
+const express = require('express');
 const router = express.Router();
 const defineFolder = require('../../models/folders');
 const { DataTypes } = require('sequelize');
 
-module.exports = function(sequelize) {
-  const Folder = defineFolder(sequelize, DataTypes)
+module.exports = function (sequelize) {
+  const Folder = defineFolder(sequelize, DataTypes);
 
-  router.get("/", async (req, res) => {
+  router.get('/', async (req, res) => {
     const { projectId } = req.query;
 
     if (!projectId) {
@@ -16,13 +16,13 @@ module.exports = function(sequelize) {
     try {
       const folders = await Folder.findAll({
         where: {
-          projectId: projectId
-        }
+          projectId: projectId,
+        },
       });
       res.json(folders);
     } catch (error) {
       console.error(error);
-      res.status(500).send("Internal Server Error");
+      res.status(500).send('Internal Server Error');
     }
   });
 

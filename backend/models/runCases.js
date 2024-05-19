@@ -1,5 +1,5 @@
 function defineRunCase(sequelize, DataTypes) {
-  const RunCase = sequelize.define("RunCase", {
+  const RunCase = sequelize.define('RunCase', {
     runId: {
       type: DataTypes.INTEGER,
       allowNull: false,
@@ -16,12 +16,12 @@ function defineRunCase(sequelize, DataTypes) {
 
   RunCase.associate = (models) => {
     RunCase.belongsTo(models.Run, {
-      foreignKey: "runId",
-      onDelete: "CASCADE",
+      foreignKey: 'runId',
+      onDelete: 'CASCADE',
     });
     RunCase.belongsTo(models.Case, {
-      foreignKey: "caseId",
-      onDelete: "CASCADE",
+      foreignKey: 'caseId',
+      onDelete: 'CASCADE',
     });
   };
 

@@ -3,11 +3,13 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
+    "format": "prettier --write frontend/**/*.{js,ts,json} backend/**/*.{js,ts,json}",
     "test": "vitest",
     "coverage": "vitest run --coverage"
   },
   "devDependencies": {
     "@vitest/coverage-v8": "^1.6.0",
+    "prettier": "^3.2.5",
     "vitest": "^1.6.0"
   }
 }
