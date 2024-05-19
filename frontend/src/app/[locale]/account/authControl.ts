@@ -1,4 +1,5 @@
 import { UserType } from "@/types/user";
+import { avatars } from "@/config/selection";
 import Config from "@/config/config";
 const apiServer = Config.apiServer;
 
@@ -50,4 +51,9 @@ async function signIn(signInUser: UserType) {
   }
 }
 
-export { signUp, signIn };
+function getRandomAvatarPath() {
+  const randomIndex = Math.floor(Math.random() * avatars.length);
+  return avatars[randomIndex];
+}
+
+export { signUp, signIn, getRandomAvatarPath };

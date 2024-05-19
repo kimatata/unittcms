@@ -34,7 +34,10 @@ export default function RootLayout({
           fontSans.variable
         )}
       >
-        <Providers themeProps={{ attribute: "class", defaultTheme: "light" }}>
+        <Providers
+          themeProps={{ attribute: "class", defaultTheme: "light" }}
+          tokenProps={{ locale: locale }}
+        >
           <div className="relative flex flex-col min-h-screen light:bg-neutral-50 dark:bg-neutral-800">
             <Header locale={locale} />
             <main>{children}</main>

@@ -46,7 +46,8 @@
     "email_already_exist": "Already registered email",
     "email_not_exist": "Email address not found",
     "signup_error": "Sign up failed",
-    "signin_error": "Sign in failed"
+    "signin_error": "Sign in failed",
+    "your_projects": "Your Projects"
   },
   "Projects": {
     "projectList": "Project List",

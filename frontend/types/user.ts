@@ -8,6 +8,7 @@ export type UserType = {
 } | null;
 
 export type TokenProps = {
+  locale: string;
   children?: React.ReactNode;
 };
 

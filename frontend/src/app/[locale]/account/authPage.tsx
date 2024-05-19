@@ -6,7 +6,7 @@ import { Link } from "@/src/navigation";
 import { ChevronRight, Eye, EyeOff } from "lucide-react";
 import { UserType, AuthMessages } from "@/types/user";
 import { roles } from "@/config/selection";
-import { signUp, signIn } from "./authControl";
+import { signUp, signIn, getRandomAvatarPath } from "./authControl";
 import { isValidEmail, isValidPassword } from "./validate";
 import { TokenContext } from "../TokenProvider";
 import { useRouter } from "@/src/navigation";
@@ -58,6 +58,8 @@ export default function AuthPage({ isSignup, messages, locale }: Props) {
       }
     }
 
+    const initialavatarPath = getRandomAvatarPath();
+    user.avatarPath = initialavatarPath;
     await submit();
   };
 
@@ -85,7 +87,7 @@ export default function AuthPage({ isSignup, messages, locale }: Props) {
   };
 
   return (
-    <Card className="border-none bg-background/60 dark:bg-default-100/50 w-[480px]">
+    <Card className="w-[480px] mt-16">
       <CardHeader className="px-4 pt-4 pb-0 flex justify-between">
         <h4 className="font-bold text-large">{messages.title}</h4>
         <Link

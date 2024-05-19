@@ -12,16 +12,16 @@ import { TokenProps } from "@/types/user";
 export interface ProvidersProps {
   children: React.ReactNode;
   themeProps?: ThemeProviderProps;
-  userProps?: TokenProps;
+  tokenProps?: TokenProps;
 }
 
-export function Providers({ children, themeProps, userProps }: ProvidersProps) {
+export function Providers({ children, themeProps, tokenProps }: ProvidersProps) {
   const router = useRouter();
 
   return (
     <NextUIProvider navigate={router.push}>
       <NextThemesProvider {...themeProps}>
-        <TokenProvider {...userProps}>{children}</TokenProvider>
+        <TokenProvider {...tokenProps}>{children}</TokenProvider>
       </NextThemesProvider>
     </NextUIProvider>
   );
