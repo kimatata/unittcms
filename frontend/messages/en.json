@@ -22,7 +22,11 @@
     "title": "Open Source Test Case Management Tool",
     "description": "Integrate and manage all your software testing",
     "docs": "Docs",
-    "projects": "Projects"
+    "projects": "Projects",
+    "account": "Account",
+    "signup": "Sign up",
+    "signin": "Sign in",
+    "signout": "Sign out"
   },
   "Auth": {
     "account": "Account",

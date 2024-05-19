@@ -32,7 +32,7 @@ module.exports = function (sequelize) {
         expiresIn: "1h",
       });
 
-      user.password = undefined;;
+      user.password = undefined;
       res.status(200).json({ access_token: accessToken, user });
     } catch (error) {
       console.error(error);

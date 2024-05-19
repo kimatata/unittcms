@@ -15,7 +15,7 @@ const locales = [
   { code: "ja", name: "日本語" },
 ];
 
-export default function LangSwitch(params: { locale: string }) {
+export default function DropdownLanguage(params: { locale: string }) {
   const router = useRouter();
   const pathname = usePathname();
 
@@ -36,7 +36,7 @@ export default function LangSwitch(params: { locale: string }) {
       <DropdownTrigger>
         <Button
           size="sm"
-          variant="faded"
+          variant="light"
           startContent={<Globe size={16} />}
           endContent={<ChevronDown size={16} />}
         >

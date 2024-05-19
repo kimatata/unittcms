@@ -12,11 +12,18 @@ export type TokenProps = {
 };
 
 export type TokenType = {
+  access_token: string;
+  user: UserType;
+};
+
+export type TokenContextType = {
   token: {
     access_token: string;
     user: UserType;
   };
-  setToken: () => {};
+  setToken: (token: TokenType) => {};
+  storeTokenToLocalStorage: (token: TokenType) => {};
+  removeTokenFromLocalStorage: () => {};
 };
 
 export type AuthMessages = {
@@ -35,4 +42,11 @@ export type AuthMessages = {
   emailNotExist: string;
   signupError: string;
   signinError: string;
+};
+
+export type AccountDropDownMessages = {
+  account: string;
+  signUp: string;
+  signIn: string;
+  signOut: string;
 };

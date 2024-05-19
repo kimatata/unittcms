@@ -12,14 +12,20 @@ import {
 import { MoveUpRight } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { Link } from "@/src/navigation";
-import LangSwitch from "./LangSwitch";
 import { ThemeSwitch } from "@/components/theme-switch";
 import { GithubIcon } from "@/components/icons";
 import Image from "next/image";
 import DropdownAccount from "./DropdownAccount";
+import DropdownLanguage from "./DropdownLanguage";
 
 export default function Header(params: { locale: string }) {
   const t = useTranslations("Header");
+  const messages = {
+    account: t("account"),
+    signUp: t("signup"),
+    signIn: t("signin"),
+    signOut: t("signout"),
+  };
 
   // Links shown Header or slider
   const commonLinks = [
@@ -102,13 +108,21 @@ export default function Header(params: { locale: string }) {
           <GithubIcon className="text-default-500" />
         </NextUiLink>
         <ThemeSwitch />
-        <LangSwitch locale={params.locale} />
-        <DropdownAccount locale={params.locale} />
+        <div className="hidden md:block">
+          <DropdownAccount messages={messages} locale={params.locale} />
+          <DropdownLanguage locale={params.locale} />
+        </div>
         <NavbarMenuToggle className="md:hidden" />
       </NavbarContent>
 
       <NavbarMenu>
         <div className="mx-4 mt-2 flex flex-col gap-2">
+          <NavbarMenuItem>
+            <DropdownAccount messages={messages} locale={params.locale} />
+          </NavbarMenuItem>
+          <NavbarMenuItem>
+            <DropdownLanguage locale={params.locale} />
+          </NavbarMenuItem>
           {commonLinks.map((link) =>
             link.isExternal ? (
               <NavbarMenuItem key={link.uid}>

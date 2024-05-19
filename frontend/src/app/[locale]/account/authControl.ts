@@ -18,9 +18,8 @@ async function signUp(newUser: UserType) {
     if (!response.ok) {
       throw new Error(`HTTP error! Status: ${response.status}`);
     }
-    const accessToken = await response.json();
-    storeToken(accessToken);
-    return accessToken;
+    const token = await response.json();
+    return token;
   } catch (error: any) {
     console.error("Error sign up:", error);
     throw error;
@@ -43,21 +42,12 @@ async function signIn(signInUser: UserType) {
     if (!response.ok) {
       throw new Error(`HTTP error! Status: ${response.status}`);
     }
-    const accessToken = await response.json();
-    storeToken(accessToken);
-    return accessToken;
+    const token = await response.json();
+    return token;
   } catch (error: any) {
     console.error("Error sign in:", error);
     throw error;
   }
 }
 
-function storeToken(accessToken: Object) {
-  localStorage.setItem("testplat-auth-token", JSON.stringify(accessToken));
-}
-
-function signOut() {
-  localStorage.removeItem("testplat-auth-token");
-}
-
-export { signUp, signIn, signOut };
+export { signUp, signIn };

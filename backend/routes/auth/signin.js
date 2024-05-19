@@ -24,10 +24,10 @@ module.exports = function (sequelize) {
       if (!passwordMatch) {
         return res.status(401).json({ error: "Authentication failed" });
       }
-      const token = jwt.sign({ userId: user.id }, "your-secret-key", {
+      const accessToken = jwt.sign({ userId: user.id }, "your-secret-key", {
         expiresIn: "1h",
       });
-      res.status(200).json({ token });
+      res.status(200).json({ access_token: accessToken, user });
     } catch (error) {
       console.error(error);
       res.status(500).send("Sign up failed");

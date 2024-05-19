@@ -6,56 +6,103 @@ import {
   DropdownMenu,
   DropdownItem,
 } from "@nextui-org/react";
-import { User, ChevronDown } from "lucide-react";
+import {
+  User,
+  ChevronDown,
+  PenTool,
+  ArrowRightFromLine,
+  ArrowRightToLine,
+} from "lucide-react";
 import { useContext } from "react";
 import { TokenContext } from "./TokenProvider";
-import { Link } from "@/src/navigation";
+import { useRouter } from "@/src/navigation";
+import { AccountDropDownMessages } from "@/types/user";
 
 type Props = {
+  messages: AccountDropDownMessages;
   locale: string;
 };
 
-const signinItems = [
-  { uid: "account", title: "Account", href: "/account" },
-  { uid: "signout", title: "Sign out", href: "/account/signout" },
-];
-
-const signoutItems = [
-  { uid: "signin", title: "Sign in", href: "/account/signin" },
-];
-
-export default function LangSwitch({ locale }: Props) {
+export default function DropdownAccount({ messages, locale }: Props) {
+  const router = useRouter();
   const context = useContext(TokenContext);
+
+  const signOut = () => {
+    context.setToken(null);
+    context.removeTokenFromLocalStorage();
+    router.push(`/`, { locale: locale });
+  };
+
+  const signinItems = [
+    {
+      uid: "account",
+      title: messages.account,
+      icon: <User size={16} />,
+      onPress: () => {
+        router.push("/account", { locale: locale });
+      },
+    },
+    {
+      uid: "signout",
+      title: messages.signOut,
+      icon: <ArrowRightFromLine size={16} />,
+      onPress: signOut,
+    },
+  ];
+
+  const signoutItems = [
+    {
+      uid: "signin",
+      title: messages.signIn,
+      icon: <ArrowRightToLine size={16} />,
+      onPress: () => {
+        router.push("/account/signin", { locale: locale });
+      },
+    },
+    {
+      uid: "signup",
+      title: messages.signUp,
+      icon: <PenTool size={16} />,
+      onPress: () => {
+        router.push("/account/signup", { locale: locale });
+      },
+    },
+  ];
+
   return (
     <Dropdown>
       <DropdownTrigger>
         <Button
           size="sm"
-          variant="faded"
+          variant="light"
           startContent={<User size={16} />}
           endContent={<ChevronDown size={16} />}
         >
-          {context.token ? context.token.user.username : "SignIn"}
+          {context.token && context.token.user
+            ? context.token.user.username
+            : messages.signIn}
         </Button>
       </DropdownTrigger>
-      {context.token ? (
+      {context.token && context.token.user ? (
         <DropdownMenu aria-label="account actions when sign in">
           {signinItems.map((entry) => (
-            <DropdownItem key={entry.uid}>
-              <Link href={entry.href} locale={locale}>
-                {entry.title}
-              </Link>
-            </DropdownItem>
+            <DropdownItem
+              key={entry.uid}
+              title={entry.title}
+              startContent={entry.icon}
+              onPress={entry.onPress}
+            />
           ))}
         </DropdownMenu>
       ) : (
         <DropdownMenu aria-label="account actions when sign out">
           {signoutItems.map((entry) => (
-            <DropdownItem key={entry.uid}>
-              <Link href={entry.href} locale={locale}>
-                {entry.title}
-              </Link>
-            </DropdownItem>
+            <DropdownItem
+              key={entry.uid}
+              title={entry.title}
+              startContent={entry.icon}
+              onPress={entry.onPress}
+            />
           ))}
         </DropdownMenu>
       )}

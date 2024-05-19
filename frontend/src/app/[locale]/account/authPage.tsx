@@ -9,6 +9,8 @@ import { roles } from "@/config/selection";
 import { signUp, signIn } from "./authControl";
 import { isValidEmail, isValidPassword } from "./validate";
 import { TokenContext } from "../TokenProvider";
+import { useRouter } from "@/src/navigation";
+
 type Props = {
   isSignup: Boolean;
   messages: AuthMessages;
@@ -16,6 +18,7 @@ type Props = {
 };
 
 export default function AuthPage({ isSignup, messages, locale }: Props) {
+  const router = useRouter();
   const context = useContext(TokenContext);
   const [user, setUser] = useState<UserType>({
     id: null,
@@ -59,30 +62,36 @@ export default function AuthPage({ isSignup, messages, locale }: Props) {
   };
 
   const submit = async () => {
+    let token;
     if (isSignup) {
       try {
-        const token = await signUp(user);
-        context.setToken(token);
-        // Move to signin page
+        token = await signUp(user);
       } catch {
         setErrorMessage(messages.signupError);
+        return;
       }
     } else {
       try {
-        const token = await signIn(user);
-        context.setToken(token);
-        // Move to signin page
+        token = await signIn(user);
       } catch {
         setErrorMessage(messages.signinError);
+        return;
       }
     }
+
+    context.setToken(token);
+    context.storeTokenToLocalStorage(token);
+    router.push("/account", { locale: locale });
   };
 
   return (
     <Card className="border-none bg-background/60 dark:bg-default-100/50 w-[480px]">
       <CardHeader className="px-4 pt-4 pb-0 flex justify-between">
         <h4 className="font-bold text-large">{messages.title}</h4>
-        <Link href={isSignup ? "/auth/signin" : "/auth/signup"} locale={locale}>
+        <Link
+          href={isSignup ? "/account/signin" : "/account/signup"}
+          locale={locale}
+        >
           <Button
             color="primary"
             variant="light"
