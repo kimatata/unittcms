@@ -55,20 +55,4 @@ const testRunCaseStatus = [
   { uid: 'skipped', color: 'primary', chartColor: '#805aab' },
 ];
 
-const avatars = [
-  '/avatar/bear.png',
-  '/avatar/cat.png',
-  '/avatar/cow.png',
-  '/avatar/dog.png',
-  '/avatar/giraffe.png',
-  '/avatar/koala.png',
-  '/avatar/lion.png',
-  '/avatar/owl.png',
-  '/avatar/panda.png',
-  '/avatar/penguin.png',
-  '/avatar/rhinoceros.png',
-  '/avatar/shark.png',
-  '/avatar/sloth.png',
-];
-
-export { roles, priorities, testTypes, automationStatus, templates, testRunStatus, testRunCaseStatus, avatars };
+export { roles, priorities, testTypes, automationStatus, templates, testRunStatus, testRunCaseStatus };

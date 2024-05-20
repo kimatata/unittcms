@@ -57,8 +57,6 @@ export default function AuthPage({ isSignup, messages, locale }: Props) {
       }
     }
 
-    const initialavatarPath = getRandomAvatarPath();
-    user.avatarPath = initialavatarPath;
     await submit();
   };
 

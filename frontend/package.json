@@ -17,6 +17,7 @@
     "@types/react-dom": "18.2.7",
     "apexcharts": "^3.49.0",
     "autoprefixer": "10.4.16",
+    "boring-avatars": "^1.10.2",
     "clsx": "^2.0.0",
     "dayjs": "^1.11.10",
     "eslint": "8.48.0",

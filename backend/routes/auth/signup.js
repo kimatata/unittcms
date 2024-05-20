@@ -11,7 +11,7 @@ module.exports = function (sequelize) {
 
   router.post('/signup', async (req, res) => {
     try {
-      const { email, password, username, avatarPath } = req.body;
+      const { email, password, username } = req.body;
       const hashedPassword = await bcrypt.hash(password, 10);
 
       const userCount = await User.count();
@@ -25,7 +25,6 @@ module.exports = function (sequelize) {
         password: hashedPassword,
         username: username,
         role: initialRole,
-        avatarPath: avatarPath,
       });
 
       const accessToken = jwt.sign({ userId: user.id }, 'your-secret-key', {
