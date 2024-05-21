@@ -9,9 +9,10 @@ import { AccountDropDownMessages } from '@/types/user';
 type Props = {
   messages: AccountDropDownMessages;
   locale: string;
+  onItemPress: () => void;
 };
 
-export default function DropdownAccount({ messages, locale }: Props) {
+export default function DropdownAccount({ messages, locale, onItemPress }: Props) {
   const router = useRouter();
   const context = useContext(TokenContext);
 
@@ -28,13 +29,17 @@ export default function DropdownAccount({ messages, locale }: Props) {
       icon: <User size={16} />,
       onPress: () => {
         router.push('/account', { locale: locale });
+        onItemPress();
       },
     },
     {
       uid: 'signout',
       title: messages.signOut,
       icon: <ArrowRightFromLine size={16} />,
-      onPress: signOut,
+      onPress: () => {
+        signOut();
+        onItemPress();
+      },
     },
   ];
 
@@ -45,6 +50,7 @@ export default function DropdownAccount({ messages, locale }: Props) {
       icon: <ArrowRightToLine size={16} />,
       onPress: () => {
         router.push('/account/signin', { locale: locale });
+        onItemPress();
       },
     },
     {
@@ -53,6 +59,7 @@ export default function DropdownAccount({ messages, locale }: Props) {
       icon: <PenTool size={16} />,
       onPress: () => {
         router.push('/account/signup', { locale: locale });
+        onItemPress();
       },
     },
   ];

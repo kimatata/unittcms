@@ -1,5 +1,4 @@
 import { UserType } from '@/types/user';
-import { avatars } from '@/config/selection';
 import Config from '@/config/config';
 const apiServer = Config.apiServer;
 
