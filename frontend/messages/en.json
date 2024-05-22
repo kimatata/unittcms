@@ -62,11 +62,15 @@
     "actions": "Actions",
     "project_name": "Project Name",
     "project_detail": "Project Detail",
+    "public": "Public",
+    "if_you_make_public": "If you make project public, everyone who has access to this site will be able to view it.",
     "close": "Close",
     "create": "Create",
     "update": "Update",
     "please_enter": "Please enter project name",
-    "no_projects_found": "No projects found"
+    "no_projects_found": "No projects found",
+    "you_need_signed_in": "You need signed in",
+    "sign_in": "Sign in"
   },
   "Project": {
     "home": "Home",

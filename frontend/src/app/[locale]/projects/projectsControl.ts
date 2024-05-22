@@ -29,10 +29,12 @@ async function fetchProjects() {
 /**
  * Create project
  */
-async function createProject(name: string, detail: string) {
+async function createProject(name: string, detail: string, isPublic: boolean, userId: number) {
   const newProjectData = {
-    name: name,
-    detail: detail,
+    name,
+    detail,
+    isPublic,
+    userId,
   };
 
   const fetchOptions = {
@@ -61,10 +63,11 @@ async function createProject(name: string, detail: string) {
 /**
  * Update project
  */
-async function updateProject(projectId: number, name: string, detail: string) {
+async function updateProject(projectId: number, name: string, detail: string, isPublic: boolean) {
   const updatedProjectData = {
-    name: name,
-    detail: detail,
+    name,
+    detail,
+    isPublic,
   };
 
   const fetchOptions = {

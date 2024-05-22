@@ -16,11 +16,15 @@ export default function Page(params: { locale: string }) {
     actions: t('actions'),
     projectName: t('project_name'),
     projectDetail: t('project_detail'),
+    public: t('public'),
+    ifYouMakePublic: t('if_you_make_public'),
     close: t('close'),
     create: t('create'),
     update: t('update'),
     pleaseEnter: t('please_enter'),
     noProjectsFound: t('no_projects_found'),
+    needSignedIn: t('you_need_signed_in'),
+    signIn: t('sign_in'),
   };
   return (
     <>

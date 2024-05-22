@@ -17,6 +17,20 @@ module.exports = {
         type: Sequelize.STRING,
         allowNull: true,
       },
+      isPublic: {
+        type: Sequelize.BOOLEAN,
+        allowNull: false,
+      },
+      userId: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+        references: {
+          model: 'users',
+          key: 'id',
+          onDelete: 'CASCADE',
+          onUpdate: 'CASCADE',
+        },
+      },
       createdAt: {
         type: Sequelize.DATE,
         allowNull: false,

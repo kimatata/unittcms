@@ -5,6 +5,8 @@ export type ProjectType = {
   id: number;
   name: string;
   detail: string;
+  isPublic: string;
+  userId: number;
   createdAt: string;
   updatedAt: string;
   Folders: FolderType[]; // additional property
@@ -23,11 +25,15 @@ export type ProjectsMessages = {
   actions: string;
   projectName: string;
   projectDetail: string;
+  public: string;
+  ifYouMakePublic: string;
   close: string;
   create: string;
   update: string;
   pleaseEnter: string;
   noProjectsFound: string;
+  needSignedIn: string;
+  signIn: string;
 };
 
 export type ProjectMessages = {

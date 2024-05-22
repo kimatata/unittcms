@@ -1,14 +1,24 @@
 'use client';
 import React from 'react';
 import { useState, useEffect } from 'react';
-import { Button, Input, Textarea, Modal, ModalContent, ModalHeader, ModalBody, ModalFooter } from '@nextui-org/react';
+import {
+  Button,
+  Input,
+  Textarea,
+  Checkbox,
+  Modal,
+  ModalContent,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+} from '@nextui-org/react';
 import { ProjectType, ProjectsMessages } from '@/types/project';
 
 type Props = {
   isOpen: boolean;
   editingProject: ProjectType;
   onCancel: () => void;
-  onSubmit: (name: string, detail: string) => void;
+  onSubmit: (name: string, detail: string, isPublic: boolean) => void;
   messages: ProjectsMessages;
 };
 
@@ -25,6 +35,8 @@ export default function ProjectDialog({ isOpen, editingProject, onCancel, onSubm
     errorMessage: '',
   });
 
+  const [isProjectPublic, setIsProjectPublic] = useState(editingProject ? editingProject.isPublic : true);
+
   useEffect(() => {
     if (editingProject) {
       setProjectName({
@@ -36,6 +48,8 @@ export default function ProjectDialog({ isOpen, editingProject, onCancel, onSubm
         ...projectDetail,
         text: editingProject.detail ? editingProject.detail : '',
       });
+
+      setIsProjectPublic(editingProject.isPublic);
     } else {
       setProjectName({
         ...projectName,
@@ -46,6 +60,8 @@ export default function ProjectDialog({ isOpen, editingProject, onCancel, onSubm
         ...projectDetail,
         text: '',
       });
+
+      setIsProjectPublic(true);
     }
   }, [editingProject]);
 
@@ -73,7 +89,7 @@ export default function ProjectDialog({ isOpen, editingProject, onCancel, onSubm
       return;
     }
 
-    onSubmit(projectName.text, projectDetail.text);
+    onSubmit(projectName.text, projectDetail.text, isProjectPublic);
     clear();
   };
 
@@ -112,6 +128,10 @@ export default function ProjectDialog({ isOpen, editingProject, onCancel, onSubm
               });
             }}
           />
+          <Checkbox isSelected={isProjectPublic} onValueChange={setIsProjectPublic}>
+            {messages.public}
+          </Checkbox>
+          <div className="text-small text-default-500">{messages.ifYouMakePublic}</div>
         </ModalBody>
         <ModalFooter>
           <Button variant="light" onPress={onCancel}>

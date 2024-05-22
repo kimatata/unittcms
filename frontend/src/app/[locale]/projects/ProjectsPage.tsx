@@ -1,10 +1,12 @@
 'use client';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useContext } from 'react';
 import { Button } from '@nextui-org/react';
 import { Plus } from 'lucide-react';
+import { TokenContext } from '@/src/app/[locale]/TokenProvider';
 import { ProjectType, ProjectsMessages } from '@/types/project';
 import ProjectsTable from './ProjectsTable';
 import ProjectDialog from './ProjectDialog';
+import NeedSignedInDialog from './NeedSignedInDialog';
 import { fetchProjects, createProject, updateProject, deleteProject } from './projectsControl';
 
 export type Props = {
@@ -13,6 +15,7 @@ export type Props = {
 };
 
 export default function ProjectsPage({ messages, locale }: Props) {
+  const context = useContext(TokenContext);
   const [projects, setProjects] = useState([]);
 
   useEffect(() => {
@@ -29,9 +32,15 @@ export default function ProjectsPage({ messages, locale }: Props) {
   }, []);
 
   // dialog
+  const [isNeedSignedInDialogOpen, setIsNeedSignedInDialogOpen] = useState(false);
   const [isProjectDialogOpen, setIsProjectDialogOpen] = useState(false);
   const [editingProject, setEditingProject] = useState<ProjectType | null>(null);
   const openDialogForCreate = () => {
+    if (!context.token || !context.token.user) {
+      setIsNeedSignedInDialogOpen(true);
+      return;
+    }
+
     setIsProjectDialogOpen(true);
     setEditingProject(null);
   };
@@ -41,13 +50,13 @@ export default function ProjectsPage({ messages, locale }: Props) {
     setEditingProject(null);
   };
 
-  const onSubmit = async (name: string, detail: string) => {
+  const onSubmit = async (name: string, detail: string, isPublic: boolean) => {
     if (editingProject) {
-      const updatedProject = await updateProject(editingProject.id, name, detail);
+      const updatedProject = await updateProject(editingProject.id, name, detail, isPublic);
       const updatedProjects = projects.map((project) => (project.id === updatedProject.id ? updatedProject : project));
       setProjects(updatedProjects);
     } else {
-      const newProject = await createProject(name, detail);
+      const newProject = await createProject(name, detail, isPublic, context.token.user.id);
       setProjects([...projects, newProject]);
     }
     closeDialog();
@@ -92,6 +101,13 @@ export default function ProjectsPage({ messages, locale }: Props) {
         onCancel={closeDialog}
         onSubmit={onSubmit}
         messages={messages}
+      />
+
+      <NeedSignedInDialog
+        isOpen={isNeedSignedInDialogOpen}
+        onCancel={() => setIsNeedSignedInDialogOpen(false)}
+        messages={messages}
+        locale={locale}
       />
     </div>
   );

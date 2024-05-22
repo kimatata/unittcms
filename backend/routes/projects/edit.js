@@ -8,7 +8,7 @@ module.exports = function (sequelize) {
 
   router.put('/:projectId', async (req, res) => {
     const projectId = req.params.projectId;
-    const { name, detail } = req.body;
+    const { name, detail, isPublic } = req.body;
     try {
       const project = await Project.findByPk(projectId);
       if (!project) {
@@ -17,6 +17,7 @@ module.exports = function (sequelize) {
       await project.update({
         name,
         detail,
+        isPublic,
       });
       res.json(project);
     } catch (error) {

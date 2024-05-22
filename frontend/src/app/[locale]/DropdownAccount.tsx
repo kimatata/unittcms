@@ -5,6 +5,7 @@ import { useContext } from 'react';
 import { TokenContext } from './TokenProvider';
 import { useRouter } from '@/src/navigation';
 import { AccountDropDownMessages } from '@/types/user';
+import Avatar from 'boring-avatars';
 
 type Props = {
   messages: AccountDropDownMessages;
@@ -22,11 +23,23 @@ export default function DropdownAccount({ messages, locale, onItemPress }: Props
     router.push(`/`, { locale: locale });
   };
 
+  let userAvatar =
+    context.token && context.token.user ? (
+      <Avatar
+        size={16}
+        name={context.token.user.username}
+        variant="beam"
+        colors={['#0A0310', '#49007E', '#FF005B', '#FF7D10', '#FFB238']}
+      />
+    ) : (
+      <User size={16} />
+    );
+
   const signinItems = [
     {
       uid: 'account',
       title: messages.account,
-      icon: <User size={16} />,
+      icon: userAvatar,
       onPress: () => {
         router.push('/account', { locale: locale });
         onItemPress();
@@ -67,7 +80,7 @@ export default function DropdownAccount({ messages, locale, onItemPress }: Props
   return (
     <Dropdown>
       <DropdownTrigger>
-        <Button size="sm" variant="light" startContent={<User size={16} />} endContent={<ChevronDown size={16} />}>
+        <Button size="sm" variant="light" startContent={userAvatar} endContent={<ChevronDown size={16} />}>
           {context.token && context.token.user ? context.token.user.username : messages.signIn}
         </Button>
       </DropdownTrigger>

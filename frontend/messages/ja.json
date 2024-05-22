@@ -61,11 +61,15 @@
     "actions": "アクション",
     "project_name": "プロジェクト名",
     "project_detail": "プロジェクト詳細",
+    "public": "パブリック",
+    "if_you_make_public": "プロジェクトをパブリックにすると、このサイトにアクセスできるすべてのユーザーがプロジェクトを見ることができます。",
     "close": "閉じる",
     "create": "作成",
     "update": "更新",
     "please_enter": "プロジェクト名を入力してください",
-    "no_projects_found": "プロジェクトがありません"
+    "no_projects_found": "プロジェクトがありません",
+    "you_need_signed_in": "サインインが必要です",
+    "sign_in": "サインイン"
   },
   "Project": {
     "home": "ホーム",

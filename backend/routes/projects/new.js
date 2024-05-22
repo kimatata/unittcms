@@ -8,10 +8,12 @@ module.exports = function (sequelize) {
 
   router.post('/', async (req, res) => {
     try {
-      const { name, detail } = req.body;
+      const { name, detail, isPublic, userId } = req.body;
       const newProject = await Project.create({
         name,
         detail,
+        isPublic,
+        userId,
       });
       res.json(newProject);
     } catch (error) {

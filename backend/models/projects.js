@@ -8,6 +8,19 @@ function defineProject(sequelize, DataTypes) {
       type: DataTypes.STRING,
       allowNull: true,
     },
+    isPublic: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+    },
+    userId: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      references: {
+        model: 'user',
+        key: 'id',
+      },
+      onDelete: 'CASCADE',
+    },
   });
 
   Project.associate = (models) => {

@@ -22,9 +22,9 @@ function defineUser(sequelize, DataTypes) {
     },
   });
 
-  // User.associate = (models) => {
-  //   User.hasMany(models.Project, { foreignKey: "userId" });
-  // };
+  User.associate = (models) => {
+    User.hasMany(models.Project, { foreignKey: 'userId' });
+  };
 
   return User;
 }

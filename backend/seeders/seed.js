@@ -1,20 +1,39 @@
 'use strict';
-const path = require('path');
 const fs = require('fs');
+const bcrypt = require('bcrypt');
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
+    const hashedPassword = await bcrypt.hash('password', 10);
+
+    // Add projects table records
+    await queryInterface.bulkInsert('Users', [
+      {
+        email: 'admin@testplat.com',
+        password: hashedPassword,
+        username: 'Admin',
+        role: 1,
+        avatarPath: null,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+    ]);
+
     // Add projects table records
     await queryInterface.bulkInsert('Projects', [
       {
         name: 'TestPlat Test',
         detail: "Test Plat's Manual test",
+        userId: 1,
+        isPublic: true,
         createdAt: new Date(),
         updatedAt: new Date(),
       },
       {
         name: 'Iron Muscle App(筋トレアプリ)',
         detail: 'リリース前総合評価',
+        userId: 1,
+        isPublic: true,
         createdAt: new Date(),
         updatedAt: new Date(),
       },

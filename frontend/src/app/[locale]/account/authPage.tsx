@@ -6,7 +6,7 @@ import { Link } from '@/src/navigation';
 import { ChevronRight, Eye, EyeOff } from 'lucide-react';
 import { UserType, AuthMessages } from '@/types/user';
 import { roles } from '@/config/selection';
-import { signUp, signIn, getRandomAvatarPath } from './authControl';
+import { signUp, signIn } from './authControl';
 import { isValidEmail, isValidPassword } from './validate';
 import { TokenContext } from '../TokenProvider';
 import { useRouter } from '@/src/navigation';
