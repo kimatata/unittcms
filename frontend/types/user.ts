@@ -22,6 +22,7 @@ export type TokenContextType = {
     access_token: string;
     user: UserType;
   };
+  isSignedIn: () => Boolean;
   setToken: (token: TokenType) => {};
   storeTokenToLocalStorage: (token: TokenType) => {};
   removeTokenFromLocalStorage: () => {};

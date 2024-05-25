@@ -2,12 +2,13 @@ const express = require('express');
 const router = express.Router();
 const defineUser = require('../../models/users');
 const { DataTypes } = require('sequelize');
-const roles = require('./roles');
+const { roles, defaultDangerKey } = require('./authSettings');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
 module.exports = function (sequelize) {
   const User = defineUser(sequelize, DataTypes);
+  const secretKey = process.env.SECRET_KEY || defaultDangerKey;
 
   router.post('/signup', async (req, res) => {
     try {
@@ -27,7 +28,7 @@ module.exports = function (sequelize) {
         role: initialRole,
       });
 
-      const accessToken = jwt.sign({ userId: user.id }, 'your-secret-key', {
+      const accessToken = jwt.sign({ userId: user.id }, secretKey, {
         expiresIn: '1h',
       });
 

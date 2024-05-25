@@ -1,6 +1,6 @@
 'use client';
 import { createContext, useState, useEffect } from 'react';
-import { TokenType } from '@/types/user';
+import { TokenContextType, TokenType } from '@/types/user';
 import { TokenProps } from '@/types/user';
 import { useRouter, usePathname } from '@/src/navigation';
 
@@ -15,8 +15,17 @@ function removeTokenFromLocalStorage() {
   localStorage.removeItem(LOCAL_STORAGE_KEY);
 }
 
-const defaultTokenContext = {};
-const TokenContext = createContext(defaultTokenContext);
+const defaultContext = {
+  token: {
+    access_token: '',
+    user: null,
+  },
+  isSignedIn: () => false,
+  setToken: (token: TokenType) => {},
+  storeTokenToLocalStorage,
+  removeTokenFromLocalStorage,
+};
+const TokenContext = createContext<TokenContextType>(defaultContext);
 
 const TokenProvider = ({ locale, children }: TokenProps) => {
   const router = useRouter();
@@ -26,8 +35,14 @@ const TokenProvider = ({ locale, children }: TokenProps) => {
     access_token: '',
     user: null,
   });
+
+  const isSignedIn = () => {
+    return token && token.user && token.user.username ? true : false;
+  };
+
   const tokenContext = {
     token,
+    isSignedIn,
     setToken,
     storeTokenToLocalStorage,
     removeTokenFromLocalStorage,

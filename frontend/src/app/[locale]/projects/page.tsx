@@ -10,6 +10,7 @@ export default function Page(params: { locale: string }) {
     editProject: t('edit_project'),
     deleteProject: t('delete_project'),
     id: t('id'),
+    publicity: t('publicity'),
     name: t('name'),
     detail: t('detail'),
     lastUpdate: t('last_update'),

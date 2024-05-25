@@ -55,6 +55,7 @@
     "edit_project": "プロジェクトの編集",
     "delete_project": "プロジェクトの削除",
     "id": "ID",
+    "publicity": "公開",
     "name": "名前",
     "detail": "詳細",
     "last_update": "最終更新",

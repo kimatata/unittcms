@@ -7,6 +7,7 @@ import {
   TableRow,
   TableCell,
   Button,
+  Chip,
   DropdownTrigger,
   Dropdown,
   DropdownMenu,
@@ -29,8 +30,8 @@ type Props = {
 export default function ProjectsTable({ projects, onEditProject, onDeleteProject, messages, locale }: Props) {
   const headerColumns = [
     { name: messages.id, uid: 'id', sortable: true },
+    { name: messages.publicity, uid: 'isPublic', sortable: true },
     { name: messages.name, uid: 'name', sortable: true },
-    { name: messages.detail, uid: 'detail', sortable: true },
     { name: messages.lastUpdate, uid: 'updatedAt', sortable: true },
     { name: messages.actions, uid: 'actions' },
   ];
@@ -60,18 +61,19 @@ export default function ProjectsTable({ projects, onEditProject, onDeleteProject
     switch (columnKey) {
       case 'id':
         return <span>{cellValue}</span>;
+      case 'isPublic':
+        return cellValue ? <Chip size="sm">{messages.public}</Chip> : <></>;
       case 'name':
+        const maxLength = 30;
+        const truncatedDetail = truncateText(project.detail, maxLength);
         return (
-          <Link href={`/projects/${project.id}/home`} locale={locale} className={NextUiLinkClasses}>
-            {cellValue}
-          </Link>
-        );
-      case 'detail':
-        const maxLength = 20;
-        const truncatedValue = truncateText(cellValue, maxLength);
-        return (
-          <div className="flex items-center space-x-2">
-            <div>{truncatedValue}</div>
+          <div>
+            <Link href={`/projects/${project.id}/home`} locale={locale} className={NextUiLinkClasses}>
+              {cellValue}
+            </Link>
+            <div className="text-xs text-default-500">
+              <div>{truncatedDetail}</div>
+            </div>
           </div>
         );
       case 'updatedAt':

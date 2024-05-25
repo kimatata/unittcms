@@ -18,7 +18,7 @@ export default function AccountPage({ messages, locale }: Props) {
 
   return (
     <>
-      {context.token && context.token.user && (
+      {context.isSignedIn() && (
         <Card className="w-[600px] mt-16 mx-3">
           <CardHeader className="flex gap-6">
             <Avatar

@@ -4,7 +4,7 @@ const apiServer = Config.apiServer;
 /**
  * fetch project records
  */
-async function fetchProjects() {
+async function fetchProjects(jwt: string) {
   const url = `${apiServer}/projects`;
 
   try {
@@ -12,6 +12,7 @@ async function fetchProjects() {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
+        Authorization: jwt,
       },
     });
 

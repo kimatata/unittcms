@@ -3,17 +3,23 @@ const router = express.Router();
 const defineProject = require('../../models/projects');
 const defineFolder = require('../../models/folders');
 const { DataTypes } = require('sequelize');
+const { verifySinedIn } = require('../../middleware/auth');
 
 module.exports = function (sequelize) {
   const Project = defineProject(sequelize, DataTypes);
   const Folder = defineFolder(sequelize, DataTypes);
   Project.hasMany(Folder, { foreignKey: 'projectId' });
 
-  router.get('/:projectId', async (req, res) => {
+  router.get('/:projectId', verifySinedIn, async (req, res) => {
     const projectId = req.params.projectId;
 
     if (!projectId) {
       return res.status(400).json({ error: 'projectId is required' });
+    }
+
+    // if project is private, only project owner can access
+    if (!project.isPublic && project.userId !== req.userId) {
+      return res.status(403).json({ error: 'Forbidden' });
     }
 
     try {

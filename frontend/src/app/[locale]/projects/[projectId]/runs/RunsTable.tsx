@@ -30,7 +30,6 @@ export default function RunsTable({ projectId, runs, onDeleteRun, messages, loca
   const headerColumns = [
     { name: messages.id, uid: 'id', sortable: true },
     { name: messages.name, uid: 'name', sortable: true },
-    { name: messages.description, uid: 'description', sortable: true },
     { name: messages.lastUpdate, uid: 'updatedAt', sortable: true },
     { name: messages.actions, uid: 'actions' },
   ];
@@ -61,17 +60,16 @@ export default function RunsTable({ projectId, runs, onDeleteRun, messages, loca
       case 'id':
         return <span>{cellValue}</span>;
       case 'name':
+        const maxLength = 30;
+        const truncatedDescription = truncateText(run.description, maxLength);
         return (
-          <Link href={`/projects/${projectId}/runs/${run.id}`} locale={locale} className={NextUiLinkClasses}>
-            {cellValue}
-          </Link>
-        );
-      case 'detail':
-        const maxLength = 20;
-        const truncatedValue = truncateText(cellValue, maxLength);
-        return (
-          <div className="flex items-center space-x-2">
-            <div>{truncatedValue}</div>
+          <div>
+            <Link href={`/projects/${projectId}/runs/${run.id}`} locale={locale} className={NextUiLinkClasses}>
+              {cellValue}
+            </Link>
+            <div className="text-xs text-default-500">
+              <div>{truncatedDescription}</div>
+            </div>
           </div>
         );
       case 'updatedAt':

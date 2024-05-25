@@ -23,17 +23,16 @@ export default function DropdownAccount({ messages, locale, onItemPress }: Props
     router.push(`/`, { locale: locale });
   };
 
-  let userAvatar =
-    context.token && context.token.user ? (
-      <Avatar
-        size={16}
-        name={context.token.user.username}
-        variant="beam"
-        colors={['#0A0310', '#49007E', '#FF005B', '#FF7D10', '#FFB238']}
-      />
-    ) : (
-      <User size={16} />
-    );
+  let userAvatar = context.isSignedIn() ? (
+    <Avatar
+      size={16}
+      name={context.token.user.username}
+      variant="beam"
+      colors={['#0A0310', '#49007E', '#FF005B', '#FF7D10', '#FFB238']}
+    />
+  ) : (
+    <User size={16} />
+  );
 
   const signinItems = [
     {
@@ -81,10 +80,10 @@ export default function DropdownAccount({ messages, locale, onItemPress }: Props
     <Dropdown>
       <DropdownTrigger>
         <Button size="sm" variant="light" startContent={userAvatar} endContent={<ChevronDown size={16} />}>
-          {context.token && context.token.user ? context.token.user.username : messages.signIn}
+          {context.isSignedIn() ? context.token.user.username : messages.signIn}
         </Button>
       </DropdownTrigger>
-      {context.token && context.token.user ? (
+      {context.isSignedIn() ? (
         <DropdownMenu aria-label="account actions when sign in">
           {signinItems.map((entry) => (
             <DropdownItem key={entry.uid} title={entry.title} startContent={entry.icon} onPress={entry.onPress} />

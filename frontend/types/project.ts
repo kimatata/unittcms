@@ -19,6 +19,7 @@ export type ProjectsMessages = {
   editProject: string;
   deleteProject: string;
   id: string;
+  publicity: string;
   name: string;
   detail: string;
   lastUpdate: string;

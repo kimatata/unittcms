@@ -4,9 +4,11 @@ const defineUser = require('../../models/users');
 const { DataTypes } = require('sequelize');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const { defaultDangerKey } = require('./authSettings');
 
 module.exports = function (sequelize) {
   const User = defineUser(sequelize, DataTypes);
+  const secretKey = process.env.SECRET_KEY || defaultDangerKey;
 
   router.post('/signin', async (req, res) => {
     try {
@@ -24,7 +26,7 @@ module.exports = function (sequelize) {
       if (!passwordMatch) {
         return res.status(401).json({ error: 'Authentication failed' });
       }
-      const accessToken = jwt.sign({ userId: user.id }, 'your-secret-key', {
+      const accessToken = jwt.sign({ userId: user.id }, secretKey, {
         expiresIn: '1h',
       });
       res.status(200).json({ access_token: accessToken, user });

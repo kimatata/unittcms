@@ -20,8 +20,11 @@ export default function ProjectsPage({ messages, locale }: Props) {
 
   useEffect(() => {
     async function fetchDataEffect() {
+      if (!context.isSignedIn()) {
+        return;
+      }
       try {
-        const data = await fetchProjects();
+        const data = await fetchProjects(context.token.access_token);
         setProjects(data);
       } catch (error: any) {
         console.error('Error in effect:', error.message);
@@ -29,14 +32,14 @@ export default function ProjectsPage({ messages, locale }: Props) {
     }
 
     fetchDataEffect();
-  }, []);
+  }, [context]);
 
   // dialog
   const [isNeedSignedInDialogOpen, setIsNeedSignedInDialogOpen] = useState(false);
   const [isProjectDialogOpen, setIsProjectDialogOpen] = useState(false);
   const [editingProject, setEditingProject] = useState<ProjectType | null>(null);
   const openDialogForCreate = () => {
-    if (!context.token || !context.token.user) {
+    if (!context.isSignedIn()) {
       setIsNeedSignedInDialogOpen(true);
       return;
     }
