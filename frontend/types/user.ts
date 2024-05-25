@@ -14,6 +14,7 @@ export type TokenProps = {
 
 export type TokenType = {
   access_token: string;
+  expires_at: number;
   user: UserType;
 };
 

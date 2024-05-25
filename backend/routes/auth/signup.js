@@ -31,9 +31,10 @@ module.exports = function (sequelize) {
       const accessToken = jwt.sign({ userId: user.id }, secretKey, {
         expiresIn: '1h',
       });
+      const expiresAt = Date.now() + 3600 * 1000; // expire date(ms)
 
       user.password = undefined;
-      res.status(200).json({ access_token: accessToken, user });
+      res.status(200).json({ access_token: accessToken, expires_at: expiresAt, user });
     } catch (error) {
       console.error(error);
       res.status(500).send('Sign up failed');

@@ -3,7 +3,6 @@ import { createContext, useState, useEffect } from 'react';
 import { TokenContextType, TokenType } from '@/types/user';
 import { TokenProps } from '@/types/user';
 import { useRouter, usePathname } from '@/src/navigation';
-
 const LOCAL_STORAGE_KEY = 'testplat-auth-token';
 const privatePaths = ['/account', '/projects'];
 
@@ -34,11 +33,20 @@ const TokenProvider = ({ locale, children }: TokenProps) => {
   const [hasRestoreFinished, setHasRestoreFinished] = useState(false);
   const [token, setToken] = useState<TokenType>({
     access_token: '',
+    expires_at: 0,
     user: null,
   });
 
   const isSignedIn = () => {
-    return token && token.user && token.user.username ? true : false;
+    // check token
+    if (token && token.user && token.user.username) {
+      // check expire date
+      if (Date.now() < token.expires_at) {
+        return true;
+      }
+    }
+
+    return false;
   };
 
   const tokenContext = {
