@@ -6,7 +6,6 @@ import { TokenContext } from '@/src/app/[locale]/TokenProvider';
 import { ProjectType, ProjectsMessages } from '@/types/project';
 import ProjectsTable from './ProjectsTable';
 import ProjectDialog from './ProjectDialog';
-import NeedSignedInDialog from './NeedSignedInDialog';
 import { fetchProjects, createProject, updateProject, deleteProject } from './projectsControl';
 
 export type Props = {
@@ -35,15 +34,9 @@ export default function ProjectsPage({ messages, locale }: Props) {
   }, [context]);
 
   // dialog
-  const [isNeedSignedInDialogOpen, setIsNeedSignedInDialogOpen] = useState(false);
   const [isProjectDialogOpen, setIsProjectDialogOpen] = useState(false);
   const [editingProject, setEditingProject] = useState<ProjectType | null>(null);
   const openDialogForCreate = () => {
-    if (!context.isSignedIn()) {
-      setIsNeedSignedInDialogOpen(true);
-      return;
-    }
-
     setIsProjectDialogOpen(true);
     setEditingProject(null);
   };
@@ -104,13 +97,6 @@ export default function ProjectsPage({ messages, locale }: Props) {
         onCancel={closeDialog}
         onSubmit={onSubmit}
         messages={messages}
-      />
-
-      <NeedSignedInDialog
-        isOpen={isNeedSignedInDialogOpen}
-        onCancel={() => setIsNeedSignedInDialogOpen(false)}
-        messages={messages}
-        locale={locale}
       />
     </div>
   );

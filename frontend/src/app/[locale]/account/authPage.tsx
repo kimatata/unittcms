@@ -6,7 +6,7 @@ import { Link } from '@/src/navigation';
 import { ChevronRight, Eye, EyeOff } from 'lucide-react';
 import { UserType, AuthMessages } from '@/types/user';
 import { roles } from '@/config/selection';
-import { signUp, signIn } from './authControl';
+import { signUp, signIn, signInAsGuest } from './authControl';
 import { isValidEmail, isValidPassword } from './validate';
 import { TokenContext } from '../TokenProvider';
 import { useRouter } from '@/src/navigation';
@@ -78,6 +78,13 @@ export default function AuthPage({ isSignup, messages, locale }: Props) {
       }
     }
 
+    context.setToken(token);
+    context.storeTokenToLocalStorage(token);
+    router.push('/account', { locale: locale });
+  };
+
+  const handleSignInAsGuest = async () => {
+    const token = await signInAsGuest();
     context.setToken(token);
     context.storeTokenToLocalStorage(token);
     router.push('/account', { locale: locale });
@@ -159,10 +166,18 @@ export default function AuthPage({ isSignup, messages, locale }: Props) {
               }}
             />
           )}
-          <div className="flex justify-end">
-            <Button color="primary" className="mt-3" onPress={validate}>
+          <div className="flex justify-end items-center mt-3">
+            <Button color="primary" onPress={validate}>
               {messages.submitTitle}
             </Button>
+            {!isSignup && (
+              <Button
+                className="ms-3 bg-gradient-to-tr from-pink-500 to-yellow-500 text-white shadow-lg"
+                onPress={handleSignInAsGuest}
+              >
+                {messages.signInAsGuest}
+              </Button>
+            )}
           </div>
         </form>
       </CardBody>

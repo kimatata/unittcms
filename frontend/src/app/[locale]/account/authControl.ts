@@ -1,5 +1,6 @@
 import { UserType } from '@/types/user';
 import Config from '@/config/config';
+import { roles } from '@/config/selection';
 const apiServer = Config.apiServer;
 
 async function signUp(newUser: UserType) {
@@ -50,9 +51,35 @@ async function signIn(signInUser: UserType) {
   }
 }
 
+async function signInAsGuest() {
+  const guestUser = {
+    id: null,
+    email: generateRandomEmail(),
+    password: 'guestpassword',
+    username: 'Guest',
+    role: roles.findIndex((entry) => entry.uid === 'user'),
+    avatarPath: '',
+  };
+  const token = await signUp(guestUser);
+  return token;
+}
+
+function generateRandomEmail() {
+  const randomStringLength = 10;
+  const characters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+  let randomString = '';
+  const charactersLength = characters.length;
+
+  for (let i = 0; i < randomStringLength; i++) {
+    randomString += characters.charAt(Math.floor(Math.random() * charactersLength));
+  }
+
+  return `${randomString}@example.com`;
+}
+
 function getRandomAvatarPath() {
   const randomIndex = Math.floor(Math.random() * avatars.length);
   return avatars[randomIndex];
 }
 
-export { signUp, signIn, getRandomAvatarPath };
+export { signUp, signIn, signInAsGuest, getRandomAvatarPath };

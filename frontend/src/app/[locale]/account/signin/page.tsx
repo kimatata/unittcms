@@ -7,6 +7,7 @@ export default function Page(params: { locale: string }) {
     title: t('signin'),
     linkTitle: t('or_signup'),
     submitTitle: t('signin'),
+    signInAsGuest: t('signin_as_guest'),
     email: t('email'),
     username: t('username'),
     password: t('password'),

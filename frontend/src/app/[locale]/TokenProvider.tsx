@@ -5,7 +5,7 @@ import { TokenProps } from '@/types/user';
 import { useRouter, usePathname } from '@/src/navigation';
 
 const LOCAL_STORAGE_KEY = 'testplat-auth-token';
-const privatePaths = ['/account'];
+const privatePaths = ['/account', '/projects'];
 
 function storeTokenToLocalStorage(token: TokenType) {
   localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(token));
@@ -31,6 +31,7 @@ const TokenProvider = ({ locale, children }: TokenProps) => {
   const router = useRouter();
   const pathname = usePathname();
 
+  const [hasRestoreFinished, setHasRestoreFinished] = useState(false);
   const [token, setToken] = useState<TokenType>({
     access_token: '',
     user: null,
@@ -53,24 +54,32 @@ const TokenProvider = ({ locale, children }: TokenProps) => {
     if (tokenString) {
       const restoredToken = JSON.parse(tokenString);
       setToken(restoredToken);
-    } else {
-      checkSignInPage();
     }
-  };
-
-  const checkSignInPage = () => {
-    if (
-      privatePaths.some((path) => {
-        return path === pathname;
-      })
-    ) {
-      router.push(`/account/signin`, { locale: locale });
-    }
+    setHasRestoreFinished(true);
   };
 
   useEffect(() => {
     restoreTokenFromLocalStorage();
   }, []);
+
+  useEffect(() => {
+    const isPrivatePath = () => {
+      return privatePaths.some((path) => {
+        return path === pathname;
+      });
+    };
+
+    const checkSignInPage = () => {
+      if (!hasRestoreFinished) {
+        return;
+      }
+      if (isPrivatePath() && !isSignedIn()) {
+        router.push(`/account/signin`, { locale: locale });
+      }
+    };
+
+    checkSignInPage();
+  }, [pathname, hasRestoreFinished]);
 
   return <TokenContext.Provider value={tokenContext}>{children}</TokenContext.Provider>;
 };
