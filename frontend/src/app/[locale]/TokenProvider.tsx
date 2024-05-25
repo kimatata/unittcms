@@ -4,7 +4,6 @@ import { TokenContextType, TokenType } from '@/types/user';
 import { TokenProps } from '@/types/user';
 import { useRouter, usePathname } from '@/src/navigation';
 const LOCAL_STORAGE_KEY = 'testplat-auth-token';
-const privatePaths = ['/account', '/projects'];
 
 function storeTokenToLocalStorage(token: TokenType) {
   localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(token));
@@ -43,6 +42,8 @@ const TokenProvider = ({ locale, children }: TokenProps) => {
       // check expire date
       if (Date.now() < token.expires_at) {
         return true;
+      } else {
+        console.error('session expired');
       }
     }
 
@@ -71,17 +72,16 @@ const TokenProvider = ({ locale, children }: TokenProps) => {
   }, []);
 
   useEffect(() => {
-    const isPrivatePath = () => {
-      return privatePaths.some((path) => {
-        return path === pathname;
-      });
+    // check current path is private. pravate path is '/account/*' or '/projects/*'
+    const isPrivatePath = (pathname: string) => {
+      return /^\/(account|projects)\/.*/.test(pathname);
     };
 
     const checkSignInPage = () => {
       if (!hasRestoreFinished) {
         return;
       }
-      if (isPrivatePath() && !isSignedIn()) {
+      if (isPrivatePath(pathname) && !isSignedIn()) {
         router.push(`/account/signin`, { locale: locale });
       }
     };

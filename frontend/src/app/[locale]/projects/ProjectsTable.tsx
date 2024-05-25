@@ -62,7 +62,15 @@ export default function ProjectsTable({ projects, onEditProject, onDeleteProject
       case 'id':
         return <span>{cellValue}</span>;
       case 'isPublic':
-        return cellValue ? <Chip size="sm">{messages.public}</Chip> : <></>;
+        return cellValue ? (
+          <Chip size="sm" variant="bordered">
+            {messages.public}
+          </Chip>
+        ) : (
+          <Chip size="sm" variant="bordered">
+            {messages.private}
+          </Chip>
+        );
       case 'name':
         const maxLength = 30;
         const truncatedDetail = truncateText(project.detail, maxLength);

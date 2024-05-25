@@ -4,16 +4,17 @@ const defineProject = require('../../models/projects');
 const { DataTypes } = require('sequelize');
 
 module.exports = function (sequelize) {
+  const { verifySignedIn } = require('../../middleware/auth')(sequelize);
   const Project = defineProject(sequelize, DataTypes);
 
-  router.post('/', async (req, res) => {
+  router.post('/', verifySignedIn, async (req, res) => {
     try {
-      const { name, detail, isPublic, userId } = req.body;
+      const { name, detail, isPublic } = req.body;
       const newProject = await Project.create({
         name,
         detail,
         isPublic,
-        userId,
+        userId: req.userId,
       });
       res.json(newProject);
     } catch (error) {

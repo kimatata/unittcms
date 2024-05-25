@@ -8,6 +8,8 @@ const defineRunCase = require('../../models/runCases');
 const { DataTypes } = require('sequelize');
 
 module.exports = function (sequelize) {
+  const { verifySignedIn, verifyProjectVisible } = require('../../middleware/auth')(sequelize);
+
   const Project = defineProject(sequelize, DataTypes);
   const Folder = defineFolder(sequelize, DataTypes);
   const Case = defineCase(sequelize, DataTypes);
@@ -18,7 +20,7 @@ module.exports = function (sequelize) {
   Project.hasMany(Run, { foreignKey: 'projectId' });
   Run.hasMany(RunCase, { foreignKey: 'runId' });
 
-  router.get('/:projectId', async (req, res) => {
+  router.get('/:projectId', verifySignedIn, verifyProjectVisible, async (req, res) => {
     const projectId = req.params.projectId;
 
     if (!projectId) {

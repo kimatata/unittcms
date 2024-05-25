@@ -1,12 +1,12 @@
 'use client';
-import { useState, useEffect } from 'react';
-import { Divider } from '@nextui-org/react';
+import { useState, useEffect, useContext } from 'react';
 import { title, subtitle } from '@/components/primitives';
-import { Card, CardBody, Chip } from '@nextui-org/react';
+import { Card, CardBody, Chip, Divider } from '@nextui-org/react';
 import { Folder, Clipboard, FlaskConical } from 'lucide-react';
 import { CaseTypeCountType, CasePriorityCountType } from '@/types/case';
 import { ProgressSeriesType } from '@/types/run';
 import { HomeMessages } from './page';
+import { TokenContext } from '@/src/app/[locale]/TokenProvider';
 import { aggregateBasicInfo, aggregateTestPriority, aggregateTestType, aggregateProgress } from './aggregate';
 import TestTypesChart from './TestTypesDonutChart';
 import TestPriorityChart from './TestPriorityDonutChart';
@@ -15,19 +15,22 @@ import Config from '@/config/config';
 import { useTheme } from 'next-themes';
 const apiServer = Config.apiServer;
 
-async function fetchProject(url) {
-  try {
-    const response = await fetch(url, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
+async function fetchProject(jwt: string, projectId: number) {
+  const fetchOptions = {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: jwt,
+    },
+  };
 
+  const url = `${apiServer}/home/${projectId}`;
+
+  try {
+    const response = await fetch(url, fetchOptions);
     if (!response.ok) {
       throw new Error(`HTTP error! Status: ${response.status}`);
     }
-
     const data = await response.json();
     return data;
   } catch (error: any) {
@@ -41,6 +44,7 @@ type Props = {
 };
 
 export function Home({ projectId, messages }: Props) {
+  const context = useContext(TokenContext);
   const { theme, setTheme } = useTheme();
   const [project, setProject] = useState({
     name: '',
@@ -55,12 +59,15 @@ export function Home({ projectId, messages }: Props) {
   const [priorityCounts, setPriorityCounts] = useState<CasePriorityCountType[]>();
   const [progressCategories, setProgressCategories] = useState<string[]>();
   const [progressSeries, setProgressSeries] = useState<ProgressSeriesType[]>();
-  const url = `${apiServer}/home/${projectId}`;
 
   useEffect(() => {
     async function fetchDataEffect() {
+      if (!context.isSignedIn()) {
+        return;
+      }
+
       try {
-        const data = await fetchProject(url);
+        const data = await fetchProject(context.token.access_token, projectId);
         setProject(data);
       } catch (error: any) {
         console.error('Error in effect:', error.message);
@@ -68,7 +75,7 @@ export function Home({ projectId, messages }: Props) {
     }
 
     fetchDataEffect();
-  }, [url]);
+  }, [context]);
 
   useEffect(() => {
     async function aggregate() {

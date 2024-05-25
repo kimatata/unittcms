@@ -4,9 +4,10 @@ const defineProject = require('../../models/projects');
 const { DataTypes } = require('sequelize');
 
 module.exports = function (sequelize) {
+  const { verifySignedIn, verifyProjectOwner } = require('../../middleware/auth')(sequelize);
   const Project = defineProject(sequelize, DataTypes);
 
-  router.delete('/:projectId', async (req, res) => {
+  router.delete('/:projectId', verifySignedIn, verifyProjectOwner, async (req, res) => {
     const projectId = req.params.projectId;
     try {
       const project = await Project.findByPk(projectId);

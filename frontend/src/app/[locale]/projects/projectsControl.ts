@@ -12,7 +12,7 @@ async function fetchProjects(jwt: string) {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
-        Authorization: jwt,
+        Authorization: `Bearer ${jwt}`,
       },
     });
 
@@ -30,18 +30,18 @@ async function fetchProjects(jwt: string) {
 /**
  * Create project
  */
-async function createProject(name: string, detail: string, isPublic: boolean, userId: number) {
+async function createProject(jwt: string, name: string, detail: string, isPublic: boolean) {
   const newProjectData = {
     name,
     detail,
     isPublic,
-    userId,
   };
 
   const fetchOptions = {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
+      Authorization: `Bearer ${jwt}`,
     },
     body: JSON.stringify(newProjectData),
   };
@@ -64,7 +64,7 @@ async function createProject(name: string, detail: string, isPublic: boolean, us
 /**
  * Update project
  */
-async function updateProject(projectId: number, name: string, detail: string, isPublic: boolean) {
+async function updateProject(jwt: string, projectId: number, name: string, detail: string, isPublic: boolean) {
   const updatedProjectData = {
     name,
     detail,
@@ -75,6 +75,7 @@ async function updateProject(projectId: number, name: string, detail: string, is
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
+      Authorization: `Bearer ${jwt}`,
     },
     body: JSON.stringify(updatedProjectData),
   };
@@ -97,13 +98,15 @@ async function updateProject(projectId: number, name: string, detail: string, is
 /**
  * Delete project
  */
-async function deleteProject(projectId: number) {
+async function deleteProject(jwt: string, projectId: number) {
   const fetchOptions = {
     method: 'DELETE',
     headers: {
       'Content-Type': 'application/json',
+      Authorization: `Bearer ${jwt}`,
     },
   };
+  console.log(jwt);
 
   const url = `${apiServer}/projects/${projectId}`;
 

@@ -48,11 +48,11 @@ export default function ProjectsPage({ messages, locale }: Props) {
 
   const onSubmit = async (name: string, detail: string, isPublic: boolean) => {
     if (editingProject) {
-      const updatedProject = await updateProject(editingProject.id, name, detail, isPublic);
+      const updatedProject = await updateProject(context.token.access_token, editingProject.id, name, detail, isPublic);
       const updatedProjects = projects.map((project) => (project.id === updatedProject.id ? updatedProject : project));
       setProjects(updatedProjects);
     } else {
-      const newProject = await createProject(name, detail, isPublic, context.token.user.id);
+      const newProject = await createProject(context.token.access_token, name, detail, isPublic);
       setProjects([...projects, newProject]);
     }
     closeDialog();
@@ -64,12 +64,11 @@ export default function ProjectsPage({ messages, locale }: Props) {
   };
 
   const onDeleteClick = async (projectId: number) => {
-    try {
-      await deleteProject(projectId);
-      setProjects(projects.filter((project) => project.id !== projectId));
-    } catch (error: any) {
-      console.error('Error deleting project:', error);
-    }
+    // TODO cannot refer context
+    console.log(context);
+    console.log(context.token.access_token);
+    await deleteProject(context.token.access_token, projectId);
+    setProjects(projects.filter((project) => project.id !== projectId));
   };
 
   return (

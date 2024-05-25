@@ -65,6 +65,7 @@
     "project_name": "Project Name",
     "project_detail": "Project Detail",
     "public": "Public",
+    "private": "Private",
     "if_you_make_public": "If you make project public, everyone who has access to this site will be able to view it.",
     "close": "Close",
     "create": "Create",

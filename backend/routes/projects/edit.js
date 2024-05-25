@@ -4,9 +4,10 @@ const defineProject = require('../../models/projects');
 const { DataTypes } = require('sequelize');
 
 module.exports = function (sequelize) {
+  const { verifySignedIn, verifyProjectOwner } = require('../../middleware/auth')(sequelize);
   const Project = defineProject(sequelize, DataTypes);
 
-  router.put('/:projectId', async (req, res) => {
+  router.put('/:projectId', verifySignedIn, verifyProjectOwner, async (req, res) => {
     const projectId = req.params.projectId;
     const { name, detail, isPublic } = req.body;
     try {

@@ -1,15 +1,19 @@
 const express = require('express');
 const router = express.Router();
 const defineProject = require('../../models/projects');
-const { DataTypes } = require('sequelize');
-const { verifySinedIn } = require('../../middleware/auth');
+const { DataTypes, Op } = require('sequelize');
 
 module.exports = function (sequelize) {
+  const { verifySignedIn } = require('../../middleware/auth')(sequelize);
   const Project = defineProject(sequelize, DataTypes);
 
-  router.get('/', verifySinedIn, async (req, res) => {
+  router.get('/', verifySignedIn, async (req, res) => {
     try {
-      const projects = await Project.findAll();
+      const projects = await Project.findAll({
+        where: {
+          [Op.or]: [{ isPublic: true }, { userId: req.userId }],
+        },
+      });
       res.json(projects);
     } catch (error) {
       console.error(error);

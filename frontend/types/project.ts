@@ -27,6 +27,7 @@ export type ProjectsMessages = {
   projectName: string;
   projectDetail: string;
   public: string;
+  private: string;
   ifYouMakePublic: string;
   close: string;
   create: string;
