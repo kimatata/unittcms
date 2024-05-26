@@ -72,9 +72,9 @@ const TokenProvider = ({ locale, children }: TokenProps) => {
   }, []);
 
   useEffect(() => {
-    // check current path is private. pravate path is '/account/*' or '/projects/*'
+    // check current path is private. pravate path is '/account' or '/projects/*'
     const isPrivatePath = (pathname: string) => {
-      return /^\/(account|projects)\/.*/.test(pathname);
+      return /^\/account(\/)?$/.test(pathname) || /^\/projects(\/)?$/.test(pathname);
     };
 
     const checkSignInPage = () => {

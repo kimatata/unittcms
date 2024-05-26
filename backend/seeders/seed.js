@@ -7,7 +7,7 @@ module.exports = {
     const hashedPassword = await bcrypt.hash('password', 10);
 
     // Add projects table records
-    await queryInterface.bulkInsert('Users', [
+    await queryInterface.bulkInsert('users', [
       {
         email: 'admin@testplat.com',
         password: hashedPassword,
@@ -20,7 +20,7 @@ module.exports = {
     ]);
 
     // Add projects table records
-    await queryInterface.bulkInsert('Projects', [
+    await queryInterface.bulkInsert('projects', [
       {
         name: 'TestPlat Test',
         detail: "Test Plat's Manual test",
