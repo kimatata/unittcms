@@ -13,6 +13,9 @@ export default function Page({ params }: { params: { projectId: string; locale: 
     newRun: t('new_run'),
     deleteRun: t('delete_run'),
     noRunsFound: t('no_runs_found'),
+    close: t('close'),
+    areYouSure: t('are_you_sure'),
+    delete: t('delete'),
   };
 
   return (

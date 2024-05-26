@@ -7,7 +7,7 @@ import { ProjectType, ProjectsMessages } from '@/types/project';
 import ProjectsTable from './ProjectsTable';
 import ProjectDialog from './ProjectDialog';
 import { fetchProjects, createProject, updateProject, deleteProject } from './projectsControl';
-import ProjectDeleteDialog from './ProjectDeleteDialog';
+import DeleteConfirmDialog from '@/components/DeleteConfirmDialog';
 
 export type Props = {
   messages: ProjectsMessages;
@@ -47,11 +47,11 @@ export default function ProjectsPage({ messages, locale }: Props) {
     setEditingProject(null);
   };
 
-  // delete dialog
-  const [isDeleteProjectDialogOpen, setIsDeleteProjectDialogOpen] = useState(false);
+  // delete confirm dialog
+  const [isDeleteConfirmDialogOpen, setIsDeleteConfirmDialogOpen] = useState(false);
   const [deleteProjectId, setDeleteProjectId] = useState<number | null>(null);
-  const closeDeleteDialog = () => {
-    setIsDeleteProjectDialogOpen(false);
+  const closeDeleteConfirmDialog = () => {
+    setIsDeleteConfirmDialogOpen(false);
     setDeleteProjectId(null);
   };
 
@@ -74,13 +74,15 @@ export default function ProjectsPage({ messages, locale }: Props) {
 
   const onDeleteClick = (projectId: number) => {
     setDeleteProjectId(projectId);
-    setIsDeleteProjectDialogOpen(true);
+    setIsDeleteConfirmDialogOpen(true);
   };
 
-  const onConfirm = async (projectId: number) => {
-    await deleteProject(context.token.access_token, projectId);
-    setProjects(projects.filter((project) => project.id !== projectId));
-    closeDeleteDialog();
+  const onConfirm = async () => {
+    if (deleteProjectId) {
+      await deleteProject(context.token.access_token, deleteProjectId);
+      setProjects(projects.filter((project) => project.id !== deleteProjectId));
+      closeDeleteConfirmDialog();
+    }
   };
 
   return (
@@ -110,12 +112,13 @@ export default function ProjectsPage({ messages, locale }: Props) {
         messages={messages}
       />
 
-      <ProjectDeleteDialog
-        isOpen={isDeleteProjectDialogOpen}
-        deleteProjectId={deleteProjectId}
-        onCancel={closeDeleteDialog}
+      <DeleteConfirmDialog
+        isOpen={isDeleteConfirmDialogOpen}
+        onCancel={closeDeleteConfirmDialog}
         onConfirm={onConfirm}
-        messages={messages}
+        closeText={messages.close}
+        confirmText={messages.areYouSure}
+        deleteText={messages.delete}
       />
     </div>
   );

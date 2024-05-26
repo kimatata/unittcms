@@ -41,6 +41,9 @@ type RunsMessages = {
   newRun: string;
   deleteRun: string;
   noRunsFound: string;
+  close: string;
+  areYouSure: string;
+  delete: string;
 };
 
 type RunMessages = {

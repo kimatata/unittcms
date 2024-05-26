@@ -5,6 +5,7 @@ import { Plus } from 'lucide-react';
 import RunsTable from './RunsTable';
 import { fetchRuns, createRun, deleteRun } from './runsControl';
 import { RunsMessages } from '@/types/run';
+import DeleteConfirmDialog from '@/components/DeleteConfirmDialog';
 
 type Props = {
   projectId: string;
@@ -14,6 +15,14 @@ type Props = {
 
 export default function RunsPage({ projectId, locale, messages }: Props) {
   const [runs, setRuns] = useState([]);
+
+  // delete confirm dialog
+  const [isDeleteConfirmDialogOpen, setIsDeleteConfirmDialogOpen] = useState(false);
+  const [deleteRunId, setDeleteRunId] = useState<number | null>(null);
+  const closeDeleteConfirmDialog = () => {
+    setIsDeleteConfirmDialogOpen(false);
+    setDeleteRunId(null);
+  };
 
   useEffect(() => {
     async function fetchDataEffect() {
@@ -39,13 +48,26 @@ export default function RunsPage({ projectId, locale, messages }: Props) {
     }
   };
 
-  const onDeleteClick = async (runId: number) => {
-    try {
-      await deleteRun(runId);
-      const data = await fetchRuns(projectId);
-      setRuns(data);
-    } catch (error: any) {
-      console.error('Error deleting run:', error);
+  // const onDeleteClick = async (runId: number) => {
+  //   try {
+  //     await deleteRun(runId);
+  //     const data = await fetchRuns(projectId);
+  //     setRuns(data);
+  //   } catch (error: any) {
+  //     console.error('Error deleting run:', error);
+  //   }
+  // };
+
+  const onDeleteClick = (runId: number) => {
+    setDeleteRunId(runId);
+    setIsDeleteConfirmDialogOpen(true);
+  };
+
+  const onConfirm = async () => {
+    if (deleteRunId) {
+      await deleteRun(deleteRunId);
+      setRuns(runs.filter((run) => run.id !== deleteRunId));
+      closeDeleteConfirmDialog();
     }
   };
 
@@ -61,6 +83,15 @@ export default function RunsPage({ projectId, locale, messages }: Props) {
       </div>
 
       <RunsTable projectId={projectId} runs={runs} onDeleteRun={onDeleteClick} messages={messages} locale={locale} />
+
+      <DeleteConfirmDialog
+        isOpen={isDeleteConfirmDialogOpen}
+        onCancel={closeDeleteConfirmDialog}
+        onConfirm={onConfirm}
+        closeText={messages.close}
+        confirmText={messages.areYouSure}
+        deleteText={messages.delete}
+      />
     </div>
   );
 }

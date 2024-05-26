@@ -207,7 +207,10 @@
     "actions": "Actions",
     "new_run": "New Run",
     "delete_run": "Delete Run",
-    "no_runs_found": "No runs found"
+    "no_runs_found": "No runs found",
+    "close": "Close",
+    "are_you_sure": "Are you sure you want to delete the run?",
+    "delete": "Delete"
   },
   "Run": {
     "back_to_runs": "Back to test runs",

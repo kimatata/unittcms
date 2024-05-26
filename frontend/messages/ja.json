@@ -16,7 +16,7 @@
     "organize_test_cases": "テストケースを整理とグラフィカルなテスト管理",
     "case_edit": "テストケース",
     "case_home": "ダッシュボード",
-    "case_run": "テスト実行"
+    "case_run": "テストラン"
   },
   "Header": {
     "title": "オープンソーステストケース管理ツール",
@@ -89,12 +89,12 @@
   "Project": {
     "home": "ホーム",
     "test_cases": "テストケース",
-    "test_runs": "テストの実行"
+    "test_runs": "テストラン"
   },
   "Home": {
     "Folders": "フォルダー",
     "test_cases": "テストケース",
-    "test_runs": "テスト実行",
+    "test_runs": "テストラン",
     "progress": "進捗",
     "untested": "未実行",
     "passed": "成功",
@@ -198,18 +198,21 @@
     "max_file_size": "最大ファイルサイズ"
   },
   "Runs": {
-    "run_list": "テストの実行一覧",
+    "run_list": "テストラン一覧",
     "id": "ID",
     "name": "名前",
     "description": "詳細",
     "last_update": "最終更新",
     "actions": "アクション",
-    "new_run": "新規テストの実行",
-    "delete_run": "テストの実行を削除",
-    "no_runs_found": "テストの実行がありません"
+    "new_run": "新規テストラン",
+    "delete_run": "テストランを削除",
+    "no_runs_found": "テストランがありません",
+    "close": "閉じる",
+    "are_you_sure": "テストランを削除してもよろしいですか?",
+    "delete": "削除"
   },
   "Run": {
-    "back_to_runs": "テストの実行一覧に戻る",
+    "back_to_runs": "テストラン一覧に戻る",
     "updating": "更新中...",
     "update": "更新",
     "progress": "進捗",
@@ -238,8 +241,8 @@
     "skipped": "スキップ",
     "select_test_case": "テストケースを選択",
     "test_case_selection": "テストケース選択",
-    "include_in_run": "テストの実行に含める",
-    "exclude_from_run": "テストの実行から除外する",
+    "include_in_run": "テストランに含める",
+    "exclude_from_run": "テストランから除外する",
     "no_cases_found": "テストケースが見つかりません"
   }
 }
