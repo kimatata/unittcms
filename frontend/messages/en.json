@@ -23,6 +23,7 @@
     "description": "Integrate and manage all your software testing",
     "docs": "Docs",
     "projects": "Projects",
+    "admin": "Administration",
     "account": "Account",
     "signup": "Sign up",
     "signin": "Sign in",
@@ -49,6 +50,17 @@
     "signup_error": "Sign up failed",
     "signin_error": "Sign in failed",
     "your_projects": "Your Projects"
+  },
+  "Admin": {
+    "user_management": "User Management",
+    "avatar": "Avatar",
+    "id": "ID",
+    "email": "Email",
+    "username": "User name",
+    "role": "Role",
+    "administrator": "Administrator",
+    "user": "User",
+    "no_users_found": "No users found"
   },
   "Projects": {
     "projectList": "Project List",

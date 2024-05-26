@@ -1,6 +1,7 @@
 const jwt = require('jsonwebtoken');
-const { defaultDangerKey } = require('../routes/auth/authSettings');
+const { roles, defaultDangerKey } = require('../routes/users/authSettings');
 const defineProject = require('../models/projects');
+const defineUser = require('../models/users');
 const { DataTypes } = require('sequelize');
 
 function authMiddleware(sequelize) {
@@ -25,6 +26,26 @@ function authMiddleware(sequelize) {
     } catch (error) {
       res.status(401).json({ error: 'Invalid token' });
     }
+  }
+
+  /**
+   * Verify user is admin
+   * (have to be called after verifySignedIn() middleware)
+   */
+  async function verifyAdmin(req, res, next) {
+    const User = defineUser(sequelize, DataTypes);
+    const user = await User.findByPk(req.userId);
+    if (!user) {
+      return res.status(404).send('User not found');
+    }
+
+    // if project is private, only project owner can access
+    const adminRoleIndex = roles.findIndex((entry) => entry.uid === 'administrator');
+    if (user.role !== adminRoleIndex) {
+      return res.status(403).json({ error: 'Forbidden' });
+    }
+
+    next();
   }
 
   /**
@@ -76,7 +97,7 @@ function authMiddleware(sequelize) {
     next();
   }
 
-  return { verifySignedIn, verifyProjectVisible, verifyProjectOwner };
+  return { verifySignedIn, verifyAdmin, verifyProjectVisible, verifyProjectOwner };
 }
 
 module.exports = authMiddleware;

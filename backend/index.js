@@ -28,11 +28,13 @@ const sequelize = new Sequelize({
 const indexRoute = require('./routes/index');
 app.use('/', indexRoute);
 
-// "auth"
-const signUpRoute = require('./routes/auth/signup')(sequelize);
-const signInRoute = require('./routes/auth/signin')(sequelize);
-app.use('/auth', signUpRoute);
-app.use('/auth', signInRoute);
+// "users"
+const usersIndexRoute = require('./routes/users/index')(sequelize);
+const signUpRoute = require('./routes/users/signup')(sequelize);
+const signInRoute = require('./routes/users/signin')(sequelize);
+app.use('/users', usersIndexRoute);
+app.use('/users', signUpRoute);
+app.use('/users', signInRoute);
 
 // "/projects"
 const projectsIndexRoute = require('./routes/projects/index')(sequelize);

@@ -12,7 +12,7 @@ module.exports = {
         email: 'admin@testplat.com',
         password: hashedPassword,
         username: 'Admin',
-        role: 1,
+        role: 0,
         avatarPath: null,
         createdAt: new Date(),
         updatedAt: new Date(),

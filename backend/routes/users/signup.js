@@ -19,7 +19,7 @@ module.exports = function (sequelize) {
       const initialRole =
         userCount > 0
           ? roles.findIndex((entry) => entry.uid === 'user')
-          : roles.findIndex((entry) => entry.uid === 'admin');
+          : roles.findIndex((entry) => entry.uid === 'administrator');
 
       const user = await User.create({
         email,

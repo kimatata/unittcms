@@ -24,6 +24,7 @@ export type TokenContextType = {
     user: UserType;
   };
   isSignedIn: () => Boolean;
+  isAdmin: () => Boolean;
   setToken: (token: TokenType) => {};
   storeTokenToLocalStorage: (token: TokenType) => {};
   removeTokenFromLocalStorage: () => {};
@@ -46,6 +47,16 @@ export type AuthMessages = {
   emailNotExist: string;
   signupError: string;
   signinError: string;
+};
+
+export type AdminMessages = {
+  userManagement: string;
+  avatar: string;
+  id: string;
+  email: string;
+  username: string;
+  role: string;
+  noUsersFound: string;
 };
 
 export type AccountDropDownMessages = {

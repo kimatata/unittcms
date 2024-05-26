@@ -1,4 +1,4 @@
-const roles = [{ uid: 'admin' }, { uid: 'moderator' }, { uid: 'user' }];
+const roles = [{ uid: 'administrator' }, { uid: 'user' }];
 
 const categoricalPalette = ['#fba91e', '#6ea56c', '#3ac6e1', '#feda2f', '#f15f47', '#244470', '#9c80bb', '#f595a6'];
 

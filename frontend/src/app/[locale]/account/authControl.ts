@@ -12,7 +12,7 @@ async function signUp(newUser: UserType) {
     body: JSON.stringify(newUser),
   };
 
-  const url = `${apiServer}/auth/signup`;
+  const url = `${apiServer}/users/signup`;
 
   try {
     const response = await fetch(url, fetchOptions);
@@ -36,7 +36,7 @@ async function signIn(signInUser: UserType) {
     body: JSON.stringify(signInUser),
   };
 
-  const url = `${apiServer}/auth/signin`;
+  const url = `${apiServer}/users/signin`;
 
   try {
     const response = await fetch(url, fetchOptions);

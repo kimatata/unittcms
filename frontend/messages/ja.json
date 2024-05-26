@@ -23,6 +23,7 @@
     "description": "ソフトウェア開発にかかわるすべてのテストを統合管理",
     "docs": "ドキュメント",
     "projects": "プロジェクト",
+    "admin": "管理",
     "account": "アカウント",
     "signup": "新規登録",
     "signin": "サインイン",
@@ -48,6 +49,17 @@
     "signup_error": "新規登録に失敗しました",
     "signin_error": "サインインに失敗しました",
     "your_projects": "保有プロジェクト"
+  },
+  "Admin": {
+    "user_management": "ユーザー管理",
+    "avatar": "アバター",
+    "id": "ID",
+    "email": "メールアドレス",
+    "username": "ユーザー名",
+    "role": "ロール",
+    "administrator": "管理者",
+    "user": "ユーザー",
+    "no_users_found": "ユーザーがいません"
   },
   "Projects": {
     "projectList": "プロジェクト一覧",

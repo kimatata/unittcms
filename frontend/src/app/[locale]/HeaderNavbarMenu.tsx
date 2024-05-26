@@ -1,5 +1,6 @@
 'use client';
-import { useState } from 'react';
+import { useState, useContext } from 'react';
+import { TokenContext } from './TokenProvider';
 import { Link } from '@/src/navigation';
 import Image from 'next/image';
 import {
@@ -21,6 +22,7 @@ import DropdownLanguage from './DropdownLanguage';
 
 type NabbarMenuMessages = {
   projects: string;
+  admin: string;
   docs: string;
   account: string;
   signUp: string;
@@ -35,6 +37,7 @@ type Props = {
 
 export default function HeaderNavbarMenu({ messages, locale }: Props) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const context = useContext(TokenContext);
 
   const commonLinks = [
     {
@@ -91,6 +94,17 @@ export default function HeaderNavbarMenu({ messages, locale }: Props) {
               </Link>
             </NavbarItem>
           )
+        )}
+        {context.isAdmin() && (
+          <NavbarItem key="admin" className="hidden md:block">
+            <Link
+              className="data-[active=true]:text-primary data-[active=true]:font-medium"
+              href="/admin"
+              locale={locale}
+            >
+              {messages.admin}
+            </Link>
+          </NavbarItem>
         )}
       </NavbarContent>
 

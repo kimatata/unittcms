@@ -6,6 +6,7 @@ export default function Header(params: { locale: string }) {
   const messages = {
     docs: t('docs'),
     projects: t('projects'),
+    admin: t('admin'),
     account: t('account'),
     signUp: t('signup'),
     signIn: t('signin'),
