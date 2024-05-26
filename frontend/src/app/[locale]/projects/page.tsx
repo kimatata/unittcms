@@ -25,8 +25,8 @@ export default function Page(params: { locale: string }) {
     update: t('update'),
     pleaseEnter: t('please_enter'),
     noProjectsFound: t('no_projects_found'),
-    needSignedIn: t('you_need_signed_in'),
-    signIn: t('sign_in'),
+    areYouSure: t('are_you_sure'),
+    delete: t('delete'),
   };
   return (
     <>

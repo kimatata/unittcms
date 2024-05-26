@@ -20,7 +20,7 @@ async function fetchProject(jwt: string, projectId: number) {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
-      Authorization: jwt,
+      Authorization: `Bearer ${jwt}`,
     },
   };
 

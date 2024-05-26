@@ -34,8 +34,8 @@ export type ProjectsMessages = {
   update: string;
   pleaseEnter: string;
   noProjectsFound: string;
-  needSignedIn: string;
-  signIn: string;
+  areYouSure: string;
+  delete: string;
 };
 
 export type ProjectMessages = {

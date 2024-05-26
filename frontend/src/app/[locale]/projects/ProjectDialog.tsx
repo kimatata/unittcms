@@ -16,7 +16,7 @@ import { ProjectType, ProjectsMessages } from '@/types/project';
 
 type Props = {
   isOpen: boolean;
-  editingProject: ProjectType;
+  editingProject: ProjectType | null;
   onCancel: () => void;
   onSubmit: (name: string, detail: string, isPublic: boolean) => void;
   messages: ProjectsMessages;

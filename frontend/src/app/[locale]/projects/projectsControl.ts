@@ -106,7 +106,6 @@ async function deleteProject(jwt: string, projectId: number) {
       Authorization: `Bearer ${jwt}`,
     },
   };
-  console.log(jwt);
 
   const url = `${apiServer}/projects/${projectId}`;
 

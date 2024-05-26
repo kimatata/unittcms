@@ -7,6 +7,7 @@ import { ProjectType, ProjectsMessages } from '@/types/project';
 import ProjectsTable from './ProjectsTable';
 import ProjectDialog from './ProjectDialog';
 import { fetchProjects, createProject, updateProject, deleteProject } from './projectsControl';
+import ProjectDeleteDialog from './ProjectDeleteDialog';
 
 export type Props = {
   messages: ProjectsMessages;
@@ -33,7 +34,7 @@ export default function ProjectsPage({ messages, locale }: Props) {
     fetchDataEffect();
   }, [context]);
 
-  // dialog
+  // project dialog
   const [isProjectDialogOpen, setIsProjectDialogOpen] = useState(false);
   const [editingProject, setEditingProject] = useState<ProjectType | null>(null);
   const openDialogForCreate = () => {
@@ -44,6 +45,14 @@ export default function ProjectsPage({ messages, locale }: Props) {
   const closeDialog = () => {
     setIsProjectDialogOpen(false);
     setEditingProject(null);
+  };
+
+  // delete dialog
+  const [isDeleteProjectDialogOpen, setIsDeleteProjectDialogOpen] = useState(false);
+  const [deleteProjectId, setDeleteProjectId] = useState<number | null>(null);
+  const closeDeleteDialog = () => {
+    setIsDeleteProjectDialogOpen(false);
+    setDeleteProjectId(null);
   };
 
   const onSubmit = async (name: string, detail: string, isPublic: boolean) => {
@@ -63,12 +72,15 @@ export default function ProjectsPage({ messages, locale }: Props) {
     setIsProjectDialogOpen(true);
   };
 
-  const onDeleteClick = async (projectId: number) => {
-    // TODO cannot refer context
-    console.log(context);
-    console.log(context.token.access_token);
+  const onDeleteClick = (projectId: number) => {
+    setDeleteProjectId(projectId);
+    setIsDeleteProjectDialogOpen(true);
+  };
+
+  const onConfirm = async (projectId: number) => {
     await deleteProject(context.token.access_token, projectId);
     setProjects(projects.filter((project) => project.id !== projectId));
+    closeDeleteDialog();
   };
 
   return (
@@ -95,6 +107,14 @@ export default function ProjectsPage({ messages, locale }: Props) {
         editingProject={editingProject}
         onCancel={closeDialog}
         onSubmit={onSubmit}
+        messages={messages}
+      />
+
+      <ProjectDeleteDialog
+        isOpen={isDeleteProjectDialogOpen}
+        deleteProjectId={deleteProjectId}
+        onCancel={closeDeleteDialog}
+        onConfirm={onConfirm}
         messages={messages}
       />
     </div>
