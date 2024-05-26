@@ -46,11 +46,11 @@ async function fetchRuns(projectId: string) {
   }
 }
 
-async function createRun(projectId: string) {
+async function createRun(projectId: string, name: string, description: string) {
   const newTestRun = {
-    name: 'untitled run',
+    name,
     configurations: 0,
-    description: '',
+    description,
     state: 0,
     projectId: projectId,
   };

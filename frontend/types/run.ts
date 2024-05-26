@@ -33,15 +33,22 @@ type ProgressSeriesType = {
 
 type RunsMessages = {
   runList: string;
+  run: string;
+  newRun: string;
+  editRun: string;
+  deleteRun: string;
   id: string;
   name: string;
   description: string;
   lastUpdate: string;
   actions: string;
-  newRun: string;
-  deleteRun: string;
-  noRunsFound: string;
+  runName: string;
+  runDescription: string;
   close: string;
+  create: string;
+  update: string;
+  pleaseEnter: string;
+  noRunsFound: string;
   areYouSure: string;
   delete: string;
 };

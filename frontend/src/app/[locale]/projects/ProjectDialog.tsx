@@ -25,13 +25,13 @@ type Props = {
 export default function ProjectDialog({ isOpen, editingProject, onCancel, onSubmit, messages }: Props) {
   const [projectName, setProjectName] = useState({
     text: editingProject ? editingProject.name : '',
-    isValid: false,
+    isInvalid: false,
     errorMessage: '',
   });
 
   const [projectDetail, setProjectDetail] = useState({
     text: editingProject ? editingProject.detail : '',
-    isValid: false,
+    isInvalid: false,
     errorMessage: '',
   });
 
@@ -67,12 +67,12 @@ export default function ProjectDialog({ isOpen, editingProject, onCancel, onSubm
 
   const clear = () => {
     setProjectName({
-      isValid: false,
+      isInvalid: false,
       text: '',
       errorMessage: '',
     });
     setProjectDetail({
-      isValid: false,
+      isInvalid: false,
       text: '',
       errorMessage: '',
     });
@@ -82,7 +82,7 @@ export default function ProjectDialog({ isOpen, editingProject, onCancel, onSubm
     if (!projectName.text) {
       setProjectName({
         text: '',
-        isValid: false,
+        isInvalid: true,
         errorMessage: messages.pleaseEnter,
       });
 
@@ -107,7 +107,7 @@ export default function ProjectDialog({ isOpen, editingProject, onCancel, onSubm
             type="text"
             label={messages.projectName}
             value={projectName.text}
-            isInvalid={projectName.isValid}
+            isInvalid={projectName.isInvalid}
             errorMessage={projectName.errorMessage}
             onChange={(e) => {
               setProjectName({
@@ -119,7 +119,7 @@ export default function ProjectDialog({ isOpen, editingProject, onCancel, onSubm
           <Textarea
             label={messages.projectDetail}
             value={projectDetail.text}
-            isInvalid={projectDetail.isValid}
+            isInvalid={projectDetail.isInvalid}
             errorMessage={projectDetail.errorMessage}
             onChange={(e) => {
               setProjectDetail({

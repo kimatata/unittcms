@@ -3,8 +3,9 @@ import { useEffect, useState } from 'react';
 import { Button } from '@nextui-org/react';
 import { Plus } from 'lucide-react';
 import RunsTable from './RunsTable';
-import { fetchRuns, createRun, deleteRun } from './runsControl';
-import { RunsMessages } from '@/types/run';
+import { fetchRuns, createRun, updateRun, deleteRun } from './runsControl';
+import { RunType, RunsMessages } from '@/types/run';
+import RunDialog from './RunDialog';
 import DeleteConfirmDialog from '@/components/DeleteConfirmDialog';
 
 type Props = {
@@ -13,8 +14,32 @@ type Props = {
   messages: RunsMessages;
 };
 
+const defaultRun = {
+  id: null,
+  name: 'Untitled Run',
+  configurations: null,
+  description: null,
+  state: null,
+  projectId: null,
+  createdAt: null,
+  updatedAt: null,
+};
+
 export default function RunsPage({ projectId, locale, messages }: Props) {
   const [runs, setRuns] = useState([]);
+
+  // run dialog
+  const [isRunDialogOpen, setIsRunDialogOpen] = useState(false);
+  const [editingRun, setEditingRun] = useState<RunType | null>(null);
+  const openDialogForCreate = () => {
+    setIsRunDialogOpen(true);
+    setEditingRun(defaultRun);
+  };
+
+  const closeDialog = () => {
+    setIsRunDialogOpen(false);
+    setEditingRun(null);
+  };
 
   // delete confirm dialog
   const [isDeleteConfirmDialogOpen, setIsDeleteConfirmDialogOpen] = useState(false);
@@ -37,26 +62,17 @@ export default function RunsPage({ projectId, locale, messages }: Props) {
     fetchDataEffect();
   }, []);
 
-  const onCreateClick = async () => {
-    try {
-      const newRun = await createRun(projectId);
-      const updateRuns = [...runs];
-      updateRuns.push(newRun);
-      setRuns(updateRuns);
-    } catch (error: any) {
-      console.error('Error deleting run:', error);
+  const onSubmit = async (name: string, description: string) => {
+    if (editingRun && editingRun.createdAt) {
+      const updatedRun = await updateRun(editingRun);
+      const updatedRuns = runs.map((run) => (run.id === updatedRun.id ? updatedRun : run));
+      setRuns(updatedRuns);
+    } else {
+      const newRun = await createRun(projectId, name, description);
+      setRuns([...runs, newRun]);
     }
+    closeDialog();
   };
-
-  // const onDeleteClick = async (runId: number) => {
-  //   try {
-  //     await deleteRun(runId);
-  //     const data = await fetchRuns(projectId);
-  //     setRuns(data);
-  //   } catch (error: any) {
-  //     console.error('Error deleting run:', error);
-  //   }
-  // };
 
   const onDeleteClick = (runId: number) => {
     setDeleteRunId(runId);
@@ -76,13 +92,21 @@ export default function RunsPage({ projectId, locale, messages }: Props) {
       <div className="w-full p-3 flex items-center justify-between">
         <h3 className="font-bold">{messages.runList}</h3>
         <div>
-          <Button startContent={<Plus size={16} />} size="sm" color="primary" onClick={onCreateClick}>
+          <Button startContent={<Plus size={16} />} size="sm" color="primary" onClick={openDialogForCreate}>
             {messages.newRun}
           </Button>
         </div>
       </div>
 
       <RunsTable projectId={projectId} runs={runs} onDeleteRun={onDeleteClick} messages={messages} locale={locale} />
+
+      <RunDialog
+        isOpen={isRunDialogOpen}
+        editingRun={editingRun}
+        onCancel={closeDialog}
+        onSubmit={onSubmit}
+        messages={messages}
+      />
 
       <DeleteConfirmDialog
         isOpen={isDeleteConfirmDialogOpen}
