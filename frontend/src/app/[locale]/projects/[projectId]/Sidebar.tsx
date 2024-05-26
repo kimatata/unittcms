@@ -48,22 +48,22 @@ export default function Sidebar({ messages, locale }: Props) {
     {
       key: 'home',
       text: messages.home,
-      startContent: <Home strokeWidth={1} size={28} />,
+      startContent: <Home strokeWidth={1} size={20} />,
     },
     {
       key: 'cases',
       text: messages.testCases,
-      startContent: <Files strokeWidth={1} size={28} />,
+      startContent: <Files strokeWidth={1} size={20} />,
     },
     {
       key: 'runs',
       text: messages.testRuns,
-      startContent: <FlaskConical strokeWidth={1} size={28} />,
+      startContent: <FlaskConical strokeWidth={1} size={20} />,
     },
   ];
 
   return (
-    <div className="w-64 border-r-1 dark:border-neutral-700">
+    <div className="w-48 border-r-1 dark:border-neutral-700">
       <Listbox aria-label="Listbox Variants" variant="light">
         {tabItems.map((itr) => (
           <ListboxItem
