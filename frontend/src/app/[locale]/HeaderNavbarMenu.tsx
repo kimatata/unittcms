@@ -1,6 +1,6 @@
 'use client';
 import { useState, useContext } from 'react';
-import { TokenContext } from './TokenProvider';
+import { TokenContext } from '@/utils/TokenProvider';
 import { Link } from '@/src/navigation';
 import Image from 'next/image';
 import {

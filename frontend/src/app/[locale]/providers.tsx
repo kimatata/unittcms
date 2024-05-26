@@ -5,8 +5,7 @@ import { NextUIProvider } from '@nextui-org/react';
 import { useRouter } from 'next/navigation';
 import { ThemeProvider as NextThemesProvider } from 'next-themes';
 import { ThemeProviderProps } from 'next-themes/dist/types';
-
-import TokenProvider from './TokenProvider';
+import TokenProvider from '@/utils/TokenProvider';
 import { TokenProps } from '@/types/user';
 
 export interface ProvidersProps {

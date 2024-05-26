@@ -8,7 +8,7 @@ import { UserType, AuthMessages } from '@/types/user';
 import { roles } from '@/config/selection';
 import { signUp, signIn, signInAsGuest } from './authControl';
 import { isValidEmail, isValidPassword } from './validate';
-import { TokenContext } from '../TokenProvider';
+import { TokenContext } from '@/utils/TokenProvider';
 import { useRouter } from '@/src/navigation';
 
 type Props = {

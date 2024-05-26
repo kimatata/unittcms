@@ -6,7 +6,7 @@ import { Folder, Clipboard, FlaskConical } from 'lucide-react';
 import { CaseTypeCountType, CasePriorityCountType } from '@/types/case';
 import { ProgressSeriesType } from '@/types/run';
 import { HomeMessages } from './page';
-import { TokenContext } from '@/src/app/[locale]/TokenProvider';
+import { TokenContext } from '@/utils/TokenProvider';
 import { aggregateBasicInfo, aggregateTestPriority, aggregateTestType, aggregateProgress } from './aggregate';
 import TestTypesChart from './TestTypesDonutChart';
 import TestPriorityChart from './TestPriorityDonutChart';

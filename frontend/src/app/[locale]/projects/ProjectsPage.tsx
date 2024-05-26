@@ -2,7 +2,7 @@
 import { useEffect, useState, useContext } from 'react';
 import { Button } from '@nextui-org/react';
 import { Plus } from 'lucide-react';
-import { TokenContext } from '@/src/app/[locale]/TokenProvider';
+import { TokenContext } from '@/utils/TokenProvider';
 import { ProjectType, ProjectsMessages } from '@/types/project';
 import ProjectsTable from './ProjectsTable';
 import ProjectDialog from './ProjectDialog';

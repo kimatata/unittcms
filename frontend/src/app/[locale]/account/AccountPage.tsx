@@ -1,7 +1,7 @@
 'use client';
 import { useContext } from 'react';
 import { Card, CardHeader, CardBody, Divider } from '@nextui-org/react';
-import { TokenContext } from '../TokenProvider';
+import { TokenContext } from '@/utils/TokenProvider';
 import Avatar from 'boring-avatars';
 
 type AccountPageMessages = {

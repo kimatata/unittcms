@@ -2,7 +2,7 @@
 import React from 'react';
 import { useState, useEffect, useContext } from 'react';
 import { UserType, AdminMessages } from '@/types/user';
-import { TokenContext } from '../TokenProvider';
+import { TokenContext } from '@/utils/TokenProvider';
 import UsersTable from './UsersTable';
 import Config from '@/config/config';
 const apiServer = Config.apiServer;

@@ -2,7 +2,7 @@
 import { Button, DropdownTrigger, Dropdown, DropdownMenu, DropdownItem } from '@nextui-org/react';
 import { User, ChevronDown, PenTool, ArrowRightFromLine, ArrowRightToLine } from 'lucide-react';
 import { useContext } from 'react';
-import { TokenContext } from './TokenProvider';
+import { TokenContext } from '@/utils/TokenProvider';
 import { useRouter } from '@/src/navigation';
 import { AccountDropDownMessages } from '@/types/user';
 import Avatar from 'boring-avatars';
