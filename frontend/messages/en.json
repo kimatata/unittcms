@@ -29,6 +29,10 @@
     "signin": "Sign in",
     "signout": "Sign out"
   },
+  "Toast": {
+    "need_signed_in": "You need signed in",
+    "session_expired": "Session expired"
+  },
   "Auth": {
     "account": "Account",
     "signup": "Sign up",

@@ -29,6 +29,10 @@
     "signin": "サインイン",
     "signout": "サインアウト"
   },
+  "Toast": {
+    "need_signed_in": "サインインが必要です",
+    "session_expired": "セッションが切れました"
+  },
   "Auth": {
     "account": "アカウント",
     "signup": "新規登録",

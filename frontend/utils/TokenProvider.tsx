@@ -1,9 +1,10 @@
 'use client';
-import { createContext, useState, useEffect } from 'react';
+import { createContext, useState, useEffect, useContext } from 'react';
 import { TokenContextType, TokenType } from '@/types/user';
 import { TokenProps } from '@/types/user';
 import { useRouter, usePathname } from '@/src/navigation';
 import { roles } from '@/config/selection';
+import { ToastContext } from './ToastProvider';
 const LOCAL_STORAGE_KEY = 'testplat-auth-token';
 
 function storeTokenToLocalStorage(token: TokenType) {
@@ -27,9 +28,10 @@ const defaultContext = {
 };
 const TokenContext = createContext<TokenContextType>(defaultContext);
 
-const TokenProvider = ({ locale, children }: TokenProps) => {
+const TokenProvider = ({ toastMessages, locale, children }: TokenProps) => {
   const router = useRouter();
   const pathname = usePathname();
+  const toastContext = useContext(ToastContext);
 
   const [hasRestoreFinished, setHasRestoreFinished] = useState(false);
   const [token, setToken] = useState<TokenType>({
@@ -38,34 +40,39 @@ const TokenProvider = ({ locale, children }: TokenProps) => {
     user: null,
   });
 
-  const isSignedIn = () => {
-    // check token
+  const tokenExists = () => {
     if (token && token.user && token.user.username) {
-      // check expire date
-      if (Date.now() < token.expires_at) {
-        return true;
-      } else {
-        console.error('session expired');
-      }
+      return true;
+    } else {
+      return false;
     }
+  };
 
-    return false;
+  const isTokenValid = () => {
+    if (Date.now() < token.expires_at) {
+      return true;
+    } else {
+      return false;
+    }
+  };
+
+  const isSignedIn = () => {
+    if (tokenExists() && isTokenValid()) {
+      return true;
+    } else {
+      return false;
+    }
   };
 
   const isAdmin = () => {
-    // check token
-    if (token && token.user && token.user.username) {
-      // check expire date
-      if (Date.now() < token.expires_at) {
-        // check role
-        const adminRoleIndex = roles.findIndex((entry) => entry.uid === 'administrator');
-        if (token.user.role === adminRoleIndex) {
-          return true;
-        }
+    if (tokenExists() && isTokenValid()) {
+      const adminRoleIndex = roles.findIndex((entry) => entry.uid === 'administrator');
+      if (token.user.role === adminRoleIndex) {
+        return true;
       }
+    } else {
+      return false;
     }
-
-    return false;
   };
 
   const tokenContext = {
@@ -91,9 +98,11 @@ const TokenProvider = ({ locale, children }: TokenProps) => {
   }, []);
 
   useEffect(() => {
-    // check current path is private. pravate path is '/account' or '/projects/*'
+    // pravate paths are '/account', '/admin', '/projects/*'
     const isPrivatePath = (pathname: string) => {
-      return /^\/account(\/)?$/.test(pathname) || /^\/projects(\/)?$/.test(pathname);
+      return (
+        /^\/account(\/)?$/.test(pathname) || /^\/admin(\/)?$/.test(pathname) || /^\/projects(\/.*)?$/.test(pathname)
+      );
     };
 
     const checkSignInPage = () => {
@@ -101,7 +110,16 @@ const TokenProvider = ({ locale, children }: TokenProps) => {
         return;
       }
       if (isPrivatePath(pathname) && !isSignedIn()) {
-        router.push(`/account/signin`, { locale: locale });
+        if (tokenExists()) {
+          toastContext.showToast(toastMessages.needSignedIn, 'default');
+          router.push(`/account/signin`, { locale: locale });
+          return;
+        }
+        if (isTokenValid()) {
+          toastContext.showToast(toastMessages.sessionExpired, 'default');
+          router.push(`/account/signin`, { locale: locale });
+          return;
+        }
       }
     };
 

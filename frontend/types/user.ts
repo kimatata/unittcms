@@ -1,3 +1,5 @@
+import { ToastMessages } from './toast';
+
 export type UserType = {
   id: number | null;
   email: string;
@@ -8,6 +10,7 @@ export type UserType = {
 } | null;
 
 export type TokenProps = {
+  toastMessages: ToastMessages;
   locale: string;
   children?: React.ReactNode;
 };
