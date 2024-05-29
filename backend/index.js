@@ -112,6 +112,16 @@ app.use('/runcases', runCaseBuldNewRoute);
 app.use('/runcases', runCaseDeleteRoute);
 app.use('/runcases', runCaseBulkDeleteRoute);
 
+// "/members"
+const membersIndexRoute = require('./routes/members/index')(sequelize);
+const membersNewRoute = require('./routes/members/new')(sequelize);
+const membersEditRoute = require('./routes/members/edit')(sequelize);
+const membersDeleteRoute = require('./routes/members/delete')(sequelize);
+app.use('/members', membersIndexRoute);
+app.use('/members', membersNewRoute);
+app.use('/members', membersEditRoute);
+app.use('/members', membersDeleteRoute);
+
 // "/home"
 const homeIndexRoute = require('./routes/home/index')(sequelize);
 app.use('/home', homeIndexRoute);

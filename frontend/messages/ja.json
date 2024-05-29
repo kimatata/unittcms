@@ -81,7 +81,7 @@
     "project_detail": "プロジェクト詳細",
     "public": "パブリック",
     "private": "プライベート",
-    "if_you_make_public": "プロジェクトをパブリックにすると、このサイトにアクセスできるすべてのユーザーがプロジェクトを見ることができます。",
+    "if_you_make_public": "プロジェクトをパブリックにすると、プロジェクトメンバーではないユーザーからも見えるようになります。",
     "close": "閉じる",
     "create": "作成",
     "update": "更新",
@@ -93,7 +93,8 @@
   "Project": {
     "home": "ホーム",
     "test_cases": "テストケース",
-    "test_runs": "テストラン"
+    "test_runs": "テストラン",
+    "settings": "設定"
   },
   "Home": {
     "Folders": "フォルダー",
@@ -255,5 +256,16 @@
     "include_in_run": "テストランに含める",
     "exclude_from_run": "テストランから除外する",
     "no_cases_found": "テストケースが見つかりません"
+  },
+  "Settings": {
+    "member_management": "メンバー管理",
+    "avatar": "アバター",
+    "email": "メールアドレス",
+    "username": "ユーザー名",
+    "role": "ロール",
+    "manager": "管理者",
+    "developer": "開発者",
+    "reporter": "報告者",
+    "no_members_found": "メンバーがいません"
   }
 }

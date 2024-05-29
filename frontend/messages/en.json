@@ -82,7 +82,7 @@
     "project_detail": "Project Detail",
     "public": "Public",
     "private": "Private",
-    "if_you_make_public": "If you make project public, everyone who has access to this site will be able to view it.",
+    "if_you_make_public": "Making a project public makes it visible to users who are not project members.",
     "close": "Close",
     "create": "Create",
     "update": "Update",
@@ -94,7 +94,8 @@
   "Project": {
     "home": "Home",
     "test_cases": "Test Cases",
-    "test_runs": "Test Runs"
+    "test_runs": "Test Runs",
+    "settings": "Settings"
   },
   "Home": {
     "Folders": "Folders",
@@ -256,5 +257,16 @@
     "include_in_run": "Include in run",
     "exclude_from_run": "Exclude from run",
     "no_cases_found": "No cases found"
+  },
+  "Settings": {
+    "member_management": "Member Management",
+    "avatar": "Avatar",
+    "email": "Email",
+    "username": "User name",
+    "role": "Role",
+    "manager": "Manager",
+    "developer": "Developer",
+    "reporter": "Reporter",
+    "no_members_found": "No members found"
   }
 }

@@ -42,4 +42,5 @@ export type ProjectMessages = {
   home: string;
   testCases: string;
   testRuns: string;
+  settings: string;
 };

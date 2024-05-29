@@ -13,6 +13,7 @@ export default function SidebarLayout({
     home: t('home'),
     testCases: t('test_cases'),
     testRuns: t('test_runs'),
+    settings: t('settings'),
   };
 
   return (

@@ -1,8 +1,9 @@
 const jwt = require('jsonwebtoken');
-const { roles, defaultDangerKey } = require('../routes/users/authSettings');
+const { roles, memberRoles, defaultDangerKey } = require('../routes/users/authSettings');
 const defineProject = require('../models/projects');
 const defineUser = require('../models/users');
 const { DataTypes } = require('sequelize');
+const defineMember = require('../models/members');
 
 function authMiddleware(sequelize) {
   /**
@@ -97,7 +98,49 @@ function authMiddleware(sequelize) {
     next();
   }
 
-  return { verifySignedIn, verifyAdmin, verifyProjectVisible, verifyProjectOwner };
+  /**
+   * Verify user has permission of project management
+   * (User must be the owner or manager of the project )
+   * (have to be called after verifySignedIn() middleware)
+   */
+  async function verifyProjectManager(req, res, next) {
+    const Project = defineProject(sequelize, DataTypes);
+
+    const projectId = req.params.projectId || req.query.projectId;
+    if (!projectId) {
+      return res.status(400).json({ error: 'projectId is required' });
+    }
+
+    const project = await Project.findByPk(projectId);
+    if (!project) {
+      return res.status(404).send('Project not found');
+    }
+
+    if (project.userId === req.userId) {
+      next();
+      return;
+    }
+
+    // check the user is manager of the project
+    const Member = defineMember(sequelize, DataTypes);
+    const member = await Member.findOne({
+      where: {
+        userId: req.userId,
+        projectId: projectId,
+      },
+    });
+    if (member) {
+      const managerRoleIndex = memberRoles.findIndex((entry) => entry.uid === 'manager');
+      if (member.role === managerRoleIndex) {
+        next();
+        return;
+      }
+    }
+
+    return res.status(403).json({ error: 'Forbidden' });
+  }
+
+  return { verifySignedIn, verifyAdmin, verifyProjectVisible, verifyProjectOwner, verifyProjectManager };
 }
 
 module.exports = authMiddleware;
