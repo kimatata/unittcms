@@ -1,3 +1,8 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* TODO Temporary use until NextUI's Toast is released. */
+.Toastify__toast-body {
+  font-family: 'systems-ui';
+}

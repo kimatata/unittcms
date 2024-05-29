@@ -111,12 +111,12 @@ const TokenProvider = ({ toastMessages, locale, children }: TokenProps) => {
       }
       if (isPrivatePath(pathname) && !isSignedIn()) {
         if (tokenExists()) {
-          toastContext.showToast(toastMessages.needSignedIn, 'default');
+          toastContext.showToast(toastMessages.needSignedIn, 'error');
           router.push(`/account/signin`, { locale: locale });
           return;
         }
         if (isTokenValid()) {
-          toastContext.showToast(toastMessages.sessionExpired, 'default');
+          toastContext.showToast(toastMessages.sessionExpired, 'error');
           router.push(`/account/signin`, { locale: locale });
           return;
         }

@@ -12,7 +12,11 @@ const ToastContext = createContext<ToastContextType>(defaultContext);
 
 const ToastProvider = ({ children }: ToastProps) => {
   const showToast = (text: string, mode: string) => {
-    toast(text, { theme: 'light' });
+    if (mode === 'error') {
+      toast.error(text);
+    } else {
+      toast(text, { theme: 'light' });
+    }
   };
 
   const toastContext = {
@@ -21,7 +25,7 @@ const ToastProvider = ({ children }: ToastProps) => {
 
   return (
     <ToastContext.Provider value={toastContext}>
-      <ToastContainer hideProgressBar={true} />
+      <ToastContainer position="bottom-right" hideProgressBar={true} theme="colored" />
       {children}
     </ToastContext.Provider>
   );
