@@ -68,3 +68,11 @@ export type AccountDropDownMessages = {
   signIn: string;
   signOut: string;
 };
+
+export type MemberType = {
+  id: number | null;
+  userId: number;
+  projectId: number;
+  role: number;
+  User: UserType;
+};

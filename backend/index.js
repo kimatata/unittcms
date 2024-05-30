@@ -30,9 +30,11 @@ app.use('/', indexRoute);
 
 // "users"
 const usersIndexRoute = require('./routes/users/index')(sequelize);
+const usersFindRoute = require('./routes/users/find')(sequelize);
 const signUpRoute = require('./routes/users/signup')(sequelize);
 const signInRoute = require('./routes/users/signin')(sequelize);
 app.use('/users', usersIndexRoute);
+app.use('/users', usersFindRoute);
 app.use('/users', signUpRoute);
 app.use('/users', signInRoute);
 

@@ -266,6 +266,10 @@
     "manager": "管理者",
     "developer": "開発者",
     "reporter": "報告者",
-    "no_members_found": "メンバーがいません"
+    "no_members_found": "メンバーがいません",
+    "add_member": "メンバーの追加",
+    "user_name_or_email": "ユーザー名またはメールアドレス",
+    "close": "閉じる",
+    "add": "追加"
   }
 }

@@ -1,17 +1,16 @@
 import { useState, useMemo, useCallback } from 'react';
 import { Table, TableHeader, TableColumn, TableBody, TableRow, TableCell, SortDescriptor } from '@nextui-org/react';
-import { UserType } from '@/types/user';
+import { MemberType, UserType } from '@/types/user';
 import { SettingsMessages } from '@/types/settings';
 import { memberRoles } from '@/config/selection';
 import Avatar from 'boring-avatars';
 
 type Props = {
-  members: UserType[];
+  members: MemberType[];
   messages: SettingsMessages;
-  locale: string;
 };
 
-export default function MembersTable({ members, messages, locale }: Props) {
+export default function MembersTable({ members, messages }: Props) {
   const headerColumns = [
     { name: messages.avatar, uid: 'avatar', sortable: false },
     { name: messages.email, uid: 'email', sortable: true },

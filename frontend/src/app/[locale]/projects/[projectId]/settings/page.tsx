@@ -13,6 +13,10 @@ export default function Page({ params }: { params: { projectId: string; locale: 
     developer: t('developer'),
     reporter: t('reporter'),
     noMembersFound: t('no_members_found'),
+    addMember: t('add_member'),
+    userNameOrEmail: t('user_name_or_email'),
+    close: t('close'),
+    add: t('add'),
   };
 
   return (

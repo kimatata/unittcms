@@ -5,4 +5,8 @@ export type SettingsMessages = {
   username: string;
   role: string;
   noMembersFound: string;
+  addMember: string;
+  userNameOrEmail: string;
+  close: string;
+  add: string;
 };

@@ -1,11 +1,14 @@
 'use client';
 import React from 'react';
 import { useState, useEffect, useContext } from 'react';
-import { UserType } from '@/types/user';
+import { Button } from '@nextui-org/react';
+import { Plus } from 'lucide-react';
+import { MemberType, UserType } from '@/types/user';
 import { SettingsMessages } from '@/types/settings';
 import { TokenContext } from '@/utils/TokenProvider';
 import MembersTable from './MembersTable';
 import Config from '@/config/config';
+import AddMemberDialog from './AddMemberDialog';
 const apiServer = Config.apiServer;
 
 type Props = {
@@ -32,24 +35,22 @@ async function fetchProjectMembers(jwt: string, projectId: string) {
       throw new Error(`HTTP error! Status: ${response.status}`);
     }
     const data = await response.json();
-    console.log(data);
     return data;
   } catch (error: any) {
     console.error('Error fetching data:', error.message);
   }
 }
 
-// User Search by username
-async function fetchUsers(jwt: string, text: string) {
+async function addMember(jwt: string, userId: string, projectId: string) {
   const fetchOptions = {
-    method: 'GET',
+    method: 'POST',
     headers: {
       'Content-Type': 'application/json',
       Authorization: `Bearer ${jwt}`,
     },
   };
 
-  const url = `${apiServer}/users?text=${text}`;
+  const url = `${apiServer}/members?userId=${userId}&projectId=${projectId}`;
 
   try {
     const response = await fetch(url, fetchOptions);
@@ -65,7 +66,8 @@ async function fetchUsers(jwt: string, text: string) {
 
 export default function SettingsPage({ projectId, messages, locale }: Props) {
   const context = useContext(TokenContext);
-  const [members, setMembers] = useState<UserType[]>([]);
+  const [members, setMembers] = useState<MemberType[]>([]);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   useEffect(() => {
     async function fetchDataEffect() {
@@ -84,13 +86,34 @@ export default function SettingsPage({ projectId, messages, locale }: Props) {
     fetchDataEffect();
   }, [context]);
 
+  const handleAddMember = async (memberAdded: UserType) => {
+    const newMember = await addMember(context.token.access_token, memberAdded.id, projectId);
+    newMember.User = memberAdded;
+    const updateMembers = [...members];
+    updateMembers.push(newMember);
+    setMembers(updateMembers);
+
+    setIsDialogOpen(false);
+  };
+
   return (
     <div className="container mx-auto max-w-3xl pt-16 px-6 flex-grow">
       <div className="w-full p-3 flex items-center justify-between">
         <h3 className="font-bold">{messages.memberManagement}</h3>
+        <Button startContent={<Plus size={16} />} size="sm" color="primary" onClick={() => setIsDialogOpen(true)}>
+          {messages.addMember}
+        </Button>
       </div>
 
-      <MembersTable members={members} messages={messages} locale={locale} />
+      <MembersTable members={members} messages={messages} />
+
+      <AddMemberDialog
+        isOpen={isDialogOpen}
+        members={members}
+        onCancel={() => setIsDialogOpen(false)}
+        onAddMember={handleAddMember}
+        messages={messages}
+      />
     </div>
   );
 }

@@ -267,6 +267,10 @@
     "manager": "Manager",
     "developer": "Developer",
     "reporter": "Reporter",
-    "no_members_found": "No members found"
+    "no_members_found": "No members found",
+    "add_member": "Add member",
+    "user_name_or_email": "User name or email",
+    "close": "Close",
+    "add": "Add"
   }
 }

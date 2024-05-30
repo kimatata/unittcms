@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const defineMember = require('../../models/members');
 const { DataTypes } = require('sequelize');
+const { memberRoles } = require('../../routes/users/authSettings');
 
 module.exports = function (sequelize) {
   const { verifySignedIn, verifyProjectManager } = require('../../middleware/auth')(sequelize);
@@ -24,9 +25,11 @@ module.exports = function (sequelize) {
         return res.status(400).send('Record already exists');
       }
 
+      const managerRoleIndex = memberRoles.findIndex((entry) => entry.uid === 'reporter');
       const newMember = await Member.create({
         userId: userId,
         projectId: projectId,
+        role: managerRoleIndex,
       });
 
       res.json(newMember);
