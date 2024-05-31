@@ -267,6 +267,8 @@
     "manager": "Manager",
     "developer": "Developer",
     "reporter": "Reporter",
+    "delete": "Delete",
+    "deleteMember": "Delete member",
     "no_members_found": "No members found",
     "add_member": "Add member",
     "user_name_or_email": "User name or email",

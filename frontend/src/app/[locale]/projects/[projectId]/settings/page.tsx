@@ -12,6 +12,8 @@ export default function Page({ params }: { params: { projectId: string; locale: 
     manager: t('manager'),
     developer: t('developer'),
     reporter: t('reporter'),
+    delete: t('delete'),
+    deleteMember: t('deleteMember'),
     noMembersFound: t('no_members_found'),
     addMember: t('add_member'),
     userNameOrEmail: t('user_name_or_email'),

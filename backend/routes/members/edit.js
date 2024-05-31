@@ -10,6 +10,7 @@ module.exports = function (sequelize) {
   router.put('/', verifySignedIn, verifyProjectManager, async (req, res) => {
     const userId = req.query.userId;
     const projectId = req.query.projectId;
+    const role = req.query.role;
 
     try {
       const member = await Member.findOne({
@@ -26,6 +27,7 @@ module.exports = function (sequelize) {
       await member.update({
         userId,
         projectId,
+        role,
       });
       res.json(member);
     } catch (error) {

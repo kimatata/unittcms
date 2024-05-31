@@ -7,62 +7,14 @@ import { MemberType, UserType } from '@/types/user';
 import { SettingsMessages } from '@/types/settings';
 import { TokenContext } from '@/utils/TokenProvider';
 import MembersTable from './MembersTable';
-import Config from '@/config/config';
 import AddMemberDialog from './AddMemberDialog';
-const apiServer = Config.apiServer;
+import { fetchProjectMembers, addMember, deleteMember, updateMember } from './membersControl';
 
 type Props = {
   projectId: string;
   messages: SettingsMessages;
   locale: string;
 };
-
-// Member Search
-async function fetchProjectMembers(jwt: string, projectId: string) {
-  const fetchOptions = {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${jwt}`,
-    },
-  };
-
-  const url = `${apiServer}/members?projectId=${projectId}`;
-
-  try {
-    const response = await fetch(url, fetchOptions);
-    if (!response.ok) {
-      throw new Error(`HTTP error! Status: ${response.status}`);
-    }
-    const data = await response.json();
-    return data;
-  } catch (error: any) {
-    console.error('Error fetching data:', error.message);
-  }
-}
-
-async function addMember(jwt: string, userId: string, projectId: string) {
-  const fetchOptions = {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${jwt}`,
-    },
-  };
-
-  const url = `${apiServer}/members?userId=${userId}&projectId=${projectId}`;
-
-  try {
-    const response = await fetch(url, fetchOptions);
-    if (!response.ok) {
-      throw new Error(`HTTP error! Status: ${response.status}`);
-    }
-    const data = await response.json();
-    return data;
-  } catch (error: any) {
-    console.error('Error fetching data:', error.message);
-  }
-}
 
 export default function SettingsPage({ projectId, messages, locale }: Props) {
   const context = useContext(TokenContext);
@@ -86,14 +38,31 @@ export default function SettingsPage({ projectId, messages, locale }: Props) {
     fetchDataEffect();
   }, [context]);
 
-  const handleAddMember = async (memberAdded: UserType) => {
-    const newMember = await addMember(context.token.access_token, memberAdded.id, projectId);
-    newMember.User = memberAdded;
+  const handleAddMember = async (userAdded: UserType) => {
+    const newMember = await addMember(context.token.access_token, userAdded.id, projectId);
+    newMember.User = userAdded;
     const updateMembers = [...members];
     updateMembers.push(newMember);
     setMembers(updateMembers);
 
     setIsDialogOpen(false);
+  };
+
+  const handleDeleteMember = async (userDeleted: UserType) => {
+    await deleteMember(context.token.access_token, userDeleted.id, projectId);
+    setMembers(members.filter((member) => member.User.id !== userDeleted.id));
+  };
+
+  const handleChangeRole = async (userEdit: UserType, role: number) => {
+    await updateMember(context.token.access_token, userEdit.id, projectId, role);
+    setMembers((prevMembers) => {
+      return prevMembers.map((member) => {
+        if (member.User.id === userEdit.id) {
+          return { ...member, role: role };
+        }
+        return member;
+      });
+    });
   };
 
   return (
@@ -105,7 +74,12 @@ export default function SettingsPage({ projectId, messages, locale }: Props) {
         </Button>
       </div>
 
-      <MembersTable members={members} messages={messages} />
+      <MembersTable
+        members={members}
+        onChangeRole={handleChangeRole}
+        onDeleteMember={handleDeleteMember}
+        messages={messages}
+      />
 
       <AddMemberDialog
         isOpen={isDialogOpen}

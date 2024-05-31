@@ -71,11 +71,22 @@ export default function AddMemberDialog({ isOpen, members, onCancel, onAddMember
     fetchDataEffect();
   }, [searchText]);
 
+  const handleExit = () => {
+    setSearchText('');
+    setCandidates([]);
+    onCancel();
+  };
+
+  const handleAdd = (userAdded: UserType) => {
+    onAddMember(userAdded);
+    handleExit();
+  };
+
   return (
     <Modal
       isOpen={isOpen}
       onOpenChange={() => {
-        onCancel();
+        handleExit();
       }}
       size="2xl"
     >
@@ -90,10 +101,10 @@ export default function AddMemberDialog({ isOpen, members, onCancel, onAddMember
               setSearchText(e.target.value);
             }}
           />
-          <CandidatesTable candidates={candidates} onAddPress={onAddMember} messages={messages} />
+          <CandidatesTable candidates={candidates} onAddPress={handleAdd} messages={messages} />
         </ModalBody>
         <ModalFooter>
-          <Button variant="light" onPress={onCancel}>
+          <Button variant="light" onPress={handleExit}>
             {messages.close}
           </Button>
         </ModalFooter>

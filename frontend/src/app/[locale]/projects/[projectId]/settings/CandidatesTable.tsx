@@ -6,7 +6,7 @@ import Avatar from 'boring-avatars';
 
 type Props = {
   candidates: UserType[];
-  onAddPress: (memberAdded: UserType) => void;
+  onAddPress: (userAdded: UserType) => void;
   messages: SettingsMessages;
 };
 

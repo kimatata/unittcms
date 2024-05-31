@@ -1,5 +1,19 @@
 import { useState, useMemo, useCallback } from 'react';
-import { Table, TableHeader, TableColumn, TableBody, TableRow, TableCell, SortDescriptor } from '@nextui-org/react';
+import {
+  Button,
+  Table,
+  TableHeader,
+  TableColumn,
+  TableBody,
+  TableRow,
+  TableCell,
+  SortDescriptor,
+  DropdownTrigger,
+  Dropdown,
+  DropdownMenu,
+  DropdownItem,
+} from '@nextui-org/react';
+import { ChevronDown } from 'lucide-react';
 import { MemberType, UserType } from '@/types/user';
 import { SettingsMessages } from '@/types/settings';
 import { memberRoles } from '@/config/selection';
@@ -7,15 +21,18 @@ import Avatar from 'boring-avatars';
 
 type Props = {
   members: MemberType[];
+  onChangeRole: (userEdit: UserType, role: number) => void;
+  onDeleteMember: (userDeleted: UserType) => void;
   messages: SettingsMessages;
 };
 
-export default function MembersTable({ members, messages }: Props) {
+export default function MembersTable({ members, onChangeRole, onDeleteMember, messages }: Props) {
   const headerColumns = [
-    { name: messages.avatar, uid: 'avatar', sortable: false },
+    { name: messages.avatar, uid: 'avatar' },
     { name: messages.email, uid: 'email', sortable: true },
     { name: messages.username, uid: 'username', sortable: true },
     { name: messages.role, uid: 'role', sortable: true },
+    { name: messages.delete, uid: 'delete' },
   ];
 
   const [sortDescriptor, setSortDescriptor] = useState<SortDescriptor>({
@@ -51,7 +68,28 @@ export default function MembersTable({ members, messages }: Props) {
       case 'username':
         return member.User.username;
       case 'role':
-        return <span>{messages[memberRoles[cellValue].uid]}</span>;
+        return (
+          <Dropdown>
+            <DropdownTrigger>
+              <Button size="sm" variant="light" endContent={<ChevronDown size={16} />}>
+                <span className="w-12">{messages[memberRoles[cellValue].uid]}</span>
+              </Button>
+            </DropdownTrigger>
+            <DropdownMenu aria-label="test case actions">
+              {memberRoles.map((role, index) => (
+                <DropdownItem key={index} onPress={() => onChangeRole(member.User, index)}>
+                  {messages[role.uid]}
+                </DropdownItem>
+              ))}
+            </DropdownMenu>
+          </Dropdown>
+        );
+      case 'delete':
+        return (
+          <Button size="sm" color="danger" variant="light" onClick={() => onDeleteMember(member.User)}>
+            {messages.deleteMember}
+          </Button>
+        );
       default:
         return cellValue;
     }
