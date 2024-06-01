@@ -4,44 +4,19 @@ import { useState, useEffect, useContext } from 'react';
 import { Button, Input, Modal, ModalContent, ModalHeader, ModalBody, ModalFooter } from '@nextui-org/react';
 import { SettingsMessages } from '@/types/settings';
 import { TokenContext } from '@/utils/TokenProvider';
-import Config from '@/config/config';
-import { MemberType, UserType } from '@/types/user';
+import { UserType } from '@/types/user';
+import { searchUsers } from './membersControl';
 import CandidatesTable from './CandidatesTable';
-const apiServer = Config.apiServer;
 
 type Props = {
   isOpen: boolean;
-  members: MemberType[];
+  projectId: string;
   onCancel: () => void;
   onAddMember: (memberAdded: UserType) => void;
   messages: SettingsMessages;
 };
 
-// User Search by username
-async function searchUsers(jwt: string, text: string, excludeIdsParam: string) {
-  const fetchOptions = {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${jwt}`,
-    },
-  };
-
-  const url = `${apiServer}/users/find?search=${text}&excludeIds=${excludeIdsParam}`;
-
-  try {
-    const response = await fetch(url, fetchOptions);
-    if (!response.ok) {
-      throw new Error(`HTTP error! Status: ${response.status}`);
-    }
-    const data = await response.json();
-    return data;
-  } catch (error: any) {
-    console.error('Error fetching data:', error.message);
-  }
-}
-
-export default function AddMemberDialog({ isOpen, members, onCancel, onAddMember, messages }: Props) {
+export default function AddMemberDialog({ isOpen, projectId, onCancel, onAddMember, messages }: Props) {
   const context = useContext(TokenContext);
   const [searchText, setSearchText] = useState('');
   const [candidates, setCandidates] = useState<UserType[]>([]);
@@ -57,11 +32,7 @@ export default function AddMemberDialog({ isOpen, members, onCancel, onAddMember
       }
 
       try {
-        const excludeIds = members.map((member) => {
-          return member.id;
-        });
-        const excludeIdsParam = excludeIds.join(',');
-        const data = await searchUsers(context.token.access_token, searchText, excludeIdsParam);
+        const data = await searchUsers(context.token.access_token, projectId, searchText);
         setCandidates(data);
       } catch (error: any) {
         console.error('Error in effect:', error.message);

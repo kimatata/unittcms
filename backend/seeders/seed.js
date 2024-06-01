@@ -504,14 +504,14 @@ module.exports = {
 
     await queryInterface.bulkInsert('members', [
       {
-        userId: 1,
+        userId: 2,
         projectId: 1,
         role: 0,
         createdAt: new Date(),
         updatedAt: new Date(),
       },
       {
-        userId: 1,
+        userId: 3,
         projectId: 2,
         role: 0,
         createdAt: new Date(),

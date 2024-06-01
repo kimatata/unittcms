@@ -1,4 +1,4 @@
-import { useState, useMemo, useCallback } from 'react';
+import { useState, useMemo } from 'react';
 import {
   Button,
   Table,
@@ -50,7 +50,7 @@ export default function MembersTable({ members, onChangeRole, onDeleteMember, me
     });
   }, [sortDescriptor, members]);
 
-  const renderCell = useCallback((member: UserType, columnKey: Key) => {
+  const renderCell = (member: UserType, columnKey: Key) => {
     const cellValue = member[columnKey as keyof UserType];
 
     switch (columnKey) {
@@ -93,7 +93,7 @@ export default function MembersTable({ members, onChangeRole, onDeleteMember, me
       default:
         return cellValue;
     }
-  }, []);
+  };
 
   const classNames = useMemo(
     () => ({

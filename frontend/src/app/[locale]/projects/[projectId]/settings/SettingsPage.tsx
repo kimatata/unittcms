@@ -83,7 +83,7 @@ export default function SettingsPage({ projectId, messages, locale }: Props) {
 
       <AddMemberDialog
         isOpen={isDialogOpen}
-        members={members}
+        projectId={projectId}
         onCancel={() => setIsDialogOpen(false)}
         onAddMember={handleAddMember}
         messages={messages}
