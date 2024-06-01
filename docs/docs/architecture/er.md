@@ -2,6 +2,6 @@
 sidebar_position: 3
 ---
 
-# DataBase
+# ER diagram
 
 ![ER](./img/er.svg)

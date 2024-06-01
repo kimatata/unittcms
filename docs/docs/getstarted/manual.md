@@ -1,5 +1,5 @@
 ---
-sidebar_position: 3
+sidebar_position: 2
 ---
 
 # Running TestPlat manually
@@ -24,7 +24,7 @@ Moves to backend directory, then install dependencies.
 
 ```bash
 cd backend
-npm ci
+npm install
 ```
 
 Initialize the database with the following command.
@@ -45,7 +45,7 @@ Moves to frontend directory, then install dependencies.
 
 ```bash
 cd frontend
-npm ci
+npm install
 ```
 
 Start frontend server
