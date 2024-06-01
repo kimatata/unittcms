@@ -6,7 +6,7 @@ import { FolderType, FoldersMessages } from '@/types/folder';
 
 type Props = {
   isOpen: boolean;
-  editingFolder: FolderType;
+  editingFolder: FolderType | null;
   onCancel: () => void;
   onSubmit: (name: string, detail: string) => void;
   messages: FoldersMessages;
@@ -66,7 +66,7 @@ export default function FolderDialog({ isOpen, editingFolder, onCancel, onSubmit
     if (!folderName.text) {
       setFolderName({
         text: '',
-        isValid: false,
+        isValid: true,
         errorMessage: messages.pleaseEnter,
       });
 

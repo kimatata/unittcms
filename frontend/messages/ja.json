@@ -137,7 +137,9 @@
     "close": "閉じる",
     "create": "作成",
     "update": "更新",
-    "please_enter": "フォルダ名を入力してください"
+    "please_enter": "フォルダー名を入力してください",
+    "delete": "削除",
+    "are_you_sure": "フォルダーを削除してもよろしいですか?"
   },
   "Cases": {
     "test_case_list": "テストケース一覧",

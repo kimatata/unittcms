@@ -1,9 +1,10 @@
 const jwt = require('jsonwebtoken');
 const { roles, memberRoles, defaultDangerKey } = require('../routes/users/authSettings');
-const defineProject = require('../models/projects');
-const defineUser = require('../models/users');
 const { DataTypes } = require('sequelize');
+const defineUser = require('../models/users');
 const defineMember = require('../models/members');
+const defineProject = require('../models/projects');
+const defineFolder = require('../models/folders');
 
 function authMiddleware(sequelize) {
   /**
@@ -56,7 +57,7 @@ function authMiddleware(sequelize) {
   async function verifyProjectVisible(req, res, next) {
     const Project = defineProject(sequelize, DataTypes);
 
-    const projectId = req.params.projectId;
+    const projectId = req.params.projectId || req.query.projectId;
     if (!projectId) {
       return res.status(400).json({ error: 'projectId is required' });
     }
@@ -100,7 +101,7 @@ function authMiddleware(sequelize) {
 
   /**
    * Verify user has permission of project management
-   * (User must be the owner or manager of the project )
+   * (User must be the owner or manager of the project)
    * (have to be called after verifySignedIn() middleware)
    */
   async function verifyProjectManager(req, res, next) {
@@ -140,7 +141,69 @@ function authMiddleware(sequelize) {
     return res.status(403).json({ error: 'Forbidden' });
   }
 
-  return { verifySignedIn, verifyAdmin, verifyProjectVisible, verifyProjectOwner, verifyProjectManager };
+  /**
+   * Verify user has permission of project development
+   * (User must be the owner or manager or developer of the project)
+   * (have to be called after verifySignedIn() middleware)
+   */
+  async function verifyProjectDeveloper(req, res, next) {
+    const Project = defineProject(sequelize, DataTypes);
+    const Folder = defineFolder(sequelize, DataTypes);
+
+    let projectId = req.params.projectId || req.query.projectId;
+    const folderId = req.params.folderId || req.query.folderId;
+    if (!projectId && !folderId) {
+      return res.status(400).json({ error: 'projectId or folderId is required' });
+    }
+
+    if (!projectId) {
+      // find project id from folderId
+      const folder = await Folder.findByPk(folderId);
+      if (folder && folder.projectId) {
+        projectId = folder.projectId;
+      } else {
+        return res.status(404).send('failed to find project from folderId');
+      }
+    }
+
+    const project = await Project.findByPk(projectId);
+    if (!project) {
+      return res.status(404).send('Project not found');
+    }
+
+    if (project.userId === req.userId) {
+      next();
+      return;
+    }
+
+    // check the user is manager or developer of the project
+    const Member = defineMember(sequelize, DataTypes);
+    const member = await Member.findOne({
+      where: {
+        userId: req.userId,
+        projectId: projectId,
+      },
+    });
+    if (member) {
+      const managerRoleIndex = memberRoles.findIndex((entry) => entry.uid === 'manager');
+      const developerRoleIndex = memberRoles.findIndex((entry) => entry.uid === 'developer');
+      if (member.role === managerRoleIndex || member.role === developerRoleIndex) {
+        next();
+        return;
+      }
+    }
+
+    return res.status(403).json({ error: 'Forbidden' });
+  }
+
+  return {
+    verifySignedIn,
+    verifyAdmin,
+    verifyProjectVisible,
+    verifyProjectOwner,
+    verifyProjectManager,
+    verifyProjectDeveloper,
+  };
 }
 
 module.exports = authMiddleware;

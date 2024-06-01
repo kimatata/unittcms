@@ -22,4 +22,6 @@ export type FoldersMessages = {
   create: string;
   update: string;
   pleaseEnter: string;
+  delete: string;
+  areYouSure: string;
 };

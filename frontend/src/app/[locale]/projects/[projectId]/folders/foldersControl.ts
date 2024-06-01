@@ -4,13 +4,14 @@ const apiServer = Config.apiServer;
 /**
  * fetch folder records
  */
-async function fetchFolders(projectId: string) {
+async function fetchFolders(jwt: string, projectId: string) {
   try {
     const url = `${apiServer}/folders?projectId=${projectId}`;
     const response = await fetch(url, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
+        Authorization: `Bearer ${jwt}`,
       },
     });
 
@@ -28,11 +29,16 @@ async function fetchFolders(projectId: string) {
 /**
  * Create project
  */
-async function createFolder(name: string, detail: string, projectId: strting, parentFolderId: number) {
+async function createFolder(
+  jwt: string,
+  name: string,
+  detail: string,
+  projectId: string,
+  parentFolderId: number | null
+) {
   const newFolderData = {
     name: name,
     detail: detail,
-    projectId: projectId,
     parentFolderId: parentFolderId,
   };
 
@@ -40,11 +46,12 @@ async function createFolder(name: string, detail: string, projectId: strting, pa
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
+      Authorization: `Bearer ${jwt}`,
     },
     body: JSON.stringify(newFolderData),
   };
 
-  const url = `${apiServer}/folders`;
+  const url = `${apiServer}/folders?projectId=${projectId}`;
 
   try {
     const response = await fetch(url, fetchOptions);
@@ -62,7 +69,14 @@ async function createFolder(name: string, detail: string, projectId: strting, pa
 /**
  * Update folder
  */
-async function updateFolder(folderId: number, name: string, detail: string, projectId: string, parentFolderId: number) {
+async function updateFolder(
+  jwt: string,
+  folderId: number,
+  name: string,
+  detail: string,
+  projectId: string,
+  parentFolderId: number | null
+) {
   const updateFolderData = {
     name: name,
     detail: detail,
@@ -74,6 +88,7 @@ async function updateFolder(folderId: number, name: string, detail: string, proj
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
+      Authorization: `Bearer ${jwt}`,
     },
     body: JSON.stringify(updateFolderData),
   };
@@ -96,11 +111,12 @@ async function updateFolder(folderId: number, name: string, detail: string, proj
 /**
  * Delete folder
  */
-async function deleteFolder(folderId: number) {
+async function deleteFolder(jwt: string, folderId: number) {
   const fetchOptions = {
     method: 'DELETE',
     headers: {
       'Content-Type': 'application/json',
+      Authorization: `Bearer ${jwt}`,
     },
   };
 

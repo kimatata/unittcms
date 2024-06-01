@@ -1,14 +1,14 @@
 'use client';
-import React from 'react';
 import { FolderType, FoldersMessages } from '@/types/folder';
-import { useEffect, useState } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import { Button, Listbox, ListboxItem } from '@nextui-org/react';
 import { Folder, Plus } from 'lucide-react';
 import { usePathname, useRouter } from '@/src/navigation';
+import { TokenContext } from '@/utils/TokenProvider';
 import useGetCurrentIds from '@/utils/useGetCurrentIds';
 import FolderDialog from './FolderDialog';
 import FolderEditMenu from './FolderEditMenu';
-
+import DeleteConfirmDialog from '@/components/DeleteConfirmDialog';
 import { fetchFolders, createFolder, updateFolder, deleteFolder } from './foldersControl';
 
 type Props = {
@@ -20,50 +20,20 @@ type Props = {
 export default function FoldersPane({ projectId, messages, locale }: Props) {
   const router = useRouter();
   const pathname = usePathname();
-  const [folders, setFolders] = useState([]);
-  const [selectedFolder, setSelectedFolder] = useState<FolderType>({});
-
+  const context = useContext(TokenContext);
+  const [folders, setFolders] = useState<FolderType[]>([]);
+  const [selectedFolder, setSelectedFolder] = useState<FolderType | null>(null);
   const { folderId } = useGetCurrentIds();
-
   const [isFolderDialogOpen, setIsFolderDialogOpen] = useState(false);
   const [editingFolder, setEditingProject] = useState<FolderType | null>(null);
 
-  const openDialogForCreate = () => {
-    setIsFolderDialogOpen(true);
-    setEditingProject(null);
-  };
-
-  const closeDialog = () => {
-    setIsFolderDialogOpen(false);
-    setEditingProject(null);
-  };
-
-  const onSubmit = async (name: string, detail: string) => {
-    if (editingFolder) {
-      const updatedProject = await updateFolder(editingFolder.id, name, detail, projectId, null);
-      const updatedProjects = folders.map((project) => (project.id === updatedProject.id ? updatedProject : project));
-      setFolders(updatedProjects);
-    } else {
-      const newProject = await createFolder(name, detail, projectId, null);
-      setFolders([...folders, newProject]);
-    }
-    closeDialog();
-  };
-
-  const onEditClick = (folder: FolderType) => {
-    setEditingProject(folder);
-    setIsFolderDialogOpen(true);
-  };
-
-  const onDeleteClick = async (folderId: number) => {
-    await deleteFolder(folderId);
-    router.push(`/projects/${projectId}/folders`, { locale: locale });
-  };
-
   useEffect(() => {
     async function fetchDataEffect() {
+      if (!context.isSignedIn()) {
+        return;
+      }
       try {
-        const data = await fetchFolders(projectId);
+        const data = await fetchFolders(context.token.access_token, projectId);
         setFolders(data);
 
         const selectedFolderFromUrl = data.find((folder) => folder.id === folderId);
@@ -80,7 +50,62 @@ export default function FoldersPane({ projectId, messages, locale }: Props) {
     }
 
     fetchDataEffect();
-  }, [folderId]);
+  }, [context, folderId]);
+
+  const openDialogForCreate = () => {
+    setIsFolderDialogOpen(true);
+    setEditingProject(null);
+  };
+
+  const closeDialog = () => {
+    setIsFolderDialogOpen(false);
+    setEditingProject(null);
+  };
+
+  const onSubmit = async (name: string, detail: string) => {
+    if (editingFolder) {
+      const updatedProject = await updateFolder(
+        context.token.access_token,
+        editingFolder.id,
+        name,
+        detail,
+        projectId,
+        null
+      );
+      const updatedProjects = folders.map((project) => (project.id === updatedProject.id ? updatedProject : project));
+      setFolders(updatedProjects);
+    } else {
+      const newProject = await createFolder(context.token.access_token, name, detail, projectId, null);
+      setFolders([...folders, newProject]);
+    }
+    closeDialog();
+  };
+
+  const onEditClick = (folder: FolderType) => {
+    setEditingProject(folder);
+    setIsFolderDialogOpen(true);
+  };
+
+  // Delete confirm dialog
+  const [isDeleteConfirmDialogOpen, setIsDeleteConfirmDialogOpen] = useState(false);
+  const [deleteFolderId, setDeleteFolderId] = useState<number | null>(null);
+  const closeDeleteConfirmDialog = () => {
+    setIsDeleteConfirmDialogOpen(false);
+    setDeleteFolderId(null);
+  };
+
+  const onDeleteClick = (deleteFolderId: number) => {
+    setDeleteFolderId(deleteFolderId);
+    setIsDeleteConfirmDialogOpen(true);
+  };
+
+  const onConfirm = async () => {
+    if (deleteFolderId) {
+      await deleteFolder(context.token.access_token, deleteFolderId);
+      router.push(`/projects/${projectId}/folders`, { locale: locale });
+      closeDeleteConfirmDialog();
+    }
+  };
 
   const baseClass = '';
   const selectedClass = `${baseClass} bg-neutral-200 dark:bg-neutral-700`;
@@ -125,6 +150,15 @@ export default function FoldersPane({ projectId, messages, locale }: Props) {
         onCancel={closeDialog}
         onSubmit={onSubmit}
         messages={messages}
+      />
+
+      <DeleteConfirmDialog
+        isOpen={isDeleteConfirmDialogOpen}
+        onCancel={closeDeleteConfirmDialog}
+        onConfirm={onConfirm}
+        closeText={messages.close}
+        confirmText={messages.areYouSure}
+        deleteText={messages.delete}
       />
     </>
   );

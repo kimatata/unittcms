@@ -4,9 +4,10 @@ const defineFolder = require('../../models/folders');
 const { DataTypes } = require('sequelize');
 
 module.exports = function (sequelize) {
+  const { verifySignedIn, verifyProjectVisible } = require('../../middleware/auth')(sequelize);
   const Folder = defineFolder(sequelize, DataTypes);
 
-  router.get('/', async (req, res) => {
+  router.get('/', verifySignedIn, verifyProjectVisible, async (req, res) => {
     const { projectId } = req.query;
 
     if (!projectId) {

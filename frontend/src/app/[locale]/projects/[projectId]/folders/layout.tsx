@@ -20,6 +20,8 @@ export default function FoldersLayout({
     create: t('create'),
     update: t('update'),
     pleaseEnter: t('please_enter'),
+    delete: t('delete'),
+    areYouSure: t('are_you_sure'),
   };
 
   return (

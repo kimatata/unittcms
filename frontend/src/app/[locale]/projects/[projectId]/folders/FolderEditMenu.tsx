@@ -5,7 +5,7 @@ import { FolderType, FoldersMessages } from '@/types/folder';
 type Props = {
   folder: FolderType;
   onEditClick: (folder: FolderType) => void;
-  onDeleteClick: (folder: FolderType) => void;
+  onDeleteClick: (deleteFolderId: number) => void;
   messages: FoldersMessages;
 };
 

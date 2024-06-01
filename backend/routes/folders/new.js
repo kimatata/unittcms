@@ -4,11 +4,13 @@ const defineFolder = require('../../models/folders');
 const { DataTypes } = require('sequelize');
 
 module.exports = function (sequelize) {
+  const { verifySignedIn, verifyProjectDeveloper } = require('../../middleware/auth')(sequelize);
   const Folder = defineFolder(sequelize, DataTypes);
 
-  router.post('/', async (req, res) => {
+  router.post('/', verifySignedIn, verifyProjectDeveloper, async (req, res) => {
     try {
-      const { name, detail, projectId, parentFolderId } = req.body;
+      const projectId = req.query.projectId;
+      const { name, detail, parentFolderId } = req.body;
       if (!name || !projectId) {
         return res.status(400).json({ error: 'Name and projectId are required' });
       }
