@@ -6,7 +6,7 @@ export type UserType = {
   password: string;
   username: string;
   role: number;
-  avatarPath: string;
+  avatarPath: string | null;
 } | null;
 
 export type TokenProps = {

@@ -3,7 +3,11 @@ import { createContext, useState, useEffect, useContext } from 'react';
 import { TokenContextType, TokenType } from '@/types/user';
 import { TokenProps } from '@/types/user';
 import { useRouter, usePathname } from '@/src/navigation';
-import { roles } from '@/config/selection';
+import {
+  isSignedIn as tokenIsSinedIn,
+  isAdmin as tokenIsAdmin,
+  checkSignInPage as tokenCheckSignInPage,
+} from './token';
 import { ToastContext } from './ToastProvider';
 const LOCAL_STORAGE_KEY = 'testplat-auth-token';
 
@@ -40,39 +44,12 @@ const TokenProvider = ({ toastMessages, locale, children }: TokenProps) => {
     user: null,
   });
 
-  const tokenExists = () => {
-    if (token && token.user && token.user.username) {
-      return true;
-    } else {
-      return false;
-    }
-  };
-
-  const isTokenValid = () => {
-    if (Date.now() < token.expires_at) {
-      return true;
-    } else {
-      return false;
-    }
-  };
-
   const isSignedIn = () => {
-    if (tokenExists() && isTokenValid()) {
-      return true;
-    } else {
-      return false;
-    }
+    return tokenIsSinedIn(token);
   };
 
   const isAdmin = () => {
-    if (tokenExists() && isTokenValid()) {
-      const adminRoleIndex = roles.findIndex((entry) => entry.uid === 'administrator');
-      if (token.user.role === adminRoleIndex) {
-        return true;
-      }
-    } else {
-      return false;
-    }
+    return tokenIsAdmin(token);
   };
 
   const tokenContext = {
@@ -98,32 +75,7 @@ const TokenProvider = ({ toastMessages, locale, children }: TokenProps) => {
   }, []);
 
   useEffect(() => {
-    // pravate paths are '/account', '/admin', '/projects/*'
-    const isPrivatePath = (pathname: string) => {
-      return (
-        /^\/account(\/)?$/.test(pathname) || /^\/admin(\/)?$/.test(pathname) || /^\/projects(\/.*)?$/.test(pathname)
-      );
-    };
-
-    const checkSignInPage = () => {
-      if (!hasRestoreFinished) {
-        return;
-      }
-      if (isPrivatePath(pathname) && !isSignedIn()) {
-        if (tokenExists()) {
-          toastContext.showToast(toastMessages.needSignedIn, 'error');
-          router.push(`/account/signin`, { locale: locale });
-          return;
-        }
-        if (isTokenValid()) {
-          toastContext.showToast(toastMessages.sessionExpired, 'error');
-          router.push(`/account/signin`, { locale: locale });
-          return;
-        }
-      }
-    };
-
-    checkSignInPage();
+    tokenCheckSignInPage(token, pathname);
   }, [pathname, hasRestoreFinished]);
 
   return <TokenContext.Provider value={tokenContext}>{children}</TokenContext.Provider>;
