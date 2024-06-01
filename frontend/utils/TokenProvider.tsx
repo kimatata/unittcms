@@ -75,7 +75,20 @@ const TokenProvider = ({ toastMessages, locale, children }: TokenProps) => {
   }, []);
 
   useEffect(() => {
-    tokenCheckSignInPage(token, pathname);
+    if (!hasRestoreFinished) {
+      return;
+    }
+
+    const ret = tokenCheckSignInPage(token, pathname);
+    if (!ret.ok) {
+      if (ret.reason === 'notoken') {
+        toastContext.showToast(toastMessages.needSignedIn, 'error');
+      } else if (ret.reason === 'expired') {
+        toastContext.showToast(toastMessages.sessionExpired, 'error');
+      }
+
+      router.push(ret.redirectPath, { locale: locale });
+    }
   }, [pathname, hasRestoreFinished]);
 
   return <TokenContext.Provider value={tokenContext}>{children}</TokenContext.Provider>;
