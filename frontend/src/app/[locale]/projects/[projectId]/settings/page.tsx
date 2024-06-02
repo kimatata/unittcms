@@ -4,21 +4,20 @@ import { useTranslations } from 'next-intl';
 export default function Page({ params }: { params: { projectId: string; locale: string } }) {
   const t = useTranslations('Settings');
   const messages = {
-    memberManagement: t('member_management'),
-    avatar: t('avatar'),
-    email: t('email'),
-    username: t('username'),
-    role: t('role'),
-    manager: t('manager'),
-    developer: t('developer'),
-    reporter: t('reporter'),
+    projectManagement: t('project_management'),
+    projectName: t('project_name'),
+    projectDetail: t('project_detail'),
+    editProject: t('edit_project'),
+    project: t('project'),
+    ifYouMakePublic: t('if_you_make_public'),
+    public: t('public'),
+    publicity: t('publicity'),
+    private: t('private'),
+    update: t('update'),
+    deleteProject: t('delete_project'),
     delete: t('delete'),
-    deleteMember: t('deleteMember'),
-    noMembersFound: t('no_members_found'),
-    addMember: t('add_member'),
-    userNameOrEmail: t('user_name_or_email'),
     close: t('close'),
-    add: t('add'),
+    areYouSure: t('are_you_sure'),
   };
 
   return (

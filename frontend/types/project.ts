@@ -5,7 +5,7 @@ export type ProjectType = {
   id: number;
   name: string;
   detail: string;
-  isPublic: string;
+  isPublic: boolean;
   userId: number;
   createdAt: string;
   updatedAt: string;

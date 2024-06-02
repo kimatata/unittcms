@@ -1,4 +1,4 @@
-import { Home } from './home';
+import { ProjectHome } from './ProjectHome';
 import { useTranslations } from 'next-intl';
 
 export type HomeMessages = {
@@ -69,7 +69,7 @@ export default function Page({ params }: { params: { projectId: string } }) {
   };
   return (
     <>
-      <Home projectId={params.projectId} messages={messages} />
+      <ProjectHome projectId={params.projectId} messages={messages} />
     </>
   );
 }

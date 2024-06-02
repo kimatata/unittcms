@@ -1,7 +1,7 @@
 'use client';
 import { useState, useEffect } from 'react';
 import { Listbox, ListboxItem } from '@nextui-org/react';
-import { Home, Files, FlaskConical, Settings } from 'lucide-react';
+import { Home, Files, FlaskConical, Users, Settings } from 'lucide-react';
 import { usePathname, useRouter } from '@/src/navigation';
 import useGetCurrentIds from '@/utils/useGetCurrentIds';
 import { ProjectMessages } from '@/types/project';
@@ -27,6 +27,8 @@ export default function Sidebar({ messages, locale }: Props) {
       router.push(`/projects/${projectId}/folders`, { locale: locale });
     } else if (key === 'runs') {
       router.push(`/projects/${projectId}/runs`, { locale: locale });
+    } else if (key === 'members') {
+      router.push(`/projects/${projectId}/members`, { locale: locale });
     } else if (key === 'settings') {
       router.push(`/projects/${projectId}/settings`, { locale: locale });
     }
@@ -40,6 +42,8 @@ export default function Sidebar({ messages, locale }: Props) {
         setCurrentTab('cases');
       } else if (currentPath.includes('runs')) {
         setCurrentTab('runs');
+      } else if (currentPath.includes('members')) {
+        setCurrentTab('members');
       } else if (currentPath.includes('settings')) {
         setCurrentTab('settings');
       }
@@ -63,6 +67,11 @@ export default function Sidebar({ messages, locale }: Props) {
       key: 'runs',
       text: messages.testRuns,
       startContent: <FlaskConical strokeWidth={1} size={20} />,
+    },
+    {
+      key: 'members',
+      text: messages.members,
+      startContent: <Users strokeWidth={1} size={20} />,
     },
     {
       key: 'settings',

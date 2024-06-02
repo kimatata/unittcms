@@ -95,6 +95,7 @@
     "home": "Home",
     "test_cases": "Test Cases",
     "test_runs": "Test Runs",
+    "members": "Members",
     "settings": "Settings"
   },
   "Home": {
@@ -260,7 +261,7 @@
     "exclude_from_run": "Exclude from run",
     "no_cases_found": "No cases found"
   },
-  "Settings": {
+  "Members": {
     "member_management": "Member Management",
     "avatar": "Avatar",
     "email": "Email",
@@ -276,5 +277,21 @@
     "user_name_or_email": "User name or email",
     "close": "Close",
     "add": "Add"
+  },
+  "Settings": {
+    "project_management": "Project Management",
+    "project_name": "Project Name",
+    "project_detail": "Project Detail",
+    "edit_project": "Edit Project",
+    "project": "Project",
+    "publicity": "Publicity",
+    "public": "Public",
+    "private": "Private",
+    "if_you_make_public": "Making a project public makes it visible to users who are not project members.",
+    "update": "Update",
+    "delete_project": "Delete Project",
+    "delete": "Delete",
+    "close": "Close",
+    "are_you_sure": "Are you sure you want to delete the project?"
   }
 }

@@ -1,14 +1,15 @@
 'use client';
 import React from 'react';
 import { useState, useEffect, useContext } from 'react';
-import { Button } from '@nextui-org/react';
-import { Plus } from 'lucide-react';
-import { MemberType, UserType } from '@/types/user';
+import { Button, Table, TableHeader, TableColumn, TableBody, TableRow, TableCell } from '@nextui-org/react';
+import { Pencil, Trash } from 'lucide-react';
 import { SettingsMessages } from '@/types/settings';
 import { TokenContext } from '@/utils/TokenProvider';
-import MembersTable from './MembersTable';
-import AddMemberDialog from './AddMemberDialog';
-import { fetchProjectMembers, addMember, deleteMember, updateMember } from './membersControl';
+import { deleteProject, fetchProject, updateProject } from '@/utils/projectsControl';
+import { ProjectType } from '@/types/project';
+import DeleteConfirmDialog from '@/components/DeleteConfirmDialog';
+import { useRouter } from '@/src/navigation';
+import ProjectDialog from '@/components/ProjectDialog';
 
 type Props = {
   projectId: string;
@@ -18,8 +19,18 @@ type Props = {
 
 export default function SettingsPage({ projectId, messages, locale }: Props) {
   const context = useContext(TokenContext);
-  const [members, setMembers] = useState<MemberType[]>([]);
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const router = useRouter();
+  const [project, setProject] = useState<ProjectType>({
+    id: 0,
+    name: '',
+    detail: '',
+    isPublic: false,
+    userId: 0,
+    createdAt: '',
+    updatedAt: '',
+    Folders: [],
+    Runs: [],
+  });
 
   useEffect(() => {
     async function fetchDataEffect() {
@@ -28,8 +39,8 @@ export default function SettingsPage({ projectId, messages, locale }: Props) {
       }
 
       try {
-        const data = await fetchProjectMembers(context.token.access_token, projectId);
-        setMembers(data);
+        const data = await fetchProject(context.token.access_token, Number(projectId));
+        setProject(data);
       } catch (error: any) {
         console.error('Error in effect:', error.message);
       }
@@ -38,62 +49,87 @@ export default function SettingsPage({ projectId, messages, locale }: Props) {
     fetchDataEffect();
   }, [context]);
 
-  const handleAddMember = async (userAdded: UserType) => {
-    const newMember = await addMember(context.token.access_token, userAdded.id, projectId);
-    newMember.User = userAdded;
-    const updateMembers = [...members];
-    updateMembers.push(newMember);
-    setMembers(updateMembers);
-
-    setIsDialogOpen(false);
+  // project dialog
+  const [isProjectDialogOpen, setIsProjectDialogOpen] = useState(false);
+  const onSubmit = async (name: string, detail: string, isPublic: boolean) => {
+    const updatedProject = await updateProject(context.token.access_token, project.id, name, detail, isPublic);
+    setProject(updatedProject);
+    setIsProjectDialogOpen(false);
   };
 
-  const handleDeleteMember = async (userDeleted: UserType) => {
-    await deleteMember(context.token.access_token, userDeleted.id, projectId);
-    setMembers(members.filter((member) => member.User.id !== userDeleted.id));
-  };
-
-  const handleChangeRole = async (userEdit: UserType, role: number) => {
-    await updateMember(context.token.access_token, userEdit.id, projectId, role);
-    setMembers((prevMembers) => {
-      return prevMembers.map((member) => {
-        if (member.User.id === userEdit.id) {
-          return { ...member, role: role };
-        }
-        return member;
-      });
-    });
+  // delete confirm dialog
+  const [isDeleteConfirmDialogOpen, setIsDeleteConfirmDialogOpen] = useState(false);
+  const onConfirm = async () => {
+    await deleteProject(context.token.access_token, Number(projectId));
+    setIsDeleteConfirmDialogOpen(false);
+    router.push(`/projects/`, { locale: locale });
   };
 
   return (
-    <div className="container mx-auto max-w-3xl pt-16 px-6 flex-grow">
+    <div className="container mx-auto max-w-3xl pt-6 px-6 flex-grow">
       <div className="w-full p-3 flex items-center justify-between">
-        <h3 className="font-bold">{messages.memberManagement}</h3>
-        <Button
-          startContent={<Plus size={16} />}
-          size="sm"
-          color="primary"
-          isDisabled={!context.isProjectManager(Number(projectId))}
-          onClick={() => setIsDialogOpen(true)}
-        >
-          {messages.addMember}
-        </Button>
+        <h3 className="font-bold">{messages.projectManagement}</h3>
+        <div>
+          <Button
+            startContent={<Trash size={16} />}
+            size="sm"
+            color="danger"
+            isDisabled={!context.isProjectManager(Number(projectId))}
+            onClick={() => setIsDeleteConfirmDialogOpen(true)}
+          >
+            {messages.deleteProject}
+          </Button>
+          <Button
+            startContent={<Pencil size={16} />}
+            size="sm"
+            color="primary"
+            isDisabled={!context.isProjectManager(Number(projectId))}
+            onClick={() => setIsProjectDialogOpen(true)}
+            className="ms-2"
+          >
+            {messages.editProject}
+          </Button>
+        </div>
       </div>
 
-      <MembersTable
-        members={members}
-        isDisabled={!context.isProjectManager(Number(projectId))}
-        onChangeRole={handleChangeRole}
-        onDeleteMember={handleDeleteMember}
+      <div className="w-full p-3">
+        <Table hideHeader aria-label="Example static collection table">
+          <TableHeader>
+            <TableColumn>dummy</TableColumn>
+            <TableColumn>dummy</TableColumn>
+          </TableHeader>
+          <TableBody>
+            <TableRow key="1">
+              <TableCell>{messages.projectName}</TableCell>
+              <TableCell>{project.name}</TableCell>
+            </TableRow>
+            <TableRow key="2">
+              <TableCell>{messages.projectDetail}</TableCell>
+              <TableCell>{project.detail}</TableCell>
+            </TableRow>
+            <TableRow key="3">
+              <TableCell>{messages.publicity}</TableCell>
+              <TableCell>{project.isPublic ? messages.public : messages.private}</TableCell>
+            </TableRow>
+          </TableBody>
+        </Table>
+      </div>
+
+      <ProjectDialog
+        isOpen={isProjectDialogOpen}
+        editingProject={project}
+        onCancel={() => setIsProjectDialogOpen(false)}
+        onSubmit={onSubmit}
         messages={messages}
       />
 
-      <AddMemberDialog
-        isOpen={isDialogOpen}
-        projectId={projectId}
-        onCancel={() => setIsDialogOpen(false)}
-        onAddMember={handleAddMember}
-        messages={messages}
+      <DeleteConfirmDialog
+        isOpen={isDeleteConfirmDialogOpen}
+        onCancel={() => setIsDeleteConfirmDialogOpen(false)}
+        onConfirm={onConfirm}
+        closeText={messages.close}
+        confirmText={messages.areYouSure}
+        deleteText={messages.delete}
       />
     </div>
   );

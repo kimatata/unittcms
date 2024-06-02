@@ -43,7 +43,7 @@ type Props = {
   messages: HomeMessages;
 };
 
-export function Home({ projectId, messages }: Props) {
+export function ProjectHome({ projectId, messages }: Props) {
   const context = useContext(TokenContext);
   const { theme, setTheme } = useTheme();
   const [project, setProject] = useState({

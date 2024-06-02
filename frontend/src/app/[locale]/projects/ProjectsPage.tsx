@@ -5,8 +5,8 @@ import { Plus } from 'lucide-react';
 import { TokenContext } from '@/utils/TokenProvider';
 import { ProjectType, ProjectsMessages } from '@/types/project';
 import ProjectsTable from './ProjectsTable';
-import ProjectDialog from './ProjectDialog';
-import { fetchProjects, createProject, updateProject, deleteProject } from './projectsControl';
+import ProjectDialog from '@/components/ProjectDialog';
+import { fetchProjects, createProject, updateProject, deleteProject } from '@/utils/projectsControl';
 import DeleteConfirmDialog from '@/components/DeleteConfirmDialog';
 
 export type Props = {

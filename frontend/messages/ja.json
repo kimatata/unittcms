@@ -94,6 +94,7 @@
     "home": "ホーム",
     "test_cases": "テストケース",
     "test_runs": "テストラン",
+    "members": "メンバー",
     "settings": "設定"
   },
   "Home": {
@@ -259,7 +260,7 @@
     "exclude_from_run": "テストランから除外する",
     "no_cases_found": "テストケースが見つかりません"
   },
-  "Settings": {
+  "Members": {
     "member_management": "メンバー管理",
     "avatar": "アバター",
     "email": "メールアドレス",
@@ -275,5 +276,21 @@
     "user_name_or_email": "ユーザー名またはメールアドレス",
     "close": "閉じる",
     "add": "追加"
+  },
+  "Settings": {
+    "project_management": "プロジェクト管理",
+    "project_name": "プロジェクト名",
+    "project_detail": "プロジェクト詳細",
+    "edit_project": "プロジェクトの編集",
+    "project": "プロジェクト",
+    "publicity": "公開",
+    "public": "パブリック",
+    "private": "プライベート",
+    "if_you_make_public": "プロジェクトをパブリックにすると、プロジェクトメンバーではないユーザーからも見えるようになります。",
+    "update": "更新",
+    "delete_project": "プロジェクトの削除",
+    "delete": "削除",
+    "close": "閉じる",
+    "are_you_sure": "プロジェクトを削除してもよろしいですか?"
   }
 }

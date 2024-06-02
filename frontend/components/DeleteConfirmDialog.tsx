@@ -9,7 +9,14 @@ type Props = {
   deleteText: string;
 };
 
-export default function ProjectDialog({ isOpen, onCancel, onConfirm, closeText, confirmText, deleteText }: Props) {
+export default function DeleteConfirmDialog({
+  isOpen,
+  onCancel,
+  onConfirm,
+  closeText,
+  confirmText,
+  deleteText,
+}: Props) {
   return (
     <Modal
       isOpen={isOpen}
