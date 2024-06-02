@@ -9,7 +9,7 @@ module.exports = {
     // Add projects table records
     await queryInterface.bulkInsert('users', [
       {
-        email: 'admin@example.com.com',
+        email: 'admin@example.com',
         password: hashedPassword,
         username: 'Admin',
         role: 0,
@@ -18,7 +18,7 @@ module.exports = {
         updatedAt: new Date(),
       },
       {
-        email: 'samuel@example.com.com',
+        email: 'samuel@example.com',
         password: hashedPassword,
         username: 'Samuel Golden',
         role: 1,
@@ -27,7 +27,7 @@ module.exports = {
         updatedAt: new Date(),
       },
       {
-        email: 'trey@example.com.com',
+        email: 'trey@example.com',
         password: hashedPassword,
         username: 'Trey Fisher',
         role: 1,
@@ -36,7 +36,7 @@ module.exports = {
         updatedAt: new Date(),
       },
       {
-        email: 'zoe@example.com.com',
+        email: 'zoe@example.com',
         password: hashedPassword,
         username: 'Zoe Woodward',
         role: 1,
@@ -45,7 +45,7 @@ module.exports = {
         updatedAt: new Date(),
       },
       {
-        email: 'roger@example.com.com',
+        email: 'roger@example.com',
         password: hashedPassword,
         username: 'Roger Hess',
         role: 1,
@@ -54,7 +54,7 @@ module.exports = {
         updatedAt: new Date(),
       },
       {
-        email: 'jasmine@example.com.com',
+        email: 'jasmine@example.com',
         password: hashedPassword,
         username: 'Jasmine Moody',
         role: 1,
@@ -63,7 +63,7 @@ module.exports = {
         updatedAt: new Date(),
       },
       {
-        email: 'tatsuya@example.com.com',
+        email: 'tatsuya@example.com',
         password: hashedPassword,
         username: 'Suzuki Tatsuya',
         role: 1,
@@ -72,7 +72,7 @@ module.exports = {
         updatedAt: new Date(),
       },
       {
-        email: 'eri@example.com.com',
+        email: 'eri@example.com',
         password: hashedPassword,
         username: 'Sato Eri',
         role: 1,
