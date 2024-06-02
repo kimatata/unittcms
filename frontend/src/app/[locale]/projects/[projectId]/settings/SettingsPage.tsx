@@ -69,13 +69,20 @@ export default function SettingsPage({ projectId, messages, locale }: Props) {
     <div className="container mx-auto max-w-3xl pt-16 px-6 flex-grow">
       <div className="w-full p-3 flex items-center justify-between">
         <h3 className="font-bold">{messages.memberManagement}</h3>
-        <Button startContent={<Plus size={16} />} size="sm" color="primary" onClick={() => setIsDialogOpen(true)}>
+        <Button
+          startContent={<Plus size={16} />}
+          size="sm"
+          color="primary"
+          isDisabled={!context.isProjectManager(Number(projectId))}
+          onClick={() => setIsDialogOpen(true)}
+        >
           {messages.addMember}
         </Button>
       </div>
 
       <MembersTable
         members={members}
+        isDisabled={!context.isProjectManager(Number(projectId))}
         onChangeRole={handleChangeRole}
         onDeleteMember={handleDeleteMember}
         messages={messages}

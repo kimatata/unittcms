@@ -118,7 +118,7 @@ export default function FoldersPane({ projectId, messages, locale }: Props) {
           size="sm"
           variant="bordered"
           className="m-2"
-          isDisabled={!context.isProjectEditable(Number(projectId))}
+          isDisabled={!context.isProjectDeveloper(Number(projectId))}
           onClick={openDialogForCreate}
         >
           {messages.newFolder}
@@ -133,7 +133,7 @@ export default function FoldersPane({ projectId, messages, locale }: Props) {
               endContent={
                 <FolderEditMenu
                   folder={folder}
-                  isDisabled={!context.isProjectEditable(Number(projectId))}
+                  isDisabled={!context.isProjectDeveloper(Number(projectId))}
                   onEditClick={onEditClick}
                   onDeleteClick={onDeleteClick}
                   messages={messages}

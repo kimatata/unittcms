@@ -61,7 +61,28 @@ async function fetchMyRoles(jwt: string) {
   }
 }
 
-function isProjectEditable(projectRoles: ProjectRoleType[], projectId: number) {
+function isProjectManager(projectRoles: ProjectRoleType[], projectId: number) {
+  const found = projectRoles.find((role) => {
+    return role.projectId === projectId;
+  });
+
+  if (!found) {
+    return false;
+  }
+
+  if (found.isOwner === true) {
+    return true;
+  }
+
+  const managerRoleIndex = memberRoles.findIndex((entry) => entry.uid === 'manager');
+  if (found.role === managerRoleIndex) {
+    return true;
+  }
+
+  return false;
+}
+
+function isProjectDeveloper(projectRoles: ProjectRoleType[], projectId: number) {
   const found = projectRoles.find((role) => {
     return role.projectId === projectId;
   });
@@ -113,4 +134,4 @@ function checkSignInPage(token: TokenType, pathname: string) {
   return ret;
 }
 
-export { isSignedIn, isAdmin, isProjectEditable, isPrivatePath, checkSignInPage, fetchMyRoles };
+export { isSignedIn, isAdmin, isProjectManager, isProjectDeveloper, isPrivatePath, checkSignInPage, fetchMyRoles };

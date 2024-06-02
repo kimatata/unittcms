@@ -1,17 +1,16 @@
 const express = require('express');
 const router = express.Router();
-const defineMember = require('../../models/members');
 const defineUser = require('../../models/users');
+const defineMember = require('../../models/members');
 const { DataTypes } = require('sequelize');
 
 module.exports = function (sequelize) {
-  const { verifySignedIn, verifyProjectManager } = require('../../middleware/auth')(sequelize);
-  const Member = defineMember(sequelize, DataTypes);
+  const { verifySignedIn, verifyProjectVisible } = require('../../middleware/auth')(sequelize);
   const User = defineUser(sequelize, DataTypes);
-
+  const Member = defineMember(sequelize, DataTypes);
   Member.belongsTo(User, { foreignKey: 'userId' });
 
-  router.get('/', verifySignedIn, verifyProjectManager, async (req, res) => {
+  router.get('/', verifySignedIn, verifyProjectVisible, async (req, res) => {
     const { projectId } = req.query;
 
     if (!projectId) {

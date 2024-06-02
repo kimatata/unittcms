@@ -21,12 +21,13 @@ import Avatar from 'boring-avatars';
 
 type Props = {
   members: MemberType[];
+  isDisabled: boolean;
   onChangeRole: (userEdit: UserType, role: number) => void;
   onDeleteMember: (userDeleted: UserType) => void;
   messages: SettingsMessages;
 };
 
-export default function MembersTable({ members, onChangeRole, onDeleteMember, messages }: Props) {
+export default function MembersTable({ members, isDisabled, onChangeRole, onDeleteMember, messages }: Props) {
   const headerColumns = [
     { name: messages.avatar, uid: 'avatar' },
     { name: messages.email, uid: 'email', sortable: true },
@@ -71,7 +72,7 @@ export default function MembersTable({ members, onChangeRole, onDeleteMember, me
         return (
           <Dropdown>
             <DropdownTrigger>
-              <Button size="sm" variant="light" endContent={<ChevronDown size={16} />}>
+              <Button size="sm" isDisabled={isDisabled} variant="light" endContent={<ChevronDown size={16} />}>
                 <span className="w-12">{messages[memberRoles[cellValue].uid]}</span>
               </Button>
             </DropdownTrigger>
@@ -86,7 +87,13 @@ export default function MembersTable({ members, onChangeRole, onDeleteMember, me
         );
       case 'delete':
         return (
-          <Button size="sm" color="danger" variant="light" onClick={() => onDeleteMember(member.User)}>
+          <Button
+            size="sm"
+            isDisabled={isDisabled}
+            color="danger"
+            variant="light"
+            onClick={() => onDeleteMember(member.User)}
+          >
             {messages.deleteMember}
           </Button>
         );

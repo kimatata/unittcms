@@ -6,7 +6,8 @@ import { useRouter, usePathname } from '@/src/navigation';
 import {
   isSignedIn as tokenIsSinedIn,
   isAdmin as tokenIsAdmin,
-  isProjectEditable as tokenIsProjectEditable,
+  isProjectManager as tokenIsProjectManager,
+  isProjectDeveloper as tokenIsProjectDeveloper,
   checkSignInPage as tokenCheckSignInPage,
   fetchMyRoles,
 } from './token';
@@ -28,6 +29,12 @@ const defaultContext = {
   },
   isSignedIn: () => false,
   isAdmin: () => false,
+  isProjectManager: (projectId: number) => {
+    return false;
+  },
+  isProjectDeveloper: (projectId: number) => {
+    return false;
+  },
   setToken: (token: TokenType) => {},
   storeTokenToLocalStorage,
   removeTokenFromLocalStorage,
@@ -55,8 +62,12 @@ const TokenProvider = ({ toastMessages, locale, children }: TokenProps) => {
     return tokenIsAdmin(token);
   };
 
-  const isProjectEditable = (projectId: number) => {
-    return tokenIsProjectEditable(projectRoles, projectId);
+  const isProjectManager = (projectId: number) => {
+    return tokenIsProjectManager(projectRoles, projectId);
+  };
+
+  const isProjectDeveloper = (projectId: number) => {
+    return tokenIsProjectDeveloper(projectRoles, projectId);
   };
 
   const tokenContext = {
@@ -64,7 +75,8 @@ const TokenProvider = ({ toastMessages, locale, children }: TokenProps) => {
     projectRoles,
     isSignedIn,
     isAdmin,
-    isProjectEditable,
+    isProjectManager,
+    isProjectDeveloper,
     setToken,
     storeTokenToLocalStorage,
     removeTokenFromLocalStorage,

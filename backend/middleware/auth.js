@@ -56,23 +56,47 @@ function authMiddleware(sequelize) {
    */
   async function verifyProjectVisible(req, res, next) {
     const Project = defineProject(sequelize, DataTypes);
+    const Member = defineMember(sequelize, DataTypes);
+    Project.hasMany(Member, { foreignKey: 'projectId' });
 
     const projectId = req.params.projectId || req.query.projectId;
     if (!projectId) {
       return res.status(400).json({ error: 'projectId is required' });
     }
 
-    const project = await Project.findByPk(projectId);
+    const project = await Project.findOne({
+      where: { id: projectId },
+      include: [
+        {
+          model: Member,
+          where: { userId: req.userId },
+          required: false,
+        },
+      ],
+    });
     if (!project) {
       return res.status(404).send('Project not found');
     }
 
-    // if project is private, only project owner can access
-    if (!project.isPublic && project.userId !== req.userId) {
-      return res.status(403).json({ error: 'Forbidden' });
+    // if project is public, everyone can see
+    if (project.isPublic) {
+      next();
+      return;
     }
 
-    next();
+    // if project is private, owner and project member can see
+    if (project.userId === req.userId) {
+      next();
+      return;
+    }
+
+    const member = project.Members && project.Members[0];
+    if (member) {
+      next();
+      return;
+    }
+
+    return res.status(403).json({ error: 'Forbidden' });
   }
 
   /**

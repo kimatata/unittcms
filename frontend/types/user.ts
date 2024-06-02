@@ -26,12 +26,13 @@ export type TokenContextType = {
     access_token: string;
     user: UserType;
   };
-  isSignedIn: () => Boolean;
-  isAdmin: () => Boolean;
-  isProjectEditable: (projectId: number) => Boolean;
-  setToken: (token: TokenType) => {};
-  storeTokenToLocalStorage: (token: TokenType) => {};
-  removeTokenFromLocalStorage: () => {};
+  isSignedIn: () => boolean;
+  isAdmin: () => boolean;
+  isProjectManager: (projectId: number) => boolean;
+  isProjectDeveloper: (projectId: number) => boolean;
+  setToken: (token: TokenType) => void;
+  storeTokenToLocalStorage: (token: TokenType) => void;
+  removeTokenFromLocalStorage: () => void;
 };
 
 export type ProjectRoleType = {
