@@ -2,6 +2,6 @@
 sidebar_position: 1
 ---
 
-# TestPlat
+# LandTCMS
 
 Open Source Test Case Management Web Application

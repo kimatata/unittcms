@@ -36,7 +36,7 @@ export default function Home(params: { locale: string }) {
                 marginLeft: '2.5rem',
               }}
             >
-              ⚗️
+              🏝
             </span>
             <div
               style={{
@@ -69,7 +69,7 @@ export default function Home(params: { locale: string }) {
       <Divider className="my-12" />
       <div className="w-full text-center py-2">
         <div>Released under the MIT License.</div>
-        <div>Copyright © 2024 TestPlat</div>
+        <div>Copyright © 2024 LandTCMS</div>
       </div>
     </section>
   );

@@ -1,4 +1,4 @@
-# TestPlat Frontend
+# LandTCMS Frontend
 
 ## Install dependencies
 

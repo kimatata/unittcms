@@ -2,6 +2,6 @@
 sidebar_position: 3
 ---
 
-# Running TestPlat as a Docker container
+# Running LandTCMS as a Docker container
 
 Under development

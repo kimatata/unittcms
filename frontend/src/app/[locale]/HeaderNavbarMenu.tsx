@@ -48,7 +48,7 @@ export default function HeaderNavbarMenu({ messages, locale }: Props) {
     },
     {
       uid: 'docs',
-      href: 'https://kimatata.github.io/TestPlat/docs/getstarted/selfhost',
+      href: 'https://kimatata.github.io/landtcms/docs/getstarted/selfhost',
       label: messages.docs,
       isExternal: true,
     },
@@ -60,7 +60,7 @@ export default function HeaderNavbarMenu({ messages, locale }: Props) {
         <NavbarBrand as="li" className="gap-3 max-w-fit">
           <Link className="flex justify-start items-center gap-1" href="/" locale={locale}>
             <Image src="/favicon/android-chrome-192x192.png" width={32} height={32} alt="Logo" />
-            <p className="font-bold text-inherit">TestPlat</p>
+            <p className="font-bold text-inherit">LandTCMS</p>
           </Link>
         </NavbarBrand>
         <NavbarItem className="hidden md:block">
@@ -75,7 +75,7 @@ export default function HeaderNavbarMenu({ messages, locale }: Props) {
             <NavbarItem key={link.uid} className="hidden md:block">
               <NextUiLink
                 isExternal
-                href="https://kimatata.github.io/TestPlat/docs/getstarted/selfhost"
+                href="https://kimatata.github.io/landtcms/docs/getstarted/selfhost"
                 aria-label="docs"
                 showAnchorIcon
                 anchorIcon={<MoveUpRight size={12} className="ms-1" />}
@@ -109,7 +109,7 @@ export default function HeaderNavbarMenu({ messages, locale }: Props) {
       </NavbarContent>
 
       <NavbarContent className="basis-1 pl-4" justify="end">
-        <NextUiLink isExternal href="https://github.com/kimatata/TestPlat" aria-label="Github">
+        <NextUiLink isExternal href="https://github.com/kimatata/landtcms" aria-label="Github">
           <GithubIcon className="text-default-500" />
         </NextUiLink>
         <ThemeSwitch />

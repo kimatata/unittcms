@@ -9,7 +9,7 @@ module.exports = {
     // Add projects table records
     await queryInterface.bulkInsert('users', [
       {
-        email: 'admin@testplat.com',
+        email: 'admin@example.com.com',
         password: hashedPassword,
         username: 'Admin',
         role: 0,
@@ -18,7 +18,7 @@ module.exports = {
         updatedAt: new Date(),
       },
       {
-        email: 'samuel@testplat.com',
+        email: 'samuel@example.com.com',
         password: hashedPassword,
         username: 'Samuel Golden',
         role: 1,
@@ -27,7 +27,7 @@ module.exports = {
         updatedAt: new Date(),
       },
       {
-        email: 'trey@testplat.com',
+        email: 'trey@example.com.com',
         password: hashedPassword,
         username: 'Trey Fisher',
         role: 1,
@@ -36,7 +36,7 @@ module.exports = {
         updatedAt: new Date(),
       },
       {
-        email: 'zoe@testplat.com',
+        email: 'zoe@example.com.com',
         password: hashedPassword,
         username: 'Zoe Woodward',
         role: 1,
@@ -45,7 +45,7 @@ module.exports = {
         updatedAt: new Date(),
       },
       {
-        email: 'roger@testplat.com',
+        email: 'roger@example.com.com',
         password: hashedPassword,
         username: 'Roger Hess',
         role: 1,
@@ -54,7 +54,7 @@ module.exports = {
         updatedAt: new Date(),
       },
       {
-        email: 'jasmine@testplat.com',
+        email: 'jasmine@example.com.com',
         password: hashedPassword,
         username: 'Jasmine Moody',
         role: 1,
@@ -63,7 +63,7 @@ module.exports = {
         updatedAt: new Date(),
       },
       {
-        email: 'tatsuya@testplat.com',
+        email: 'tatsuya@example.com.com',
         password: hashedPassword,
         username: 'Suzuki Tatsuya',
         role: 1,
@@ -72,7 +72,7 @@ module.exports = {
         updatedAt: new Date(),
       },
       {
-        email: 'eri@testplat.com',
+        email: 'eri@example.com.com',
         password: hashedPassword,
         username: 'Sato Eri',
         role: 1,
@@ -85,7 +85,7 @@ module.exports = {
     // Add projects table records
     await queryInterface.bulkInsert('projects', [
       {
-        name: 'TestPlat Test',
+        name: 'LandTCMS Test',
         detail: "Test Plat's Manual test",
         userId: 1,
         isPublic: true,

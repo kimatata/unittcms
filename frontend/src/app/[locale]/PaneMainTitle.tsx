@@ -19,7 +19,7 @@ export default function MainTitle({ locale }: Props) {
           class: 'lg:text-7xl md:text-7xl sm:text-7xl text-7xl',
         })}
       >
-        TestPlat
+        LandTCMS
       </h1>
       <br />
       <br />
@@ -41,7 +41,7 @@ export default function MainTitle({ locale }: Props) {
           </Button>
         </Link>
 
-        <NextUiLink isExternal href="https://kimatata.github.io/TestPlat/docs/getstarted/selfhost" aria-label="docs">
+        <NextUiLink isExternal href="https://kimatata.github.io/landtcms/docs/getstarted/selfhost" aria-label="docs">
           <Button
             color="primary"
             variant="bordered"
@@ -53,7 +53,7 @@ export default function MainTitle({ locale }: Props) {
           </Button>
         </NextUiLink>
 
-        <NextUiLink size="sm" isExternal href="https://github.com/kimatata/TestPlat" aria-label="Github">
+        <NextUiLink size="sm" isExternal href="https://github.com/kimatata/landtcms" aria-label="Github">
           <Button
             color="primary"
             variant="bordered"

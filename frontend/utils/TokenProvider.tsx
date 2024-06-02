@@ -11,7 +11,7 @@ import {
   fetchMyRoles,
 } from './token';
 import { ToastContext } from './ToastProvider';
-const LOCAL_STORAGE_KEY = 'testplat-auth-token';
+const LOCAL_STORAGE_KEY = 'landtcms-auth-token';
 
 function storeTokenToLocalStorage(token: TokenType) {
   localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(token));

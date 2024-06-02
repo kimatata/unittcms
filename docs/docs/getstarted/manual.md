@@ -2,7 +2,7 @@
 sidebar_position: 2
 ---
 
-# Running TestPlat manually
+# Running LandTCMS manually
 
 :::info[Prerequisite]
 
@@ -10,12 +10,12 @@ Prerequisite: v20 or higher node must be installed.
 
 :::
 
-To use TestPlat, you need run frontend server and backend server (API server).
+To use LandTCMS, you need run frontend server and backend server (API server).
 
 First, clone the repository.
 
 ```bash
-git clone git@github.com:kimatata/TestPlat.git
+git clone git@github.com:kimatata/landtcms.git
 ```
 
 ## Run backend server
