@@ -1,12 +1,14 @@
 'use client';
 import { createContext, useState, useEffect, useContext } from 'react';
-import { TokenContextType, TokenType } from '@/types/user';
+import { ProjectRoleType, TokenContextType, TokenType } from '@/types/user';
 import { TokenProps } from '@/types/user';
 import { useRouter, usePathname } from '@/src/navigation';
 import {
   isSignedIn as tokenIsSinedIn,
   isAdmin as tokenIsAdmin,
+  isProjectEditable as tokenIsProjectEditable,
   checkSignInPage as tokenCheckSignInPage,
+  fetchMyRoles,
 } from './token';
 import { ToastContext } from './ToastProvider';
 const LOCAL_STORAGE_KEY = 'testplat-auth-token';
@@ -43,6 +45,7 @@ const TokenProvider = ({ toastMessages, locale, children }: TokenProps) => {
     expires_at: 0,
     user: null,
   });
+  const [projectRoles, setProjectRoles] = useState<ProjectRoleType[]>([]);
 
   const isSignedIn = () => {
     return tokenIsSinedIn(token);
@@ -52,10 +55,16 @@ const TokenProvider = ({ toastMessages, locale, children }: TokenProps) => {
     return tokenIsAdmin(token);
   };
 
+  const isProjectEditable = (projectId: number) => {
+    return tokenIsProjectEditable(projectRoles, projectId);
+  };
+
   const tokenContext = {
     token,
+    projectRoles,
     isSignedIn,
     isAdmin,
+    isProjectEditable,
     setToken,
     storeTokenToLocalStorage,
     removeTokenFromLocalStorage,
@@ -90,6 +99,23 @@ const TokenProvider = ({ toastMessages, locale, children }: TokenProps) => {
       router.push(ret.redirectPath, { locale: locale });
     }
   }, [pathname, hasRestoreFinished]);
+
+  useEffect(() => {
+    async function refreshProjectRoles() {
+      if (!hasRestoreFinished || !token || !token.access_token) {
+        return;
+      }
+
+      try {
+        const data = await fetchMyRoles(token.access_token);
+        setProjectRoles(data);
+      } catch (error: any) {
+        console.error('Error in effect:', error.message);
+      }
+    }
+
+    refreshProjectRoles();
+  }, [hasRestoreFinished, token]);
 
   return <TokenContext.Provider value={tokenContext}>{children}</TokenContext.Provider>;
 };

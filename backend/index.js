@@ -119,10 +119,12 @@ const membersIndexRoute = require('./routes/members/index')(sequelize);
 const membersNewRoute = require('./routes/members/new')(sequelize);
 const membersEditRoute = require('./routes/members/edit')(sequelize);
 const membersDeleteRoute = require('./routes/members/delete')(sequelize);
+const membersCheckRoute = require('./routes/members/check')(sequelize);
 app.use('/members', membersIndexRoute);
 app.use('/members', membersNewRoute);
 app.use('/members', membersEditRoute);
 app.use('/members', membersDeleteRoute);
+app.use('/members', membersCheckRoute);
 
 // "/home"
 const homeIndexRoute = require('./routes/home/index')(sequelize);

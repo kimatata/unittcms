@@ -149,6 +149,8 @@ function authMiddleware(sequelize) {
   async function verifyProjectDeveloper(req, res, next) {
     const Project = defineProject(sequelize, DataTypes);
     const Folder = defineFolder(sequelize, DataTypes);
+    const Member = defineMember(sequelize, DataTypes);
+    Project.hasMany(Member, { foreignKey: 'projectId' });
 
     let projectId = req.params.projectId || req.query.projectId;
     const folderId = req.params.folderId || req.query.folderId;
@@ -166,7 +168,16 @@ function authMiddleware(sequelize) {
       }
     }
 
-    const project = await Project.findByPk(projectId);
+    const project = await Project.findOne({
+      where: { id: projectId },
+      include: [
+        {
+          model: Member,
+          where: { userId: req.userId },
+          required: false,
+        },
+      ],
+    });
     if (!project) {
       return res.status(404).send('Project not found');
     }
@@ -176,14 +187,7 @@ function authMiddleware(sequelize) {
       return;
     }
 
-    // check the user is manager or developer of the project
-    const Member = defineMember(sequelize, DataTypes);
-    const member = await Member.findOne({
-      where: {
-        userId: req.userId,
-        projectId: projectId,
-      },
-    });
+    const member = project.Members && project.Members[0];
     if (member) {
       const managerRoleIndex = memberRoles.findIndex((entry) => entry.uid === 'manager');
       const developerRoleIndex = memberRoles.findIndex((entry) => entry.uid === 'developer');

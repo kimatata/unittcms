@@ -1,5 +1,7 @@
-import { TokenType } from '@/types/user';
-import { roles } from '@/config/selection';
+import { ProjectRoleType, TokenType } from '@/types/user';
+import { roles, memberRoles } from '@/config/selection';
+import Config from '@/config/config';
+const apiServer = Config.apiServer;
 
 function tokenExists(token: TokenType) {
   if (token && token.user && token.user.username) {
@@ -36,7 +38,52 @@ function isAdmin(token: TokenType) {
   return false;
 }
 
-// pravate paths are '/account', '/admin', '/projects/*'
+async function fetchMyRoles(jwt: string) {
+  const fetchOptions = {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${jwt}`,
+    },
+  };
+
+  const url = `${apiServer}/members/check`;
+
+  try {
+    const response = await fetch(url, fetchOptions);
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+    const data = await response.json();
+    return data;
+  } catch (error: any) {
+    console.error('Error fetching data:', error.message);
+  }
+}
+
+function isProjectEditable(projectRoles: ProjectRoleType[], projectId: number) {
+  const found = projectRoles.find((role) => {
+    return role.projectId === projectId;
+  });
+
+  if (!found) {
+    return false;
+  }
+
+  if (found.isOwner === true) {
+    return true;
+  }
+
+  const managerRoleIndex = memberRoles.findIndex((entry) => entry.uid === 'manager');
+  const developerRoleIndex = memberRoles.findIndex((entry) => entry.uid === 'developer');
+  if (found.role === managerRoleIndex || found.role === developerRoleIndex) {
+    return true;
+  }
+
+  return false;
+}
+
+// private paths are '/account', '/admin', '/projects/*'
 const isPrivatePath = (pathname: string) => {
   return /^\/account(\/)?$/.test(pathname) || /^\/admin(\/.*)?$/.test(pathname) || /^\/projects(\/.*)?$/.test(pathname);
 };
@@ -66,4 +113,4 @@ function checkSignInPage(token: TokenType, pathname: string) {
   return ret;
 }
 
-export { isSignedIn, isAdmin, isPrivatePath, checkSignInPage };
+export { isSignedIn, isAdmin, isProjectEditable, isPrivatePath, checkSignInPage, fetchMyRoles };

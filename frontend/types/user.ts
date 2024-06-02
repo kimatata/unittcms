@@ -28,9 +28,17 @@ export type TokenContextType = {
   };
   isSignedIn: () => Boolean;
   isAdmin: () => Boolean;
+  isProjectEditable: (projectId: number) => Boolean;
   setToken: (token: TokenType) => {};
   storeTokenToLocalStorage: (token: TokenType) => {};
   removeTokenFromLocalStorage: () => {};
+};
+
+export type ProjectRoleType = {
+  projectId: number;
+  isOwner: boolean;
+  isMember: boolean;
+  role: number;
 };
 
 export type AuthMessages = {

@@ -4,16 +4,17 @@ import { FolderType, FoldersMessages } from '@/types/folder';
 
 type Props = {
   folder: FolderType;
+  isDisabled: boolean;
   onEditClick: (folder: FolderType) => void;
   onDeleteClick: (deleteFolderId: number) => void;
   messages: FoldersMessages;
 };
 
-export default function FolderEditMenu({ folder, onEditClick, onDeleteClick, messages }: Props) {
+export default function FolderEditMenu({ folder, isDisabled, onEditClick, onDeleteClick, messages }: Props) {
   return (
     <Dropdown>
       <DropdownTrigger>
-        <Button isIconOnly size="sm" className="bg-transparent rounded-full">
+        <Button isIconOnly isDisabled={isDisabled} size="sm" className="bg-transparent rounded-full">
           <MoreVertical size={16} />
         </Button>
       </DropdownTrigger>
