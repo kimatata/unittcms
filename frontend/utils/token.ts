@@ -62,6 +62,10 @@ async function fetchMyRoles(jwt: string) {
 }
 
 function isProjectManager(projectRoles: ProjectRoleType[], projectId: number) {
+  if (!projectRoles) {
+    return false;
+  }
+
   const found = projectRoles.find((role) => {
     return role.projectId === projectId;
   });
@@ -83,6 +87,10 @@ function isProjectManager(projectRoles: ProjectRoleType[], projectId: number) {
 }
 
 function isProjectDeveloper(projectRoles: ProjectRoleType[], projectId: number) {
+  if (!projectRoles) {
+    return false;
+  }
+
   const found = projectRoles.find((role) => {
     return role.projectId === projectId;
   });

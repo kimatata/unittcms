@@ -1,11 +1,18 @@
 'use client';
-import { useContext } from 'react';
-import { Card, CardHeader, CardBody, Divider } from '@nextui-org/react';
+import { useState, useEffect, useContext } from 'react';
+import { Link, NextUiLinkClasses } from '@/src/navigation';
+import { Card, CardHeader, CardFooter } from '@nextui-org/react';
 import { TokenContext } from '@/utils/TokenProvider';
 import Avatar from 'boring-avatars';
+import { fetchMyProjects } from '@/utils/projectsControl';
+import { ProjectType } from '@/types/project';
+import PublicityChip from '@/components/PublicityChip';
 
 type AccountPageMessages = {
   yourProjects: string;
+  public: string;
+  private: string;
+  noProjectsFound: string;
 };
 
 type Props = {
@@ -15,28 +22,69 @@ type Props = {
 
 export default function AccountPage({ messages, locale }: Props) {
   const context = useContext(TokenContext);
+  const [myProjects, setMyProjects] = useState<ProjectType[]>([]);
+
+  useEffect(() => {
+    async function fetchDataEffect() {
+      if (!context.isSignedIn()) {
+        return;
+      }
+
+      try {
+        const data = await fetchMyProjects(context.token.access_token);
+        setMyProjects(data);
+      } catch (error: any) {
+        console.error('Error in effect:', error.message);
+      }
+    }
+
+    fetchDataEffect();
+  }, [context]);
 
   return (
     <>
       {context.isSignedIn() && (
-        <Card className="w-[600px] mt-16 mx-3">
-          <CardHeader className="flex gap-6">
-            <Avatar
-              size={48}
-              name={context.token.user.username}
-              variant="beam"
-              colors={['#0A0310', '#49007E', '#FF005B', '#FF7D10', '#FFB238']}
-            />
-            <div className="flex flex-col">
-              <p className="text-2xl font-bold">{context.token.user.username}</p>
-              <p className="text-lg text-default-500">{context.token.user.email}</p>
-            </div>
-          </CardHeader>
-          <Divider />
-          <CardBody className="overflow-visible px-4 pb-4">
-            <p className="text-default-500">{messages.yourProjects}</p>
-          </CardBody>
-        </Card>
+        <div className="container mx-auto max-w-3xl pt-6 px-6 flex-grow">
+          <div className="w-full p-3 flex items-center justify-between">
+            <Card className="w-[600px]">
+              <CardHeader className="flex gap-6">
+                <Avatar
+                  size={48}
+                  name={context.token.user.username}
+                  variant="beam"
+                  colors={['#0A0310', '#49007E', '#FF005B', '#FF7D10', '#FFB238']}
+                />
+                <div className="flex flex-col">
+                  <p className="text-xl font-bold">{context.token.user.username}</p>
+                  <p className="text-lg text-default-500">{context.token.user.email}</p>
+                </div>
+              </CardHeader>
+            </Card>
+          </div>
+
+          <div className="w-full p-3">
+            <h3 className="font-bold mb-2">{messages.yourProjects}</h3>
+            {myProjects.length > 0 ? (
+              myProjects.map((myProject, myProjectsIndex) => {
+                return (
+                  <Card key={myProject.id} className={`w-[600px] ${myProjectsIndex !== 0 ? 'mt-2' : ''}`}>
+                    <CardHeader className="flex gap-6 pb-0">
+                      <Link href={`/projects/${myProject.id}/home`} locale={locale} className={NextUiLinkClasses}>
+                        {myProject.name}
+                      </Link>
+                    </CardHeader>
+                    <CardFooter className="justify-between pt-0">
+                      <p className="text-small text-default-500">{myProject.detail}</p>
+                      <PublicityChip isPublic={true} publicText={messages.public} privateText={messages.private} />
+                    </CardFooter>
+                  </Card>
+                );
+              })
+            ) : (
+              <div className="text-default-500">{messages.noProjectsFound}</div>
+            )}
+          </div>
+        </div>
       )}
     </>
   );

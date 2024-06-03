@@ -9,11 +9,20 @@ module.exports = function (sequelize) {
 
   router.get('/', verifySignedIn, async (req, res) => {
     try {
-      const projects = await Project.findAll({
-        where: {
-          [Op.or]: [{ isPublic: true }, { userId: req.userId }],
-        },
-      });
+      let projects;
+      if (req.query.onlyUserProjects === 'true') {
+        projects = await Project.findAll({
+          where: {
+            userId: req.userId,
+          },
+        });
+      } else {
+        projects = await Project.findAll({
+          where: {
+            [Op.or]: [{ isPublic: true }, { userId: req.userId }],
+          },
+        });
+      }
       res.json(projects);
     } catch (error) {
       console.error(error);

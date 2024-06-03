@@ -28,10 +28,36 @@ async function fetchProject(jwt: string, projectId: number) {
 }
 
 /**
- * fetch project records
+ * fetch projects (public and user own projects)
  */
 async function fetchProjects(jwt: string) {
   const url = `${apiServer}/projects`;
+
+  try {
+    const response = await fetch(url, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${jwt}`,
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (error: any) {
+    console.error('Error fetching data:', error.message);
+  }
+}
+
+/**
+ * fetch projects (user own projects)
+ */
+async function fetchMyProjects(jwt: string) {
+  const url = `${apiServer}/projects?onlyUserProjects=true`;
 
   try {
     const response = await fetch(url, {
@@ -146,4 +172,4 @@ async function deleteProject(jwt: string, projectId: number) {
   }
 }
 
-export { fetchProject, fetchProjects, createProject, updateProject, deleteProject };
+export { fetchProject, fetchProjects, fetchMyProjects, createProject, updateProject, deleteProject };

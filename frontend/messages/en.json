@@ -53,7 +53,10 @@
     "email_not_exist": "Email address not found",
     "signup_error": "Sign up failed",
     "signin_error": "Sign in failed",
-    "your_projects": "Your Projects"
+    "your_projects": "Your Projects",
+    "public": "Public",
+    "private": "Private",
+    "no_projects_found": "No projects found"
   },
   "Admin": {
     "user_management": "User Management",

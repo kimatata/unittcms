@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo, useCallback } from 'react';
+import { useState, useMemo, useCallback } from 'react';
 import {
   Table,
   TableHeader,
@@ -7,7 +7,6 @@ import {
   TableRow,
   TableCell,
   Button,
-  Chip,
   DropdownTrigger,
   Dropdown,
   DropdownMenu,
@@ -18,6 +17,7 @@ import { Link, NextUiLinkClasses } from '@/src/navigation';
 import { MoreVertical } from 'lucide-react';
 import { ProjectType, ProjectsMessages } from '@/types/project';
 import dayjs from 'dayjs';
+import PublicityChip from '@/components/PublicityChip';
 
 type Props = {
   projects: ProjectType[];
@@ -62,15 +62,7 @@ export default function ProjectsTable({ projects, onEditProject, onDeleteProject
       case 'id':
         return <span>{cellValue}</span>;
       case 'isPublic':
-        return cellValue ? (
-          <Chip size="sm" variant="bordered">
-            {messages.public}
-          </Chip>
-        ) : (
-          <Chip size="sm" variant="bordered">
-            {messages.private}
-          </Chip>
-        );
+        return <PublicityChip isPublic={cellValue} publicText={messages.public} privateText={messages.private} />;
       case 'name':
         const maxLength = 30;
         const truncatedDetail = truncateText(project.detail, maxLength);
