@@ -13,8 +13,9 @@ module.exports = function (sequelize) {
   Step.belongsToMany(Case, { through: 'caseSteps' });
   Case.belongsToMany(Attachment, { through: 'caseAttachments' });
   Attachment.belongsToMany(Case, { through: 'caseAttachments' });
+  const { verifySignedIn, verifyProjectVisible } = require('../../middleware/auth')(sequelize);
 
-  router.get('/:caseId', async (req, res) => {
+  router.get('/:caseId', verifySignedIn, verifyProjectVisible, async (req, res) => {
     const caseId = req.params.caseId;
 
     if (!caseId) {

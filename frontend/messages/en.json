@@ -154,6 +154,8 @@
     "actions": "Actions",
     "delete_case": "Delete test case",
     "delete": "Delete",
+    "close": "Close",
+    "are_you_sure": "Are you sure you want to delete test cases?",
     "new_test_case": "New Test Case",
     "status": "Status",
     "critical": "Critical",

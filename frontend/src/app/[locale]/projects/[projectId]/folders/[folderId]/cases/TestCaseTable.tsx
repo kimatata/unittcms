@@ -16,28 +16,12 @@ import {
 } from '@nextui-org/react';
 import { Link, NextUiLinkClasses } from '@/src/navigation';
 import { Plus, MoreVertical, Trash, Circle } from 'lucide-react';
-import { CasesMessages } from '@/types/case';
+import { CaseType, CasesMessages } from '@/types/case';
 import { priorities } from '@/config/selection';
-
-type Case = {
-  id: number;
-  title: string;
-  state: number;
-  priority: number;
-  type: number;
-  automationStatus: number;
-  description: string;
-  template: number;
-  preConditions: string;
-  expectedResults: string;
-  folderId: number;
-  createdAt: string;
-  updatedAt: string;
-};
 
 type Props = {
   projectId: string;
-  cases: Case[];
+  cases: CaseType[];
   onCreateCase: () => void;
   onDeleteCase: (caseId: number) => void;
   onDeleteCases: (selectedCases: string[]) => void;

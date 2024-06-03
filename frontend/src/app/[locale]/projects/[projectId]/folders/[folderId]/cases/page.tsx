@@ -11,6 +11,8 @@ export default function Page({ params }: { params: { projectId: string; folderId
     actions: t('actions'),
     deleteCase: t('delete_case'),
     delete: t('delete'),
+    close: t('close'),
+    areYouSure: t('are_you_sure'),
     newTestCase: t('new_test_case'),
     status: t('status'),
     critical: t('critical'),

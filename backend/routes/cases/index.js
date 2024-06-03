@@ -5,8 +5,9 @@ const { DataTypes } = require('sequelize');
 
 module.exports = function (sequelize) {
   const Case = defineCase(sequelize, DataTypes);
+  const { verifySignedIn, verifyProjectVisible } = require('../../middleware/auth')(sequelize);
 
-  router.get('/', async (req, res) => {
+  router.get('/', verifySignedIn, verifyProjectVisible, async (req, res) => {
     const { folderId } = req.query;
 
     if (!folderId) {

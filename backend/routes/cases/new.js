@@ -14,9 +14,10 @@ function isEmpty(value) {
 }
 
 module.exports = function (sequelize) {
+  const { verifySignedIn, verifyProjectDeveloper } = require('../../middleware/auth')(sequelize);
   const Case = defineCase(sequelize, DataTypes);
 
-  router.post('/', async (req, res) => {
+  router.post('/', verifySignedIn, verifyProjectDeveloper, async (req, res) => {
     try {
       if (
         requiredFields.some((field) => {

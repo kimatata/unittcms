@@ -66,13 +66,11 @@ const casesShowRoute = require('./routes/cases/show')(sequelize);
 const casesNewRoute = require('./routes/cases/new')(sequelize);
 const casesEditRoute = require('./routes/cases/edit')(sequelize);
 const casesDeleteRoute = require('./routes/cases/delete')(sequelize);
-const casesBulkDeleteRoute = require('./routes/cases/bulkDelete')(sequelize);
 app.use('/cases', casesIndexRoute);
 app.use('/cases', casesShowRoute);
 app.use('/cases', casesNewRoute);
 app.use('/cases', casesEditRoute);
 app.use('/cases', casesDeleteRoute);
-app.use('/cases', casesBulkDeleteRoute);
 
 // "/steps"
 const stepsNewRoute = require('./routes/steps/new')(sequelize);

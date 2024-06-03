@@ -1,8 +1,10 @@
 'use client';
-import { useEffect, useState } from 'react';
+import { useState, useEffect, useContext } from 'react';
+import { TokenContext } from '@/utils/TokenProvider';
 import TestCaseTable from './TestCaseTable';
-import { fetchCases, createCase, deleteCase, deleteCases } from './caseControl';
-import { CasesMessages } from '@/types/case';
+import { fetchCases, createCase, deleteCases } from './caseControl';
+import { CaseType, CasesMessages } from '@/types/case';
+import DeleteConfirmDialog from '@/components/DeleteConfirmDialog';
 
 type Props = {
   projectId: string;
@@ -12,11 +14,18 @@ type Props = {
 };
 
 export default function CasesPane({ projectId, folderId, messages, locale }: Props) {
-  const [cases, setCases] = useState([]);
+  const [cases, setCases] = useState<CaseType[]>([]);
+  const context = useContext(TokenContext);
+
   useEffect(() => {
     async function fetchDataEffect() {
+      if (!context.isSignedIn()) {
+        return;
+      }
       try {
-        const data = await fetchCases(folderId);
+        const data = await fetchCases(context.token.access_token, folderId);
+        console.log(data);
+
         setCases(data);
       } catch (error: any) {
         console.error('Error in effect:', error.message);
@@ -24,25 +33,39 @@ export default function CasesPane({ projectId, folderId, messages, locale }: Pro
     }
 
     fetchDataEffect();
-  }, []);
+  }, [context, folderId]);
 
   const handleCreateCase = async (folderId: string) => {
-    const newCase = await createCase(folderId);
+    const newCase = await createCase(context.token.access_token, folderId);
     const updateCases = [...cases];
     updateCases.push(newCase);
     setCases(updateCases);
   };
 
-  const handleDeleteCase = async (caseId: number) => {
-    await deleteCase(caseId);
-    const data = await fetchCases(folderId);
-    setCases(data);
+  // Delete confirm dialog
+  const [isDeleteConfirmDialogOpen, setIsDeleteConfirmDialogOpen] = useState(false);
+  const [deleteCaseIds, setDeleteCaseIds] = useState<number[]>([]);
+  const closeDeleteConfirmDialog = () => {
+    setIsDeleteConfirmDialogOpen(false);
+    setDeleteCaseIds([]);
   };
 
-  const handleDeleteCases = async (deleteCaseIds: string[]) => {
-    await deleteCases(deleteCaseIds);
-    const data = await fetchCases(folderId);
-    setCases(data);
+  const onDeleteCases = (deleteCaseIds: number[]) => {
+    setDeleteCaseIds(deleteCaseIds);
+    setIsDeleteConfirmDialogOpen(true);
+  };
+
+  const onDeleteCase = async (deleteCaseId: number) => {
+    setDeleteCaseIds([deleteCaseId]);
+    setIsDeleteConfirmDialogOpen(true);
+  };
+
+  const onConfirm = async () => {
+    if (deleteCaseIds.length > 0) {
+      await deleteCases(context.token.access_token, deleteCaseIds);
+      setCases(cases.filter((entry) => !deleteCaseIds.includes(entry.id)));
+      closeDeleteConfirmDialog();
+    }
   };
 
   return (
@@ -51,10 +74,19 @@ export default function CasesPane({ projectId, folderId, messages, locale }: Pro
         projectId={projectId}
         cases={cases}
         onCreateCase={() => handleCreateCase(folderId)}
-        onDeleteCase={handleDeleteCase}
-        onDeleteCases={handleDeleteCases}
+        onDeleteCase={() => onDeleteCase}
+        onDeleteCases={() => onDeleteCases}
         messages={messages}
         locale={locale}
+      />
+
+      <DeleteConfirmDialog
+        isOpen={isDeleteConfirmDialogOpen}
+        onCancel={closeDeleteConfirmDialog}
+        onConfirm={onConfirm}
+        closeText={messages.close}
+        confirmText={messages.areYouSure}
+        deleteText={messages.delete}
       />
     </>
   );

@@ -66,6 +66,8 @@ export type CasesMessages = {
   priority: string;
   actions: string;
   deleteCase: string;
+  close: string;
+  areYouSure: string;
   delete: string;
   newTestCase: string;
   status: string;

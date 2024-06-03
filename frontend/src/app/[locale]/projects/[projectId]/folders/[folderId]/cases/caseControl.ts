@@ -2,7 +2,7 @@ import Config from '@/config/config';
 const apiServer = Config.apiServer;
 import { CaseType } from '@/types/case';
 
-async function fetchCase(caseId: number) {
+async function fetchCase(jwt: string, caseId: number) {
   const url = `${apiServer}/cases/${caseId}`;
 
   try {
@@ -10,6 +10,7 @@ async function fetchCase(caseId: number) {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
+        Authorization: `Bearer ${jwt}`,
       },
     });
 
@@ -24,7 +25,7 @@ async function fetchCase(caseId: number) {
   }
 }
 
-async function fetchCases(folderId: string) {
+async function fetchCases(jwt: string, folderId: string) {
   const url = `${apiServer}/cases?folderId=${folderId}`;
 
   try {
@@ -32,6 +33,7 @@ async function fetchCases(folderId: string) {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
+        Authorization: `Bearer ${jwt}`,
       },
     });
 
@@ -46,7 +48,7 @@ async function fetchCases(folderId: string) {
   }
 }
 
-async function createCase(folderId: string) {
+async function createCase(jwt: string, folderId: string) {
   const newCase = {
     title: 'untitled case',
     state: 0,
@@ -64,6 +66,7 @@ async function createCase(folderId: string) {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
+      Authorization: `Bearer ${jwt}`,
     },
     body: JSON.stringify(newCase),
   };
@@ -83,11 +86,12 @@ async function createCase(folderId: string) {
   }
 }
 
-async function updateCase(updateCaseData: CaseType) {
+async function updateCase(jwt: string, updateCaseData: CaseType) {
   const fetchOptions = {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
+      Authorization: `Bearer ${jwt}`,
     },
     body: JSON.stringify(updateCaseData),
   };
@@ -107,34 +111,36 @@ async function updateCase(updateCaseData: CaseType) {
   }
 }
 
-async function deleteCase(caseId: number) {
-  const fetchOptions = {
-    method: 'DELETE',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  };
+// async function deleteCase(jwt: string, caseId: number) {
+//   const fetchOptions = {
+//     method: 'DELETE',
+//     headers: {
+//       'Content-Type': 'application/json',
+//       Authorization: `Bearer ${jwt}`,
+//     },
+//   };
 
-  const url = `${apiServer}/cases/${caseId}`;
+//   const url = `${apiServer}/cases/${caseId}`;
 
-  try {
-    const response = await fetch(url, fetchOptions);
-    if (!response.ok) {
-      throw new Error(`HTTP error! Status: ${response.status}`);
-    }
-  } catch (error: any) {
-    console.error('Error deleting case:', error);
-    throw error;
-  }
-}
+//   try {
+//     const response = await fetch(url, fetchOptions);
+//     if (!response.ok) {
+//       throw new Error(`HTTP error! Status: ${response.status}`);
+//     }
+//   } catch (error: any) {
+//     console.error('Error deleting case:', error);
+//     throw error;
+//   }
+// }
 
-async function deleteCases(deleteCases: string[]) {
+async function deleteCases(jwt: string, deleteCaseIds: number[]) {
   const fetchOptions = {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
+      Authorization: `Bearer ${jwt}`,
     },
-    body: JSON.stringify({ caseIds: deleteCases }),
+    body: JSON.stringify({ caseIds: deleteCaseIds }),
   };
 
   const url = `${apiServer}/cases/bulkdelete`;
@@ -150,4 +156,4 @@ async function deleteCases(deleteCases: string[]) {
   }
 }
 
-export { fetchCase, fetchCases, updateCase, createCase, deleteCase, deleteCases };
+export { fetchCase, fetchCases, updateCase, createCase, deleteCases };
