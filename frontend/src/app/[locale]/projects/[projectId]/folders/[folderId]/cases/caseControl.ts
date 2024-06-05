@@ -59,7 +59,6 @@ async function createCase(jwt: string, folderId: string) {
     template: 0,
     preConditions: '',
     expectedResults: '',
-    folderId: folderId,
   };
 
   const fetchOptions = {
@@ -71,7 +70,7 @@ async function createCase(jwt: string, folderId: string) {
     body: JSON.stringify(newCase),
   };
 
-  const url = `${apiServer}/cases`;
+  const url = `${apiServer}/cases?folderId=${folderId}`;
 
   try {
     const response = await fetch(url, fetchOptions);
@@ -111,29 +110,7 @@ async function updateCase(jwt: string, updateCaseData: CaseType) {
   }
 }
 
-// async function deleteCase(jwt: string, caseId: number) {
-//   const fetchOptions = {
-//     method: 'DELETE',
-//     headers: {
-//       'Content-Type': 'application/json',
-//       Authorization: `Bearer ${jwt}`,
-//     },
-//   };
-
-//   const url = `${apiServer}/cases/${caseId}`;
-
-//   try {
-//     const response = await fetch(url, fetchOptions);
-//     if (!response.ok) {
-//       throw new Error(`HTTP error! Status: ${response.status}`);
-//     }
-//   } catch (error: any) {
-//     console.error('Error deleting case:', error);
-//     throw error;
-//   }
-// }
-
-async function deleteCases(jwt: string, deleteCaseIds: number[]) {
+async function deleteCases(jwt: string, deleteCaseIds: number[], projectId: number) {
   const fetchOptions = {
     method: 'POST',
     headers: {
@@ -143,7 +120,7 @@ async function deleteCases(jwt: string, deleteCaseIds: number[]) {
     body: JSON.stringify({ caseIds: deleteCaseIds }),
   };
 
-  const url = `${apiServer}/cases/bulkdelete`;
+  const url = `${apiServer}/cases/bulkdelete?projectId=${projectId}`;
 
   try {
     const response = await fetch(url, fetchOptions);

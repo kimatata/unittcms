@@ -24,8 +24,6 @@ export default function CasesPane({ projectId, folderId, messages, locale }: Pro
       }
       try {
         const data = await fetchCases(context.token.access_token, folderId);
-        console.log(data);
-
         setCases(data);
       } catch (error: any) {
         console.error('Error in effect:', error.message);
@@ -50,19 +48,19 @@ export default function CasesPane({ projectId, folderId, messages, locale }: Pro
     setDeleteCaseIds([]);
   };
 
-  const onDeleteCases = (deleteCaseIds: number[]) => {
-    setDeleteCaseIds(deleteCaseIds);
-    setIsDeleteConfirmDialogOpen(true);
-  };
-
   const onDeleteCase = async (deleteCaseId: number) => {
     setDeleteCaseIds([deleteCaseId]);
     setIsDeleteConfirmDialogOpen(true);
   };
 
+  const onDeleteCases = (deleteCaseIds: number[]) => {
+    setDeleteCaseIds(deleteCaseIds);
+    setIsDeleteConfirmDialogOpen(true);
+  };
+
   const onConfirm = async () => {
     if (deleteCaseIds.length > 0) {
-      await deleteCases(context.token.access_token, deleteCaseIds);
+      await deleteCases(context.token.access_token, deleteCaseIds, projectId);
       setCases(cases.filter((entry) => !deleteCaseIds.includes(entry.id)));
       closeDeleteConfirmDialog();
     }
@@ -74,8 +72,8 @@ export default function CasesPane({ projectId, folderId, messages, locale }: Pro
         projectId={projectId}
         cases={cases}
         onCreateCase={() => handleCreateCase(folderId)}
-        onDeleteCase={() => onDeleteCase}
-        onDeleteCases={() => onDeleteCases}
+        onDeleteCase={onDeleteCase}
+        onDeleteCases={onDeleteCases}
         messages={messages}
         locale={locale}
       />

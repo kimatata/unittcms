@@ -3,7 +3,7 @@ const router = express.Router();
 const defineCase = require('../../models/cases');
 const { DataTypes } = require('sequelize');
 
-const requiredFields = ['title', 'state', 'priority', 'type', 'automationStatus', 'template', 'folderId'];
+const requiredFields = ['title', 'state', 'priority', 'type', 'automationStatus', 'template'];
 
 function isEmpty(value) {
   if (value === null || value === undefined) {
@@ -18,6 +18,8 @@ module.exports = function (sequelize) {
   const Case = defineCase(sequelize, DataTypes);
 
   router.post('/', verifySignedIn, verifyProjectDeveloper, async (req, res) => {
+    const folderId = req.query.folderId;
+
     try {
       if (
         requiredFields.some((field) => {
@@ -25,22 +27,12 @@ module.exports = function (sequelize) {
         })
       ) {
         return res.status(400).json({
-          error: 'Title, state, priority, type, automationStatus, template, and folderId are required',
+          error: 'Title, state, priority, type, automationStatus, and template are required',
         });
       }
 
-      const {
-        title,
-        state,
-        priority,
-        type,
-        automationStatus,
-        description,
-        template,
-        preConditions,
-        expectedResults,
-        folderId,
-      } = req.body;
+      const { title, state, priority, type, automationStatus, description, template, preConditions, expectedResults } =
+        req.body;
 
       const newCase = await Case.create({
         title,

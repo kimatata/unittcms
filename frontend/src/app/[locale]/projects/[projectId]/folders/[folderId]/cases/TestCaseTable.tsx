@@ -24,7 +24,7 @@ type Props = {
   cases: CaseType[];
   onCreateCase: () => void;
   onDeleteCase: (caseId: number) => void;
-  onDeleteCases: (selectedCases: string[]) => void;
+  onDeleteCases: (caseIds: number[]) => void;
   messages: CasesMessages;
   locale: string;
 };
@@ -61,6 +61,10 @@ export default function TestCaseTable({
     });
   }, [sortDescriptor, cases]);
 
+  const handleDeleteCase = (deleteCaseId: number) => {
+    onDeleteCase(deleteCaseId);
+  };
+
   const renderCell = useCallback((testCase: Case, columnKey: Key) => {
     const cellValue = testCase[columnKey as keyof Case];
 
@@ -95,7 +99,7 @@ export default function TestCaseTable({
               </Button>
             </DropdownTrigger>
             <DropdownMenu aria-label="test case actions">
-              <DropdownItem className="text-danger" onClick={() => onDeleteCase(testCase.id)}>
+              <DropdownItem className="text-danger" onPress={() => handleDeleteCase(testCase.id)}>
                 {messages.deleteCase}
               </DropdownItem>
             </DropdownMenu>
@@ -105,6 +109,17 @@ export default function TestCaseTable({
         return cellValue;
     }
   }, []);
+
+  const handleDeleteCases = () => {
+    let deleteCaseIds: number[];
+    if (selectedKeys === 'all') {
+      deleteCaseIds = sortedItems.map((item) => item.id);
+    } else {
+      deleteCaseIds = Array.from(selectedKeys).map(Number);
+    }
+    onDeleteCases(deleteCaseIds);
+    setSelectedKeys(new Set([]));
+  };
 
   const classNames = useMemo(
     () => ({
@@ -125,16 +140,6 @@ export default function TestCaseTable({
     []
   );
 
-  const onDeleteCasesClick = async () => {
-    if (selectedKeys === 'all') {
-      const allKeys = sortedItems.map((item) => item.id);
-      onDeleteCases(allKeys);
-    } else {
-      onDeleteCases([...selectedKeys]);
-    }
-    setSelectedKeys(new Set([]));
-  };
-
   return (
     <>
       <div className="border-b-1 dark:border-neutral-700 w-full p-3 flex items-center justify-between">
@@ -146,12 +151,12 @@ export default function TestCaseTable({
               size="sm"
               color="danger"
               className="me-2"
-              onClick={onDeleteCasesClick}
+              onPress={handleDeleteCases}
             >
               {messages.delete}
             </Button>
           )}
-          <Button startContent={<Plus size={16} />} size="sm" color="primary" onClick={onCreateCase}>
+          <Button startContent={<Plus size={16} />} size="sm" color="primary" onPress={onCreateCase}>
             {messages.newTestCase}
           </Button>
         </div>

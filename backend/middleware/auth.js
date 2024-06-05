@@ -5,6 +5,7 @@ const defineUser = require('../models/users');
 const defineMember = require('../models/members');
 const defineProject = require('../models/projects');
 const defineFolder = require('../models/folders');
+const defineCase = require('../models/cases');
 
 function authMiddleware(sequelize) {
   /**
@@ -56,12 +57,24 @@ function authMiddleware(sequelize) {
    */
   async function verifyProjectVisible(req, res, next) {
     const Project = defineProject(sequelize, DataTypes);
+    const Folder = defineFolder(sequelize, DataTypes);
     const Member = defineMember(sequelize, DataTypes);
     Project.hasMany(Member, { foreignKey: 'projectId' });
 
-    const projectId = req.params.projectId || req.query.projectId;
+    let projectId = req.params.projectId || req.query.projectId;
+    const folderId = req.params.folderId || req.query.folderId;
+    if (!projectId && !folderId) {
+      return res.status(400).json({ error: 'projectId or folderId is required' });
+    }
+
     if (!projectId) {
-      return res.status(400).json({ error: 'projectId is required' });
+      // find project id from folderId
+      const folder = await Folder.findByPk(folderId);
+      if (folder && folder.projectId) {
+        projectId = folder.projectId;
+      } else {
+        return res.status(404).send('failed to find project from folderId');
+      }
     }
 
     const project = await Project.findOne({
@@ -173,22 +186,40 @@ function authMiddleware(sequelize) {
   async function verifyProjectDeveloper(req, res, next) {
     const Project = defineProject(sequelize, DataTypes);
     const Folder = defineFolder(sequelize, DataTypes);
+    const Case = defineCase(sequelize, DataTypes);
     const Member = defineMember(sequelize, DataTypes);
     Project.hasMany(Member, { foreignKey: 'projectId' });
+    Folder.hasMany(Case, { foreignKey: 'folderId' });
 
     let projectId = req.params.projectId || req.query.projectId;
     const folderId = req.params.folderId || req.query.folderId;
-    if (!projectId && !folderId) {
-      return res.status(400).json({ error: 'projectId or folderId is required' });
+    const caseId = req.params.caseId || req.query.caseId;
+    if (!projectId && !folderId && !caseId) {
+      return res.status(400).json({ error: 'projectId, folderId or caseId is required' });
     }
 
     if (!projectId) {
-      // find project id from folderId
-      const folder = await Folder.findByPk(folderId);
-      if (folder && folder.projectId) {
-        projectId = folder.projectId;
+      if (folderId) {
+        // find project id from folderId
+        const folder = await Folder.findByPk(folderId);
+        if (folder && folder.projectId) {
+          projectId = folder.projectId;
+        } else {
+          return res.status(404).send('failed to find project from folderId');
+        }
+      }
+    } else if (caseId) {
+      // find project id from caseId
+      const testCase = await Case.findByPk(caseId, {
+        include: {
+          model: Folder,
+          include: Project,
+        },
+      });
+      if (testCase && testCase.Folder && testCase.Folder.Project) {
+        projectId = testCase.Folder.Project.id;
       } else {
-        return res.status(404).send('failed to find project from folderId');
+        return res.status(404).send('Failed to find project from caseId');
       }
     }
 
