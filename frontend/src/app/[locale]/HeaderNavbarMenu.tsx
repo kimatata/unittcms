@@ -59,8 +59,8 @@ export default function HeaderNavbarMenu({ messages, locale }: Props) {
       <NavbarContent className="basis-1/5 sm:basis-full" justify="start">
         <NavbarBrand as="li" className="gap-3 max-w-fit">
           <Link className="flex justify-start items-center gap-1" href="/" locale={locale}>
-            <Image src="/favicon/android-chrome-192x192.png" width={32} height={32} alt="Logo" />
-            <p className="font-bold text-inherit">LandTCMS</p>
+            <Image src="/favicon/icon-192.png" width={32} height={32} alt="Logo" />
+            <p className="font-bold text-inherit ms-1">LandTCMS</p>
           </Link>
         </NavbarBrand>
         <NavbarItem className="hidden md:block">
