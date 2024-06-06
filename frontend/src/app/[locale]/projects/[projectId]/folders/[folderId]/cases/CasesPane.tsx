@@ -5,6 +5,7 @@ import TestCaseTable from './TestCaseTable';
 import { fetchCases, createCase, deleteCases } from './caseControl';
 import { CaseType, CasesMessages } from '@/types/case';
 import DeleteConfirmDialog from '@/components/DeleteConfirmDialog';
+import CaseDialog from './CaseDialog';
 
 type Props = {
   projectId: string;
@@ -16,6 +17,7 @@ type Props = {
 export default function CasesPane({ projectId, folderId, messages, locale }: Props) {
   const [cases, setCases] = useState<CaseType[]>([]);
   const context = useContext(TokenContext);
+  const [isCaseDialogOpen, setIsCaseDialogOpen] = useState(false);
 
   useEffect(() => {
     async function fetchDataEffect() {
@@ -33,11 +35,14 @@ export default function CasesPane({ projectId, folderId, messages, locale }: Pro
     fetchDataEffect();
   }, [context, folderId]);
 
-  const handleCreateCase = async (folderId: string) => {
-    const newCase = await createCase(context.token.access_token, folderId);
-    const updateCases = [...cases];
-    updateCases.push(newCase);
-    setCases(updateCases);
+  const closeDialog = () => {
+    setIsCaseDialogOpen(false);
+  };
+
+  const onSubmit = async (title: string, description: string) => {
+    const newCase = await createCase(context.token.access_token, folderId, title, description);
+    setCases([...cases, newCase]);
+    closeDialog();
   };
 
   // Delete confirm dialog
@@ -70,13 +75,16 @@ export default function CasesPane({ projectId, folderId, messages, locale }: Pro
     <>
       <TestCaseTable
         projectId={projectId}
+        isDisabled={!context.isProjectDeveloper(Number(projectId))}
         cases={cases}
-        onCreateCase={() => handleCreateCase(folderId)}
+        onCreateCase={() => setIsCaseDialogOpen(true)}
         onDeleteCase={onDeleteCase}
         onDeleteCases={onDeleteCases}
         messages={messages}
         locale={locale}
       />
+
+      <CaseDialog isOpen={isCaseDialogOpen} onCancel={closeDialog} onSubmit={onSubmit} messages={messages} />
 
       <DeleteConfirmDialog
         isOpen={isDeleteConfirmDialogOpen}

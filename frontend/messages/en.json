@@ -162,7 +162,11 @@
     "high": "High",
     "medium": "Medium",
     "low": "Low",
-    "no_cases_found": "No test cases found"
+    "no_cases_found": "No test cases found",
+    "case_title": "Test Case Title",
+    "case_description": "Test Case Description",
+    "create": "Create",
+    "please_eEnter": "Please enter test case title"
   },
   "Case": {
     "back_to_cases": "Back to test cases",

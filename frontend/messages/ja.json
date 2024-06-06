@@ -161,7 +161,11 @@
     "high": "高",
     "medium": "中",
     "low": "低",
-    "no_cases_found": "テストケースがありません"
+    "no_cases_found": "テストケースがありません",
+    "case_title": "テストケースタイトル",
+    "case_description": "テストケース詳細",
+    "create": "作成",
+    "please_rnter": "テストケースタイトルを入力してください"
   },
   "Case": {
     "back_to_cases": "テストケース一覧に戻る",

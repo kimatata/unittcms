@@ -48,14 +48,14 @@ async function fetchCases(jwt: string, folderId: string) {
   }
 }
 
-async function createCase(jwt: string, folderId: string) {
+async function createCase(jwt: string, folderId: string, title: string, description: string) {
   const newCase = {
-    title: 'untitled case',
+    title: title,
     state: 0,
     priority: 2,
     type: 0,
     automationStatus: 0,
-    description: '',
+    description: description,
     template: 0,
     preConditions: '',
     expectedResults: '',

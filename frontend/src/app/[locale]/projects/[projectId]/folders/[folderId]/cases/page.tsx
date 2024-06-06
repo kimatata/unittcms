@@ -20,6 +20,10 @@ export default function Page({ params }: { params: { projectId: string; folderId
     medium: t('medium'),
     low: t('low'),
     noCasesFound: t('no_cases_found'),
+    caseTitle: t('case_title'),
+    caseDescription: t('case_description'),
+    create: t('create'),
+    pleaseEnter: t('please_enter'),
   };
 
   return (

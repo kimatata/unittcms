@@ -76,6 +76,10 @@ export type CasesMessages = {
   medium: string;
   low: string;
   noCasesFound: string;
+  caseTitle: string;
+  caseDescription: string;
+  create: string;
+  pleaseEnter: string;
 };
 
 export type CaseMessages = {

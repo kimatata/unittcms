@@ -81,8 +81,8 @@ function verifyEditableMiddleware(sequelize) {
       return res.status(400).json({ error: 'projectId is required' });
     }
 
-    const isDeveloper = await isDeveloper(projectId, req.userId);
-    if (isDeveloper) {
+    const isDeveloperRet = await isDeveloper(projectId, req.userId);
+    if (isDeveloperRet) {
       next();
       return;
     }
@@ -109,8 +109,8 @@ function verifyEditableMiddleware(sequelize) {
       return res.status(404).send('failed to find projectId');
     }
 
-    const isDeveloper = await isDeveloper(projectId, req.userId);
-    if (isDeveloper) {
+    const isDeveloperRet = await isDeveloper(projectId, req.userId);
+    if (isDeveloperRet) {
       next();
       return;
     }
@@ -149,8 +149,8 @@ function verifyEditableMiddleware(sequelize) {
       return res.status(404).send('failed to find projectId');
     }
 
-    const isDeveloper = await isDeveloper(projectId, req.userId);
-    if (isDeveloper) {
+    const isDeveloperRet = await isDeveloper(projectId, req.userId);
+    if (isDeveloperRet) {
       next();
       return;
     }
@@ -161,6 +161,8 @@ function verifyEditableMiddleware(sequelize) {
   async function isDeveloper(projectId, userId) {
     const Project = defineProject(sequelize, DataTypes);
     const Member = defineMember(sequelize, DataTypes);
+    Project.hasMany(Member, { foreignKey: 'projectId' });
+    Member.belongsTo(Project, { foreignKey: 'projectId' });
 
     const project = await Project.findOne({
       where: { id: projectId },
@@ -177,7 +179,7 @@ function verifyEditableMiddleware(sequelize) {
     }
 
     // owner has developer or higher authority
-    if (project.userId === req.userId) {
+    if (project.userId === userId) {
       return true;
     }
 

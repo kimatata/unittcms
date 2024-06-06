@@ -21,6 +21,7 @@ import { priorities } from '@/config/selection';
 
 type Props = {
   projectId: string;
+  isDisabled: boolean;
   cases: CaseType[];
   onCreateCase: () => void;
   onDeleteCase: (caseId: number) => void;
@@ -31,6 +32,7 @@ type Props = {
 
 export default function TestCaseTable({
   projectId,
+  isDisabled,
   cases,
   onCreateCase,
   onDeleteCase,
@@ -99,7 +101,11 @@ export default function TestCaseTable({
               </Button>
             </DropdownTrigger>
             <DropdownMenu aria-label="test case actions">
-              <DropdownItem className="text-danger" onPress={() => handleDeleteCase(testCase.id)}>
+              <DropdownItem
+                className="text-danger"
+                isDisabled={isDisabled}
+                onPress={() => handleDeleteCase(testCase.id)}
+              >
                 {messages.deleteCase}
               </DropdownItem>
             </DropdownMenu>
@@ -149,6 +155,7 @@ export default function TestCaseTable({
             <Button
               startContent={<Trash size={16} />}
               size="sm"
+              isDisabled={isDisabled}
               color="danger"
               className="me-2"
               onPress={handleDeleteCases}
@@ -156,7 +163,13 @@ export default function TestCaseTable({
               {messages.delete}
             </Button>
           )}
-          <Button startContent={<Plus size={16} />} size="sm" color="primary" onPress={onCreateCase}>
+          <Button
+            startContent={<Plus size={16} />}
+            size="sm"
+            isDisabled={isDisabled}
+            color="primary"
+            onPress={onCreateCase}
+          >
             {messages.newTestCase}
           </Button>
         </div>

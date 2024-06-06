@@ -175,6 +175,7 @@ export default function CaseEditor({ projectId, folderId, caseId, messages, loca
         <Button
           startContent={<Save size={16} />}
           size="sm"
+          isDisabled={!context.isProjectDeveloper(Number(projectId))}
           color="primary"
           isLoading={isUpdating}
           onPress={async () => {
@@ -316,6 +317,7 @@ export default function CaseEditor({ projectId, folderId, caseId, messages, loca
               <Button
                 startContent={<Plus size={16} />}
                 size="sm"
+                isDisabled={!context.isProjectDeveloper(Number(projectId))}
                 color="primary"
                 className="ms-3"
                 onPress={() => onPlusClick(1)}

@@ -25,7 +25,7 @@ export default function FoldersPane({ projectId, messages, locale }: Props) {
   const [selectedFolder, setSelectedFolder] = useState<FolderType | null>(null);
   const { folderId } = useGetCurrentIds();
   const [isFolderDialogOpen, setIsFolderDialogOpen] = useState(false);
-  const [editingFolder, setEditingProject] = useState<FolderType | null>(null);
+  const [editingFolder, setEditingFolder] = useState<FolderType | null>(null);
 
   useEffect(() => {
     async function fetchDataEffect() {
@@ -54,12 +54,12 @@ export default function FoldersPane({ projectId, messages, locale }: Props) {
 
   const openDialogForCreate = () => {
     setIsFolderDialogOpen(true);
-    setEditingProject(null);
+    setEditingFolder(null);
   };
 
   const closeDialog = () => {
     setIsFolderDialogOpen(false);
-    setEditingProject(null);
+    setEditingFolder(null);
   };
 
   const onSubmit = async (name: string, detail: string) => {
@@ -82,7 +82,7 @@ export default function FoldersPane({ projectId, messages, locale }: Props) {
   };
 
   const onEditClick = (folder: FolderType) => {
-    setEditingProject(folder);
+    setEditingFolder(folder);
     setIsFolderDialogOpen(true);
   };
 
