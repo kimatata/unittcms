@@ -5,12 +5,13 @@ const defineFolder = require('../../models/folders');
 const { DataTypes } = require('sequelize');
 
 module.exports = function (sequelize) {
-  const { verifySignedIn, verifyProjectVisible } = require('../../middleware/auth')(sequelize);
+  const { verifySignedIn } = require('../../middleware/auth')(sequelize);
+  const { verifyProjectVisibleFromProjectId } = require('../../middleware/verifyVisible')(sequelize);
   const Project = defineProject(sequelize, DataTypes);
   const Folder = defineFolder(sequelize, DataTypes);
   Project.hasMany(Folder, { foreignKey: 'projectId' });
 
-  router.get('/:projectId', verifySignedIn, verifyProjectVisible, async (req, res) => {
+  router.get('/:projectId', verifySignedIn, verifyProjectVisibleFromProjectId, async (req, res) => {
     const projectId = req.params.projectId;
     if (!projectId) {
       return res.status(400).json({ error: 'projectId is required' });

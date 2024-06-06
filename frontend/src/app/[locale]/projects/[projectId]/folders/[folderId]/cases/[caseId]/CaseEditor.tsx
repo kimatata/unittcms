@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useState } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import { Input, Textarea, Select, SelectItem, Button, Divider, Tooltip } from '@nextui-org/react';
 import { useRouter } from '@/src/navigation';
 import { Save, Plus, ArrowLeft, ArrowUpFromLine, Circle } from 'lucide-react';
@@ -10,6 +10,7 @@ import { CaseType, AttachmentType, CaseMessages } from '@/types/case';
 import { fetchCase, updateCase } from '../caseControl';
 import { fetchCreateStep, fetchDeleteStep } from './stepControl';
 import { fetchCreateAttachments, fetchDownloadAttachment, fetchDeleteAttachment } from './attachmentControl';
+import { TokenContext } from '@/utils/TokenProvider';
 
 const defaultTestCase = {
   id: 0,
@@ -23,6 +24,10 @@ const defaultTestCase = {
   preConditions: '',
   expectedResults: '',
   folderId: 0,
+  Steps: [],
+  Attachments: [],
+  isIncluded: false,
+  runStatus: 0,
 };
 
 type Props = {
@@ -34,13 +39,14 @@ type Props = {
 };
 
 export default function CaseEditor({ projectId, folderId, caseId, messages, locale }: Props) {
+  const context = useContext(TokenContext);
   const [testCase, setTestCase] = useState<CaseType>(defaultTestCase);
   const [isTitleInvalid, setIsTitleInvalid] = useState<boolean>(false);
   const [isUpdating, setIsUpdating] = useState<boolean>(false);
   const router = useRouter();
 
   const onPlusClick = async (newStepNo: number) => {
-    const newStep = await fetchCreateStep(newStepNo, caseId);
+    const newStep = await fetchCreateStep(newStepNo, Number(caseId));
     if (newStep) {
       newStep.caseSteps = { stepNo: newStepNo };
       const updatedSteps = testCase.Steps.map((step) => {
@@ -136,8 +142,11 @@ export default function CaseEditor({ projectId, folderId, caseId, messages, loca
 
   useEffect(() => {
     async function fetchDataEffect() {
+      if (!context.isSignedIn()) {
+        return;
+      }
       try {
-        const data = await fetchCase(caseId);
+        const data = await fetchCase(context.token.access_token, Number(caseId));
         setTestCase(data);
       } catch (error: any) {
         console.error('Error in effect:', error.message);
@@ -145,7 +154,7 @@ export default function CaseEditor({ projectId, folderId, caseId, messages, loca
     }
 
     fetchDataEffect();
-  }, []);
+  }, [context]);
 
   return (
     <>
@@ -170,7 +179,7 @@ export default function CaseEditor({ projectId, folderId, caseId, messages, loca
           isLoading={isUpdating}
           onPress={async () => {
             setIsUpdating(true);
-            await updateCase(testCase);
+            await updateCase(context.token.access_token, testCase);
             setIsUpdating(false);
           }}
         >

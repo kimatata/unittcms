@@ -5,9 +5,10 @@ const { DataTypes } = require('sequelize');
 
 module.exports = function (sequelize) {
   const Case = defineCase(sequelize, DataTypes);
-  const { verifySignedIn, verifyProjectVisible } = require('../../middleware/auth')(sequelize);
+  const { verifySignedIn } = require('../../middleware/auth')(sequelize);
+  const { verifyProjectVisibleFromFolderId } = require('../../middleware/verifyVisible')(sequelize);
 
-  router.get('/', verifySignedIn, verifyProjectVisible, async (req, res) => {
+  router.get('/', verifySignedIn, verifyProjectVisibleFromFolderId, async (req, res) => {
     const { folderId } = req.query;
 
     if (!folderId) {

@@ -52,67 +52,6 @@ function authMiddleware(sequelize) {
   }
 
   /**
-   * Verify user can access project
-   * (have to be called after verifySignedIn() middleware)
-   */
-  async function verifyProjectVisible(req, res, next) {
-    const Project = defineProject(sequelize, DataTypes);
-    const Folder = defineFolder(sequelize, DataTypes);
-    const Member = defineMember(sequelize, DataTypes);
-    Project.hasMany(Member, { foreignKey: 'projectId' });
-
-    let projectId = req.params.projectId || req.query.projectId;
-    const folderId = req.params.folderId || req.query.folderId;
-    if (!projectId && !folderId) {
-      return res.status(400).json({ error: 'projectId or folderId is required' });
-    }
-
-    if (!projectId) {
-      // find project id from folderId
-      const folder = await Folder.findByPk(folderId);
-      if (folder && folder.projectId) {
-        projectId = folder.projectId;
-      } else {
-        return res.status(404).send('failed to find project from folderId');
-      }
-    }
-
-    const project = await Project.findOne({
-      where: { id: projectId },
-      include: [
-        {
-          model: Member,
-          where: { userId: req.userId },
-          required: false,
-        },
-      ],
-    });
-    if (!project) {
-      return res.status(404).send('Project not found');
-    }
-
-    // if project is public, everyone can see
-    if (project.isPublic) {
-      next();
-      return;
-    }
-
-    // if project is private, owner and project member can see
-    if (project.userId === req.userId) {
-      next();
-      return;
-    }
-
-    const member = project.Members && project.Members[0];
-    if (member) {
-      next();
-      return;
-    }
-
-    return res.status(403).json({ error: 'Forbidden' });
-  }
-
-  /**
    * Verify user has project
    * (have to be called after verifySignedIn() middleware)
    */
@@ -188,8 +127,9 @@ function authMiddleware(sequelize) {
     const Folder = defineFolder(sequelize, DataTypes);
     const Case = defineCase(sequelize, DataTypes);
     const Member = defineMember(sequelize, DataTypes);
-    Project.hasMany(Member, { foreignKey: 'projectId' });
+    Project.hasMany(Folder, { foreignKey: 'projectId' });
     Folder.hasMany(Case, { foreignKey: 'folderId' });
+    Project.hasMany(Member, { foreignKey: 'projectId' });
 
     let projectId = req.params.projectId || req.query.projectId;
     const folderId = req.params.folderId || req.query.folderId;
@@ -258,7 +198,6 @@ function authMiddleware(sequelize) {
   return {
     verifySignedIn,
     verifyAdmin,
-    verifyProjectVisible,
     verifyProjectOwner,
     verifyProjectManager,
     verifyProjectDeveloper,

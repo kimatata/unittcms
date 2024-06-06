@@ -96,7 +96,6 @@ async function updateCase(jwt: string, updateCaseData: CaseType) {
   };
 
   const url = `${apiServer}/cases/${updateCaseData.id}`;
-
   try {
     const response = await fetch(url, fetchOptions);
     if (!response.ok) {
