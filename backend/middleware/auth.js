@@ -1,11 +1,7 @@
 const jwt = require('jsonwebtoken');
-const { roles, memberRoles, defaultDangerKey } = require('../routes/users/authSettings');
+const { roles, defaultDangerKey } = require('../routes/users/authSettings');
 const { DataTypes } = require('sequelize');
 const defineUser = require('../models/users');
-const defineMember = require('../models/members');
-const defineProject = require('../models/projects');
-const defineFolder = require('../models/folders');
-const defineCase = require('../models/cases');
 
 function authMiddleware(sequelize) {
   /**
@@ -51,156 +47,9 @@ function authMiddleware(sequelize) {
     next();
   }
 
-  /**
-   * Verify user has project
-   * (have to be called after verifySignedIn() middleware)
-   */
-  async function verifyProjectOwner(req, res, next) {
-    const Project = defineProject(sequelize, DataTypes);
-
-    const projectId = req.params.projectId;
-    if (!projectId) {
-      return res.status(400).json({ error: 'projectId is required' });
-    }
-
-    const project = await Project.findByPk(projectId);
-    if (!project) {
-      return res.status(404).send('Project not found');
-    }
-
-    if (project.userId !== req.userId) {
-      return res.status(403).json({ error: 'Forbidden' });
-    }
-
-    next();
-  }
-
-  /**
-   * Verify user has permission of project management
-   * (User must be the owner or manager of the project)
-   * (have to be called after verifySignedIn() middleware)
-   */
-  async function verifyProjectManager(req, res, next) {
-    const Project = defineProject(sequelize, DataTypes);
-
-    const projectId = req.params.projectId || req.query.projectId;
-    if (!projectId) {
-      return res.status(400).json({ error: 'projectId is required' });
-    }
-
-    const project = await Project.findByPk(projectId);
-    if (!project) {
-      return res.status(404).send('Project not found');
-    }
-
-    if (project.userId === req.userId) {
-      next();
-      return;
-    }
-
-    // check the user is manager of the project
-    const Member = defineMember(sequelize, DataTypes);
-    const member = await Member.findOne({
-      where: {
-        userId: req.userId,
-        projectId: projectId,
-      },
-    });
-    if (member) {
-      const managerRoleIndex = memberRoles.findIndex((entry) => entry.uid === 'manager');
-      if (member.role === managerRoleIndex) {
-        next();
-        return;
-      }
-    }
-
-    return res.status(403).json({ error: 'Forbidden' });
-  }
-
-  /**
-   * Verify user has permission of project development
-   * (User must be the owner or manager or developer of the project)
-   * (have to be called after verifySignedIn() middleware)
-   */
-  async function verifyProjectDeveloper(req, res, next) {
-    const Project = defineProject(sequelize, DataTypes);
-    const Folder = defineFolder(sequelize, DataTypes);
-    const Case = defineCase(sequelize, DataTypes);
-    const Member = defineMember(sequelize, DataTypes);
-    Project.hasMany(Folder, { foreignKey: 'projectId' });
-    Folder.hasMany(Case, { foreignKey: 'folderId' });
-    Project.hasMany(Member, { foreignKey: 'projectId' });
-
-    let projectId = req.params.projectId || req.query.projectId;
-    const folderId = req.params.folderId || req.query.folderId;
-    const caseId = req.params.caseId || req.query.caseId;
-    if (!projectId && !folderId && !caseId) {
-      return res.status(400).json({ error: 'projectId, folderId or caseId is required' });
-    }
-
-    if (!projectId) {
-      if (folderId) {
-        // find project id from folderId
-        const folder = await Folder.findByPk(folderId);
-        if (folder && folder.projectId) {
-          projectId = folder.projectId;
-        } else {
-          return res.status(404).send('failed to find project from folderId');
-        }
-      }
-    } else if (caseId) {
-      // find project id from caseId
-      const testCase = await Case.findByPk(caseId, {
-        include: {
-          model: Folder,
-          include: Project,
-        },
-      });
-      if (testCase && testCase.Folder && testCase.Folder.Project) {
-        projectId = testCase.Folder.Project.id;
-      } else {
-        return res.status(404).send('Failed to find project from caseId');
-      }
-    }
-
-    const project = await Project.findOne({
-      where: { id: projectId },
-      include: [
-        {
-          model: Member,
-          where: { userId: req.userId },
-          required: false,
-        },
-      ],
-    });
-    if (!project) {
-      return res.status(404).send('Project not found');
-    }
-
-    if (project.userId === req.userId) {
-      next();
-      return;
-    }
-
-    const member = project.Members && project.Members[0];
-    if (member) {
-      const managerRoleIndex = memberRoles.findIndex((entry) => entry.uid === 'manager');
-      const developerRoleIndex = memberRoles.findIndex((entry) => entry.uid === 'developer');
-      if (member.role === managerRoleIndex || member.role === developerRoleIndex) {
-        next();
-        return;
-      }
-    }
-
-    return res.status(403).json({ error: 'Forbidden' });
-  }
-
   return {
     verifySignedIn,
     verifyAdmin,
-    verifyProjectOwner,
-    verifyProjectManager,
-    verifyProjectDeveloper,
   };
 }
 

@@ -5,11 +5,12 @@ const defineStep = require('../../models/steps');
 const { DataTypes } = require('sequelize');
 
 module.exports = function (sequelize) {
-  const { verifySignedIn, verifyProjectDeveloper } = require('../../middleware/auth')(sequelize);
+  const { verifySignedIn } = require('../../middleware/auth')(sequelize);
+  const { verifyProjectDeveloperFromCaseId } = require('../../middleware/verifyEditable')(sequelize);
   const Case = defineCase(sequelize, DataTypes);
   const Step = defineStep(sequelize, DataTypes);
 
-  router.put('/:caseId', verifySignedIn, verifyProjectDeveloper, async (req, res) => {
+  router.put('/:caseId', verifySignedIn, verifyProjectDeveloperFromCaseId, async (req, res) => {
     const caseId = req.params.caseId;
     const updateCase = req.body;
     try {

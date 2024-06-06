@@ -4,10 +4,11 @@ const defineFolder = require('../../models/folders');
 const { DataTypes } = require('sequelize');
 
 module.exports = function (sequelize) {
-  const { verifySignedIn, verifyProjectDeveloper } = require('../../middleware/auth')(sequelize);
+  const { verifySignedIn } = require('../../middleware/auth')(sequelize);
+  const { verifyProjectDeveloperFromFolderId } = require('../../middleware/verifyEditable')(sequelize);
   const Folder = defineFolder(sequelize, DataTypes);
 
-  router.delete('/:folderId', verifySignedIn, verifyProjectDeveloper, async (req, res) => {
+  router.delete('/:folderId', verifySignedIn, verifyProjectDeveloperFromFolderId, async (req, res) => {
     const folderId = req.params.folderId;
     try {
       const folder = await Folder.findByPk(folderId);

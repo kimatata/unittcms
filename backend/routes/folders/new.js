@@ -4,10 +4,11 @@ const defineFolder = require('../../models/folders');
 const { DataTypes } = require('sequelize');
 
 module.exports = function (sequelize) {
-  const { verifySignedIn, verifyProjectDeveloper } = require('../../middleware/auth')(sequelize);
+  const { verifySignedIn } = require('../../middleware/auth')(sequelize);
+  const { verifyProjectDeveloperFromProjectId } = require('../../middleware/verifyEditable')(sequelize);
   const Folder = defineFolder(sequelize, DataTypes);
 
-  router.post('/', verifySignedIn, verifyProjectDeveloper, async (req, res) => {
+  router.post('/', verifySignedIn, verifyProjectDeveloperFromProjectId, async (req, res) => {
     try {
       const projectId = req.query.projectId;
       const { name, detail, parentFolderId } = req.body;

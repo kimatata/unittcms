@@ -4,10 +4,11 @@ const defineCase = require('../../models/cases');
 const { DataTypes } = require('sequelize');
 
 module.exports = function (sequelize) {
-  const { verifySignedIn, verifyProjectDeveloper } = require('../../middleware/auth')(sequelize);
+  const { verifySignedIn } = require('../../middleware/auth')(sequelize);
+  const { verifyProjectDeveloperFromProjectId } = require('../../middleware/verifyEditable')(sequelize);
   const Case = defineCase(sequelize, DataTypes);
 
-  router.post('/bulkdelete', verifySignedIn, verifyProjectDeveloper, async (req, res) => {
+  router.post('/bulkdelete', verifySignedIn, verifyProjectDeveloperFromProjectId, async (req, res) => {
     const { caseIds } = req.body;
     if (!caseIds || !Array.isArray(caseIds)) {
       return res.status(400).send('Invalid caseIds array');

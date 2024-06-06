@@ -103,7 +103,7 @@ function verifyVisibleMiddleware(sequelize) {
       ],
     });
     if (!project) {
-      return res.status(404).send('Project not found');
+      return false;
     }
 
     // if project is public, everyone can see

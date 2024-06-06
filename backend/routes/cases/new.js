@@ -14,10 +14,11 @@ function isEmpty(value) {
 }
 
 module.exports = function (sequelize) {
-  const { verifySignedIn, verifyProjectDeveloper } = require('../../middleware/auth')(sequelize);
+  const { verifySignedIn } = require('../../middleware/auth')(sequelize);
+  const { verifyProjectDeveloperFromFolderId } = require('../../middleware/verifyEditable')(sequelize);
   const Case = defineCase(sequelize, DataTypes);
 
-  router.post('/', verifySignedIn, verifyProjectDeveloper, async (req, res) => {
+  router.post('/', verifySignedIn, verifyProjectDeveloperFromFolderId, async (req, res) => {
     const folderId = req.query.folderId;
 
     try {

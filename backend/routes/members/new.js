@@ -5,10 +5,11 @@ const { DataTypes } = require('sequelize');
 const { memberRoles } = require('../../routes/users/authSettings');
 
 module.exports = function (sequelize) {
-  const { verifySignedIn, verifyProjectManager } = require('../../middleware/auth')(sequelize);
+  const { verifySignedIn } = require('../../middleware/auth')(sequelize);
+  const { verifyProjectManagerFromProjectId } = require('../../middleware/verifyEditable')(sequelize);
   const Member = defineMember(sequelize, DataTypes);
 
-  router.post('/', verifySignedIn, verifyProjectManager, async (req, res) => {
+  router.post('/', verifySignedIn, verifyProjectManagerFromProjectId, async (req, res) => {
     const userId = req.query.userId;
     const projectId = req.query.projectId;
 
