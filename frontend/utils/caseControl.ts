@@ -25,7 +25,7 @@ async function fetchCase(jwt: string, caseId: number) {
   }
 }
 
-async function fetchCases(jwt: string, folderId: string) {
+async function fetchCases(jwt: string, folderId: number) {
   const url = `${apiServer}/cases?folderId=${folderId}`;
 
   try {

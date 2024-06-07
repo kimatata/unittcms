@@ -5,10 +5,14 @@ const { DataTypes, Op } = require('sequelize');
 
 module.exports = function (sequelize) {
   const RunCase = defineRunCase(sequelize, DataTypes);
+  const { verifySignedIn } = require('../../middleware/auth')(sequelize);
+  const { verifyProjectReporterFromRunId } = require('../../middleware/verifyEditable')(sequelize);
 
-  router.post('/bulkdelete', async (req, res) => {
+  router.post('/bulkdelete', verifySignedIn, verifyProjectReporterFromRunId, async (req, res) => {
     const recordsToDelete = req.body;
 
+    // TODO Instead of receiving a combination of runId and caseId from frontend,
+    // receives only an array of caseId and constructs a pair from the query parameter runId
     try {
       const existingRunCases = await RunCase.findAll({
         where: {

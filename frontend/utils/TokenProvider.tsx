@@ -8,6 +8,7 @@ import {
   isAdmin as tokenIsAdmin,
   isProjectManager as tokenIsProjectManager,
   isProjectDeveloper as tokenIsProjectDeveloper,
+  isProjectReporter as tokenIsProjectReporter,
   checkSignInPage as tokenCheckSignInPage,
   fetchMyRoles,
 } from './token';
@@ -70,6 +71,10 @@ const TokenProvider = ({ toastMessages, locale, children }: TokenProps) => {
     return tokenIsProjectDeveloper(projectRoles, projectId);
   };
 
+  const isProjectReporter = (projectId: number) => {
+    return tokenIsProjectReporter(projectRoles, projectId);
+  };
+
   const tokenContext = {
     token,
     projectRoles,
@@ -77,6 +82,7 @@ const TokenProvider = ({ toastMessages, locale, children }: TokenProps) => {
     isAdmin,
     isProjectManager,
     isProjectDeveloper,
+    isProjectReporter,
     setToken,
     storeTokenToLocalStorage,
     removeTokenFromLocalStorage,

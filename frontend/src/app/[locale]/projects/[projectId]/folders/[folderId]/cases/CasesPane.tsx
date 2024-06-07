@@ -2,7 +2,7 @@
 import { useState, useEffect, useContext } from 'react';
 import { TokenContext } from '@/utils/TokenProvider';
 import TestCaseTable from './TestCaseTable';
-import { fetchCases, createCase, deleteCases } from './caseControl';
+import { fetchCases, createCase, deleteCases } from '@/utils/caseControl';
 import { CaseType, CasesMessages } from '@/types/case';
 import DeleteConfirmDialog from '@/components/DeleteConfirmDialog';
 import CaseDialog from './CaseDialog';
@@ -25,7 +25,7 @@ export default function CasesPane({ projectId, folderId, messages, locale }: Pro
         return;
       }
       try {
-        const data = await fetchCases(context.token.access_token, folderId);
+        const data = await fetchCases(context.token.access_token, Number(folderId));
         setCases(data);
       } catch (error: any) {
         console.error('Error in effect:', error.message);

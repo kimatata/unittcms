@@ -1,6 +1,6 @@
 'use client';
 import React from 'react';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import { useRouter } from '@/src/navigation';
 import {
   Button,
@@ -36,7 +36,8 @@ import {
   bulkDeleteRunCases,
 } from '../runsControl';
 import { fetchFolders } from '../../folders/foldersControl';
-import { fetchCases } from '../../folders/[folderId]/cases/caseControl';
+import { fetchCases } from '@/utils/caseControl';
+import { TokenContext } from '@/utils/TokenProvider';
 import { useTheme } from 'next-themes';
 
 const defaultTestRun = {
@@ -46,6 +47,8 @@ const defaultTestRun = {
   description: '',
   state: 0,
   projectId: 0,
+  createdAt: '',
+  updatedAt: '',
 };
 
 type Props = {
@@ -56,29 +59,34 @@ type Props = {
 };
 
 export default function RunEditor({ projectId, runId, messages, locale }: Props) {
+  const context = useContext(TokenContext);
   const { theme, setTheme } = useTheme();
   const [testRun, setTestRun] = useState<RunType>(defaultTestRun);
-  const [folders, setFolders] = useState([]);
+  const [folders, setFolders] = useState<FolderType[]>([]);
   const [runCases, setRunCases] = useState<RunCaseType[]>([]);
   const [runStatusCounts, setRunStatusCounts] = useState<RunStatusCountType[]>();
   const [selectedKeys, setSelectedKeys] = useState<Selection>(new Set([]));
-  const [selectedFolder, setSelectedFolder] = useState<FolderType>({});
+  const [selectedFolder, setSelectedFolder] = useState<FolderType | null>(null);
   const [testcases, setTestCases] = useState<CaseType[]>([]);
   const [isNameInvalid, setIsNameInvalid] = useState<boolean>(false);
   const [isUpdating, setIsUpdating] = useState<boolean>(false);
   const router = useRouter();
 
   const fetchRunAndStatusCount = async () => {
-    const { run, statusCounts } = await fetchRun(runId);
+    const { run, statusCounts } = await fetchRun(context.token.access_token, Number(runId));
     setTestRun(run);
     setRunStatusCounts(statusCounts);
   };
 
   useEffect(() => {
     async function fetchDataEffect() {
+      if (!context.isSignedIn()) {
+        return;
+      }
+
       try {
         await fetchRunAndStatusCount();
-        const foldersData = await fetchFolders(projectId);
+        const foldersData = await fetchFolders(context.token.access_token, projectId);
         setFolders(foldersData);
         setSelectedFolder(foldersData[0]);
       } catch (error: any) {
@@ -87,16 +95,16 @@ export default function RunEditor({ projectId, runId, messages, locale }: Props)
     }
 
     fetchDataEffect();
-  }, []);
+  }, [context]);
 
   useEffect(() => {
     async function fetchCasesData() {
       if (selectedFolder && selectedFolder.id) {
         try {
-          const latestRunCases = await fetchRunCases(runId);
+          const latestRunCases: RunCaseType[] = await fetchRunCases(context.token.access_token, Number(runId));
           setRunCases(latestRunCases);
 
-          const testCasesData = await fetchCases(selectedFolder.id);
+          const testCasesData: CaseType[] = await fetchCases(context.token.access_token, selectedFolder.id);
           // Check if each testCase has an association with testRun
           // and add "isIncluded" property
           const updatedTestCasesData = testCasesData.map((testCase) => {
@@ -122,7 +130,7 @@ export default function RunEditor({ projectId, runId, messages, locale }: Props)
   }, [selectedFolder]);
 
   const handleChangeStatus = async (changeCaseId: number, status: number) => {
-    await updateRunCase(runId, changeCaseId, status);
+    await updateRunCase(context.token.access_token, Number(runId), changeCaseId, status);
     setTestCases((prevTestCases) => {
       return prevTestCases.map((testCase) => {
         if (testCase.id === changeCaseId) {
@@ -135,12 +143,12 @@ export default function RunEditor({ projectId, runId, messages, locale }: Props)
 
   const handleIncludeExcludeCase = async (isInclude: boolean, clickedTestCaseId: number) => {
     if (isInclude) {
-      const createdRunCase = await createRunCase(runId, clickedTestCaseId);
+      const createdRunCase = await createRunCase(context.token.access_token, Number(runId), clickedTestCaseId);
       setRunCases((prevRunCases) => {
         return [...prevRunCases, createdRunCase];
       });
     } else {
-      await deleteRunCase(runId, clickedTestCaseId);
+      await deleteRunCase(context.token.access_token, Number(runId), clickedTestCaseId);
       setRunCases((prevRunCases) => {
         return prevRunCases.filter((runCase) => runCase.caseId !== clickedTestCaseId);
       });
@@ -165,14 +173,14 @@ export default function RunEditor({ projectId, runId, messages, locale }: Props)
     }
 
     const runCaseInfo: RunCaseInfoType[] = keys.map((caseId) => ({
-      runId: runId,
+      runId: Number(runId),
       caseId: caseId,
     }));
     if (isInclude) {
-      const createdRunCases = await bulkCreateRunCases(runCaseInfo);
+      const createdRunCases = await bulkCreateRunCases(context.token.access_token, Number(runId), runCaseInfo);
       setRunCases((prevRunCases) => [...prevRunCases, ...createdRunCases]);
     } else {
-      await bulkDeleteRunCases(runCaseInfo);
+      await bulkDeleteRunCases(context.token.access_token, Number(runId), runCaseInfo);
       setRunCases((prevRunCases) => {
         return prevRunCases.filter((runCase) => {
           return !runCaseInfo.some((info) => info.caseId === runCase.caseId);
@@ -217,7 +225,7 @@ export default function RunEditor({ projectId, runId, messages, locale }: Props)
           isLoading={isUpdating}
           onPress={async () => {
             setIsUpdating(true);
-            await updateRun(testRun);
+            await updateRun(context.token.access_token, testRun);
             setIsUpdating(false);
           }}
         >

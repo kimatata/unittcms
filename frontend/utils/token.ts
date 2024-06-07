@@ -112,6 +112,33 @@ function isProjectDeveloper(projectRoles: ProjectRoleType[], projectId: number) 
   return false;
 }
 
+function isProjectReporter(projectRoles: ProjectRoleType[], projectId: number) {
+  if (!projectRoles) {
+    return false;
+  }
+
+  const found = projectRoles.find((role) => {
+    return role.projectId === projectId;
+  });
+
+  if (!found) {
+    return false;
+  }
+
+  if (found.isOwner === true) {
+    return true;
+  }
+
+  const managerRoleIndex = memberRoles.findIndex((entry) => entry.uid === 'manager');
+  const developerRoleIndex = memberRoles.findIndex((entry) => entry.uid === 'developer');
+  const reporterRoleIndex = memberRoles.findIndex((entry) => entry.uid === 'reporter');
+  if (found.role === managerRoleIndex || found.role === developerRoleIndex || found.role === reporterRoleIndex) {
+    return true;
+  }
+
+  return false;
+}
+
 // private paths are '/account', '/admin', '/projects/*'
 const isPrivatePath = (pathname: string) => {
   return /^\/account(\/)?$/.test(pathname) || /^\/admin(\/.*)?$/.test(pathname) || /^\/projects(\/.*)?$/.test(pathname);
@@ -142,4 +169,13 @@ function checkSignInPage(token: TokenType, pathname: string) {
   return ret;
 }
 
-export { isSignedIn, isAdmin, isProjectManager, isProjectDeveloper, isPrivatePath, checkSignInPage, fetchMyRoles };
+export {
+  isSignedIn,
+  isAdmin,
+  isProjectManager,
+  isProjectDeveloper,
+  isProjectReporter,
+  isPrivatePath,
+  checkSignInPage,
+  fetchMyRoles,
+};

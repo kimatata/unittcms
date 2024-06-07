@@ -4,6 +4,7 @@ const defineMember = require('../models/members');
 const defineProject = require('../models/projects');
 const defineFolder = require('../models/folders');
 const defineCase = require('../models/cases');
+const defineRun = require('../models/runs');
 
 function verifyEditableMiddleware(sequelize) {
   /**
@@ -195,12 +196,99 @@ function verifyEditableMiddleware(sequelize) {
     return false;
   }
 
+  /**
+   * Verify user is reporter of the project by projectId
+   * (have to be called after verifySignedIn() middleware)
+   */
+  async function verifyProjectReporterFromProjectId(req, res, next) {
+    const projectId = req.params.projectId || req.query.projectId;
+    if (!projectId) {
+      return res.status(400).json({ error: 'projectId is required' });
+    }
+
+    const isReporterRet = await isReporter(projectId, req.userId);
+    if (isReporterRet) {
+      next();
+      return;
+    }
+
+    return res.status(403).json({ error: 'Forbidden' });
+  }
+
+  /**
+   * Verify user is reporter of the project by runId
+   * (have to be called after verifySignedIn() middleware)
+   */
+  async function verifyProjectReporterFromRunId(req, res, next) {
+    const Run = defineRun(sequelize, DataTypes);
+
+    const runId = req.params.runId || req.query.runId;
+    if (!runId) {
+      return res.status(400).json({ error: 'runId is required' });
+    }
+
+    // find project id from runId
+    const run = await Run.findByPk(runId);
+    const projectId = run && run.id;
+    if (!projectId) {
+      return res.status(404).send('failed to find projectId');
+    }
+
+    const isReporterRet = await isReporter(projectId, req.userId);
+    if (isReporterRet) {
+      next();
+      return;
+    }
+
+    return res.status(403).json({ error: 'Forbidden' });
+  }
+
+  async function isReporter(projectId, userId) {
+    const Project = defineProject(sequelize, DataTypes);
+    const Member = defineMember(sequelize, DataTypes);
+    Project.hasMany(Member, { foreignKey: 'projectId' });
+    Member.belongsTo(Project, { foreignKey: 'projectId' });
+
+    const project = await Project.findOne({
+      where: { id: projectId },
+      include: [
+        {
+          model: Member,
+          where: { userId: userId },
+          required: false,
+        },
+      ],
+    });
+    if (!project) {
+      return false;
+    }
+
+    // owner has reporter or higher authority
+    if (project.userId === userId) {
+      return true;
+    }
+
+    const member = project.Members && project.Members[0];
+    if (member) {
+      const managerRoleIndex = memberRoles.findIndex((entry) => entry.uid === 'manager');
+      const developerRoleIndex = memberRoles.findIndex((entry) => entry.uid === 'developer');
+      const reporterRoleIndex = memberRoles.findIndex((entry) => entry.uid === 'reporter');
+      if (member.role === managerRoleIndex || member.role === developerRoleIndex || member.role === reporterRoleIndex) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
   return {
     verifyProjectOwner,
     verifyProjectManagerFromProjectId,
     verifyProjectDeveloperFromProjectId,
     verifyProjectDeveloperFromFolderId,
     verifyProjectDeveloperFromCaseId,
+    verifyProjectReporterFromProjectId,
+    verifyProjectReporterFromRunId,
   };
 }
 

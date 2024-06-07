@@ -4,9 +4,11 @@ const defineRunCase = require('../../models/runCases');
 const { DataTypes } = require('sequelize');
 
 module.exports = function (sequelize) {
+  const { verifySignedIn } = require('../../middleware/auth')(sequelize);
+  const { verifyProjectReporterFromRunId } = require('../../middleware/verifyEditable')(sequelize);
   const RunCase = defineRunCase(sequelize, DataTypes);
 
-  router.put('/', async (req, res) => {
+  router.put('/', verifySignedIn, verifyProjectReporterFromRunId, async (req, res) => {
     const runId = req.query.runId;
     const caseId = req.query.caseId;
     const status = req.query.status;

@@ -8,7 +8,7 @@ const Chart = dynamic(() => import('react-apexcharts'), { ssr: false });
 type Props = {
   statusCounts: RunStatusCountType[];
   messages: RunMessages;
-  theme: string;
+  theme: string | undefined;
 };
 
 export default function RunProgressDounut({ statusCounts, messages, theme }: Props) {

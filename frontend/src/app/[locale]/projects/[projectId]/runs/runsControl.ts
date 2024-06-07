@@ -2,7 +2,7 @@ import Config from '@/config/config';
 const apiServer = Config.apiServer;
 import { RunType, RunCaseInfoType } from '@/types/run';
 
-async function fetchRun(runId: string) {
+async function fetchRun(jwt: string, runId: number) {
   const url = `${apiServer}/runs/${runId}`;
 
   try {
@@ -10,6 +10,7 @@ async function fetchRun(runId: string) {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
+        Authorization: `Bearer ${jwt}`,
       },
     });
 
@@ -24,7 +25,7 @@ async function fetchRun(runId: string) {
   }
 }
 
-async function fetchRuns(projectId: string) {
+async function fetchRuns(jwt: string, projectId: number) {
   const url = `${apiServer}/runs?projectId=${projectId}`;
 
   try {
@@ -32,6 +33,7 @@ async function fetchRuns(projectId: string) {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
+        Authorization: `Bearer ${jwt}`,
       },
     });
 
@@ -46,24 +48,24 @@ async function fetchRuns(projectId: string) {
   }
 }
 
-async function createRun(projectId: string, name: string, description: string) {
+async function createRun(jwt: string, projectId: number, name: string, description: string) {
   const newTestRun = {
     name,
     configurations: 0,
     description,
     state: 0,
-    projectId: projectId,
   };
 
   const fetchOptions = {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
+      Authorization: `Bearer ${jwt}`,
     },
     body: JSON.stringify(newTestRun),
   };
 
-  const url = `${apiServer}/runs`;
+  const url = `${apiServer}/runs?projectId=${projectId}`;
 
   try {
     const response = await fetch(url, fetchOptions);
@@ -78,11 +80,12 @@ async function createRun(projectId: string, name: string, description: string) {
   }
 }
 
-async function updateRun(updateTestRun: RunType) {
+async function updateRun(jwt: string, updateTestRun: RunType) {
   const fetchOptions = {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
+      Authorization: `Bearer ${jwt}`,
     },
     body: JSON.stringify(updateTestRun),
   };
@@ -102,11 +105,12 @@ async function updateRun(updateTestRun: RunType) {
   }
 }
 
-async function deleteRun(runId: number) {
+async function deleteRun(jwt: string, runId: number) {
   const fetchOptions = {
     method: 'DELETE',
     headers: {
       'Content-Type': 'application/json',
+      Authorization: `Bearer ${jwt}`,
     },
   };
 
@@ -123,7 +127,7 @@ async function deleteRun(runId: number) {
   }
 }
 
-async function fetchRunCases(runId: string) {
+async function fetchRunCases(jwt: string, runId: number) {
   const url = `${apiServer}/runcases?runId=${runId}`;
 
   try {
@@ -131,6 +135,7 @@ async function fetchRunCases(runId: string) {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
+        Authorization: `Bearer ${jwt}`,
       },
     });
 
@@ -145,11 +150,12 @@ async function fetchRunCases(runId: string) {
   }
 }
 
-async function createRunCase(runId: string, caseId: number) {
+async function createRunCase(jwt: string, runId: number, caseId: number) {
   const fetchOptions = {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
+      Authorization: `Bearer ${jwt}`,
     },
   };
 
@@ -168,11 +174,12 @@ async function createRunCase(runId: string, caseId: number) {
   }
 }
 
-async function updateRunCase(runId: string, caseId: number, status: number) {
+async function updateRunCase(jwt: string, runId: number, caseId: number, status: number) {
   const fetchOptions = {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
+      Authorization: `Bearer ${jwt}`,
     },
   };
 
@@ -191,16 +198,17 @@ async function updateRunCase(runId: string, caseId: number, status: number) {
   }
 }
 
-async function bulkCreateRunCases(runCaseInfo: RunCaseInfoType[]) {
+async function bulkCreateRunCases(jwt: string, runId: number, runCaseInfo: RunCaseInfoType[]) {
   const fetchOptions = {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
+      Authorization: `Bearer ${jwt}`,
     },
     body: JSON.stringify(runCaseInfo),
   };
 
-  const url = `${apiServer}/runcases/bulknew`;
+  const url = `${apiServer}/runcases/bulknew?runId=${runId}`;
 
   try {
     const response = await fetch(url, fetchOptions);
@@ -215,11 +223,12 @@ async function bulkCreateRunCases(runCaseInfo: RunCaseInfoType[]) {
   }
 }
 
-async function deleteRunCase(runId: string, caseId: number) {
+async function deleteRunCase(jwt: string, runId: number, caseId: number) {
   const fetchOptions = {
     method: 'DELETE',
     headers: {
       'Content-Type': 'application/json',
+      Authorization: `Bearer ${jwt}`,
     },
   };
 
@@ -236,16 +245,17 @@ async function deleteRunCase(runId: string, caseId: number) {
   }
 }
 
-async function bulkDeleteRunCases(runCaseInfo: RunCaseInfoType[]) {
+async function bulkDeleteRunCases(jwt: string, runId: number, runCaseInfo: RunCaseInfoType[]) {
   const fetchOptions = {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
+      Authorization: `Bearer ${jwt}`,
     },
     body: JSON.stringify(runCaseInfo),
   };
 
-  const url = `${apiServer}/runcases/bulkdelete`;
+  const url = `${apiServer}/runcases/bulkdelete?runId=${runId}`;
 
   try {
     const response = await fetch(url, fetchOptions);

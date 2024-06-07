@@ -4,9 +4,11 @@ const defineRun = require('../../models/runs');
 const { DataTypes } = require('sequelize');
 
 module.exports = function (sequelize) {
+  const { verifySignedIn } = require('../../middleware/auth')(sequelize);
+  const { verifyProjectReporterFromRunId } = require('../../middleware/verifyEditable')(sequelize);
   const Run = defineRun(sequelize, DataTypes);
 
-  router.delete('/:runId', async (req, res) => {
+  router.delete('/:runId', verifySignedIn, verifyProjectReporterFromRunId, async (req, res) => {
     const runId = req.params.runId;
     try {
       const testrun = await Run.findByPk(runId);

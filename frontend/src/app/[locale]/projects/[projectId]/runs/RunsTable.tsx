@@ -20,13 +20,14 @@ import dayjs from 'dayjs';
 
 type Props = {
   projectId: string;
+  isDisabled: boolean;
   runs: RunType[];
   onDeleteRun: (runId: number) => void;
   messages: RunsMessages;
   locale: string;
 };
 
-export default function RunsTable({ projectId, runs, onDeleteRun, messages, locale }: Props) {
+export default function RunsTable({ projectId, isDisabled, runs, onDeleteRun, messages, locale }: Props) {
   const headerColumns = [
     { name: messages.id, uid: 'id', sortable: true },
     { name: messages.name, uid: 'name', sortable: true },
@@ -83,7 +84,7 @@ export default function RunsTable({ projectId, runs, onDeleteRun, messages, loca
               </Button>
             </DropdownTrigger>
             <DropdownMenu aria-label="run actions">
-              <DropdownItem className="text-danger" onClick={() => onDeleteRun(run.id)}>
+              <DropdownItem className="text-danger" isDisabled={isDisabled} onClick={() => onDeleteRun(run.id)}>
                 {messages.deleteRun}
               </DropdownItem>
             </DropdownMenu>

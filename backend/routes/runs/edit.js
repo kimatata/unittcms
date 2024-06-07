@@ -5,8 +5,10 @@ const { DataTypes } = require('sequelize');
 
 module.exports = function (sequelize) {
   const Run = defineRun(sequelize, DataTypes);
+  const { verifySignedIn } = require('../../middleware/auth')(sequelize);
+  const { verifyProjectReporterFromRunId } = require('../../middleware/verifyEditable')(sequelize);
 
-  router.put('/:runId', async (req, res) => {
+  router.put('/:runId', verifySignedIn, verifyProjectReporterFromRunId, async (req, res) => {
     const runId = req.params.runId;
     const updateRun = req.body;
     try {

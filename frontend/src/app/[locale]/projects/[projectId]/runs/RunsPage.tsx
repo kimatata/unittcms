@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useContext } from 'react';
 import { Button } from '@nextui-org/react';
 import { Plus } from 'lucide-react';
 import RunsTable from './RunsTable';
@@ -7,6 +7,7 @@ import { fetchRuns, createRun, updateRun, deleteRun } from './runsControl';
 import { RunType, RunsMessages } from '@/types/run';
 import RunDialog from './RunDialog';
 import DeleteConfirmDialog from '@/components/DeleteConfirmDialog';
+import { TokenContext } from '@/utils/TokenProvider';
 
 type Props = {
   projectId: string;
@@ -15,18 +16,19 @@ type Props = {
 };
 
 const defaultRun = {
-  id: null,
+  id: 0,
   name: 'Untitled Run',
-  configurations: null,
-  description: null,
-  state: null,
-  projectId: null,
-  createdAt: null,
-  updatedAt: null,
+  configurations: 0,
+  description: '',
+  state: 0,
+  projectId: 0,
+  createdAt: '',
+  updatedAt: '',
 };
 
 export default function RunsPage({ projectId, locale, messages }: Props) {
-  const [runs, setRuns] = useState([]);
+  const context = useContext(TokenContext);
+  const [runs, setRuns] = useState<RunType[]>([]);
 
   // run dialog
   const [isRunDialogOpen, setIsRunDialogOpen] = useState(false);
@@ -51,8 +53,12 @@ export default function RunsPage({ projectId, locale, messages }: Props) {
 
   useEffect(() => {
     async function fetchDataEffect() {
+      if (!context.isSignedIn()) {
+        return;
+      }
+
       try {
-        const data = await fetchRuns(projectId);
+        const data = await fetchRuns(context.token.access_token, Number(projectId));
         setRuns(data);
       } catch (error: any) {
         console.error('Error in effect:', error.message);
@@ -60,15 +66,15 @@ export default function RunsPage({ projectId, locale, messages }: Props) {
     }
 
     fetchDataEffect();
-  }, []);
+  }, [context]);
 
   const onSubmit = async (name: string, description: string) => {
     if (editingRun && editingRun.createdAt) {
-      const updatedRun = await updateRun(editingRun);
+      const updatedRun: RunType = await updateRun(context.token.access_token, editingRun);
       const updatedRuns = runs.map((run) => (run.id === updatedRun.id ? updatedRun : run));
       setRuns(updatedRuns);
     } else {
-      const newRun = await createRun(projectId, name, description);
+      const newRun = await createRun(context.token.access_token, Number(projectId), name, description);
       setRuns([...runs, newRun]);
     }
     closeDialog();
@@ -81,7 +87,7 @@ export default function RunsPage({ projectId, locale, messages }: Props) {
 
   const onConfirm = async () => {
     if (deleteRunId) {
-      await deleteRun(deleteRunId);
+      await deleteRun(context.token.access_token, deleteRunId);
       setRuns(runs.filter((run) => run.id !== deleteRunId));
       closeDeleteConfirmDialog();
     }
@@ -92,13 +98,26 @@ export default function RunsPage({ projectId, locale, messages }: Props) {
       <div className="w-full p-3 flex items-center justify-between">
         <h3 className="font-bold">{messages.runList}</h3>
         <div>
-          <Button startContent={<Plus size={16} />} size="sm" color="primary" onClick={openDialogForCreate}>
+          <Button
+            startContent={<Plus size={16} />}
+            size="sm"
+            isDisabled={!context.isProjectReporter(Number(projectId))}
+            color="primary"
+            onClick={openDialogForCreate}
+          >
             {messages.newRun}
           </Button>
         </div>
       </div>
 
-      <RunsTable projectId={projectId} runs={runs} onDeleteRun={onDeleteClick} messages={messages} locale={locale} />
+      <RunsTable
+        projectId={projectId}
+        isDisabled={!context.isProjectReporter(Number(projectId))}
+        runs={runs}
+        onDeleteRun={onDeleteClick}
+        messages={messages}
+        locale={locale}
+      />
 
       <RunDialog
         isOpen={isRunDialogOpen}

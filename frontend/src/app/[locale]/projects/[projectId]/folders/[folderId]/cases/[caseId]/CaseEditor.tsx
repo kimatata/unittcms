@@ -7,7 +7,7 @@ import { priorities, testTypes, templates } from '@/config/selection';
 import CaseStepsEditor from './CaseStepsEditor';
 import CaseAttachmentsEditor from './CaseAttachmentsEditor';
 import { CaseType, AttachmentType, CaseMessages } from '@/types/case';
-import { fetchCase, updateCase } from '../caseControl';
+import { fetchCase, updateCase } from '../../../../../../../../../utils/caseControl';
 import { fetchCreateStep, fetchDeleteStep } from './stepControl';
 import { fetchCreateAttachments, fetchDownloadAttachment, fetchDeleteAttachment } from './attachmentControl';
 import { TokenContext } from '@/utils/TokenProvider';
