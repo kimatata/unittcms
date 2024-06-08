@@ -1,4 +1,4 @@
-import { useState, useMemo, useCallback } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import {
   Table,
   TableHeader,
@@ -28,6 +28,15 @@ type Props = {
 };
 
 export default function RunsTable({ projectId, isDisabled, runs, onDeleteRun, messages, locale }: Props) {
+  const [disabledKeys, setDisabledKeys] = useState<string[]>([]);
+  useEffect(() => {
+    if (isDisabled) {
+      setDisabledKeys(['delete']);
+    } else {
+      setDisabledKeys([]);
+    }
+  }, [isDisabled]);
+
   const headerColumns = [
     { name: messages.id, uid: 'id', sortable: true },
     { name: messages.name, uid: 'name', sortable: true },
@@ -54,7 +63,7 @@ export default function RunsTable({ projectId, isDisabled, runs, onDeleteRun, me
     return text.length > maxLength ? text.slice(0, maxLength) + '...' : text;
   };
 
-  const renderCell = useCallback((run: RunType, columnKey: Key) => {
+  const renderCell = (run: RunType, columnKey: Key) => {
     const cellValue = run[columnKey as keyof RunType];
 
     switch (columnKey) {
@@ -83,8 +92,8 @@ export default function RunsTable({ projectId, isDisabled, runs, onDeleteRun, me
                 <MoreVertical size={16} />
               </Button>
             </DropdownTrigger>
-            <DropdownMenu aria-label="run actions">
-              <DropdownItem className="text-danger" isDisabled={isDisabled} onClick={() => onDeleteRun(run.id)}>
+            <DropdownMenu aria-label="run actions" disabledKeys={disabledKeys}>
+              <DropdownItem className="text-danger" key="delete" onClick={() => onDeleteRun(run.id)}>
                 {messages.deleteRun}
               </DropdownItem>
             </DropdownMenu>
@@ -93,7 +102,7 @@ export default function RunsTable({ projectId, isDisabled, runs, onDeleteRun, me
       default:
         return cellValue;
     }
-  }, []);
+  };
 
   const classNames = useMemo(
     () => ({

@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import {
   Table,
   TableHeader,
@@ -31,6 +31,7 @@ import { RunsMessages } from '@/types/run';
 
 type Props = {
   cases: CaseType[];
+  isDisabled: boolean;
   selectedKeys: Selection;
   onSelectionChange: React.Dispatch<React.SetStateAction<Selection>>;
   onStatusChange: (changeCaseId: number, status: number) => {};
@@ -41,6 +42,7 @@ type Props = {
 
 export default function TestCaseSelector({
   cases,
+  isDisabled,
   selectedKeys,
   onSelectionChange,
   onStatusChange,
@@ -55,6 +57,22 @@ export default function TestCaseSelector({
     { name: messages.status, uid: 'runStatus', sortable: true },
     { name: messages.actions, uid: 'actions' },
   ];
+
+  const [disabledStatusKeys, setDisabledStatusKeys] = useState<string[]>([]);
+  const [disabledIncludeExcludeKeys, setDisabledIncludeExcludeKeys] = useState<string[]>([]);
+  useEffect(() => {
+    if (isDisabled) {
+      setDisabledStatusKeys(
+        testRunCaseStatus.map((entry) => {
+          return entry.uid;
+        })
+      );
+      setDisabledIncludeExcludeKeys(['include', 'exclude']);
+    } else {
+      setDisabledStatusKeys([]);
+      setDisabledIncludeExcludeKeys([]);
+    }
+  }, [isDisabled]);
 
   const [sortDescriptor, setSortDescriptor] = useState<SortDescriptor>({
     column: 'id',
@@ -118,10 +136,10 @@ export default function TestCaseSelector({
                 <span className="w-12">{isIncluded && messages[testRunCaseStatus[cellValue].uid]}</span>
               </Button>
             </DropdownTrigger>
-            <DropdownMenu aria-label="test case actions">
+            <DropdownMenu disabledKeys={disabledStatusKeys} aria-label="test case actions">
               {testRunCaseStatus.map((runCaseStatus, index) => (
                 <DropdownItem
-                  key={index}
+                  key={runCaseStatus.uid}
                   startContent={renderStatusIcon(runCaseStatus.uid)}
                   onPress={() => onStatusChange(testCase.id, index)}
                 >
@@ -139,18 +157,28 @@ export default function TestCaseSelector({
                 <MoreVertical size={16} />
               </Button>
             </DropdownTrigger>
-            <DropdownMenu aria-label="include or exclude actions">
+            <DropdownMenu disabledKeys={disabledIncludeExcludeKeys} aria-label="include or exclude actions">
               <DropdownItem
+                key="include"
                 startContent={<CopyPlus size={16} />}
-                isDisabled={testCase.isIncluded}
-                onPress={() => onIncludeCase(testCase.id)}
+                onPress={() => {
+                  if (testCase.isIncluded) {
+                    return;
+                  }
+                  onIncludeCase(testCase.id);
+                }}
               >
                 {messages.includeInRun}
               </DropdownItem>
               <DropdownItem
+                key="exclude"
                 startContent={<CopyMinus size={16} />}
-                isDisabled={!testCase.isIncluded}
-                onPress={() => onExcludeCase(testCase.id)}
+                onPress={() => {
+                  if (!testCase.isIncluded) {
+                    return;
+                  }
+                  onExcludeCase(testCase.id);
+                }}
               >
                 {messages.excludeFromRun}
               </DropdownItem>

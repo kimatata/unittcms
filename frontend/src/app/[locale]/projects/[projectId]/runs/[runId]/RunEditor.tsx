@@ -221,6 +221,7 @@ export default function RunEditor({ projectId, runId, messages, locale }: Props)
         <Button
           startContent={<Save size={16} />}
           size="sm"
+          isDisabled={!context.isProjectReporter(Number(projectId))}
           color="primary"
           isLoading={isUpdating}
           onPress={async () => {
@@ -310,7 +311,12 @@ export default function RunEditor({ projectId, runId, messages, locale }: Props)
             {(selectedKeys.size > 0 || selectedKeys === 'all') && (
               <Dropdown>
                 <DropdownTrigger>
-                  <Button size="sm" color="primary" endContent={<ChevronDown size={16} />}>
+                  <Button
+                    size="sm"
+                    isDisabled={!context.isProjectReporter(Number(projectId))}
+                    color="primary"
+                    endContent={<ChevronDown size={16} />}
+                  >
                     {messages.testCaseSelection}
                   </Button>
                 </DropdownTrigger>
@@ -351,6 +357,7 @@ export default function RunEditor({ projectId, runId, messages, locale }: Props)
           <div className="w-9/12">
             <TestCaseSelector
               cases={testcases}
+              isDisabled={!context.isProjectReporter(Number(projectId))}
               selectedKeys={selectedKeys}
               onSelectionChange={setSelectedKeys}
               onStatusChange={handleChangeStatus}
