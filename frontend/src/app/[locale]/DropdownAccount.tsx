@@ -1,11 +1,11 @@
 'use client';
 import { Button, DropdownTrigger, Dropdown, DropdownMenu, DropdownItem } from '@nextui-org/react';
-import { User, ChevronDown, PenTool, ArrowRightFromLine, ArrowRightToLine } from 'lucide-react';
+import { ChevronDown, PenTool, ArrowRightFromLine, ArrowRightToLine } from 'lucide-react';
 import { useContext } from 'react';
 import { TokenContext } from '@/utils/TokenProvider';
 import { useRouter } from '@/src/navigation';
 import { AccountDropDownMessages } from '@/types/user';
-import Avatar from 'boring-avatars';
+import UserAvatar from '@/components/UserAvatar';
 
 type Props = {
   messages: AccountDropDownMessages;
@@ -23,22 +23,11 @@ export default function DropdownAccount({ messages, locale, onItemPress }: Props
     router.push(`/`, { locale: locale });
   };
 
-  let userAvatar = context.isSignedIn() ? (
-    <Avatar
-      size={16}
-      name={context.token.user.username}
-      variant="beam"
-      colors={['#0A0310', '#49007E', '#FF005B', '#FF7D10', '#FFB238']}
-    />
-  ) : (
-    <User size={16} />
-  );
-
   const signinItems = [
     {
       uid: 'account',
       title: messages.account,
-      icon: userAvatar,
+      icon: <UserAvatar context={context} />,
       onPress: () => {
         router.push('/account', { locale: locale });
         onItemPress();
@@ -79,7 +68,12 @@ export default function DropdownAccount({ messages, locale, onItemPress }: Props
   return (
     <Dropdown>
       <DropdownTrigger>
-        <Button size="sm" variant="light" startContent={userAvatar} endContent={<ChevronDown size={16} />}>
+        <Button
+          size="sm"
+          variant="light"
+          startContent={<UserAvatar context={context} />}
+          endContent={<ChevronDown size={16} />}
+        >
           {context.isSignedIn() ? context.token.user.username : messages.signIn}
         </Button>
       </DropdownTrigger>

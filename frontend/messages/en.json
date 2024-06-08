@@ -27,7 +27,9 @@
     "account": "Account",
     "signup": "Sign up",
     "signin": "Sign in",
-    "signout": "Sign out"
+    "signout": "Sign out",
+    "links": "Links",
+    "languages": "Languages"
   },
   "Toast": {
     "need_signed_in": "You need signed in",

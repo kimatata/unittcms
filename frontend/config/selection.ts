@@ -1,7 +1,13 @@
 const roles = [{ uid: 'administrator' }, { uid: 'user' }];
+
 const memberRoles = [{ uid: 'manager' }, { uid: 'developer' }, { uid: 'reporter' }];
 
 const categoricalPalette = ['#fba91e', '#6ea56c', '#3ac6e1', '#feda2f', '#f15f47', '#244470', '#9c80bb', '#f595a6'];
+
+const locales = [
+  { code: 'en', name: 'English' },
+  { code: 'ja', name: '日本語' },
+];
 
 const priorities = [
   { uid: 'critical', color: '#bb3e03', chartColor: '#bb3e03' },
@@ -56,4 +62,14 @@ const testRunCaseStatus = [
   { uid: 'skipped', color: 'primary', chartColor: '#805aab' },
 ];
 
-export { roles, memberRoles, priorities, testTypes, automationStatus, templates, testRunStatus, testRunCaseStatus };
+export {
+  roles,
+  memberRoles,
+  locales,
+  priorities,
+  testTypes,
+  automationStatus,
+  templates,
+  testRunStatus,
+  testRunCaseStatus,
+};

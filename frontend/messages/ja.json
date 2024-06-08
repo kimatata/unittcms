@@ -27,7 +27,9 @@
     "account": "アカウント",
     "signup": "新規登録",
     "signin": "サインイン",
-    "signout": "サインアウト"
+    "signout": "サインアウト",
+    "links": "リンク",
+    "languages": "言語"
   },
   "Toast": {
     "need_signed_in": "サインインが必要です",

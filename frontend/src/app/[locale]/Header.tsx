@@ -11,6 +11,8 @@ export default function Header(params: { locale: string }) {
     signUp: t('signup'),
     signIn: t('signin'),
     signOut: t('signout'),
+    links: t('links'),
+    languages: t('languages'),
   };
 
   return <HeaderNavbarMenu messages={messages} locale={params.locale} />;

@@ -1,7 +1,8 @@
 'use client';
 import { useState, useContext } from 'react';
 import { TokenContext } from '@/utils/TokenProvider';
-import { Link } from '@/src/navigation';
+import { Link, useRouter } from '@/src/navigation';
+import { usePathname } from 'next/navigation';
 import Image from 'next/image';
 import {
   Navbar,
@@ -10,15 +11,18 @@ import {
   NavbarMenuToggle,
   NavbarBrand,
   NavbarItem,
-  NavbarMenuItem,
   Link as NextUiLink,
   Chip,
+  ListboxItem,
+  Listbox,
 } from '@nextui-org/react';
-import { MoveUpRight } from 'lucide-react';
+import { ArrowRightFromLine, ArrowRightToLine, File, Globe, MoveUpRight, PenTool } from 'lucide-react';
 import { ThemeSwitch } from '@/components/theme-switch';
 import { GithubIcon } from '@/components/icons';
+import { locales } from '@/config/selection';
 import DropdownAccount from './DropdownAccount';
 import DropdownLanguage from './DropdownLanguage';
+import UserAvatar from '@/components/UserAvatar';
 
 type NabbarMenuMessages = {
   projects: string;
@@ -28,6 +32,8 @@ type NabbarMenuMessages = {
   signUp: string;
   signIn: string;
   signOut: string;
+  links: string;
+  languages: string;
 };
 
 type Props = {
@@ -53,6 +59,20 @@ export default function HeaderNavbarMenu({ messages, locale }: Props) {
       isExternal: true,
     },
   ];
+
+  const router = useRouter();
+  const pathname = usePathname();
+  async function changeLocale(nextLocale: string) {
+    let newPathname;
+    if (pathname.length < 4) {
+      // when root path
+      router.push('/', { locale: nextLocale });
+    } else {
+      // when not root path, trim first "/en" from pathname = "/en/projects"
+      newPathname = pathname.slice(locale.length + 1);
+      router.push(newPathname, { locale: nextLocale });
+    }
+  }
 
   return (
     <Navbar isMenuOpen={isMenuOpen} maxWidth="full" position="sticky" className="bg-inherit">
@@ -115,44 +135,120 @@ export default function HeaderNavbarMenu({ messages, locale }: Props) {
         <ThemeSwitch />
         <div className="hidden md:block">
           <DropdownAccount messages={messages} locale={locale} onItemPress={() => {}} />
-          <DropdownLanguage locale={locale} />
+          <DropdownLanguage locale={locale} onChangeLocale={changeLocale} />
         </div>
         <NavbarMenuToggle className="md:hidden" onClick={() => setIsMenuOpen(!isMenuOpen)} />
       </NavbarContent>
 
       <NavbarMenu>
         <div className="mx-4 mt-2 flex flex-col gap-2">
-          <NavbarMenuItem>
-            <DropdownAccount messages={messages} locale={locale} onItemPress={() => setIsMenuOpen(false)} />
-          </NavbarMenuItem>
-          <NavbarMenuItem>
-            <DropdownLanguage locale={locale} />
-          </NavbarMenuItem>
-          {commonLinks.map((link) =>
-            link.isExternal ? (
-              <NavbarMenuItem key={link.uid}>
-                <NextUiLink
-                  href={link.href}
-                  onPress={() => setIsMenuOpen(false)}
-                  showAnchorIcon
-                  anchorIcon={<MoveUpRight size={12} className="ms-1" />}
-                >
-                  {messages.docs}
-                </NextUiLink>
-              </NavbarMenuItem>
-            ) : (
-              <NavbarMenuItem key={link.uid}>
-                <Link
-                  className="data-[active=true]:text-primary data-[active=true]:font-medium"
-                  href={link.href}
-                  locale={locale}
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  {link.label}
-                </Link>
-              </NavbarMenuItem>
-            )
+          <p className="font-bold">{messages.links}</p>
+          <Listbox
+            aria-label="Links"
+            itemClasses={{
+              base: 'h-10 text-large',
+            }}
+          >
+            {commonLinks.map((link) =>
+              link.isExternal ? (
+                <ListboxItem
+                  key={link.uid}
+                  title={link.label}
+                  startContent={<MoveUpRight size={12} />}
+                  onPress={() => {
+                    router.push(link.href, { locale: locale });
+                    setIsMenuOpen(false);
+                  }}
+                />
+              ) : (
+                <ListboxItem
+                  key={link.uid}
+                  title={link.label}
+                  startContent={<File size={12} />}
+                  onPress={() => {
+                    router.push(link.href, { locale: locale });
+                    setIsMenuOpen(false);
+                  }}
+                />
+              )
+            )}
+          </Listbox>
+
+          <p className="font-bold">{messages.account}</p>
+          {context.isSignedIn() ? (
+            <Listbox
+              aria-label="Account links"
+              itemClasses={{
+                base: 'h-10 text-large',
+              }}
+            >
+              <ListboxItem
+                key="account"
+                title={messages.account}
+                startContent={<UserAvatar context={context} />}
+                onPress={() => {
+                  router.push('/account', { locale: locale });
+                  setIsMenuOpen(false);
+                }}
+              />
+              <ListboxItem
+                key="signout"
+                title={messages.signOut}
+                startContent={<ArrowRightFromLine size={16} />}
+                onPress={() => {
+                  context.setToken(null);
+                  context.removeTokenFromLocalStorage();
+                  router.push(`/`, { locale: locale });
+                  setIsMenuOpen(false);
+                }}
+              />
+            </Listbox>
+          ) : (
+            <Listbox
+              aria-label="Account links"
+              itemClasses={{
+                base: 'h-10 text-large',
+              }}
+            >
+              <ListboxItem
+                key="signin"
+                startContent={<ArrowRightToLine size={16} />}
+                title={messages.signIn}
+                onClick={() => {
+                  router.push('/account/signin', { locale: locale });
+                  setIsMenuOpen(false);
+                }}
+              />
+              <ListboxItem
+                key="signup"
+                title={messages.signUp}
+                startContent={<PenTool size={16} />}
+                onClick={() => {
+                  router.push('/account/signup', { locale: locale });
+                  setIsMenuOpen(false);
+                }}
+              />
+            </Listbox>
           )}
+          <p className="font-bold">{messages.languages}</p>
+          <Listbox
+            aria-label="Language links"
+            itemClasses={{
+              base: 'h-10 text-large',
+            }}
+          >
+            {locales.map((entry) => (
+              <ListboxItem
+                key={entry.code}
+                startContent={<Globe size={16} />}
+                title={entry.name}
+                onClick={() => {
+                  changeLocale(entry.code);
+                  setIsMenuOpen(false);
+                }}
+              />
+            ))}
+          </Listbox>
         </div>
       </NavbarMenu>
     </Navbar>
