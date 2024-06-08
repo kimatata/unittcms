@@ -4,11 +4,12 @@ import { useState, useEffect, useContext } from 'react';
 import { Button } from '@nextui-org/react';
 import { Plus } from 'lucide-react';
 import { MemberType, UserType } from '@/types/user';
-import { MembersMessages } from '@/types/members';
+import { MembersMessages } from '@/types/member';
 import { TokenContext } from '@/utils/TokenProvider';
 import MembersTable from './MembersTable';
 import AddMemberDialog from './AddMemberDialog';
 import { fetchProjectMembers, addMember, deleteMember, updateMember } from './membersControl';
+import DeleteConfirmDialog from '@/components/DeleteConfirmDialog';
 
 type Props = {
   projectId: string;
@@ -48,9 +49,25 @@ export default function MembersPage({ projectId, messages, locale }: Props) {
     setIsDialogOpen(false);
   };
 
-  const handleDeleteMember = async (userDeleted: UserType) => {
-    await deleteMember(context.token.access_token, userDeleted.id, projectId);
-    setMembers(members.filter((member) => member.User.id !== userDeleted.id));
+  // delete confirm dialog
+  const [isDeleteConfirmDialogOpen, setIsDeleteConfirmDialogOpen] = useState(false);
+  const [deleteMemberId, setDeleteMemberId] = useState<number | null>(null);
+  const closeDeleteConfirmDialog = () => {
+    setIsDeleteConfirmDialogOpen(false);
+    setDeleteMemberId(null);
+  };
+
+  const onDeleteClick = (memberId: number) => {
+    setDeleteMemberId(memberId);
+    setIsDeleteConfirmDialogOpen(true);
+  };
+
+  const onConfirm = async () => {
+    if (deleteMemberId) {
+      await deleteMember(context.token.access_token, deleteMemberId, projectId);
+      setMembers(members.filter((member) => member.User.id !== deleteMemberId));
+      closeDeleteConfirmDialog();
+    }
   };
 
   const handleChangeRole = async (userEdit: UserType, role: number) => {
@@ -84,7 +101,7 @@ export default function MembersPage({ projectId, messages, locale }: Props) {
         members={members}
         isDisabled={!context.isProjectManager(Number(projectId))}
         onChangeRole={handleChangeRole}
-        onDeleteMember={handleDeleteMember}
+        onDeleteMember={onDeleteClick}
         messages={messages}
       />
 
@@ -94,6 +111,15 @@ export default function MembersPage({ projectId, messages, locale }: Props) {
         onCancel={() => setIsDialogOpen(false)}
         onAddMember={handleAddMember}
         messages={messages}
+      />
+
+      <DeleteConfirmDialog
+        isOpen={isDeleteConfirmDialogOpen}
+        onCancel={closeDeleteConfirmDialog}
+        onConfirm={onConfirm}
+        closeText={messages.close}
+        confirmText={messages.areYouSure}
+        deleteText={messages.delete}
       />
     </div>
   );

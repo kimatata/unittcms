@@ -284,7 +284,8 @@
     "add_member": "メンバーの追加",
     "user_name_or_email": "ユーザー名またはメールアドレス",
     "close": "閉じる",
-    "add": "追加"
+    "add": "追加",
+    "are_you_sure": "メンバーを削除してもよろしいですか?"
   },
   "Settings": {
     "project_management": "プロジェクト管理",

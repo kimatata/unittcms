@@ -23,7 +23,7 @@ type Props = {
   members: MemberType[];
   isDisabled: boolean;
   onChangeRole: (userEdit: UserType, role: number) => void;
-  onDeleteMember: (userDeleted: UserType) => void;
+  onDeleteMember: (deletedUserId: number) => void;
   messages: SettingsMessages;
 };
 
@@ -92,7 +92,7 @@ export default function MembersTable({ members, isDisabled, onChangeRole, onDele
             isDisabled={isDisabled}
             color="danger"
             variant="light"
-            onClick={() => onDeleteMember(member.User)}
+            onClick={() => onDeleteMember(member.User.id)}
           >
             {messages.deleteMember}
           </Button>

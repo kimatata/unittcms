@@ -285,7 +285,8 @@
     "add_member": "Add member",
     "user_name_or_email": "User name or email",
     "close": "Close",
-    "add": "Add"
+    "add": "Add",
+    "are_you_sure": "Are you sure you want to delete member?"
   },
   "Settings": {
     "project_management": "Project Management",

@@ -19,6 +19,7 @@ export default function Page({ params }: { params: { projectId: string; locale: 
     userNameOrEmail: t('user_name_or_email'),
     close: t('close'),
     add: t('add'),
+    areYouSure: t('are_you_sure'),
   };
 
   return (

@@ -14,4 +14,5 @@ export type MembersMessages = {
   userNameOrEmail: string;
   close: string;
   add: string;
+  areYouSure: string;
 };
