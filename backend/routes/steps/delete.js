@@ -7,11 +7,12 @@ const { DataTypes, Op } = require('sequelize');
 module.exports = function (sequelize) {
   const Step = defineStep(sequelize, DataTypes);
   const CaseStep = defineCaseStep(sequelize, DataTypes);
+  const { verifySignedIn } = require('../../middleware/auth')(sequelize);
+  const { verifyProjectDeveloperFromCaseId } = require('../../middleware/verifyEditable')(sequelize);
 
-  router.delete('/:stepId', async (req, res) => {
+  router.delete('/:stepId', verifySignedIn, verifyProjectDeveloperFromCaseId, async (req, res) => {
     const stepId = req.params.stepId;
-    // TODO The caseId should not be specified from the front end, but should be traced from stepId by association.
-    const caseId = req.query.parentCaseId;
+    const caseId = req.query.caseId;
 
     const t = await sequelize.transaction();
 

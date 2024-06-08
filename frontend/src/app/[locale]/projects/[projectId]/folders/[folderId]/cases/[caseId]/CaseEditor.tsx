@@ -2,7 +2,7 @@
 import { useState, useEffect, useContext } from 'react';
 import { Input, Textarea, Select, SelectItem, Button, Divider, Tooltip } from '@nextui-org/react';
 import { useRouter } from '@/src/navigation';
-import { Save, Plus, ArrowLeft, ArrowUpFromLine, Circle } from 'lucide-react';
+import { Save, Plus, ArrowLeft, Circle } from 'lucide-react';
 import { priorities, testTypes, templates } from '@/config/selection';
 import CaseStepsEditor from './CaseStepsEditor';
 import CaseAttachmentsEditor from './CaseAttachmentsEditor';
@@ -46,7 +46,7 @@ export default function CaseEditor({ projectId, folderId, caseId, messages, loca
   const router = useRouter();
 
   const onPlusClick = async (newStepNo: number) => {
-    const newStep = await fetchCreateStep(newStepNo, Number(caseId));
+    const newStep = await fetchCreateStep(context.token.access_token, newStepNo, Number(caseId));
     if (newStep) {
       newStep.caseSteps = { stepNo: newStepNo };
       const updatedSteps = testCase.Steps.map((step) => {
@@ -80,7 +80,7 @@ export default function CaseEditor({ projectId, folderId, caseId, messages, loca
     const deletedStepNo = deletedStep.caseSteps.stepNo;
 
     // delete request
-    await fetchDeleteStep(stepId, caseId);
+    await fetchDeleteStep(context.token.access_token, stepId, Number(caseId));
 
     const updatedSteps = testCase.Steps.map((step) => {
       if (step.caseSteps.stepNo > deletedStepNo) {
@@ -326,6 +326,7 @@ export default function CaseEditor({ projectId, folderId, caseId, messages, loca
               </Button>
             </div>
             <CaseStepsEditor
+              isDisabled={!context.isProjectDeveloper(Number(projectId))}
               steps={testCase.Steps}
               onStepUpdate={(stepId, changeStep) => {
                 setTestCase({
@@ -349,33 +350,16 @@ export default function CaseEditor({ projectId, folderId, caseId, messages, loca
         <Divider className="my-6" />
         <h6 className="font-bold">{messages.attachments}</h6>
         <CaseAttachmentsEditor
+          isDisabled={!context.isProjectDeveloper(Number(projectId))}
           attachments={testCase.Attachments}
           onAttachmentDownload={(attachmentId: number, downloadFileName: string) =>
             fetchDownloadAttachment(attachmentId, downloadFileName)
           }
           onAttachmentDelete={onAttachmentDelete}
+          onFilesDrop={handleDrop}
+          onFilesInput={handleInput}
           messages={messages}
         />
-        <div
-          className="flex items-center justify-center w-96 mt-3"
-          onDrop={handleDrop}
-          onDragOver={(event) => event.preventDefault()}
-        >
-          <label
-            htmlFor="dropzone-file"
-            className="flex flex-col items-center justify-center w-full h-32 border-2 border-neutral-200 border-dashed rounded-lg cursor-pointer bg-neutral-50 dark:hover:bg-bray-800 dark:bg-neutral-700 hover:bg-neutral-100 dark:border-neutral-600 dark:hover:border-neutral-500 dark:hover:bg-neutral-600"
-          >
-            <div className="flex flex-col items-center justify-center pt-5 pb-6">
-              <ArrowUpFromLine />
-              <p className="mb-2 text-sm text-neutral-500 dark:text-neutral-400">
-                <span className="font-semibold">{messages.clickToUpload}</span>
-                <span>{messages.orDragAndDrop}</span>
-              </p>
-              <p className="text-xs text-neutral-500 dark:text-neutral-400">{messages.maxFileSize}: 50 MB</p>
-            </div>
-            <input id="dropzone-file" type="file" className="hidden" onChange={handleInput} multiple />
-          </label>
-        </div>
       </div>
     </>
   );

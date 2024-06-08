@@ -7,10 +7,12 @@ const { DataTypes, Op } = require('sequelize');
 module.exports = function (sequelize) {
   const Step = defineStep(sequelize, DataTypes);
   const CaseStep = defineCaseStep(sequelize, DataTypes);
+  const { verifySignedIn } = require('../../middleware/auth')(sequelize);
+  const { verifyProjectDeveloperFromCaseId } = require('../../middleware/verifyEditable')(sequelize);
 
-  router.post('/', async (req, res) => {
+  router.post('/', verifySignedIn, verifyProjectDeveloperFromCaseId, async (req, res) => {
     const newStepNo = req.query.newStepNo;
-    const caseId = req.query.parentCaseId;
+    const caseId = req.query.caseId;
 
     const t = await sequelize.transaction();
 

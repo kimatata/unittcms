@@ -21,6 +21,7 @@ type CaseStepType = {
   updatedAt: Date;
   CaseId: number;
   StepId: number;
+  stepNo: number;
 };
 
 type StepType = {

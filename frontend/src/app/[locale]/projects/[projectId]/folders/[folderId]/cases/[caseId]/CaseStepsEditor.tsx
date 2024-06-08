@@ -3,6 +3,7 @@ import { CaseMessages, StepType } from '@/types/case';
 import { Plus, Trash } from 'lucide-react';
 
 type Props = {
+  isDisabled: boolean;
   steps: StepType[];
   onStepUpdate: (stepId: number, step: StepType) => void;
   onStepPlus: (newStepNo: number) => void;
@@ -10,7 +11,7 @@ type Props = {
   messages: CaseMessages;
 };
 
-export default function StepsEditor({ steps, onStepUpdate, onStepPlus, onStepDelete, messages }: Props) {
+export default function StepsEditor({ isDisabled, steps, onStepUpdate, onStepPlus, onStepDelete, messages }: Props) {
   // sort steps by junction table's column
   const sortedSteps = steps.slice().sort((a, b) => {
     const stepNoA = a.caseSteps.stepNo;
@@ -51,6 +52,7 @@ export default function StepsEditor({ steps, onStepUpdate, onStepPlus, onStepDel
               <Button
                 isIconOnly
                 size="sm"
+                isDisabled={isDisabled}
                 className="bg-transparent rounded-full"
                 onPress={() => onStepDelete(step.id)}
               >
@@ -60,6 +62,7 @@ export default function StepsEditor({ steps, onStepUpdate, onStepPlus, onStepDel
             <Tooltip content={messages.insertStep} placement="left">
               <Button
                 isIconOnly
+                isDisabled={isDisabled}
                 size="sm"
                 className="bg-transparent rounded-full"
                 onPress={() => onStepPlus(step.caseSteps.stepNo + 1)}

@@ -1,15 +1,16 @@
 import Config from '@/config/config';
 const apiServer = Config.apiServer;
 
-async function fetchCreateStep(newStepNo: number, parentCaseId: number) {
+async function fetchCreateStep(jwt: string, newStepNo: number, parentCaseId: number) {
   const fetchOptions = {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
+      Authorization: `Bearer ${jwt}`,
     },
   };
 
-  const url = `${apiServer}/steps?newStepNo=${newStepNo}&parentCaseId=${parentCaseId}`;
+  const url = `${apiServer}/steps?newStepNo=${newStepNo}&caseId=${parentCaseId}`;
 
   try {
     const response = await fetch(url, fetchOptions);
@@ -23,15 +24,16 @@ async function fetchCreateStep(newStepNo: number, parentCaseId: number) {
   }
 }
 
-async function fetchDeleteStep(stepId: number, parentCaseId: number) {
+async function fetchDeleteStep(jwt: string, stepId: number, parentCaseId: number) {
   const fetchOptions = {
     method: 'DELETE',
     headers: {
       'Content-Type': 'application/json',
+      Authorization: `Bearer ${jwt}`,
     },
   };
 
-  const url = `${apiServer}/steps/${stepId}?parentCaseId=${parentCaseId}`;
+  const url = `${apiServer}/steps/${stepId}?caseId=${parentCaseId}`;
 
   try {
     const response = await fetch(url, fetchOptions);
