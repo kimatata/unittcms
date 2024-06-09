@@ -2,6 +2,6 @@
 sidebar_position: 3
 ---
 
-# Running LandTCMS as a Docker container
+# Running UnitTCMS as a Docker container
 
 Under development

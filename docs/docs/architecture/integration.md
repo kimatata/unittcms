@@ -6,7 +6,7 @@ sidebar_position: 4
 
 We would like to be able to display results not only from manual test management, but also from automated test tools such as Vitest, Google Test, Selenium, etc.
 
-Since the JUnit xml format is the de facto standard, we will import via the xml file. LandTCMS itself should also be able to report manual test results in Junit XML format.
+Since the JUnit xml format is the de facto standard, we will import via the xml file. UnitTCMS itself should also be able to report manual test results in Junit XML format.
 
 ![integration](./img/integration.png)
 

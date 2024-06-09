@@ -4,7 +4,7 @@ sidebar_position: 1
 
 # Roles
 
-There are two types of roles in LandTCMS: "Global roles" and "Project roles".
+There are two types of roles in UnitTCMS: "Global roles" and "Project roles".
 
 ## Global roles
 

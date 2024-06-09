@@ -2,7 +2,7 @@
 sidebar_position: 2
 ---
 
-# Running LandTCMS manually
+# Running UnitTCMS manually
 
 :::info[Prerequisite]
 
@@ -10,12 +10,12 @@ Prerequisite: v20 or higher node must be installed.
 
 :::
 
-To use LandTCMS, you need run frontend server and backend server (API server).
+To use UnitTCMS, you need run frontend server and backend server (API server).
 
 First, clone the repository.
 
 ```bash
-git clone git@github.com:kimatata/landtcms.git
+git clone git@github.com:kimatata/unittcms.git
 ```
 
 ## Run backend server

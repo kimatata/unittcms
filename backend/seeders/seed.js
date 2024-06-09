@@ -85,7 +85,7 @@ module.exports = {
     // Add projects table records
     await queryInterface.bulkInsert('projects', [
       {
-        name: 'LandTCMS Test',
+        name: 'UnitTCMS Test',
         detail: "Test Plat's Manual test",
         userId: 1,
         isPublic: true,

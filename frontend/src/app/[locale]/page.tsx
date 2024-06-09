@@ -33,10 +33,9 @@ export default function Home(params: { locale: string }) {
                 fontSize: '10rem',
                 position: 'relative',
                 zIndex: 1,
-                marginLeft: '2.5rem',
               }}
             >
-              🏝
+              📋
             </span>
             <div
               style={{
@@ -68,8 +67,7 @@ export default function Home(params: { locale: string }) {
 
       <Divider className="my-12" />
       <div className="w-full text-center py-2">
-        <div>Released under the MIT License.</div>
-        <div>Copyright © 2024 LandTCMS</div>
+        <div>Copyright © 2024 UnitTCMS</div>
       </div>
     </section>
   );

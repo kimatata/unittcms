@@ -8,7 +8,7 @@ import { themes as prismThemes } from 'prism-react-renderer';
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
-  title: 'LandTCMS',
+  title: 'UnitTCMS',
   // tagline: 'Dinosaurs are cool',
   favicon: 'img/favicon.ico',
 
@@ -16,12 +16,12 @@ const config = {
   url: 'https://kimatata.github.io',
   // Set the /<baseUrl>/ pathname under which your site is served
   // For GitHub pages deployment, it is often '/<projectName>/'
-  baseUrl: '/landtcms/',
+  baseUrl: '/unittcms/',
 
   // GitHub pages deployment config.
   // If you aren't using GitHub pages, you don't need these.
   organizationName: 'kimatata', // Usually your GitHub org/user name.
-  projectName: 'landtcms', // Usually your repo name.
+  projectName: 'unittcms', // Usually your repo name.
 
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
@@ -58,16 +58,16 @@ const config = {
       // Replace with your project's social card
       image: 'img/docusaurus-social-card.jpg',
       navbar: {
-        title: 'LandTCMS',
+        title: 'UnitTCMS',
         logo: {
-          alt: 'LandTCMS Logo',
-          src: 'img/android-chrome-192x192.png',
+          alt: 'UnitTCMS Logo',
+          src: 'img/icon-192.png',
         },
         items: [{ to: '/docs', label: 'Docs', position: 'left' }],
       },
       footer: {
         style: 'light',
-        copyright: `Copyright © ${new Date().getFullYear()} LandTCMS. Built with Docusaurus.`,
+        copyright: `Copyright © ${new Date().getFullYear()} UnitTCMS. Built with Docusaurus.`,
       },
       prism: {
         theme: prismThemes.github,

@@ -13,7 +13,7 @@ export default function Home() {
       <header className={clsx('hero hero--primary', styles.heroBanner)}>
         <div className="container">
           <Heading as="h1" className="hero__title">
-            LandTCMS
+            UnitTCMS
           </Heading>
           <p className="hero__subtitle">Open Source Test Case Management Web Application</p>
           Integrate and manage all your software testing.

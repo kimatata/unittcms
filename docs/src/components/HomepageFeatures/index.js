@@ -8,7 +8,7 @@ const FeatureList = [
     Svg: require('@site/static/img/certificate-svgrepo-com.svg').default,
     description: (
       <>
-        LandTCMS is free and open source. The application can be self-hosted. It can be deployed in environments with
+        UnitTCMS is free and open source. The application can be self-hosted. It can be deployed in environments with
         strict security requirements.
       </>
     ),
