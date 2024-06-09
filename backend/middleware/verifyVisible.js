@@ -39,7 +39,7 @@ function verifyVisibleMiddleware(sequelize) {
 
     // find project id from folderId
     const folder = await Folder.findByPk(folderId);
-    const projectId = folder && folder.id;
+    const projectId = folder && folder.projectId;
     if (!projectId) {
       return res.status(404).send('failed to find projectId');
     }
@@ -103,7 +103,7 @@ function verifyVisibleMiddleware(sequelize) {
 
     // find project id from runId
     const run = await Run.findByPk(runId);
-    const projectId = run && run.id;
+    const projectId = run && run.projectId;
     if (!projectId) {
       return res.status(404).send('failed to find projectId');
     }

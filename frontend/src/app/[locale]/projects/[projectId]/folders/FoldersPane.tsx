@@ -33,15 +33,20 @@ export default function FoldersPane({ projectId, messages, locale }: Props) {
         return;
       }
       try {
-        const data = await fetchFolders(context.token.access_token, projectId);
-        setFolders(data);
+        const folders: FolderType[] = await fetchFolders(context.token.access_token, projectId);
+        setFolders(folders);
 
-        const selectedFolderFromUrl = data.find((folder) => folder.id === folderId);
-        setSelectedFolder(selectedFolderFromUrl);
+        // no folder on project
+        if (folders.length === 0) {
+          return;
+        }
+
+        const selectedFolderFromUrl = folders.find((folder) => folder.id === folderId);
+        setSelectedFolder(selectedFolderFromUrl ? selectedFolderFromUrl : null);
 
         // Redirect to the smallest folder ID page if the path is "projects/[projectId]/folders
         if (pathname === `/projects/${projectId}/folders`) {
-          const smallestFolderId = Math.min(...data.map((folder) => folder.id));
+          const smallestFolderId = Math.min(...folders.map((folder) => folder.id));
           router.push(`/projects/${projectId}/folders/${smallestFolderId}/cases`, { locale: locale });
         }
       } catch (error: any) {

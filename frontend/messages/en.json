@@ -146,7 +146,8 @@
     "update": "Update",
     "please_enter": "Please enter folder name",
     "delete": "Delete",
-    "are_you_sure": "Are you sure you want to delete the folder?"
+    "are_you_sure": "Are you sure you want to delete the folder?",
+    "no_folders_found": "No folders found"
   },
   "Cases": {
     "test_case_list": "Test Case List",

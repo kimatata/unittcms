@@ -54,9 +54,12 @@ export default function TestCaseTable({
   });
 
   const sortedItems = useMemo(() => {
-    return [...cases].sort((a: Case, b: Case) => {
-      const first = a[sortDescriptor.column as keyof Case] as number;
-      const second = b[sortDescriptor.column as keyof Case] as number;
+    if (cases.length === 0) {
+      return [];
+    }
+    return [...cases].sort((a: CaseType, b: CaseType) => {
+      const first = a[sortDescriptor.column as keyof CaseType] as number;
+      const second = b[sortDescriptor.column as keyof CaseType] as number;
       const cmp = first < second ? -1 : first > second ? 1 : 0;
 
       return sortDescriptor.direction === 'descending' ? -cmp : cmp;
@@ -67,8 +70,8 @@ export default function TestCaseTable({
     onDeleteCase(deleteCaseId);
   };
 
-  const renderCell = useCallback((testCase: Case, columnKey: Key) => {
-    const cellValue = testCase[columnKey as keyof Case];
+  const renderCell = useCallback((testCase: CaseType, columnKey: Key) => {
+    const cellValue = testCase[columnKey as keyof CaseType];
 
     switch (columnKey) {
       case 'id':
