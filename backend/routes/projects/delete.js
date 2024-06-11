@@ -7,12 +7,12 @@ const { DataTypes } = require('sequelize');
 
 module.exports = function (sequelize) {
   const { verifySignedIn } = require('../../middleware/auth')(sequelize);
-  const { verifyProjectOwner } = require('../../middleware/verifyEditable')(sequelize);
+  const { verifyProjectManagerFromProjectId } = require('../../middleware/verifyEditable')(sequelize);
   const Project = defineProject(sequelize, DataTypes);
   const Folder = defineFolder(sequelize, DataTypes);
   const Run = defineRun(sequelize, DataTypes);
 
-  router.delete('/:projectId', verifySignedIn, verifyProjectOwner, async (req, res) => {
+  router.delete('/:projectId', verifySignedIn, verifyProjectManagerFromProjectId, async (req, res) => {
     const projectId = req.params.projectId;
     const t = await sequelize.transaction();
 
