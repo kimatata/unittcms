@@ -31,6 +31,7 @@ export type TokenContextType = {
   isProjectManager: (projectId: number) => boolean;
   isProjectDeveloper: (projectId: number) => boolean;
   isProjectReporter: (projectId: number) => boolean;
+  refreshProjectRoles: () => void;
   setToken: (token: TokenType) => void;
   storeTokenToLocalStorage: (token: TokenType) => void;
   removeTokenFromLocalStorage: () => void;

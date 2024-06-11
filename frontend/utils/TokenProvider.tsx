@@ -75,6 +75,19 @@ const TokenProvider = ({ toastMessages, locale, children }: TokenProps) => {
     return tokenIsProjectReporter(projectRoles, projectId);
   };
 
+  async function refreshProjectRoles() {
+    if (!hasRestoreFinished || !token || !token.access_token) {
+      return;
+    }
+
+    try {
+      const data = await fetchMyRoles(token.access_token);
+      setProjectRoles(data);
+    } catch (error: any) {
+      console.error('Error in effect:', error.message);
+    }
+  }
+
   const tokenContext = {
     token,
     projectRoles,
@@ -84,6 +97,7 @@ const TokenProvider = ({ toastMessages, locale, children }: TokenProps) => {
     isProjectDeveloper,
     isProjectReporter,
     setToken,
+    refreshProjectRoles,
     storeTokenToLocalStorage,
     removeTokenFromLocalStorage,
   };
@@ -119,19 +133,6 @@ const TokenProvider = ({ toastMessages, locale, children }: TokenProps) => {
   }, [pathname, hasRestoreFinished]);
 
   useEffect(() => {
-    async function refreshProjectRoles() {
-      if (!hasRestoreFinished || !token || !token.access_token) {
-        return;
-      }
-
-      try {
-        const data = await fetchMyRoles(token.access_token);
-        setProjectRoles(data);
-      } catch (error: any) {
-        console.error('Error in effect:', error.message);
-      }
-    }
-
     refreshProjectRoles();
   }, [hasRestoreFinished, token]);
 

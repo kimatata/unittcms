@@ -63,6 +63,9 @@ export default function ProjectsPage({ messages, locale }: Props) {
     } else {
       const newProject = await createProject(context.token.access_token, name, detail, isPublic);
       setProjects([...projects, newProject]);
+
+      // refresh project roles
+      context.refreshProjectRoles();
     }
     closeDialog();
   };
