@@ -21,7 +21,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 // init sequalize
 const sequelize = new Sequelize({
   dialect: 'sqlite',
-  storage: 'database.sqlite',
+  storage: 'database/database.sqlite',
 });
 
 // "/"

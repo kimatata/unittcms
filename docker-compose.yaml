@@ -1,14 +1,31 @@
-version: '3'
+version: '3.8'
+
 services:
-  frontend:
-    build:
-      context: ./frontend
-    ports:
-      - '8000:8000'
-    depends_on:
-      - backend
   backend:
+    image: unittcms-backend:latest
     build:
       context: ./backend
     ports:
       - '8001:8001'
+    environment:
+      - NODE_ENV=production
+      - FRONTEND_ORIGIN=http://localhost:8000
+      - PORT=8001
+    volumes:
+      - db-data:/app/database
+
+  frontend:
+    image: unittcms-frontend:latest
+    build:
+      context: ./frontend
+    ports:
+      - '8000:8000'
+    environment:
+      - NODE_ENV=production
+      - NEXT_PUBLIC_BACKEND_ORIGIN=http://localhost:8001
+      - PORT=8000
+    depends_on:
+      - backend
+
+volumes:
+  db-data:
