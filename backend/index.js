@@ -5,7 +5,7 @@ const app = express();
 
 // enable frontend access
 const cors = require('cors');
-const frontendOrigin = process.env.FRONTEND_ORIGIN || 'http://localhost:3000';
+const frontendOrigin = process.env.FRONTEND_ORIGIN || 'http://localhost:8000';
 const corsOptions = {
   origin: frontendOrigin,
   methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
@@ -128,7 +128,11 @@ app.use('/members', membersCheckRoute);
 const homeIndexRoute = require('./routes/home/index')(sequelize);
 app.use('/home', homeIndexRoute);
 
-const PORT = process.env.PORT || 3001;
+const PORT = process.env.PORT || 8001;
 app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
+  console.log(`UnitTCMS backend server is running on port ${PORT}`);
+  console.log(`origin ${frontendOrigin} is only allowed.`);
+  if (!process.env.SECRET_KEY) {
+    console.log(`[caution]: using default key to generate token. please set environment variable: 'SECRET_KEY'`);
+  }
 });

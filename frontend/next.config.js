@@ -10,6 +10,7 @@ const nextConfig = {
     // !! WARN !!
     ignoreBuildErrors: true,
   },
+  output: 'standalone',
 };
 
 module.exports = withNextIntl(nextConfig);
