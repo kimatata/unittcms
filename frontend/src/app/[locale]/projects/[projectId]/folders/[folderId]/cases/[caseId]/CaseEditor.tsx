@@ -11,6 +11,7 @@ import { fetchCase, updateCase } from '@/utils/caseControl';
 import { updateSteps } from './stepControl';
 import { fetchCreateAttachments, fetchDownloadAttachment, fetchDeleteAttachment } from './attachmentControl';
 import { TokenContext } from '@/utils/TokenProvider';
+import { useFormGuard } from '@/utils/formGuard';
 
 const defaultTestCase = {
   id: 0,
@@ -44,9 +45,12 @@ export default function CaseEditor({ projectId, folderId, caseId, messages, loca
   const [isTitleInvalid, setIsTitleInvalid] = useState<boolean>(false);
   const [isUpdating, setIsUpdating] = useState<boolean>(false);
   const [plusCount, setPlusCount] = useState<number>(0);
+  const [isDirty, setIsDirty] = useState(false);
   const router = useRouter();
+  useFormGuard(isDirty, messages.areYouSureLeave);
 
   const onPlusClick = async (newStepNo: number) => {
+    setIsDirty(true);
     const newStep: StepType = {
       id: plusCount,
       step: '',
@@ -86,6 +90,8 @@ export default function CaseEditor({ projectId, folderId, caseId, messages, loca
   };
 
   const onDeleteClick = async (stepId: number) => {
+    setIsDirty(true);
+
     // find deletedStep's stepNo
     if (testCase.Steps) {
       const deletedStep = testCase.Steps.find((step) => step.id === stepId);

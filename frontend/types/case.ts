@@ -131,6 +131,7 @@ export type CaseMessages = {
   clickToUpload: string;
   orDragAndDrop: string;
   maxFileSize: string;
+  areYouSureLeave: string;
 };
 
 export { CaseType, StepType, AttachmentType, CaseTypeCountType, CasePriorityCountType, CasesMessages, CaseMessages };

@@ -58,6 +58,7 @@ export default function Page({
     clickToUpload: t('click_to_upload'),
     orDragAndDrop: t('or_drag_and_drop'),
     maxFileSize: t('max_file_size'),
+    areYouSureLeave: t('are_you_sure_leave'),
   };
 
   return (
