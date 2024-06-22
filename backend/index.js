@@ -73,10 +73,8 @@ app.use('/cases', casesEditRoute);
 app.use('/cases', casesDeleteRoute);
 
 // "/steps"
-const stepsNewRoute = require('./routes/steps/new')(sequelize);
-const stepsDeleteRoute = require('./routes/steps/delete')(sequelize);
-app.use('/steps', stepsNewRoute);
-app.use('/steps', stepsDeleteRoute);
+const stepsEditRoute = require('./routes/steps/edit')(sequelize);
+app.use('/steps', stepsEditRoute);
 
 // "/attachments"
 const attachmentsNewRoute = require('./routes/attachments/new')(sequelize);

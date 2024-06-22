@@ -6,9 +6,9 @@ import { Save, Plus, ArrowLeft, Circle } from 'lucide-react';
 import { priorities, testTypes, templates } from '@/config/selection';
 import CaseStepsEditor from './CaseStepsEditor';
 import CaseAttachmentsEditor from './CaseAttachmentsEditor';
-import { CaseType, AttachmentType, CaseMessages } from '@/types/case';
-import { fetchCase, updateCase } from '../../../../../../../../../utils/caseControl';
-import { fetchCreateStep, fetchDeleteStep } from './stepControl';
+import { CaseType, AttachmentType, CaseMessages, StepType } from '@/types/case';
+import { fetchCase, updateCase } from '@/utils/caseControl';
+import { updateSteps } from './stepControl';
 import { fetchCreateAttachments, fetchDownloadAttachment, fetchDeleteAttachment } from './attachmentControl';
 import { TokenContext } from '@/utils/TokenProvider';
 
@@ -43,16 +43,30 @@ export default function CaseEditor({ projectId, folderId, caseId, messages, loca
   const [testCase, setTestCase] = useState<CaseType>(defaultTestCase);
   const [isTitleInvalid, setIsTitleInvalid] = useState<boolean>(false);
   const [isUpdating, setIsUpdating] = useState<boolean>(false);
+  const [plusCount, setPlusCount] = useState<number>(0);
   const router = useRouter();
 
   const onPlusClick = async (newStepNo: number) => {
-    const newStep = await fetchCreateStep(context.token.access_token, newStepNo, Number(caseId));
-    if (newStep) {
-      newStep.caseSteps = { stepNo: newStepNo };
+    const newStep: StepType = {
+      id: plusCount,
+      step: '',
+      result: '',
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      caseSteps: {
+        stepNo: newStepNo,
+      },
+      uid: `uid${plusCount}`,
+      editState: 'new',
+    };
+    setPlusCount(plusCount + 1);
+
+    if (testCase.Steps) {
       const updatedSteps = testCase.Steps.map((step) => {
         if (step.caseSteps.stepNo >= newStepNo) {
           return {
             ...step,
+            editState: step.editState === 'notChanged' ? 'changed' : step.editState,
             caseSteps: {
               ...step.caseSteps,
               stepNo: step.caseSteps.stepNo + 1,
@@ -73,41 +87,42 @@ export default function CaseEditor({ projectId, folderId, caseId, messages, loca
 
   const onDeleteClick = async (stepId: number) => {
     // find deletedStep's stepNo
-    const deletedStep = testCase.Steps.find((step) => step.id === stepId);
-    if (!deletedStep) {
-      return;
-    }
-    const deletedStepNo = deletedStep.caseSteps.stepNo;
-
-    // delete request
-    await fetchDeleteStep(context.token.access_token, stepId, Number(caseId));
-
-    const updatedSteps = testCase.Steps.map((step) => {
-      if (step.caseSteps.stepNo > deletedStepNo) {
-        return {
-          ...step,
-          caseSteps: {
-            ...step.caseSteps,
-            stepNo: step.caseSteps.stepNo - 1,
-          },
-        };
+    if (testCase.Steps) {
+      const deletedStep = testCase.Steps.find((step) => step.id === stepId);
+      if (!deletedStep) {
+        return;
       }
-      return step;
-    }).filter((step) => step.id !== stepId);
+      const deletedStepNo = deletedStep.caseSteps.stepNo;
+      deletedStep.editState = 'deleted';
 
-    setTestCase({
-      ...testCase,
-      Steps: updatedSteps,
-    });
+      const updatedSteps = testCase.Steps.map((step) => {
+        if (step.caseSteps.stepNo > deletedStepNo) {
+          return {
+            ...step,
+            editState: step.editState === 'notChanged' ? 'changed' : step.editState,
+            caseSteps: {
+              ...step.caseSteps,
+              stepNo: step.caseSteps.stepNo - 1,
+            },
+          };
+        }
+        return step;
+      });
+
+      setTestCase({
+        ...testCase,
+        Steps: updatedSteps,
+      });
+    }
   };
 
-  const handleDrop = async (event) => {
+  const handleDrop = async (event: DragEvent) => {
     event.preventDefault();
-    handleFetchCreateAttachments(caseId, event.dataTransfer.files);
+    handleFetchCreateAttachments(Number(caseId), event.dataTransfer.files);
   };
 
-  const handleInput = (event) => {
-    handleFetchCreateAttachments(caseId, event.target.files);
+  const handleInput = (event: DragEvent) => {
+    handleFetchCreateAttachments(Number(caseId), event.target.files);
   };
 
   const handleFetchCreateAttachments = async (caseId: number, files: File[]) => {
@@ -147,6 +162,9 @@ export default function CaseEditor({ projectId, folderId, caseId, messages, loca
       }
       try {
         const data = await fetchCase(context.token.access_token, Number(caseId));
+        data.Steps.forEach((step: StepType) => {
+          step.editState = 'notChanged';
+        });
         setTestCase(data);
       } catch (error: any) {
         console.error('Error in effect:', error.message);
@@ -181,6 +199,9 @@ export default function CaseEditor({ projectId, folderId, caseId, messages, loca
           onPress={async () => {
             setIsUpdating(true);
             await updateCase(context.token.access_token, testCase);
+            if (testCase.Steps) {
+              await updateSteps(context.token.access_token, Number(caseId), testCase.Steps);
+            }
             setIsUpdating(false);
           }}
         >

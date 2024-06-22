@@ -10,17 +10,17 @@ type CaseType = {
   preConditions: string;
   expectedResults: string;
   folderId: number;
-  Steps: StepType[]; // additional property
-  Attachments: AttachmentType[]; // additional property
-  isIncluded: boolean; // additional property
-  runStatus: number; // additional property
+  Steps?: StepType[];
+  Attachments?: AttachmentType[];
+  isIncluded?: boolean;
+  runStatus?: number;
 };
 
 type CaseStepType = {
-  createdAt: Date;
-  updatedAt: Date;
-  CaseId: number;
-  StepId: number;
+  createdAt?: Date;
+  updatedAt?: Date;
+  CaseId?: number;
+  StepId?: number;
   stepNo: number;
 };
 
@@ -31,6 +31,8 @@ type StepType = {
   createdAt: Date;
   updatedAt: Date;
   caseSteps: CaseStepType;
+  uid: string;
+  editState: 'notChanged' | 'changed' | 'new' | 'deleted';
 };
 
 type CaseAttachmentType = {

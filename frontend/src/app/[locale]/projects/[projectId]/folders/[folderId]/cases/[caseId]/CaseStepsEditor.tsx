@@ -19,9 +19,12 @@ export default function StepsEditor({ isDisabled, steps, onStepUpdate, onStepPlu
     return stepNoA - stepNoB;
   });
 
+  // filter steps
+  const filteredSteps = sortedSteps.filter((entry) => entry.editState !== 'deleted');
+
   return (
     <>
-      {sortedSteps.map((step, index) => (
+      {filteredSteps.map((step, index) => (
         <div key={index} className="flex">
           <div className="bg-neutral-50 dark:bg-neutral-600 rounded-full flex items-center justify-center min-w-unit-8 w-unit-8 h-unit-8 mt-3 me-2">
             <div>{step.caseSteps.stepNo}</div>
