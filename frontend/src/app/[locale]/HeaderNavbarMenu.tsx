@@ -17,7 +17,7 @@ import {
   Listbox,
 } from '@nextui-org/react';
 import { ArrowRightFromLine, ArrowRightToLine, File, Globe, MoveUpRight, PenTool } from 'lucide-react';
-import { ThemeSwitch } from '@/components/theme-switch';
+import { ThemeSwitch } from '@/components/ThemeSwitch';
 import { GithubIcon } from '@/components/icons';
 import { locales } from '@/config/selection';
 import DropdownAccount from './DropdownAccount';
