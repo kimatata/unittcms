@@ -1,14 +1,12 @@
 {
-  "name": "backend",
+  "name": "unittcms-backend",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "private": true,
   "scripts": {
     "start": "node index",
     "migrate": "bash scripts/migrate.sh",
     "seed": "bash scripts/seed.sh",
-    "drop": "bash scripts/drop.sh",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "drop": "bash scripts/drop.sh"
   },
   "author": "",
   "license": "ISC",

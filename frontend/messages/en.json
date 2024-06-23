@@ -2,8 +2,7 @@
   "Index": {
     "get_started": "Get Started",
     "demo": "Demo",
-    "oss_tcmt": "Open Source Test Case Management",
-    "web_application": "Web Application",
+    "oss_tcms": "Open Source Test Case Management System",
     "integrate_and_manage": "Integrate and manage all your software testing.",
     "oss_title": "Open Source",
     "oss_detail": "UnitTCMS is free and open source. The application can be self-hosted. It can be deployed in environments with strict security requirements.",
@@ -19,7 +18,7 @@
     "case_run": "Test Runs"
   },
   "Header": {
-    "title": "Open Source Test Case Management Tool",
+    "title": "Open Source Test Case Management System",
     "description": "Integrate and manage all your software testing",
     "docs": "Docs",
     "projects": "Projects",

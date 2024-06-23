@@ -10,7 +10,7 @@ Prerequisite: v20 or higher node must be installed.
 
 :::
 
-To use UnitTCMS, you need run frontend server and backend server (API server).
+To use UnitTCMS, you need run frontend server and backend(API) server.
 
 First, clone the repository.
 
@@ -20,7 +20,7 @@ git clone git@github.com:kimatata/unittcms.git
 
 ## Run backend server
 
-Moves to backend directory, then install dependencies.
+Move to backend directory, then install dependencies.
 
 ```bash
 cd backend
@@ -36,20 +36,26 @@ npm run migrate
 Start backend server.
 
 ```bash
-node index
+npm run start
 ```
 
 ## Run frontend server
 
-Moves to frontend directory, then install dependencies.
+Move to frontend directory, then install dependencies.
 
 ```bash
 cd frontend
 npm install
 ```
 
-Start frontend server
+Build frontend code
 
 ```bash
-rpm run dev
+npm run dev
+```
+
+Start frontend server
+
+```
+PORT=8000 npm run start
 ```

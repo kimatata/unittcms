@@ -1,10 +1,10 @@
 # UnitTCMS
 
-Open Source Test Case Management Web Application
+Open Source Test Case Management System
 
 ## Demo
 
-[https://unittcms.vercel.app](https://unittcms.vercel.app)
+[https://unittcms.org](https://www.unittcms.org)
 
 ## Docs
 

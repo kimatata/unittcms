@@ -1,14 +1,18 @@
 ---
-sidebar_position: 4
+sidebar_position: 2
 ---
 
-# Integration
+# Roadmap
 
-We would like to be able to display results not only from manual test management, but also from automated test tools such as Vitest, Google Test, Selenium, etc.
+## 📝markdown editor
 
-Since the JUnit xml format is the de facto standard, we will import via the xml file. UnitTCMS itself should also be able to report manual test results in Junit XML format.
+Test case details and steps can be edited with markdown
 
-![integration](./img/integration.png)
+## 📊JUnit xml integration
+
+### JUnit xml report output
+
+Since JUnit's xml format is the de facto standard, we would like to output reports in that format.
 
 ```xml title="Junit xml"
 <?xml version="1.0" encoding="UTF-8"?>
@@ -34,3 +38,10 @@ Since the JUnit xml format is the de facto standard, we will import via the xml 
     </testsuite>
 </testsuites>
 ```
+
+### Importing and displaying Junit xml
+
+We would like to be able to display not only manual test results, but also automated test results such as JUnit, Vitest, Selenium, etc.
+Import the results of automated testing tools and integrate them with manual test results.
+
+![integration](./img/integration.svg)
