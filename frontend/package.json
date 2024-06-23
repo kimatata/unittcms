@@ -1,6 +1,6 @@
 {
-  "name": "next-app-template",
-  "version": "0.0.1",
+  "name": "unittcms-frontend",
+  "version": "1.0.0",
   "private": true,
   "scripts": {
     "dev": "next dev -p 8000",

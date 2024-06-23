@@ -128,9 +128,11 @@ app.use('/home', homeIndexRoute);
 
 const PORT = process.env.PORT || 8001;
 app.listen(PORT, () => {
-  console.log(`UnitTCMS backend server is running on port ${PORT}`);
-  console.log(`origin ${frontendOrigin} is only allowed.`);
+  console.log(`Backend server is running on port ${PORT}`);
+  console.log(`Access from the frontend origin: ${frontendOrigin} is valid.`);
   if (!process.env.SECRET_KEY) {
-    console.log(`[caution]: using default key to generate token. please set environment variable: 'SECRET_KEY'`);
+    console.log(
+      "[Warning]: Default key is used for token generation. Please set the environment variable 'SECRET_KEY'`."
+    );
   }
 });
