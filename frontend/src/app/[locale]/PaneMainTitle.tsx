@@ -28,9 +28,7 @@ export default function MainTitle({ locale }: Props) {
           class: 'lg:text-5xl md:text-5xl sm:text-5xl text-5xl',
         })}
       >
-        {t('oss_tcmt')}
-        <br />
-        {t('web_application')}
+        {t('oss_tcms')}
       </h1>
       <h4 className={subtitle({ class: 'mt-4' })}>{t('integrate_and_manage')}</h4>
 

@@ -1,4 +1,4 @@
-# UnitTCMS Frontend
+# unittcms Frontend
 
 ## Install dependencies
 
@@ -11,7 +11,7 @@ npm install
 Create `.env` File
 
 ```
-NEXT_PUBLIC_BACKEND_ORIGIN=http://localhost:3001
+NEXT_PUBLIC_BACKEND_ORIGIN=http://localhost:8001
 ```
 
 ## Run the development server

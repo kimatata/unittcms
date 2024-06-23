@@ -1,6 +1,6 @@
 # UnitTCMS
 
-Open Source Test Case Management Web Application
+Open Source Test Case Management System
 
 ## Demo
 

@@ -1,4 +1,4 @@
-# UnitTCMS Backend
+# unittcms Backend
 
 ## Install dependencies
 
@@ -11,7 +11,9 @@ npm install
 Create `.env` File
 
 ```
-NEXT_PUBLIC_BACKEND_ORIGIN=http://localhost:3001
+FRONTEND_ORIGIN=http://localhost:8000
+PORT=8001
+SECRET_KEY=your-secret-key
 ```
 
 ## Set up database
@@ -23,7 +25,7 @@ npm run migrate
 ## Run the development server
 
 ```bash
-npm run start
+node --env-file=.env index.js
 ```
 
 ## Database operation command
