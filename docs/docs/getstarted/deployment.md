@@ -12,29 +12,29 @@ Deploy the frontend to Vercel and the backend to Render.
 
 #### Environment Variables
 
-|key|value|
-|-|-|
-|NEXT_PUBLIC_BACKEND_ORIGIN|`your backend server origin`|
+| key                        | value                        |
+| -------------------------- | ---------------------------- |
+| NEXT_PUBLIC_BACKEND_ORIGIN | `your backend server origin` |
 
 #### Settings
 
-|Settings|value|
-|-|-|
-|Root Directory|`frontend`|
-|Framework Preset|`Next.js`|
+| Settings         | value      |
+| ---------------- | ---------- |
+| Root Directory   | `frontend` |
+| Framework Preset | `Next.js`  |
 
 ### Render Configuration
 
 #### Environment Variables
 
-|key|value|
-|-|-|
-|FRONTEND_ORIGIN|`your frontend server origin`|
+| key             | value                         |
+| --------------- | ----------------------------- |
+| FRONTEND_ORIGIN | `your frontend server origin` |
 
 #### Settings
 
-|Settings|value|
-|-|-|
-|Root Directory|`backend`|
-|Build Command|`npm ci && npm run migrate && npm run seed`|
-|Start Command|`npm run index`|
+| Settings       | value                                       |
+| -------------- | ------------------------------------------- |
+| Root Directory | `backend`                                   |
+| Build Command  | `npm ci && npm run migrate && npm run seed` |
+| Start Command  | `npm run start`                             |
