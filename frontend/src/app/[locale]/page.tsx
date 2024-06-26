@@ -1,18 +1,35 @@
 import { useTranslations } from 'next-intl';
-import { Divider } from '@nextui-org/react';
+import { Image, Divider } from '@nextui-org/react';
+import { title, subtitle } from '@/components/primitives';
 import PaneMainTitle from './PaneMainTitle';
 import PaneMainFeatures from './PaneMainFeatures';
-import PaneDemoImages from './PaneDemoImages';
+import DemoImage from './DemoImage';
 
 export default function Home(params: { locale: string }) {
   const t = useTranslations('Index');
 
-  const messages = {
-    title: t('organize_test_cases'),
-    caseEdit: t('case_edit'),
-    caseHome: t('case_home'),
-    caseRun: t('case_run'),
-  };
+  const demoImages = [
+    {
+      uid: 'project',
+      title: t('project_title'),
+      subTitle: t('project_subtitle'),
+    },
+    {
+      uid: 'case',
+      title: t('case_management_title'),
+      subTitle: t('case_management_subtitle'),
+    },
+    {
+      uid: 'run',
+      title: t('run_management_title'),
+      subTitle: t('run_management_subtitle'),
+    },
+    {
+      uid: 'member',
+      title: t('member_management_title'),
+      subTitle: t('member_management_subtitle'),
+    },
+  ];
 
   return (
     <section className="mx-auto max-w-screen-xl my-12">
@@ -63,7 +80,20 @@ export default function Home(params: { locale: string }) {
       </div>
 
       <Divider className="my-12" />
-      <PaneDemoImages messages={messages} />
+      <div className="flex flex-wrap lg:text-left text-center">
+        {demoImages.map((demoImage) => (
+          <div key={demoImage.uid} className="flex flex-wrap">
+            <div className="w-full lg:w-5/12 p-4">
+              <h2 className={title({ size: 'sm', color: 'pink' })}>{demoImage.title}</h2>
+              <h4 className={subtitle({ class: 'mt-4' })}>{demoImage.subTitle}</h4>
+            </div>
+
+            <div className="flex justify-center w-full lg:w-7/12 p-4">
+              <DemoImage imageName={demoImage.uid} altText={demoImage.title} />
+            </div>
+          </div>
+        ))}
+      </div>
 
       <Divider className="my-12" />
       <div className="w-full text-center py-2">

@@ -12,10 +12,14 @@
     "usability_detail": "定義したテストケースはテストランで何度も繰り返し使用可能です。テストランやプロジェクトのステータスをグラフで確認できます。",
     "universal_title": "ユニバーサル",
     "universal_detail": "多言語対応やダークテーマ機能により誰もが不自由なく使うことができます。",
-    "organize_test_cases": "テストケースを整理とグラフィカルなテスト管理",
-    "case_edit": "テストケース",
-    "case_home": "ダッシュボード",
-    "case_run": "テストラン"
+    "project_title": "プロジェクトベース",
+    "project_subtitle": "プロジェクトごとにテストケース, テスト実行を管理します。テストケースの種類や進捗状況をダッシュボードで確認できます。",
+    "case_management_title": "テストケース管理",
+    "case_management_subtitle": "プロジェクトやフォルダーを作成し、テストケースを定義します。",
+    "run_management_title": "テストラン管理",
+    "run_management_subtitle": "定義したテストケースはテストランで何度も繰り返し使用可能です。テストランやプロジェクトのステータスをグラフで確認できます。",
+    "member_management_title": "メンバー管理",
+    "member_management_subtitle": "プロジェクトメンバーを追加/削除したり、各メンバーに役割を設定することができます。"
   },
   "Header": {
     "title": "オープンソーステストケース管理システム",
