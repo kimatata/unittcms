@@ -20,6 +20,7 @@ export default function Page(params: { locale: string }) {
     emailNotExist: t('email_not_exist'),
     signupError: t('signup_error'),
     signinError: t('signin_error'),
+    demoPageWarning: t('demo_page_warning'),
   };
   return (
     <>
