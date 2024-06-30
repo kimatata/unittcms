@@ -12,14 +12,14 @@
     "usability_detail": "The defined test cases can be used over and over again in test runs. The status of test runs and projects can be viewed graphically.",
     "universal_title": "Universal",
     "universal_detail": "Multi language support and dark theme allow anyone to use the system without any inconvenience.",
-    "project_title": "Project-based",
-    "project_subtitle": "Test cases and test runs are managed for each project. A dashboard allows you to check test case types and progress status.",
+    "project_title": "Project-Based",
+    "project_subtitle": "Manage test cases and test runs on a project-by-project basis. Our dashboard provides an at-a-glance view of the types of test cases and their progress for each project. This allows you to monitor project status in real-time and manage efficiently.",
     "case_management_title": "Test Case Management",
-    "case_management_subtitle": "Create a project or folder and define test cases.",
+    "case_management_subtitle": "Create folders within projects and define test cases with ease using our modern and intuitive UI. Aattaching files enables detailed explanations of test cases, making it easy to share information across the entire team.",
     "run_management_title": "Test Run Management",
-    "run_management_subtitle": "The defined test cases can be used over and over again in test runs. The status of test runs and projects can be viewed graphically.",
+    "run_management_subtitle": "Defined test cases can be reused multiple times in test runs, enabling efficient test cycles. Additionally, you can visually monitor the status of test runs and projects.",
     "member_management_title": "Member Management",
-    "member_management_subtitle": "You can add/delete project members and set roles for each member."
+    "member_management_subtitle": "Support team development by adding or removing members from projects. You can assign roles and set permissions for each member in detail. We provide three main roles: 'Administrator' who manages the entire project, 'Designer' who designs the tests, and 'Reporter' who executes the tests. "
   },
   "Header": {
     "title": "Open Source Test Case Management System",
