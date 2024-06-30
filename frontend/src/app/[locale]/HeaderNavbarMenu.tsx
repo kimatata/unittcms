@@ -28,6 +28,7 @@ type NabbarMenuMessages = {
   projects: string;
   admin: string;
   docs: string;
+  roadmap: string;
   account: string;
   signUp: string;
   signIn: string;
@@ -56,6 +57,12 @@ export default function HeaderNavbarMenu({ messages, locale }: Props) {
       uid: 'docs',
       href: 'https://kimatata.github.io/unittcms/docs/getstarted/selfhost',
       label: messages.docs,
+      isExternal: true,
+    },
+    {
+      uid: 'roadmap',
+      href: 'https://kimatata.github.io/unittcms/docs/roadmap/',
+      label: messages.roadmap,
       isExternal: true,
     },
   ];
@@ -95,12 +102,11 @@ export default function HeaderNavbarMenu({ messages, locale }: Props) {
             <NavbarItem key={link.uid} className="hidden md:block">
               <NextUiLink
                 isExternal
-                href="https://kimatata.github.io/unittcms/docs/getstarted/selfhost"
-                aria-label="docs"
+                href={link.href}
                 showAnchorIcon
                 anchorIcon={<MoveUpRight size={12} className="ms-1" />}
               >
-                {messages.docs}
+                {link.label}
               </NextUiLink>
             </NavbarItem>
           ) : (
@@ -156,7 +162,7 @@ export default function HeaderNavbarMenu({ messages, locale }: Props) {
                   title={link.label}
                   startContent={<MoveUpRight size={12} />}
                   onPress={() => {
-                    router.push(link.href, { locale: locale });
+                    window.open(link.href, '_blank');
                     setIsMenuOpen(false);
                   }}
                 />

@@ -4,9 +4,10 @@ import HeaderNavbarMenu from './HeaderNavbarMenu';
 export default function Header(params: { locale: string }) {
   const t = useTranslations('Header');
   const messages = {
-    docs: t('docs'),
     projects: t('projects'),
     admin: t('admin'),
+    docs: t('docs'),
+    roadmap: t('roadmap'),
     account: t('account'),
     signUp: t('signup'),
     signIn: t('signin'),
