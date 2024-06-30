@@ -10,6 +10,8 @@ import { signUp, signIn, signInAsGuest } from './authControl';
 import { isValidEmail, isValidPassword } from './validate';
 import { TokenContext } from '@/utils/TokenProvider';
 import { useRouter } from '@/src/navigation';
+import Config from '@/config/config';
+const isDemoSite = Config.isDemoSite;
 
 type Props = {
   isSignup: Boolean;
@@ -166,11 +168,14 @@ export default function AuthPage({ isSignup, messages, locale }: Props) {
               }}
             />
           )}
+
+          {isDemoSite && <div className="my-3 text-default-600">{messages.demoPageWarning}</div>}
+
           <div className="flex justify-end items-center mt-3">
             <Button color="primary" onPress={validate}>
               {messages.submitTitle}
             </Button>
-            {!isSignup && (
+            {!isSignup && isDemoSite && (
               <Button
                 className="ms-3 bg-gradient-to-tr from-pink-500 to-yellow-500 text-white shadow-lg"
                 onPress={handleSignInAsGuest}

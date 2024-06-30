@@ -7,6 +7,7 @@ export default function Page(params: { locale: string }) {
     title: t('signup'),
     linkTitle: t('or_signin'),
     submitTitle: t('signup'),
+    signInAsGuest: t('signin_as_guest'),
     email: t('email'),
     username: t('username'),
     password: t('password'),
@@ -19,6 +20,7 @@ export default function Page(params: { locale: string }) {
     emailNotExist: t('email_not_exist'),
     signupError: t('signup_error'),
     signinError: t('signin_error'),
+    demoPageWarning: t('demo_page_warning'),
   };
   return (
     <>

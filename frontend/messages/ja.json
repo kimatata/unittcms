@@ -58,6 +58,7 @@
     "email_not_exist": "メールアドレスが見つかりません",
     "signup_error": "新規登録に失敗しました",
     "signin_error": "サインインに失敗しました",
+    "demo_page_warning": "これはデモ環境です。入力したデータは定期的にリセットされます。",
     "your_projects": "保有プロジェクト",
     "public": "パブリック",
     "private": "プライベート",

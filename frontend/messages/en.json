@@ -59,6 +59,7 @@
     "email_not_exist": "Email address not found",
     "signup_error": "Sign up failed",
     "signin_error": "Sign in failed",
+    "demo_page_warning": "This is a demo environment, any data you enter will be reset periodically.",
     "your_projects": "Your Projects",
     "public": "Public",
     "private": "Private",
