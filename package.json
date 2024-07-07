@@ -5,9 +5,13 @@
   "scripts": {
     "format": "prettier --write frontend/**/*.{js,ts,jsx,tsx,json} backend/**/*.{js,ts,json}",
     "test": "vitest",
-    "coverage": "vitest run --coverage"
+    "coverage": "vitest run --coverage",
+    "e2e": "playwright test",
+    "report": "playwright show-report"
   },
   "devDependencies": {
+    "@playwright/test": "^1.45.1",
+    "@types/node": "^20.14.10",
     "@vitest/coverage-v8": "^1.6.0",
     "prettier": "^3.2.5",
     "vitest": "^1.6.0"
