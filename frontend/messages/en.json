@@ -277,7 +277,8 @@
     "test_case_selection": "Test case selection",
     "include_in_run": "Include in run",
     "exclude_from_run": "Exclude from run",
-    "no_cases_found": "No cases found"
+    "no_cases_found": "No cases found",
+    "are_you_sure_leave": "Are you sure you want to leave the page?"
   },
   "Members": {
     "member_management": "Member Management",

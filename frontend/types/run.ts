@@ -14,11 +14,7 @@ type RunCaseType = {
   runId: number;
   caseId: number;
   status: number;
-};
-
-type RunCaseInfoType = {
-  runId: number;
-  caseId: number;
+  editState: 'notChanged' | 'changed' | 'new' | 'deleted';
 };
 
 type RunStatusCountType = {
@@ -86,6 +82,7 @@ type RunMessages = {
   includeInRun: string;
   excludeFromRun: string;
   noCasesFound: string;
+  areYouSureLeave: string;
 };
 
-export { RunType, RunCaseType, RunCaseInfoType, RunStatusCountType, ProgressSeriesType, RunsMessages, RunMessages };
+export type { RunType, RunCaseType, RunStatusCountType, ProgressSeriesType, RunsMessages, RunMessages };

@@ -22,23 +22,15 @@ import { Save, ArrowLeft, Folder, ChevronDown, CopyPlus, CopyMinus, RotateCw } f
 import RunProgressChart from './RunPregressDonutChart';
 import TestCaseSelector from './TestCaseSelector';
 import { testRunStatus } from '@/config/selection';
-import { RunType, RunCaseType, RunCaseInfoType, RunStatusCountType, RunMessages } from '@/types/run';
+import { RunType, RunCaseType, RunStatusCountType, RunMessages } from '@/types/run';
 import { CaseType } from '@/types/case';
 import { FolderType } from '@/types/folder';
-import {
-  fetchRun,
-  updateRun,
-  fetchRunCases,
-  createRunCase,
-  updateRunCase,
-  bulkCreateRunCases,
-  deleteRunCase,
-  bulkDeleteRunCases,
-} from '../runsControl';
+import { fetchRun, updateRun, fetchRunCases, updateRunCases } from '../runsControl';
 import { fetchFolders } from '../../folders/foldersControl';
 import { fetchCases } from '@/utils/caseControl';
 import { TokenContext } from '@/utils/TokenProvider';
 import { useTheme } from 'next-themes';
+import { useFormGuard } from '@/utils/formGuard';
 
 const defaultTestRun = {
   id: 0,
@@ -70,7 +62,9 @@ export default function RunEditor({ projectId, runId, messages, locale }: Props)
   const [testcases, setTestCases] = useState<CaseType[]>([]);
   const [isNameInvalid, setIsNameInvalid] = useState<boolean>(false);
   const [isUpdating, setIsUpdating] = useState<boolean>(false);
+  const [isDirty, setIsDirty] = useState(false);
   const router = useRouter();
+  useFormGuard(isDirty, messages.areYouSureLeave);
 
   const fetchRunAndStatusCount = async () => {
     const { run, statusCounts } = await fetchRun(context.token.access_token, Number(runId));
@@ -102,6 +96,9 @@ export default function RunEditor({ projectId, runId, messages, locale }: Props)
       if (selectedFolder && selectedFolder.id) {
         try {
           const latestRunCases: RunCaseType[] = await fetchRunCases(context.token.access_token, Number(runId));
+          latestRunCases.forEach((runCase: RunCaseType) => {
+            runCase.editState = 'notChanged';
+          });
           setRunCases(latestRunCases);
 
           const testCasesData: CaseType[] = await fetchCases(context.token.access_token, selectedFolder.id);
@@ -130,11 +127,11 @@ export default function RunEditor({ projectId, runId, messages, locale }: Props)
   }, [selectedFolder]);
 
   const handleChangeStatus = async (changeCaseId: number, status: number) => {
-    await updateRunCase(context.token.access_token, Number(runId), changeCaseId, status);
+    setIsDirty(true);
     setTestCases((prevTestCases) => {
       return prevTestCases.map((testCase) => {
         if (testCase.id === changeCaseId) {
-          return { ...testCase, runStatus: status };
+          return { ...testCase, runStatus: status, editState: 'changed' };
         }
         return testCase;
       });
@@ -142,26 +139,28 @@ export default function RunEditor({ projectId, runId, messages, locale }: Props)
   };
 
   const handleIncludeExcludeCase = async (isInclude: boolean, clickedTestCaseId: number) => {
+    setIsDirty(true);
     if (isInclude) {
-      const createdRunCase = await createRunCase(context.token.access_token, Number(runId), clickedTestCaseId);
-      setRunCases((prevRunCases) => {
-        return [...prevRunCases, createdRunCase];
-      });
-    } else {
-      await deleteRunCase(context.token.access_token, Number(runId), clickedTestCaseId);
-      setRunCases((prevRunCases) => {
-        return prevRunCases.filter((runCase) => runCase.caseId !== clickedTestCaseId);
-      });
-    }
+      const newRunCase: RunCaseType = {
+        id: 0,
+        runId: Number(runId),
+        caseId: clickedTestCaseId,
+        status: 0,
+        editState: 'new',
+      };
 
-    setTestCases((prevTestCases) => {
-      return prevTestCases.map((testCase) => {
-        if (testCase.id === clickedTestCaseId) {
-          return { ...testCase, isIncluded: isInclude };
-        }
-        return testCase;
-      });
-    });
+      setRunCases([...runCases, newRunCase]);
+    } else {
+      const deleteRunCase = runCases.find((runCase) => runCase.caseId === clickedTestCaseId);
+      if (!deleteRunCase) {
+        return;
+      }
+      deleteRunCase.editState = 'deleted';
+
+      setRunCases((prevRunCases) =>
+        prevRunCases.map((runCase) => (runCase.caseId === deleteRunCase.runId ? deleteRunCase : runCase))
+      );
+    }
   };
 
   const handleBulkIncludeExcludeCases = async (isInclude: boolean) => {
@@ -172,20 +171,49 @@ export default function RunEditor({ projectId, runId, messages, locale }: Props)
       keys = Array.from(selectedKeys).map(Number);
     }
 
-    const runCaseInfo: RunCaseInfoType[] = keys.map((caseId) => ({
-      runId: Number(runId),
-      caseId: caseId,
-    }));
     if (isInclude) {
-      const createdRunCases = await bulkCreateRunCases(context.token.access_token, Number(runId), runCaseInfo);
-      setRunCases((prevRunCases) => [...prevRunCases, ...createdRunCases]);
-    } else {
-      await bulkDeleteRunCases(context.token.access_token, Number(runId), runCaseInfo);
+      // TODO fix and add unit test
       setRunCases((prevRunCases) => {
-        return prevRunCases.filter((runCase) => {
-          return !runCaseInfo.some((info) => info.caseId === runCase.caseId);
+        const updatedRunCases = prevRunCases.map((runCase) => {
+          if (keys.includes(runCase.caseId) && runCase.editState === 'deleted') {
+            return { ...runCase, editState: 'changed' };
+          }
+          return runCase;
         });
+
+        keys.forEach((caseId) => {
+          const existingRunCase = prevRunCases.find((runCase) => runCase.caseId === caseId);
+          if (!existingRunCase) {
+            updatedRunCases.push({
+              id: -1,
+              runId: Number(runId),
+              caseId: caseId,
+              status: -1,
+              editState: 'new',
+            });
+          }
+        });
+
+        return updatedRunCases;
       });
+    } else {
+      setRunCases((prevRunCases) =>
+        prevRunCases
+          .filter((runCase) => {
+            // If editState is 'new', remove from the array
+            if (keys.includes(runCase.caseId) && runCase.editState === 'new') {
+              return false;
+            }
+            return true;
+          })
+          .map((runCase) => {
+            // If editState isn't 'new', set editState to 'deleted'.
+            if (keys.includes(runCase.caseId) && runCase.editState !== 'new') {
+              return { ...runCase, editState: 'deleted' };
+            }
+            return runCase;
+          })
+      );
     }
 
     const updatedTestCases = testcases.map((testcase) => {
@@ -227,6 +255,7 @@ export default function RunEditor({ projectId, runId, messages, locale }: Props)
           onPress={async () => {
             setIsUpdating(true);
             await updateRun(context.token.access_token, testRun);
+            await updateRunCases(context.token.access_token, Number(runId), runCases);
             setIsUpdating(false);
           }}
         >

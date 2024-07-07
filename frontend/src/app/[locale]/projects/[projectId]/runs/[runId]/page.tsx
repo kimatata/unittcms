@@ -36,6 +36,7 @@ export default function Page({ params }: { params: { projectId: string; runId: s
     includeInRun: t('include_in_run'),
     excludeFromRun: t('exclude_from_run'),
     noCasesFound: t('no_cases_found'),
+    areYouSureLeave: t('are_you_sure_leave'),
   };
 
   return <RunEditor projectId={params.projectId} runId={params.runId} messages={messages} locale={params.locale} />;

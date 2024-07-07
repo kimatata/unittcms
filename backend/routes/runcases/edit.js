@@ -8,31 +8,68 @@ module.exports = function (sequelize) {
   const { verifyProjectReporterFromRunId } = require('../../middleware/verifyEditable')(sequelize);
   const RunCase = defineRunCase(sequelize, DataTypes);
 
-  router.put('/', verifySignedIn, verifyProjectReporterFromRunId, async (req, res) => {
+  router.post('/update', verifySignedIn, verifyProjectReporterFromRunId, async (req, res) => {
     const runId = req.query.runId;
-    const caseId = req.query.caseId;
-    const status = req.query.status;
+    const runCases = req.body;
+    const t = await sequelize.transaction();
+
+    console.log('############## start edit');
+    console.log(runCases);
+    console.log('############## end edit');
+
+    const createRunCase = async (runCase) => {
+      const newRunCase = await RunCase.create(
+        {
+          runId: runId,
+          caseId: runCase.caseId,
+          status: 0,
+        },
+        { transaction: t }
+      );
+      return newRunCase;
+    };
+
+    const deleteRunCase = async (runCase) => {
+      await RunCase.destroy({
+        where: { runId: runId, caseId: runCase.caseId },
+        transaction: t,
+      });
+      return null;
+    };
+
+    const updateRunCase = async (runCase) => {
+      await RunCase.update(
+        {
+          status: runCase.status,
+        },
+        {
+          where: { id: runCase.id },
+          transaction: t,
+        }
+      );
+      return step;
+    };
 
     try {
-      const runCase = await RunCase.findOne({
-        where: {
-          runId: runId,
-          caseId: caseId,
-        },
-      });
+      const results = await Promise.all(
+        runCases.map(async (step) => {
+          if (step.editState === 'new') {
+            return createRunCase(step);
+          } else if (step.editState === 'deleted') {
+            return deleteRunCase(step);
+          } else if (step.editState === 'changed') {
+            return updateRunCase(step);
+          } else if (step.editState === 'notChanged') {
+            return step;
+          }
+        })
+      );
 
-      if (!runCase) {
-        return res.status(404).send('Runcase not found');
-      }
-
-      await runCase.update({
-        runId,
-        caseId,
-        status,
-      });
-      res.json(runCase);
+      await t.commit();
+      res.json(results.filter((result) => result !== null));
     } catch (error) {
       console.error(error);
+      await t.rollback();
       res.status(500).send('Internal Server Error');
     }
   });
