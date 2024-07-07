@@ -35,7 +35,7 @@ export default function StepsEditor({ isDisabled, steps, onStepUpdate, onStepPlu
             label={messages.detailsOfTheStep}
             value={step.step}
             onValueChange={(changeValue) => {
-              onStepUpdate(step.id, { ...step, step: changeValue });
+              onStepUpdate(step.id, { ...step, step: changeValue, editState: 'changed' });
             }}
             className="mt-3 me-1"
           />
@@ -46,7 +46,7 @@ export default function StepsEditor({ isDisabled, steps, onStepUpdate, onStepPlu
             label={messages.expectedResult}
             value={step.result}
             onValueChange={(changeValue) => {
-              onStepUpdate(step.id, { ...step, result: changeValue });
+              onStepUpdate(step.id, { ...step, result: changeValue, editState: 'changed' });
             }}
             className="mt-3 ms-1"
           />

@@ -3,7 +3,6 @@ import { StepType } from '@/types/case';
 const apiServer = Config.apiServer;
 
 async function updateSteps(jwt: string, caseId: number, steps: StepType[]) {
-  console.log(steps);
   const fetchOptions = {
     method: 'POST',
     headers: {

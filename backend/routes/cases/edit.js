@@ -19,21 +19,10 @@ module.exports = function (sequelize) {
         return res.status(404).send('Case not found');
       }
 
-      // if Case has Steps, update Steps as well
       if (updateCase.Steps) {
-        // Delete existing steps
-        const steps = updateCase.Steps;
-        await Promise.all(
-          steps.map(async (step) => {
-            const existingStep = await Step.findByPk(step.id);
-            if (existingStep) {
-              await existingStep.update(step);
-            }
-          })
-        );
+        delete updateCase.Steps;
       }
 
-      delete updateCase.Steps;
       await testcase.update(updateCase);
       res.json(testcase);
     } catch (error) {

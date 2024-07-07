@@ -62,7 +62,7 @@ type CasePriorityCountType = {
   count: number;
 };
 
-export type CasesMessages = {
+type CasesMessages = {
   testCaseList: string;
   id: string;
   title: string;
@@ -85,7 +85,7 @@ export type CasesMessages = {
   pleaseEnter: string;
 };
 
-export type CaseMessages = {
+type CaseMessages = {
   backToCases: string;
   updating: string;
   update: string;
@@ -134,4 +134,12 @@ export type CaseMessages = {
   areYouSureLeave: string;
 };
 
-export { CaseType, StepType, AttachmentType, CaseTypeCountType, CasePriorityCountType, CasesMessages, CaseMessages };
+export type {
+  CaseType,
+  StepType,
+  AttachmentType,
+  CaseTypeCountType,
+  CasePriorityCountType,
+  CasesMessages,
+  CaseMessages,
+};
