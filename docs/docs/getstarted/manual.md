@@ -51,7 +51,7 @@ npm install
 Build frontend code
 
 ```bash
-npm run dev
+npm run build
 ```
 
 Start frontend server

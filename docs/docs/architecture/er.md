@@ -2,7 +2,10 @@
 sidebar_position: 1
 ---
 
-# ER diagram
+# Entity Relationship
+
+<div style={{overflowX: 'auto'}}>
+<div style={{width: '200%'}}>
 
 ```mermaid
 erDiagram
@@ -152,3 +155,6 @@ erDiagram
     timestamp deleted_at
   }
 ```
+
+</div>
+</div>

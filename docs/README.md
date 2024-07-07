@@ -3,7 +3,7 @@
 ### Install dependencies
 
 ```
-$ npm ci
+$ npm install
 ```
 
 ### Start document server locally
