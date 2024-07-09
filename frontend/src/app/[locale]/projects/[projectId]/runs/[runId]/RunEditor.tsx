@@ -25,7 +25,7 @@ import { testRunStatus } from '@/config/selection';
 import { RunType, RunCaseType, RunStatusCountType, RunMessages } from '@/types/run';
 import { CaseType } from '@/types/case';
 import { FolderType } from '@/types/folder';
-import { fetchRun, updateRun, fetchRunCases, updateRunCases } from '../runsControl';
+import { fetchRun, updateRun, fetchRunCases, updateRunCases, processRunCases } from '../runsControl';
 import { fetchFolders } from '../../folders/foldersControl';
 import { fetchCases } from '@/utils/caseControl';
 import { TokenContext } from '@/utils/TokenProvider';
@@ -171,50 +171,8 @@ export default function RunEditor({ projectId, runId, messages, locale }: Props)
       keys = Array.from(selectedKeys).map(Number);
     }
 
-    if (isInclude) {
-      // TODO fix and add unit test
-      setRunCases((prevRunCases) => {
-        const updatedRunCases = prevRunCases.map((runCase) => {
-          if (keys.includes(runCase.caseId) && runCase.editState === 'deleted') {
-            return { ...runCase, editState: 'changed' };
-          }
-          return runCase;
-        });
-
-        keys.forEach((caseId) => {
-          const existingRunCase = prevRunCases.find((runCase) => runCase.caseId === caseId);
-          if (!existingRunCase) {
-            updatedRunCases.push({
-              id: -1,
-              runId: Number(runId),
-              caseId: caseId,
-              status: -1,
-              editState: 'new',
-            });
-          }
-        });
-
-        return updatedRunCases;
-      });
-    } else {
-      setRunCases((prevRunCases) =>
-        prevRunCases
-          .filter((runCase) => {
-            // If editState is 'new', remove from the array
-            if (keys.includes(runCase.caseId) && runCase.editState === 'new') {
-              return false;
-            }
-            return true;
-          })
-          .map((runCase) => {
-            // If editState isn't 'new', set editState to 'deleted'.
-            if (keys.includes(runCase.caseId) && runCase.editState !== 'new') {
-              return { ...runCase, editState: 'deleted' };
-            }
-            return runCase;
-          })
-      );
-    }
+    const newRunCases = processRunCases(isInclude, keys, Number(runId), runCases);
+    setRunCases(newRunCases);
 
     const updatedTestCases = testcases.map((testcase) => {
       if (keys.includes(testcase.id)) {

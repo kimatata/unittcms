@@ -150,6 +150,55 @@ async function fetchRunCases(jwt: string, runId: number) {
   }
 }
 
+function processRunCases(
+  isInclude: boolean,
+  keys: number[],
+  runId: number,
+  currentRunCases: RunCaseType[]
+): RunCaseType[] {
+  if (isInclude) {
+    const updatedRunCases = currentRunCases.map((runCase) => {
+      if (keys.includes(runCase.caseId) && runCase.editState === 'deleted') {
+        return { ...runCase, editState: 'changed' } as RunCaseType;
+      }
+      return runCase;
+    });
+
+    keys.forEach((caseId) => {
+      const existingRunCase = currentRunCases.find((runCase) => runCase.caseId === caseId);
+      if (!existingRunCase) {
+        updatedRunCases.push({
+          id: -1,
+          runId: runId,
+          caseId: caseId,
+          status: -1,
+          editState: 'new',
+        });
+      }
+    });
+
+    return updatedRunCases;
+  } else {
+    const updatedRunCases = currentRunCases
+      .filter((runCase) => {
+        // If editState is 'new', remove from the array
+        if (keys.includes(runCase.caseId) && runCase.editState === 'new') {
+          return false;
+        }
+        return true;
+      })
+      .map((runCase) => {
+        // If editState isn't 'new', set editState to 'deleted'.
+        if (keys.includes(runCase.caseId) && runCase.editState !== 'new') {
+          return { ...runCase, editState: 'deleted' } as RunCaseType;
+        }
+        return runCase;
+      });
+
+    return updatedRunCases;
+  }
+}
+
 async function updateRunCases(jwt: string, runId: number, runCases: RunCaseType[]) {
   const fetchOptions = {
     method: 'POST',
@@ -175,4 +224,4 @@ async function updateRunCases(jwt: string, runId: number, runCases: RunCaseType[
   }
 }
 
-export { fetchRun, fetchRuns, createRun, updateRun, deleteRun, fetchRunCases, updateRunCases };
+export { fetchRun, fetchRuns, createRun, updateRun, deleteRun, fetchRunCases, processRunCases, updateRunCases };
