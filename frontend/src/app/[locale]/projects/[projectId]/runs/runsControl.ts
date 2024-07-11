@@ -156,17 +156,23 @@ function processRunCases(
   runId: number,
   currentRunCases: RunCaseType[]
 ): RunCaseType[] {
-  if (isInclude) {
-    const updatedRunCases = currentRunCases.map((runCase) => {
-      if (keys.includes(runCase.caseId) && runCase.editState === 'deleted') {
-        return { ...runCase, editState: 'changed' } as RunCaseType;
-      }
-      return runCase;
-    });
+  const updatedRunCases = [...currentRunCases];
 
+  if (isInclude) {
     keys.forEach((caseId) => {
       const existingRunCase = currentRunCases.find((runCase) => runCase.caseId === caseId);
-      if (!existingRunCase) {
+      if (existingRunCase) {
+        // already included
+        if (existingRunCase.editState === 'notChanged') {
+          // do nothing
+        } else if (existingRunCase.editState === 'changed') {
+          // do nothing
+        } else if (existingRunCase.editState === 'new') {
+          // do nothing
+        } else if (existingRunCase.editState === 'deleted') {
+          existingRunCase.editState = 'changed';
+        }
+      } else {
         updatedRunCases.push({
           id: -1,
           runId: runId,
@@ -176,27 +182,26 @@ function processRunCases(
         });
       }
     });
-
-    return updatedRunCases;
   } else {
-    const updatedRunCases = currentRunCases
-      .filter((runCase) => {
-        // If editState is 'new', remove from the array
-        if (keys.includes(runCase.caseId) && runCase.editState === 'new') {
-          return false;
+    keys.forEach((caseId) => {
+      const existingRunCase = currentRunCases.find((runCase) => runCase.caseId === caseId);
+      if (!existingRunCase) {
+        // already excluded
+      } else {
+        if (existingRunCase.editState === 'notChanged') {
+          existingRunCase.editState = 'deleted';
+        } else if (existingRunCase.editState === 'changed') {
+          existingRunCase.editState = 'deleted';
+        } else if (existingRunCase.editState === 'new') {
+          existingRunCase.editState = 'deleted';
+        } else if (existingRunCase.editState === 'deleted') {
+          // do nothing
         }
-        return true;
-      })
-      .map((runCase) => {
-        // If editState isn't 'new', set editState to 'deleted'.
-        if (keys.includes(runCase.caseId) && runCase.editState !== 'new') {
-          return { ...runCase, editState: 'deleted' } as RunCaseType;
-        }
-        return runCase;
-      });
-
-    return updatedRunCases;
+      }
+    });
   }
+
+  return updatedRunCases;
 }
 
 async function updateRunCases(jwt: string, runId: number, runCases: RunCaseType[]) {
@@ -209,9 +214,7 @@ async function updateRunCases(jwt: string, runId: number, runCases: RunCaseType[
     body: JSON.stringify(runCases),
   };
 
-  console.log(runCases);
   const url = `${apiServer}/runcases/update?runId=${runId}`;
-
   try {
     const response = await fetch(url, fetchOptions);
     if (!response.ok) {

@@ -140,30 +140,21 @@ export default function RunEditor({ projectId, runId, messages, locale }: Props)
 
   const handleIncludeExcludeCase = async (isInclude: boolean, clickedTestCaseId: number) => {
     setIsDirty(true);
-    if (isInclude) {
-      const newRunCase: RunCaseType = {
-        id: 0,
-        runId: Number(runId),
-        caseId: clickedTestCaseId,
-        status: 0,
-        editState: 'new',
-      };
+    const keys = [clickedTestCaseId];
+    const newRunCases = processRunCases(isInclude, keys, Number(runId), runCases);
+    setRunCases(newRunCases);
 
-      setRunCases([...runCases, newRunCase]);
-    } else {
-      const deleteRunCase = runCases.find((runCase) => runCase.caseId === clickedTestCaseId);
-      if (!deleteRunCase) {
-        return;
+    const updatedTestCases = testcases.map((testcase) => {
+      if (testcase.id === clickedTestCaseId) {
+        return { ...testcase, isIncluded: isInclude };
       }
-      deleteRunCase.editState = 'deleted';
-
-      setRunCases((prevRunCases) =>
-        prevRunCases.map((runCase) => (runCase.caseId === deleteRunCase.runId ? deleteRunCase : runCase))
-      );
-    }
+      return testcase;
+    });
+    setTestCases(updatedTestCases);
   };
 
   const handleBulkIncludeExcludeCases = async (isInclude: boolean) => {
+    setIsDirty(true);
     let keys: number[] = [];
     if (selectedKeys === 'all') {
       keys = testcases.map((item) => item.id);
@@ -215,6 +206,7 @@ export default function RunEditor({ projectId, runId, messages, locale }: Props)
             await updateRun(context.token.access_token, testRun);
             await updateRunCases(context.token.access_token, Number(runId), runCases);
             setIsUpdating(false);
+            setIsDirty(false);
           }}
         >
           {isUpdating ? messages.updating : messages.update}

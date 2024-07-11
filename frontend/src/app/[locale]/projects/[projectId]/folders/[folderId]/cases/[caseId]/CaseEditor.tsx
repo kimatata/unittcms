@@ -209,6 +209,7 @@ export default function CaseEditor({ projectId, folderId, caseId, messages, loca
               await updateSteps(context.token.access_token, Number(caseId), testCase.Steps);
             }
             setIsUpdating(false);
+            setIsDirty(false);
           }}
         >
           {isUpdating ? messages.updating : messages.update}

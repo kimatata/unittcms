@@ -2,7 +2,6 @@ import { useEffect } from 'react';
 
 export const useFormGuard = (isDirty: boolean, confirmText: string) => {
   useEffect(() => {
-    console.log(isDirty);
     const handleClick = (event: MouseEvent) => {
       if (isDirty && event.target instanceof Element && event.target.closest('a:not([target="_blank"]')) {
         if (!window.confirm(confirmText)) {

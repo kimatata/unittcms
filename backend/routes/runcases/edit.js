@@ -13,10 +13,6 @@ module.exports = function (sequelize) {
     const runCases = req.body;
     const t = await sequelize.transaction();
 
-    console.log('############## start edit');
-    console.log(runCases);
-    console.log('############## end edit');
-
     const createRunCase = async (runCase) => {
       const newRunCase = await RunCase.create(
         {
@@ -47,7 +43,7 @@ module.exports = function (sequelize) {
           transaction: t,
         }
       );
-      return step;
+      return runCase;
     };
 
     try {
