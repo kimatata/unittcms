@@ -53,6 +53,7 @@
     "invalid_email": "無効なメールアドレスです",
     "invalid_password": "パスワードは8文字以上である必要があります",
     "username_empty": "ユーザー名が入力されていません",
+    "password_empty": "パスワードが入力されていません",
     "password_not_match": "パスワードが一致しません",
     "email_already_exist": "登録済みのメールアドレスです",
     "email_not_exist": "メールアドレスが見つかりません",
@@ -173,8 +174,7 @@
     "case_title": "テストケースタイトル",
     "case_description": "テストケース詳細",
     "create": "作成",
-    "please_rnter": "テストケースタイトルを入力してください",
-    "are_you_sure_leave": "ページを離れてもよろしいですか"
+    "please_enter": "テストケースタイトルを入力してください"
   },
   "Case": {
     "back_to_cases": "テストケース一覧に戻る",
@@ -277,7 +277,8 @@
     "test_case_selection": "テストケース選択",
     "include_in_run": "テストランに含める",
     "exclude_from_run": "テストランから除外する",
-    "no_cases_found": "テストケースが見つかりません"
+    "no_cases_found": "テストケースが見つかりません",
+    "are_you_sure_leave": "ページを離れてもよろしいですか"
   },
   "Members": {
     "member_management": "メンバー管理",

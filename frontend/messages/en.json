@@ -174,7 +174,7 @@
     "case_title": "Test Case Title",
     "case_description": "Test Case Description",
     "create": "Create",
-    "please_eEnter": "Please enter test case title"
+    "please_enter": "Please enter test case title"
   },
   "Case": {
     "back_to_cases": "Back to test cases",
