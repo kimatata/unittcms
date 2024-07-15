@@ -22,12 +22,18 @@ import { Save, ArrowLeft, Folder, ChevronDown, CopyPlus, CopyMinus, RotateCw } f
 import RunProgressChart from './RunPregressDonutChart';
 import TestCaseSelector from './TestCaseSelector';
 import { testRunStatus } from '@/config/selection';
-import { RunType, RunCaseType, RunStatusCountType, RunMessages } from '@/types/run';
+import { RunType, RunStatusCountType, RunMessages } from '@/types/run';
 import { CaseType } from '@/types/case';
 import { FolderType } from '@/types/folder';
-import { fetchRun, updateRun, fetchRunCases, updateRunCases, processRunCases } from '../runsControl';
+import {
+  fetchRun,
+  updateRun,
+  updateRunCases,
+  processRunCases,
+  fetchProjectCases,
+  processTestCases,
+} from '../runsControl';
 import { fetchFolders } from '../../folders/foldersControl';
-import { fetchCases } from '@/utils/caseControl';
 import { TokenContext } from '@/utils/TokenProvider';
 import { useTheme } from 'next-themes';
 import { useFormGuard } from '@/utils/formGuard';
@@ -55,11 +61,11 @@ export default function RunEditor({ projectId, runId, messages, locale }: Props)
   const { theme, setTheme } = useTheme();
   const [testRun, setTestRun] = useState<RunType>(defaultTestRun);
   const [folders, setFolders] = useState<FolderType[]>([]);
-  const [runCases, setRunCases] = useState<RunCaseType[]>([]);
   const [runStatusCounts, setRunStatusCounts] = useState<RunStatusCountType[]>();
   const [selectedKeys, setSelectedKeys] = useState<Selection>(new Set([]));
   const [selectedFolder, setSelectedFolder] = useState<FolderType | null>(null);
-  const [testcases, setTestCases] = useState<CaseType[]>([]);
+  const [testCases, setTestCases] = useState<CaseType[]>([]);
+  const [filteredTestCases, setFilteredTestCases] = useState<CaseType[]>([]);
   const [isNameInvalid, setIsNameInvalid] = useState<boolean>(false);
   const [isUpdating, setIsUpdating] = useState<boolean>(false);
   const [isDirty, setIsDirty] = useState(false);
@@ -80,9 +86,17 @@ export default function RunEditor({ projectId, runId, messages, locale }: Props)
 
       try {
         await fetchRunAndStatusCount();
-        const foldersData = await fetchFolders(context.token.access_token, projectId);
+        const foldersData = await fetchFolders(context.token.access_token, Number(projectId));
         setFolders(foldersData);
         setSelectedFolder(foldersData[0]);
+
+        const casesData = await fetchProjectCases(context.token.access_token, Number(projectId));
+        casesData.forEach((testCase: CaseType) => {
+          if (testCase.RunCases && testCase.RunCases.length > 0) {
+            testCase.RunCases[0].editState = 'notChanged';
+          }
+        });
+        setTestCases(casesData);
       } catch (error: any) {
         console.error('Error in effect:', error.message);
       }
@@ -92,39 +106,19 @@ export default function RunEditor({ projectId, runId, messages, locale }: Props)
   }, [context]);
 
   useEffect(() => {
-    async function fetchCasesData() {
+    function onFilter() {
       if (selectedFolder && selectedFolder.id) {
         try {
-          const latestRunCases: RunCaseType[] = await fetchRunCases(context.token.access_token, Number(runId));
-          latestRunCases.forEach((runCase: RunCaseType) => {
-            runCase.editState = 'notChanged';
-          });
-          setRunCases(latestRunCases);
-
-          const testCasesData: CaseType[] = await fetchCases(context.token.access_token, selectedFolder.id);
-          // Check if each testCase has an association with testRun
-          // and add "isIncluded" property
-          const updatedTestCasesData = testCasesData.map((testCase) => {
-            const runCase = latestRunCases.find((runCase) => runCase.caseId === testCase.id);
-
-            const isIncluded = runCase ? true : false;
-            const runStatus = runCase ? runCase.status : 0;
-            return {
-              ...testCase,
-              isIncluded,
-              runStatus,
-            };
-          });
-
-          setTestCases(updatedTestCasesData);
+          const filteredData = testCases.filter((testCase) => testCase.folderId === selectedFolder.id);
+          setFilteredTestCases(filteredData);
         } catch (error: any) {
           console.error('Error fetching cases data:', error.message);
         }
       }
     }
 
-    fetchCasesData();
-  }, [selectedFolder]);
+    onFilter();
+  }, [selectedFolder, testCases]);
 
   const handleChangeStatus = async (changeCaseId: number, status: number) => {
     setIsDirty(true);
@@ -141,38 +135,21 @@ export default function RunEditor({ projectId, runId, messages, locale }: Props)
   const handleIncludeExcludeCase = async (isInclude: boolean, clickedTestCaseId: number) => {
     setIsDirty(true);
     const keys = [clickedTestCaseId];
-    const newRunCases = processRunCases(isInclude, keys, Number(runId), runCases);
-    setRunCases(newRunCases);
-
-    const updatedTestCases = testcases.map((testcase) => {
-      if (testcase.id === clickedTestCaseId) {
-        return { ...testcase, isIncluded: isInclude };
-      }
-      return testcase;
-    });
-    setTestCases(updatedTestCases);
+    const newTestCases = processTestCases(isInclude, keys, Number(runId), testCases);
+    setTestCases(newTestCases);
   };
 
   const handleBulkIncludeExcludeCases = async (isInclude: boolean) => {
     setIsDirty(true);
     let keys: number[] = [];
     if (selectedKeys === 'all') {
-      keys = testcases.map((item) => item.id);
+      keys = testCases.map((item) => item.id);
     } else {
       keys = Array.from(selectedKeys).map(Number);
     }
 
-    const newRunCases = processRunCases(isInclude, keys, Number(runId), runCases);
-    setRunCases(newRunCases);
-
-    const updatedTestCases = testcases.map((testcase) => {
-      if (keys.includes(testcase.id)) {
-        return { ...testcase, isIncluded: isInclude };
-      }
-      return testcase;
-    });
-    setTestCases(updatedTestCases);
-
+    const newTestCases = processTestCases(isInclude, keys, Number(runId), testCases);
+    setTestCases(newTestCases);
     setSelectedKeys(new Set([]));
   };
 
@@ -204,7 +181,7 @@ export default function RunEditor({ projectId, runId, messages, locale }: Props)
           onPress={async () => {
             setIsUpdating(true);
             await updateRun(context.token.access_token, testRun);
-            await updateRunCases(context.token.access_token, Number(runId), runCases);
+            await updateRunCases(context.token.access_token, Number(runId), testCases);
             setIsUpdating(false);
             setIsDirty(false);
           }}
@@ -335,7 +312,7 @@ export default function RunEditor({ projectId, runId, messages, locale }: Props)
           </div>
           <div className="w-9/12">
             <TestCaseSelector
-              cases={testcases}
+              cases={filteredTestCases}
               isDisabled={!context.isProjectReporter(Number(projectId))}
               selectedKeys={selectedKeys}
               onSelectionChange={setSelectedKeys}

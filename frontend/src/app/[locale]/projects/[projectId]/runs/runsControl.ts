@@ -1,6 +1,7 @@
+import { CaseType } from '@/types/case';
+import { RunType, RunCaseType } from '@/types/run';
 import Config from '@/config/config';
 const apiServer = Config.apiServer;
-import { RunType, RunCaseType } from '@/types/run';
 
 async function fetchRun(jwt: string, runId: number) {
   const url = `${apiServer}/runs/${runId}`;
@@ -150,61 +151,134 @@ async function fetchRunCases(jwt: string, runId: number) {
   }
 }
 
-function processRunCases(
-  isInclude: boolean,
-  keys: number[],
-  runId: number,
-  currentRunCases: RunCaseType[]
-): RunCaseType[] {
-  const updatedRunCases = [...currentRunCases];
+function processTestCases(isInclude: boolean, keys: number[], runId: number, currentTestCases: CaseType[]): CaseType[] {
+  const updatedTestCases = [...currentTestCases];
 
   if (isInclude) {
     keys.forEach((caseId) => {
-      const existingRunCase = currentRunCases.find((runCase) => runCase.caseId === caseId);
-      if (existingRunCase) {
+      const targetCase = updatedTestCases.find((testCase) => testCase.id === caseId);
+      if (!targetCase) {
+        console.error('failed to find target case');
+        return;
+      }
+
+      if (targetCase.RunCases && targetCase.RunCases.length > 0) {
         // already included
-        if (existingRunCase.editState === 'notChanged') {
+        if (targetCase.RunCases[0].editState === 'notChanged') {
           // do nothing
-        } else if (existingRunCase.editState === 'changed') {
+        } else if (targetCase.RunCases[0].editState === 'changed') {
           // do nothing
-        } else if (existingRunCase.editState === 'new') {
+        } else if (targetCase.RunCases[0].editState === 'new') {
           // do nothing
-        } else if (existingRunCase.editState === 'deleted') {
-          existingRunCase.editState = 'changed';
+        } else if (targetCase.RunCases[0].editState === 'deleted') {
+          targetCase.RunCases[0].editState = 'changed';
         }
       } else {
-        updatedRunCases.push({
-          id: -1,
+        const newRunCase = {
           runId: runId,
-          caseId: caseId,
-          status: -1,
+          status: 0,
           editState: 'new',
-        });
+        } as RunCaseType;
+        targetCase.RunCases = [newRunCase];
       }
     });
   } else {
     keys.forEach((caseId) => {
-      const existingRunCase = currentRunCases.find((runCase) => runCase.caseId === caseId);
-      if (!existingRunCase) {
+      const targetCase = updatedTestCases.find((testCase) => testCase.id === caseId);
+      if (!targetCase) {
+        console.error('failed to find target case');
+        return;
+      }
+
+      if (!targetCase.RunCases || targetCase.RunCases.length == 0) {
         // already excluded
       } else {
-        if (existingRunCase.editState === 'notChanged') {
-          existingRunCase.editState = 'deleted';
-        } else if (existingRunCase.editState === 'changed') {
-          existingRunCase.editState = 'deleted';
-        } else if (existingRunCase.editState === 'new') {
-          existingRunCase.editState = 'deleted';
-        } else if (existingRunCase.editState === 'deleted') {
+        if (targetCase.RunCases[0].editState === 'notChanged') {
+          targetCase.RunCases[0].editState = 'deleted';
+        } else if (targetCase.RunCases[0].editState === 'changed') {
+          targetCase.RunCases[0].editState = 'deleted';
+        } else if (targetCase.RunCases[0].editState === 'new') {
+          targetCase.RunCases[0].editState = 'deleted';
+        } else if (targetCase.RunCases[0].editState === 'deleted') {
           // do nothing
         }
       }
     });
   }
 
-  return updatedRunCases;
+  return updatedTestCases;
 }
 
-async function updateRunCases(jwt: string, runId: number, runCases: RunCaseType[]) {
+// function processRunCases(
+//   isInclude: boolean,
+//   keys: number[],
+//   runId: number,
+//   currentRunCases: RunCaseType[]
+// ): RunCaseType[] {
+//   const updatedRunCases = [...currentRunCases];
+
+//   if (isInclude) {
+//     keys.forEach((caseId) => {
+//       const existingRunCase = currentRunCases.find((runCase) => runCase.caseId === caseId);
+//       if (existingRunCase) {
+//         // already included
+//         if (existingRunCase.editState === 'notChanged') {
+//           // do nothing
+//         } else if (existingRunCase.editState === 'changed') {
+//           // do nothing
+//         } else if (existingRunCase.editState === 'new') {
+//           // do nothing
+//         } else if (existingRunCase.editState === 'deleted') {
+//           existingRunCase.editState = 'changed';
+//         }
+//       } else {
+//         updatedRunCases.push({
+//           id: -1,
+//           runId: runId,
+//           caseId: caseId,
+//           status: 0,
+//           editState: 'new',
+//         });
+//       }
+//     });
+//   } else {
+//     keys.forEach((caseId) => {
+//       const existingRunCase = currentRunCases.find((runCase) => runCase.caseId === caseId);
+//       if (!existingRunCase) {
+//         // already excluded
+//       } else {
+//         if (existingRunCase.editState === 'notChanged') {
+//           existingRunCase.editState = 'deleted';
+//         } else if (existingRunCase.editState === 'changed') {
+//           existingRunCase.editState = 'deleted';
+//         } else if (existingRunCase.editState === 'new') {
+//           existingRunCase.editState = 'deleted';
+//         } else if (existingRunCase.editState === 'deleted') {
+//           // do nothing
+//         }
+//       }
+//     });
+//   }
+
+//   return updatedRunCases;
+// }
+
+async function updateRunCases(jwt: string, runId: number, testCases: CaseType[]) {
+  const runCases: RunCaseType[] = [];
+  testCases.forEach((itr) => {
+    if (itr.RunCases && itr.RunCases.length > 0) {
+      runCases.push({
+        id: -1,
+        caseId: itr.id,
+        runId: runId,
+        status: itr.RunCases[0].status,
+        editState: itr.RunCases[0].editState,
+      });
+    }
+  });
+
+  console.log(testCases, runCases);
+
   const fetchOptions = {
     method: 'POST',
     headers: {
@@ -227,4 +301,37 @@ async function updateRunCases(jwt: string, runId: number, runCases: RunCaseType[
   }
 }
 
-export { fetchRun, fetchRuns, createRun, updateRun, deleteRun, fetchRunCases, processRunCases, updateRunCases };
+async function fetchProjectCases(jwt: string, projectId: number) {
+  const url = `${apiServer}/cases/byproject?projectId=${projectId}`;
+
+  try {
+    const response = await fetch(url, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${jwt}`,
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (error: any) {
+    console.error('Error fetching data:', error.message);
+  }
+}
+
+export {
+  fetchRun,
+  fetchRuns,
+  createRun,
+  updateRun,
+  deleteRun,
+  fetchRunCases,
+  processTestCases,
+  updateRunCases,
+  fetchProjectCases,
+};

@@ -11,9 +11,8 @@ type CaseType = {
   expectedResults: string;
   folderId: number;
   Steps?: StepType[];
+  RunCases?: RunCaseType[];
   Attachments?: AttachmentType[];
-  isIncluded?: boolean;
-  runStatus?: number;
 };
 
 type CaseStepType = {
@@ -32,6 +31,12 @@ type StepType = {
   updatedAt: Date;
   caseSteps: CaseStepType;
   uid: string;
+  editState: 'notChanged' | 'changed' | 'new' | 'deleted';
+};
+
+type RunCaseType = {
+  runId: number;
+  status: number;
   editState: 'notChanged' | 'changed' | 'new' | 'deleted';
 };
 

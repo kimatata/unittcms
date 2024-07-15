@@ -4,7 +4,7 @@ const apiServer = Config.apiServer;
 /**
  * fetch folder records
  */
-async function fetchFolders(jwt: string, projectId: string) {
+async function fetchFolders(jwt: string, projectId: number) {
   try {
     const url = `${apiServer}/folders?projectId=${projectId}`;
     const response = await fetch(url, {
