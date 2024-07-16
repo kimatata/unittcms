@@ -156,7 +156,7 @@ export default function TestCaseSelector({
                   startContent={renderStatusIcon(runCaseStatus.uid)}
                   onPress={() => onStatusChange(testCase.id, index)}
                 >
-                  {messages[runStatus.uid]}
+                  {messages[runCaseStatus.uid]}
                 </DropdownItem>
               ))}
             </DropdownMenu>
@@ -250,12 +250,14 @@ export default function TestCaseSelector({
             </TableColumn>
           )}
         </TableHeader>
-        <TableBody emptyContent={messages.noCasesFound} items={sortedItems}>
-          {(item) => (
+        <TableBody emptyContent={messages.noCasesFound}>
+          {sortedItems.map((item) => (
             <TableRow key={item.id} className={isCaseIncluded(item) ? '' : notIncludedCaseClass}>
-              {(columnKey) => <TableCell key={`${item.id} + ${columnKey}`}>{renderCell(item, columnKey)}</TableCell>}
+              {headerColumns.map((column) => (
+                <TableCell key={column.uid}>{renderCell(item, column.uid)}</TableCell>
+              ))}
             </TableRow>
-          )}
+          ))}
         </TableBody>
       </Table>
     </>

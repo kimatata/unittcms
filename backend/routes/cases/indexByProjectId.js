@@ -39,7 +39,7 @@ module.exports = function (sequelize) {
           },
           {
             model: RunCase,
-            attributes: ['runId', 'status'],
+            attributes: ['id', 'runId', 'status'],
           },
         ],
       });

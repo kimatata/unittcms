@@ -35,7 +35,9 @@ type StepType = {
 };
 
 type RunCaseType = {
+  id: number;
   runId: number;
+  caseId: number;
   status: number;
   editState: 'notChanged' | 'changed' | 'new' | 'deleted';
 };

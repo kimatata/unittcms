@@ -209,66 +209,12 @@ function processTestCases(isInclude: boolean, keys: number[], runId: number, cur
   return updatedTestCases;
 }
 
-// function processRunCases(
-//   isInclude: boolean,
-//   keys: number[],
-//   runId: number,
-//   currentRunCases: RunCaseType[]
-// ): RunCaseType[] {
-//   const updatedRunCases = [...currentRunCases];
-
-//   if (isInclude) {
-//     keys.forEach((caseId) => {
-//       const existingRunCase = currentRunCases.find((runCase) => runCase.caseId === caseId);
-//       if (existingRunCase) {
-//         // already included
-//         if (existingRunCase.editState === 'notChanged') {
-//           // do nothing
-//         } else if (existingRunCase.editState === 'changed') {
-//           // do nothing
-//         } else if (existingRunCase.editState === 'new') {
-//           // do nothing
-//         } else if (existingRunCase.editState === 'deleted') {
-//           existingRunCase.editState = 'changed';
-//         }
-//       } else {
-//         updatedRunCases.push({
-//           id: -1,
-//           runId: runId,
-//           caseId: caseId,
-//           status: 0,
-//           editState: 'new',
-//         });
-//       }
-//     });
-//   } else {
-//     keys.forEach((caseId) => {
-//       const existingRunCase = currentRunCases.find((runCase) => runCase.caseId === caseId);
-//       if (!existingRunCase) {
-//         // already excluded
-//       } else {
-//         if (existingRunCase.editState === 'notChanged') {
-//           existingRunCase.editState = 'deleted';
-//         } else if (existingRunCase.editState === 'changed') {
-//           existingRunCase.editState = 'deleted';
-//         } else if (existingRunCase.editState === 'new') {
-//           existingRunCase.editState = 'deleted';
-//         } else if (existingRunCase.editState === 'deleted') {
-//           // do nothing
-//         }
-//       }
-//     });
-//   }
-
-//   return updatedRunCases;
-// }
-
 async function updateRunCases(jwt: string, runId: number, testCases: CaseType[]) {
   const runCases: RunCaseType[] = [];
   testCases.forEach((itr) => {
     if (itr.RunCases && itr.RunCases.length > 0) {
       runCases.push({
-        id: -1,
+        id: itr.RunCases[0].id,
         caseId: itr.id,
         runId: runId,
         status: itr.RunCases[0].status,
@@ -276,8 +222,6 @@ async function updateRunCases(jwt: string, runId: number, testCases: CaseType[])
       });
     }
   });
-
-  console.log(testCases, runCases);
 
   const fetchOptions = {
     method: 'POST',

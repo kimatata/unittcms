@@ -21,18 +21,11 @@ import {
 import { Save, ArrowLeft, Folder, ChevronDown, CopyPlus, CopyMinus, RotateCw } from 'lucide-react';
 import RunProgressChart from './RunPregressDonutChart';
 import TestCaseSelector from './TestCaseSelector';
-import { testRunStatus } from '@/config/selection';
+import { testRunCaseStatus, testRunStatus } from '@/config/selection';
 import { RunType, RunStatusCountType, RunMessages } from '@/types/run';
 import { CaseType } from '@/types/case';
 import { FolderType } from '@/types/folder';
-import {
-  fetchRun,
-  updateRun,
-  updateRunCases,
-  processRunCases,
-  fetchProjectCases,
-  processTestCases,
-} from '../runsControl';
+import { fetchRun, updateRun, updateRunCases, fetchProjectCases, processTestCases } from '../runsControl';
 import { fetchFolders } from '../../folders/foldersControl';
 import { TokenContext } from '@/utils/TokenProvider';
 import { useTheme } from 'next-themes';
@@ -122,14 +115,13 @@ export default function RunEditor({ projectId, runId, messages, locale }: Props)
 
   const handleChangeStatus = async (changeCaseId: number, status: number) => {
     setIsDirty(true);
-    setTestCases((prevTestCases) => {
-      return prevTestCases.map((testCase) => {
-        if (testCase.id === changeCaseId) {
-          return { ...testCase, runStatus: status, editState: 'changed' };
-        }
-        return testCase;
-      });
-    });
+    const newTestCases = [...testCases];
+    const found = newTestCases.find((testCase) => testCase.id === changeCaseId);
+    if (found && found.RunCases && testRunCaseStatus.length > 0) {
+      found.RunCases[0].status = status;
+      found.RunCases[0].editState = 'changed';
+    }
+    setTestCases(newTestCases);
   };
 
   const handleIncludeExcludeCase = async (isInclude: boolean, clickedTestCaseId: number) => {
