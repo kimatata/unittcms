@@ -93,7 +93,7 @@ export default function HeaderNavbarMenu({ messages, locale }: Props) {
         <NavbarItem className="hidden md:block">
           <Chip size="sm" variant="flat">
             <Link className="data-[active=true]:text-primary data-[active=true]:font-medium" href="/" locale={locale}>
-              1.0.0-beta
+              1.0.0-beta.1
             </Link>
           </Chip>
         </NavbarItem>
