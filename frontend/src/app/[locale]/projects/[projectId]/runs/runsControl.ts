@@ -1,6 +1,7 @@
 import { CaseType } from '@/types/case';
 import { RunType, RunCaseType } from '@/types/run';
 import Config from '@/config/config';
+import { testRunCaseStatus } from '@/config/selection';
 const apiServer = Config.apiServer;
 
 async function fetchRun(jwt: string, runId: number) {
@@ -151,7 +152,33 @@ async function fetchRunCases(jwt: string, runId: number) {
   }
 }
 
-function processTestCases(isInclude: boolean, keys: number[], runId: number, currentTestCases: CaseType[]): CaseType[] {
+function changeStatus(changeCaseId: number, newStatus: number, currentTestCases: CaseType[]): CaseType[] {
+  const updatedTestCases = [...currentTestCases];
+
+  const found = updatedTestCases.find((testCase) => testCase.id === changeCaseId);
+  if (found && found.RunCases && testRunCaseStatus.length > 0) {
+    const runCase = found.RunCases[0];
+    if (runCase.editState === 'notChanged') {
+      runCase.status = newStatus;
+      runCase.editState = 'changed';
+    } else if (runCase.editState === 'changed') {
+      runCase.status = newStatus;
+    } else if (runCase.editState === 'new') {
+      runCase.status = newStatus;
+    } else if (runCase.editState === 'deleted') {
+      // do nothing
+    }
+  }
+
+  return updatedTestCases;
+}
+
+function includeExcludeTestCases(
+  isInclude: boolean,
+  keys: number[],
+  runId: number,
+  currentTestCases: CaseType[]
+): CaseType[] {
   const updatedTestCases = [...currentTestCases];
 
   if (isInclude) {
@@ -275,7 +302,8 @@ export {
   updateRun,
   deleteRun,
   fetchRunCases,
-  processTestCases,
+  changeStatus,
+  includeExcludeTestCases,
   updateRunCases,
   fetchProjectCases,
 };

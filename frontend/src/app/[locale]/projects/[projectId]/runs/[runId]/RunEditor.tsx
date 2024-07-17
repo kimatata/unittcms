@@ -21,11 +21,18 @@ import {
 import { Save, ArrowLeft, Folder, ChevronDown, CopyPlus, CopyMinus, RotateCw } from 'lucide-react';
 import RunProgressChart from './RunPregressDonutChart';
 import TestCaseSelector from './TestCaseSelector';
-import { testRunCaseStatus, testRunStatus } from '@/config/selection';
+import { testRunStatus } from '@/config/selection';
 import { RunType, RunStatusCountType, RunMessages } from '@/types/run';
 import { CaseType } from '@/types/case';
 import { FolderType } from '@/types/folder';
-import { fetchRun, updateRun, updateRunCases, fetchProjectCases, processTestCases } from '../runsControl';
+import {
+  fetchRun,
+  updateRun,
+  updateRunCases,
+  fetchProjectCases,
+  includeExcludeTestCases,
+  changeStatus,
+} from '../runsControl';
 import { fetchFolders } from '../../folders/foldersControl';
 import { TokenContext } from '@/utils/TokenProvider';
 import { useTheme } from 'next-themes';
@@ -113,21 +120,16 @@ export default function RunEditor({ projectId, runId, messages, locale }: Props)
     onFilter();
   }, [selectedFolder, testCases]);
 
-  const handleChangeStatus = async (changeCaseId: number, status: number) => {
+  const handleChangeStatus = async (changeCaseId: number, newStatus: number) => {
     setIsDirty(true);
-    const newTestCases = [...testCases];
-    const found = newTestCases.find((testCase) => testCase.id === changeCaseId);
-    if (found && found.RunCases && testRunCaseStatus.length > 0) {
-      found.RunCases[0].status = status;
-      found.RunCases[0].editState = 'changed';
-    }
+    const newTestCases = changeStatus(changeCaseId, newStatus, testCases);
     setTestCases(newTestCases);
   };
 
   const handleIncludeExcludeCase = async (isInclude: boolean, clickedTestCaseId: number) => {
     setIsDirty(true);
     const keys = [clickedTestCaseId];
-    const newTestCases = processTestCases(isInclude, keys, Number(runId), testCases);
+    const newTestCases = includeExcludeTestCases(isInclude, keys, Number(runId), testCases);
     setTestCases(newTestCases);
   };
 
@@ -140,7 +142,7 @@ export default function RunEditor({ projectId, runId, messages, locale }: Props)
       keys = Array.from(selectedKeys).map(Number);
     }
 
-    const newTestCases = processTestCases(isInclude, keys, Number(runId), testCases);
+    const newTestCases = includeExcludeTestCases(isInclude, keys, Number(runId), testCases);
     setTestCases(newTestCases);
     setSelectedKeys(new Set([]));
   };

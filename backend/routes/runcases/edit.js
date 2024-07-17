@@ -18,7 +18,7 @@ module.exports = function (sequelize) {
         {
           runId: runId,
           caseId: runCase.caseId,
-          status: 0,
+          status: runCase.status,
         },
         { transaction: t }
       );
