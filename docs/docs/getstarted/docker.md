@@ -7,7 +7,7 @@ sidebar_position: 2
 First, clone the repository.
 
 ```bash
-git clone git@github.com:kimatata/unittcms.git
+git clone https://github.com/kimatata/unittcms.git
 ```
 
 and start containers with the following command.

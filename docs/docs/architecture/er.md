@@ -10,7 +10,7 @@ sidebar_position: 1
 ```mermaid
 erDiagram
   users ||--o{ projects : "user has projects"
-  users ||--o{ members : "user has members"
+  users ||--o{ members : "user belongs to the project via the members table"
   projects ||--o{ members: "project has members"
   projects ||--o{ folders: "project has folders"
   projects ||--o{ runs: "project has runs"

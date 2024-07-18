@@ -15,7 +15,7 @@ To use UnitTCMS, you need run frontend server and backend(API) server.
 First, clone the repository.
 
 ```bash
-git clone git@github.com:kimatata/unittcms.git
+git clone https://github.com/kimatata/unittcms.git
 ```
 
 ## Run backend server
@@ -57,5 +57,5 @@ npm run build
 Start frontend server
 
 ```
-PORT=8000 npm run start
+npm run start
 ```

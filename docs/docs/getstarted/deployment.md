@@ -33,8 +33,8 @@ Deploy the frontend to Vercel and the backend to Render.
 
 #### Settings
 
-| Settings       | value                                            |
-| -------------- | ------------------------------------------------ |
-| Root Directory | `backend`                                        |
-| Build Command  | `npm install && npm run migrate && npm run seed` |
-| Start Command  | `npm run start`                                  |
+| Settings       | value                            |
+| -------------- | -------------------------------- |
+| Root Directory | `backend`                        |
+| Build Command  | `npm install && npm run migrate` |
+| Start Command  | `npm run start`                  |
