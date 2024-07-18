@@ -11,9 +11,8 @@ import { ProjectType } from '@/types/project';
 import DeleteConfirmDialog from '@/components/DeleteConfirmDialog';
 import { useRouter } from '@/src/navigation';
 import ProjectDialog from '@/components/ProjectDialog';
-import Config from '@/config/config';
 import { UserType } from '@/types/user';
-const apiServer = Config.apiServer;
+import { findUser } from '@/utils/usersControl';
 
 type Props = {
   projectId: string;
@@ -44,29 +43,6 @@ export default function SettingsPage({ projectId, messages, locale }: Props) {
     username: '',
   });
 
-  async function fetchUser(jwt: string, userId: string) {
-    const fetchOptions = {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${jwt}`,
-      },
-    };
-
-    const url = `${apiServer}/users/${userId}`;
-
-    try {
-      const response = await fetch(url, fetchOptions);
-      if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
-      }
-      const data = await response.json();
-      return data;
-    } catch (error: any) {
-      console.error('Error fetching data:', error.message);
-    }
-  }
-
   useEffect(() => {
     async function fetchDataEffect() {
       if (!context.isSignedIn()) {
@@ -78,7 +54,7 @@ export default function SettingsPage({ projectId, messages, locale }: Props) {
         setProject(data);
 
         if (data.userId) {
-          const ownerData = await fetchUser(context.token.access_token, data.userId);
+          const ownerData = await findUser(context.token.access_token, data.userId);
           setOwner(ownerData);
         } else {
           console.error('failed to get project owner id');

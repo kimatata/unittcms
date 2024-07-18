@@ -24,29 +24,6 @@ async function fetchProjectMembers(jwt: string, projectId: string) {
   }
 }
 
-async function searchUsers(jwt: string, projectId: string, searchText: string) {
-  const fetchOptions = {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${jwt}`,
-    },
-  };
-
-  const url = `${apiServer}/users/find?projectId=${projectId}&search=${searchText}`;
-
-  try {
-    const response = await fetch(url, fetchOptions);
-    if (!response.ok) {
-      throw new Error(`HTTP error! Status: ${response.status}`);
-    }
-    const data = await response.json();
-    return data;
-  } catch (error: any) {
-    console.error('Error fetching data:', error.message);
-  }
-}
-
 async function addMember(jwt: string, userId: string, projectId: string) {
   const fetchOptions = {
     method: 'POST',
@@ -114,4 +91,4 @@ async function updateMember(jwt: string, userId: string, projectId: string, role
   }
 }
 
-export { fetchProjectMembers, searchUsers, addMember, deleteMember, updateMember };
+export { fetchProjectMembers, addMember, deleteMember, updateMember };

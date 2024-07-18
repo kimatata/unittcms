@@ -5,7 +5,7 @@ import { Button, Input, Modal, ModalContent, ModalHeader, ModalBody, ModalFooter
 import { SettingsMessages } from '@/types/settings';
 import { TokenContext } from '@/utils/TokenProvider';
 import { UserType } from '@/types/user';
-import { searchUsers } from './membersControl';
+import { searchUsers } from '@/utils/usersControl';
 import CandidatesTable from './CandidatesTable';
 
 type Props = {
@@ -32,7 +32,7 @@ export default function AddMemberDialog({ isOpen, projectId, onCancel, onAddMemb
       }
 
       try {
-        const data = await searchUsers(context.token.access_token, projectId, searchText);
+        const data = await searchUsers(context.token.access_token, Number(projectId), searchText);
         setCandidates(data);
       } catch (error: any) {
         console.error('Error in effect:', error.message);
