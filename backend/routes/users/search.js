@@ -31,6 +31,7 @@ module.exports = function (sequelize) {
 
       const users = await User.findAll({
         where,
+        attributes: ['id', 'email', 'username', 'role', 'avatarPath'],
         limit: 7,
       });
       res.json(users);

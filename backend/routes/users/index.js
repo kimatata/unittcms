@@ -9,7 +9,9 @@ module.exports = function (sequelize) {
 
   router.get('/', verifySignedIn, verifyAdmin, async (req, res) => {
     try {
-      const users = await User.findAll();
+      const users = await User.findAll({
+        attributes: ['id', 'email', 'username', 'role', 'avatarPath'],
+      });
       res.json(users);
     } catch (error) {
       console.error(error);

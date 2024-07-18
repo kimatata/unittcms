@@ -16,7 +16,7 @@ module.exports = function (sequelize) {
 
       try {
         const user = await User.findByPk(userId, {
-          attributes: ['id', 'username', 'role', 'avatarPath'],
+          attributes: ['id', 'email', 'username', 'role', 'avatarPath'],
         });
         if (!user) {
           return res.status(404).send('User not found');
