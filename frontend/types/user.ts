@@ -7,7 +7,7 @@ export type UserType = {
   username: string;
   role: number;
   avatarPath: string | null;
-} | null;
+};
 
 export type TokenProps = {
   toastMessages: ToastMessages;

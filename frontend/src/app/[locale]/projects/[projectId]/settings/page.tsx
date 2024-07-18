@@ -7,6 +7,7 @@ export default function Page({ params }: { params: { projectId: string; locale: 
     projectManagement: t('project_management'),
     projectName: t('project_name'),
     projectDetail: t('project_detail'),
+    projectOwner: t('project_owner'),
     editProject: t('edit_project'),
     project: t('project'),
     ifYouMakePublic: t('if_you_make_public'),

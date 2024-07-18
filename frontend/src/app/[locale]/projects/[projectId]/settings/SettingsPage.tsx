@@ -2,6 +2,7 @@
 import React from 'react';
 import { useState, useEffect, useContext } from 'react';
 import { Button, Table, TableHeader, TableColumn, TableBody, TableRow, TableCell } from '@nextui-org/react';
+import Avatar from 'boring-avatars';
 import { Pencil, Trash } from 'lucide-react';
 import { SettingsMessages } from '@/types/settings';
 import { TokenContext } from '@/utils/TokenProvider';
@@ -10,6 +11,9 @@ import { ProjectType } from '@/types/project';
 import DeleteConfirmDialog from '@/components/DeleteConfirmDialog';
 import { useRouter } from '@/src/navigation';
 import ProjectDialog from '@/components/ProjectDialog';
+import Config from '@/config/config';
+import { UserType } from '@/types/user';
+const apiServer = Config.apiServer;
 
 type Props = {
   projectId: string;
@@ -31,6 +35,37 @@ export default function SettingsPage({ projectId, messages, locale }: Props) {
     Folders: [],
     Runs: [],
   });
+  const [owner, setOwner] = useState<UserType>({
+    id: 0,
+    email: '',
+    password: '',
+    avatarPath: '',
+    role: -1,
+    username: '',
+  });
+
+  async function fetchUser(jwt: string, userId: string) {
+    const fetchOptions = {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${jwt}`,
+      },
+    };
+
+    const url = `${apiServer}/users/${userId}`;
+
+    try {
+      const response = await fetch(url, fetchOptions);
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+      const data = await response.json();
+      return data;
+    } catch (error: any) {
+      console.error('Error fetching data:', error.message);
+    }
+  }
 
   useEffect(() => {
     async function fetchDataEffect() {
@@ -41,6 +76,13 @@ export default function SettingsPage({ projectId, messages, locale }: Props) {
       try {
         const data = await fetchProject(context.token.access_token, Number(projectId));
         setProject(data);
+
+        if (data.userId) {
+          const ownerData = await fetchUser(context.token.access_token, data.userId);
+          setOwner(ownerData);
+        } else {
+          console.error('failed to get project owner id');
+        }
       } catch (error: any) {
         console.error('Error in effect:', error.message);
       }
@@ -99,15 +141,29 @@ export default function SettingsPage({ projectId, messages, locale }: Props) {
             <TableColumn>dummy</TableColumn>
           </TableHeader>
           <TableBody>
-            <TableRow key="1">
+            <TableRow key="project-name">
               <TableCell>{messages.projectName}</TableCell>
               <TableCell>{project.name}</TableCell>
             </TableRow>
-            <TableRow key="2">
+            <TableRow key="project-detail">
               <TableCell>{messages.projectDetail}</TableCell>
               <TableCell>{project.detail}</TableCell>
             </TableRow>
-            <TableRow key="3">
+            <TableRow key="project-owner">
+              <TableCell>{messages.projectOwner}</TableCell>
+              <TableCell>
+                <div className="flex gap-2 items-center">
+                  <Avatar
+                    size={24}
+                    name={owner.username}
+                    variant="beam"
+                    colors={['#0A0310', '#49007E', '#FF005B', '#FF7D10', '#FFB238']}
+                  />
+                  <p className="">{owner.username}</p>
+                </div>
+              </TableCell>
+            </TableRow>
+            <TableRow key="project-publicity">
               <TableCell>{messages.publicity}</TableCell>
               <TableCell>{project.isPublic ? messages.public : messages.private}</TableCell>
             </TableRow>

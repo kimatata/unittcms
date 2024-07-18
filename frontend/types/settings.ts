@@ -2,6 +2,7 @@ export type SettingsMessages = {
   projectManagement: string;
   projectName: string;
   projectDetail: string;
+  projectOwner: string;
   editProject: string;
   project: string;
   publicity: string;
