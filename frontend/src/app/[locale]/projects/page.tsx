@@ -7,14 +7,11 @@ export default function Page(params: { locale: string }) {
     projectList: t('projectList'),
     project: t('project'),
     newProject: t('new_project'),
-    editProject: t('edit_project'),
-    deleteProject: t('delete_project'),
     id: t('id'),
     publicity: t('publicity'),
     name: t('name'),
     detail: t('detail'),
     lastUpdate: t('last_update'),
-    actions: t('actions'),
     projectName: t('project_name'),
     projectDetail: t('project_detail'),
     public: t('public'),
@@ -22,11 +19,8 @@ export default function Page(params: { locale: string }) {
     ifYouMakePublic: t('if_you_make_public'),
     close: t('close'),
     create: t('create'),
-    update: t('update'),
     pleaseEnter: t('please_enter'),
     noProjectsFound: t('no_projects_found'),
-    areYouSure: t('are_you_sure'),
-    delete: t('delete'),
   };
   return (
     <>

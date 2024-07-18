@@ -1,39 +1,22 @@
 import { useState, useMemo, useCallback } from 'react';
-import {
-  Table,
-  TableHeader,
-  TableColumn,
-  TableBody,
-  TableRow,
-  TableCell,
-  Button,
-  DropdownTrigger,
-  Dropdown,
-  DropdownMenu,
-  DropdownItem,
-  SortDescriptor,
-} from '@nextui-org/react';
+import { Table, TableHeader, TableColumn, TableBody, TableRow, TableCell, SortDescriptor } from '@nextui-org/react';
 import { Link, NextUiLinkClasses } from '@/src/navigation';
-import { MoreVertical } from 'lucide-react';
 import { ProjectType, ProjectsMessages } from '@/types/project';
 import dayjs from 'dayjs';
 import PublicityChip from '@/components/PublicityChip';
 
 type Props = {
   projects: ProjectType[];
-  onEditProject: (project: ProjectType) => void;
-  onDeleteProject: (projectId: number) => void;
   messages: ProjectsMessages;
   locale: string;
 };
 
-export default function ProjectsTable({ projects, onEditProject, onDeleteProject, messages, locale }: Props) {
+export default function ProjectsTable({ projects, messages, locale }: Props) {
   const headerColumns = [
     { name: messages.id, uid: 'id', sortable: true },
     { name: messages.publicity, uid: 'isPublic', sortable: true },
     { name: messages.name, uid: 'name', sortable: true },
     { name: messages.lastUpdate, uid: 'updatedAt', sortable: true },
-    { name: messages.actions, uid: 'actions' },
   ];
 
   const [sortDescriptor, setSortDescriptor] = useState<SortDescriptor>({
@@ -78,22 +61,6 @@ export default function ProjectsTable({ projects, onEditProject, onDeleteProject
         );
       case 'updatedAt':
         return <span>{dayjs(cellValue).format('YYYY/MM/DD HH:mm')}</span>;
-      case 'actions':
-        return (
-          <Dropdown>
-            <DropdownTrigger>
-              <Button isIconOnly radius="full" size="sm" variant="light">
-                <MoreVertical size={16} />
-              </Button>
-            </DropdownTrigger>
-            <DropdownMenu aria-label="project actions">
-              <DropdownItem onClick={() => onEditProject(project)}>{messages.editProject}</DropdownItem>
-              <DropdownItem className="text-danger" onClick={() => onDeleteProject(project.id)}>
-                {messages.deleteProject}
-              </DropdownItem>
-            </DropdownMenu>
-          </Dropdown>
-        );
       default:
         return cellValue;
     }

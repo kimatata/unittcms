@@ -6,8 +6,7 @@ import { TokenContext } from '@/utils/TokenProvider';
 import { ProjectType, ProjectsMessages } from '@/types/project';
 import ProjectsTable from './ProjectsTable';
 import ProjectDialog from '@/components/ProjectDialog';
-import { fetchProjects, createProject, updateProject, deleteProject } from '@/utils/projectsControl';
-import DeleteConfirmDialog from '@/components/DeleteConfirmDialog';
+import { fetchProjects, createProject } from '@/utils/projectsControl';
 
 export type Props = {
   messages: ProjectsMessages;
@@ -16,7 +15,7 @@ export type Props = {
 
 export default function ProjectsPage({ messages, locale }: Props) {
   const context = useContext(TokenContext);
-  const [projects, setProjects] = useState([]);
+  const [projects, setProjects] = useState<ProjectType[]>([]);
 
   useEffect(() => {
     async function fetchDataEffect() {
@@ -47,45 +46,13 @@ export default function ProjectsPage({ messages, locale }: Props) {
     setEditingProject(null);
   };
 
-  // delete confirm dialog
-  const [isDeleteConfirmDialogOpen, setIsDeleteConfirmDialogOpen] = useState(false);
-  const [deleteProjectId, setDeleteProjectId] = useState<number | null>(null);
-  const closeDeleteConfirmDialog = () => {
-    setIsDeleteConfirmDialogOpen(false);
-    setDeleteProjectId(null);
-  };
-
   const onSubmit = async (name: string, detail: string, isPublic: boolean) => {
-    if (editingProject) {
-      const updatedProject = await updateProject(context.token.access_token, editingProject.id, name, detail, isPublic);
-      const updatedProjects = projects.map((project) => (project.id === updatedProject.id ? updatedProject : project));
-      setProjects(updatedProjects);
-    } else {
-      const newProject = await createProject(context.token.access_token, name, detail, isPublic);
-      setProjects([...projects, newProject]);
+    const newProject = await createProject(context.token.access_token, name, detail, isPublic);
+    setProjects([...projects, newProject]);
 
-      // refresh project roles
-      context.refreshProjectRoles();
-    }
+    // refresh project roles
+    context.refreshProjectRoles();
     closeDialog();
-  };
-
-  const onEditClick = (project: ProjectType) => {
-    setEditingProject(project);
-    setIsProjectDialogOpen(true);
-  };
-
-  const onDeleteClick = (projectId: number) => {
-    setDeleteProjectId(projectId);
-    setIsDeleteConfirmDialogOpen(true);
-  };
-
-  const onConfirm = async () => {
-    if (deleteProjectId) {
-      await deleteProject(context.token.access_token, deleteProjectId);
-      setProjects(projects.filter((project) => project.id !== deleteProjectId));
-      closeDeleteConfirmDialog();
-    }
   };
 
   return (
@@ -99,13 +66,7 @@ export default function ProjectsPage({ messages, locale }: Props) {
         </div>
       </div>
 
-      <ProjectsTable
-        projects={projects}
-        onEditProject={onEditClick}
-        onDeleteProject={onDeleteClick}
-        messages={messages}
-        locale={locale}
-      />
+      <ProjectsTable projects={projects} messages={messages} locale={locale} />
 
       <ProjectDialog
         isOpen={isProjectDialogOpen}
@@ -113,15 +74,6 @@ export default function ProjectsPage({ messages, locale }: Props) {
         onCancel={closeDialog}
         onSubmit={onSubmit}
         messages={messages}
-      />
-
-      <DeleteConfirmDialog
-        isOpen={isDeleteConfirmDialogOpen}
-        onCancel={closeDeleteConfirmDialog}
-        onConfirm={onConfirm}
-        closeText={messages.close}
-        confirmText={messages.areYouSure}
-        deleteText={messages.delete}
       />
     </div>
   );

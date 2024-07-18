@@ -16,14 +16,11 @@ export type ProjectType = {
 export type ProjectsMessages = {
   projectList: string;
   newProject: string;
-  editProject: string;
-  deleteProject: string;
   id: string;
   publicity: string;
   name: string;
   detail: string;
   lastUpdate: string;
-  actions: string;
   projectName: string;
   projectDetail: string;
   public: string;
@@ -31,11 +28,8 @@ export type ProjectsMessages = {
   ifYouMakePublic: string;
   close: string;
   create: string;
-  update: string;
   pleaseEnter: string;
   noProjectsFound: string;
-  areYouSure: string;
-  delete: string;
 };
 
 export type ProjectMessages = {

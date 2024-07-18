@@ -80,14 +80,11 @@
     "projectList": "Project List",
     "project": "Project",
     "new_project": "New Project",
-    "edit_project": "Edit Project",
-    "delete_project": "Delete Project",
     "id": "ID",
     "publicity": "Publicity",
     "name": "Name",
     "detail": "Detail",
     "last_update": "Last update",
-    "actions": "Actions",
     "project_name": "Project Name",
     "project_detail": "Project Detail",
     "public": "Public",
@@ -95,11 +92,8 @@
     "if_you_make_public": "Making a project public makes it visible to users who are not project members.",
     "close": "Close",
     "create": "Create",
-    "update": "Update",
     "please_enter": "Please enter project name",
-    "no_projects_found": "No projects found",
-    "are_you_sure": "Are you sure you want to delete the project?",
-    "delete": "Delete"
+    "no_projects_found": "No projects found"
   },
   "Project": {
     "home": "Home",
