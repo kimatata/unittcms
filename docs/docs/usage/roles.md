@@ -29,39 +29,32 @@ There are three types of roles:
 
 #### Project
 
-| Action | Manager/Owner | Developer | Reporter | Not member |
-| ------ | ------------- | --------- | -------- | ---------- |
-| Delete | ✅            | ❌        | ❌       | ❌         |
-| Update | ✅            | ❌        | ❌       | ❌         |
-| Read   | ✅            | ✅        | ✅       | 🌓         |
+| Action | Owner[^1] | Manager | Developer | Reporter | Not member[^2] |
+| ------ | --------- | ------- | --------- | -------- | -------------- |
+| Write  | ✅        | ❌      | ❌        | ❌       | ❌             |
+| Read   | ✅        | ✅      | ✅        | ✅       | 🌓[^3]         |
 
 #### Project Members
 
-| Action      | Manager/Owner | Developer | Reporter | Not member |
-| ----------- | ------------- | --------- | -------- | ---------- |
-| Add         | ✅            | ❌        | ❌       | ❌         |
-| Delete      | ✅            | ❌        | ❌       | ❌         |
-| Change role | ✅            | ❌        | ❌       | ❌         |
-| Read        | ✅            | ✅        | ✅       | 🌓         |
+| Action | Owner | Manager | Developer | Reporter | Not member |
+| ------ | ----- | ------- | --------- | -------- | ---------- |
+| Write  | ✅    | ✅      | ❌        | ❌       | ❌         |
+| Read   | ✅    | ✅      | ✅        | ✅       | 🌓         |
 
 #### Folders and Test cases
 
-| Action | Manager/Owner | Developer | Reporter | Not member |
-| ------ | ------------- | --------- | -------- | ---------- |
-| Create | ✅            | ✅        | ❌       | ❌         |
-| Delete | ✅            | ✅        | ❌       | ❌         |
-| Update | ✅            | ✅        | ❌       | ❌         |
-| Read   | ✅            | ✅        | ✅       | 🌓         |
+| Action | Owner | Owner | Developer | Reporter | Not member |
+| ------ | ----- | ----- | --------- | -------- | ---------- |
+| Write  | ✅    | ✅    | ✅        | ❌       | ❌         |
+| Read   | ✅    | ✅    | ✅        | ✅       | 🌓         |
 
 #### Test runs
 
-| Action | Manager/Owner | Developer | Reporter | Not member |
-| ------ | ------------- | --------- | -------- | ---------- |
-| Create | ✅            | ✅        | ✅       | ❌         |
-| Delete | ✅            | ✅        | ✅       | ❌         |
-| Update | ✅            | ✅        | ✅       | ❌         |
-| Read   | ✅            | ✅        | ✅       | 🌓         |
+| Action | Owner | Manager | Developer | Reporter | Not member |
+| ------ | ----- | ------- | --------- | -------- | ---------- |
+| Write  | ✅    | ✅      | ✅        | ✅       | ❌         |
+| Read   | ✅    | ✅      | ✅        | ✅       | 🌓         |
 
-1. "Owner" and "Not member" are not role. "Owner" is the user who created project.
-   "Not member" means a user who is not a project member
-1. 🌓 means that read permission is only allowed if the project is set to public.
+[^1]: "Owner" is not role. "Owner" is the user who created project.
+[^2]: "Not member" is not role. "Not member" means a user who is not a project member
+[^3]: 🌓 means that read permission is only allowed if the project is set to public.
