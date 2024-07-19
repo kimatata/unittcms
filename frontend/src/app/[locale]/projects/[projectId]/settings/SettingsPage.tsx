@@ -92,7 +92,7 @@ export default function SettingsPage({ projectId, messages, locale }: Props) {
             startContent={<Trash size={16} />}
             size="sm"
             color="danger"
-            isDisabled={!context.isProjectManager(Number(projectId))}
+            isDisabled={!context.isProjectOwner(Number(projectId))}
             onClick={() => setIsDeleteConfirmDialogOpen(true)}
           >
             {messages.deleteProject}
@@ -101,7 +101,7 @@ export default function SettingsPage({ projectId, messages, locale }: Props) {
             startContent={<Pencil size={16} />}
             size="sm"
             color="primary"
-            isDisabled={!context.isProjectManager(Number(projectId))}
+            isDisabled={!context.isProjectOwner(Number(projectId))}
             onClick={() => setIsProjectDialogOpen(true)}
             className="ms-2"
           >
