@@ -1,4 +1,5 @@
 const express = require('express');
+const RateLimit = require('express-rate-limit');
 const path = require('path');
 const { Sequelize } = require('sequelize');
 const app = express();
@@ -14,6 +15,14 @@ app.use(cors(corsOptions));
 
 // enable json middleware
 app.use(express.json());
+
+// enable rate limiter
+const limiter = RateLimit({
+  windowMs: 60 * 60 * 1000, // 1h
+  max: 1000, // 1000 requests per hour
+  message: 'Too many requests from this IP, please try again after an hour',
+});
+app.use(limiter);
 
 // Specify the directory to serve static files
 app.use(express.static(path.join(__dirname, 'public')));
