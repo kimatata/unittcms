@@ -1,4 +1,3 @@
-import { title, subtitle } from '@/components/primitives';
 import { Card, CardHeader, CardBody, Avatar } from '@nextui-org/react';
 import { Scale, Folder, Check, Globe } from 'lucide-react';
 import { useTranslations } from 'next-intl';
