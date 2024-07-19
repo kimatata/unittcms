@@ -18,16 +18,17 @@ export type TokenProps = {
 export type TokenType = {
   access_token: string;
   expires_at: number;
-  user: UserType;
+  user: UserType | null;
 };
 
 export type TokenContextType = {
   token: {
     access_token: string;
-    user: UserType;
+    user: UserType | null;
   };
   isSignedIn: () => boolean;
   isAdmin: () => boolean;
+  isProjectOwner: (projectId: number) => boolean;
   isProjectManager: (projectId: number) => boolean;
   isProjectDeveloper: (projectId: number) => boolean;
   isProjectReporter: (projectId: number) => boolean;

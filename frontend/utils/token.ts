@@ -30,7 +30,7 @@ function isSignedIn(token: TokenType): boolean {
 function isAdmin(token: TokenType) {
   if (tokenExists(token) && isTokenValid(token)) {
     const adminRoleIndex = roles.findIndex((entry) => entry.uid === 'administrator');
-    if (token.user.role === adminRoleIndex) {
+    if (token.user && token.user.role === adminRoleIndex) {
       return true;
     }
   }
@@ -59,6 +59,26 @@ async function fetchMyRoles(jwt: string) {
   } catch (error: any) {
     console.error('Error fetching data:', error.message);
   }
+}
+
+function isProjectOnwer(projectRoles: ProjectRoleType[], projectId: number) {
+  if (!projectRoles) {
+    return false;
+  }
+
+  const found = projectRoles.find((role) => {
+    return role.projectId === projectId;
+  });
+
+  if (!found) {
+    return false;
+  }
+
+  if (found.isOwner === true) {
+    return true;
+  }
+
+  return false;
 }
 
 function isProjectManager(projectRoles: ProjectRoleType[], projectId: number) {
@@ -172,6 +192,7 @@ function checkSignInPage(token: TokenType, pathname: string) {
 export {
   isSignedIn,
   isAdmin,
+  isProjectOnwer,
   isProjectManager,
   isProjectDeveloper,
   isProjectReporter,
