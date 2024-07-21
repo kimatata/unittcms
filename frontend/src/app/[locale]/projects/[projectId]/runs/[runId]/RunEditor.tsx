@@ -310,7 +310,7 @@ export default function RunEditor({ projectId, runId, messages, locale }: Props)
               isDisabled={!context.isProjectReporter(Number(projectId))}
               selectedKeys={selectedKeys}
               onSelectionChange={setSelectedKeys}
-              onStatusChange={handleChangeStatus}
+              onChangeStatus={handleChangeStatus}
               onIncludeCase={(includeTestId) => handleIncludeExcludeCase(true, includeTestId)}
               onExcludeCase={(excludeCaseId) => handleIncludeExcludeCase(false, excludeCaseId)}
               messages={messages}

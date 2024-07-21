@@ -25,16 +25,18 @@ import {
   CircleX,
   CircleSlash2,
 } from 'lucide-react';
+import { NextUiLinkClasses } from '@/src/navigation';
 import { priorities, testRunCaseStatus } from '@/config/selection';
 import { CaseType } from '@/types/case';
 import { RunMessages } from '@/types/run';
+import TestCaseDetailDialog from './TestCaseDetailDialog';
 
 type Props = {
   cases: CaseType[];
   isDisabled: boolean;
   selectedKeys: Selection;
   onSelectionChange: React.Dispatch<React.SetStateAction<Selection>>;
-  onStatusChange: (changeCaseId: number, status: number) => {};
+  onChangeStatus: (changeCaseId: number, status: number) => {};
   onIncludeCase: (includeCaseId: number) => {};
   onExcludeCase: (excludeCaseId: number) => {};
   messages: RunMessages;
@@ -45,7 +47,7 @@ export default function TestCaseSelector({
   isDisabled,
   selectedKeys,
   onSelectionChange,
-  onStatusChange,
+  onChangeStatus,
   onIncludeCase,
   onExcludeCase,
   messages,
@@ -124,6 +126,17 @@ export default function TestCaseSelector({
     const runStatus = testCase.RunCases && testCase.RunCases.length > 0 ? testCase.RunCases[0].status : 0;
 
     switch (columnKey) {
+      case 'title':
+        return (
+          <Button
+            size="sm"
+            variant="light"
+            className="data-[hover=true]:bg-transparent"
+            onPress={() => showTestCaseDetailDialog(testCase)}
+          >
+            <span className={NextUiLinkClasses}>{cellValue}</span>
+          </Button>
+        );
       case 'priority':
         return (
           <div className={isIncluded ? chipBaseClass : chipBaseClass + notIncludedCaseClass}>
@@ -154,7 +167,7 @@ export default function TestCaseSelector({
                 <DropdownItem
                   key={runCaseStatus.uid}
                   startContent={renderStatusIcon(runCaseStatus.uid)}
-                  onPress={() => onStatusChange(testCase.id, index)}
+                  onPress={() => onChangeStatus(testCase.id, index)}
                 >
                   {messages[runCaseStatus.uid]}
                 </DropdownItem>
@@ -226,6 +239,29 @@ export default function TestCaseSelector({
     onSelectionChange(keys);
   };
 
+  // Test Case Detail
+  const [isTestCaseDetailDialogOpen, setIsTestCaseDetailDialogOpen] = useState(false);
+  const [showingTestCase, setShowingTestCase] = useState<CaseType>({
+    id: 0,
+    title: '',
+    state: 0,
+    priority: 0,
+    type: 0,
+    automationStatus: 0,
+    description: '',
+    template: 0,
+    preConditions: '',
+    expectedResults: '',
+    folderId: 0,
+  });
+  const showTestCaseDetailDialog = (showTestCase: CaseType) => {
+    setIsTestCaseDetailDialogOpen(true);
+    setShowingTestCase(showTestCase);
+  };
+  const hideTestCaseDetailDialog = () => {
+    setIsTestCaseDetailDialogOpen(false);
+  };
+
   return (
     <>
       <Table
@@ -260,6 +296,14 @@ export default function TestCaseSelector({
           ))}
         </TableBody>
       </Table>
+
+      <TestCaseDetailDialog
+        isOpen={isTestCaseDetailDialogOpen}
+        testCase={showingTestCase}
+        onCancel={hideTestCaseDetailDialog}
+        onChangeStatus={(showingCaseId, newStatus) => onChangeStatus(showingCaseId, newStatus)}
+        messages={messages}
+      />
     </>
   );
 }

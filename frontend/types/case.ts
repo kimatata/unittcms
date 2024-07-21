@@ -123,12 +123,12 @@ type CaseMessages = {
   template: string;
   testDetail: string;
   preconditions: string;
+  expectedResult: string;
   step: string;
   text: string;
   steps: string;
   newStep: string;
   detailsOfTheStep: string;
-  expectedResult: string;
   deleteThisStep: string;
   insertStep: string;
   attachments: string;

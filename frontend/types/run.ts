@@ -83,6 +83,24 @@ type RunMessages = {
   excludeFromRun: string;
   noCasesFound: string;
   areYouSureLeave: string;
+  type: string;
+  other: string;
+  security: string;
+  performance: string;
+  accessibility: string;
+  functional: string;
+  acceptance: string;
+  usability: string;
+  smokeSanity: string;
+  compatibility: string;
+  destructive: string;
+  regression: string;
+  automated: string;
+  manual: string;
+  preconditions: string;
+  expectedResult: string;
+  detailsOfTheStep: string;
+  close: string;
 };
 
 export type { RunType, RunCaseType, RunStatusCountType, ProgressSeriesType, RunsMessages, RunMessages };
