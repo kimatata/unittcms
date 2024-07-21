@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import dynamic from 'next/dynamic';
 import { testRunCaseStatus } from '@/config/selection';
 import { RunStatusCountType } from '@/types/run';
-import { TestRunCaseStatusMessages } from '@/types/testRunCaseStatus';
+import { TestRunCaseStatusMessages } from '@/types/status';
 const Chart = dynamic(() => import('react-apexcharts'), { ssr: false });
 
 type Props = {

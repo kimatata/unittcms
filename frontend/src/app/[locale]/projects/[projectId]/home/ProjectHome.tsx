@@ -13,7 +13,7 @@ import { useTheme } from 'next-themes';
 import TestTypesChart from './TestTypesDonutChart';
 import TestPriorityChart from './TestPriorityDonutChart';
 import TestProgressBarChart from './TestProgressColumnChart';
-import { TestRunCaseStatusMessages } from '@/types/testRunCaseStatus';
+import { TestRunCaseStatusMessages } from '@/types/status';
 import { TestTypeMessages } from '@/types/testType';
 import { PriorityMessages } from '@/types/priority';
 

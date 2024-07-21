@@ -1,4 +1,12 @@
 {
+  "RunStatus": {
+    "new": "新規",
+    "inProgress": "進行中",
+    "underReview": "レビュー中",
+    "rejected": "却下",
+    "done": "完了",
+    "closed": "クローズ"
+  },
   "RunCaseStatus": {
     "untested": "未実行",
     "passed": "成功",
@@ -234,12 +242,6 @@
     "id": "ID",
     "title": "タイトル",
     "description": "詳細",
-    "new": "新規",
-    "inProgress": "進行中",
-    "underReview": "レビュー中",
-    "rejected": "却下",
-    "done": "完了",
-    "closed": "クローズ",
     "please_enter": "タイトルを入力してください",
     "priority": "優先度",
     "status": "ステータス",

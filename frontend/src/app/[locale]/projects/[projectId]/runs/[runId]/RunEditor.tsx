@@ -38,7 +38,7 @@ import { TokenContext } from '@/utils/TokenProvider';
 import { useTheme } from 'next-themes';
 import { useFormGuard } from '@/utils/formGuard';
 import { PriorityMessages } from '@/types/priority';
-import { TestRunCaseStatusMessages } from '@/types/testRunCaseStatus';
+import { RunStatusMessages, TestRunCaseStatusMessages } from '@/types/status';
 
 const defaultTestRun = {
   id: 0,
@@ -55,6 +55,7 @@ type Props = {
   projectId: string;
   runId: string;
   messages: RunMessages;
+  runStatusMessages: RunStatusMessages;
   testRunCaseStatusMessages: TestRunCaseStatusMessages;
   priorityMessages: PriorityMessages;
   locale: string;
@@ -64,6 +65,7 @@ export default function RunEditor({
   projectId,
   runId,
   messages,
+  runStatusMessages,
   testRunCaseStatusMessages,
   priorityMessages,
   locale,
@@ -261,7 +263,7 @@ export default function RunEditor({
               >
                 {testRunStatus.map((status, index) => (
                   <SelectItem key={status.uid} value={index}>
-                    {messages[status.uid]}
+                    {runStatusMessages[status.uid]}
                   </SelectItem>
                 ))}
               </Select>

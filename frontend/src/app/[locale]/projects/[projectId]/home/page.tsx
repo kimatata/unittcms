@@ -2,7 +2,7 @@ import { ProjectHome } from './ProjectHome';
 import { useTranslations } from 'next-intl';
 import { PriorityMessages } from '@/types/priority';
 import { TestTypeMessages } from '@/types/testType';
-import { TestRunCaseStatusMessages } from '@/types/testRunCaseStatus';
+import { TestRunCaseStatusMessages } from '@/types/status';
 
 export type HomeMessages = {
   folders: string;

@@ -1,4 +1,12 @@
 {
+  "RunStatus": {
+    "new": "New",
+    "inProgress": "In progress",
+    "underReview": "Under review",
+    "rejected": "Rejected",
+    "done": "Done",
+    "closed": "Closed"
+  },
   "RunCaseStatus": {
     "untested": "Untested",
     "passed": "Passed",
@@ -234,12 +242,6 @@
     "title": "Title",
     "please_enter": "Please enter run name",
     "description": "Description",
-    "new": "New",
-    "inProgress": "In progress",
-    "underReview": "Under review",
-    "rejected": "Rejected",
-    "done": "Done",
-    "closed": "Closed",
     "priority": "Priority",
     "status": "Status",
     "actions": "Actions",

@@ -2,7 +2,7 @@ import RunEditor from './RunEditor';
 import { useTranslations } from 'next-intl';
 import { RunMessages } from '@/types/run';
 import { PriorityMessages } from '@/types/priority';
-import { TestRunCaseStatusMessages } from '@/types/testRunCaseStatus';
+import { RunStatusMessages, TestRunCaseStatusMessages } from '@/types/status';
 
 export default function Page({ params }: { params: { projectId: string; runId: string; locale: string } }) {
   const t = useTranslations('Run');
@@ -16,12 +16,6 @@ export default function Page({ params }: { params: { projectId: string; runId: s
     title: t('title'),
     pleaseEnter: t('please_enter'),
     description: t('description'),
-    new: t('new'),
-    inProgress: t('inProgress'),
-    underReview: t('underReview'),
-    rejected: t('rejected'),
-    done: t('done'),
-    closed: t('closed'),
     priority: t('priority'),
     actions: t('actions'),
     status: t('status'),
@@ -36,6 +30,16 @@ export default function Page({ params }: { params: { projectId: string; runId: s
     expectedResult: t('expected_result'),
     detailsOfTheStep: t('details_of_the_step'),
     close: t('close'),
+  };
+
+  const rst = useTranslations('RunStatus');
+  const runStatusMessages: RunStatusMessages = {
+    new: rst('new'),
+    inProgress: rst('inProgress'),
+    underReview: rst('underReview'),
+    rejected: rst('rejected'),
+    done: rst('done'),
+    closed: rst('closed'),
   };
 
   const rcst = useTranslations('RunCaseStatus');
@@ -60,6 +64,7 @@ export default function Page({ params }: { params: { projectId: string; runId: s
       projectId={params.projectId}
       runId={params.runId}
       messages={messages}
+      runStatusMessages={runStatusMessages}
       testRunCaseStatusMessages={testRunCaseStatusMessages}
       priorityMessages={priorityMessages}
       locale={params.locale}

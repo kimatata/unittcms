@@ -1,6 +1,6 @@
 import { ProjectType } from '@/types/project';
 import { testTypes, priorities, testRunCaseStatus } from '@/config/selection';
-import { TestRunCaseStatusMessages } from '@/types/testRunCaseStatus';
+import { TestRunCaseStatusMessages } from '@/types/status';
 
 // aggregate folder, case, run mum
 function aggregateBasicInfo(project: ProjectType) {

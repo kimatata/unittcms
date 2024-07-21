@@ -1,6 +1,6 @@
+import { RunStatusType, TestRunCaseStatusType } from '@/types/status';
 import { TestTypeType } from '@/types/testType';
 import { PriorityType } from '@/types/priority';
-import { TestRunCaseStatusType } from '@/types/testRunCaseStatus';
 
 const roles = [{ uid: 'administrator' }, { uid: 'user' }];
 
@@ -14,7 +14,7 @@ const locales = [
 ];
 
 // The status of each test run
-const testRunStatus = [
+const testRunStatus: RunStatusType[] = [
   { uid: 'new' },
   { uid: 'inProgress' },
   { uid: 'underReview' },
