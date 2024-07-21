@@ -1,3 +1,4 @@
+import { PriorityMessages } from '@/types/priority';
 import CaseEditor from './CaseEditor';
 import { useTranslations } from 'next-intl';
 
@@ -22,10 +23,6 @@ export default function Page({
     description: t('description'),
     testCaseDescription: t('test_case_description'),
     priority: t('priority'),
-    critical: t('critical'),
-    high: t('high'),
-    medium: t('medium'),
-    low: t('low'),
     type: t('type'),
     other: t('other'),
     security: t('security'),
@@ -61,12 +58,21 @@ export default function Page({
     areYouSureLeave: t('are_you_sure_leave'),
   };
 
+  const priorityTranslation = useTranslations('Priority');
+  const priorityMessages: PriorityMessages = {
+    critical: priorityTranslation('critical'),
+    high: priorityTranslation('high'),
+    medium: priorityTranslation('medium'),
+    low: priorityTranslation('low'),
+  };
+
   return (
     <CaseEditor
       projectId={params.projectId}
       folderId={params.folderId}
       caseId={params.caseId}
       messages={messages}
+      priorityMessages={priorityMessages}
       locale={params.locale}
     />
   );

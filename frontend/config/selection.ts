@@ -1,3 +1,5 @@
+import { PriorityType } from '@/types/priority';
+
 const roles = [{ uid: 'administrator' }, { uid: 'user' }];
 
 const memberRoles = [{ uid: 'manager' }, { uid: 'developer' }, { uid: 'reporter' }];
@@ -9,7 +11,7 @@ const locales = [
   { code: 'ja', name: '日本語' },
 ];
 
-const priorities = [
+const priorities: PriorityType[] = [
   { uid: 'critical', color: '#bb3e03', chartColor: '#bb3e03' },
   { uid: 'high', color: '#ca6702', chartColor: '#ca6702' },
   { uid: 'medium', color: '#ee9b00', chartColor: '#ee9b00' },

@@ -1,9 +1,9 @@
 import { Button, Modal, ModalContent, ModalHeader, ModalBody, ModalFooter } from '@nextui-org/react';
 import { testTypes, templates } from '@/config/selection';
-import TestCasePriority from '@/components/TestCasePriority';
 import { RunMessages } from '@/types/run';
 import { CaseType } from '@/types/case';
 import { PriorityMessages } from '@/types/priority';
+import TestCasePriority from '@/components/TestCasePriority';
 
 type Props = {
   isOpen: boolean;

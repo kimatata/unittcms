@@ -1,5 +1,6 @@
 import { ProjectHome } from './ProjectHome';
 import { useTranslations } from 'next-intl';
+import { PriorityMessages } from '@/types/priority';
 
 export type HomeMessages = {
   folders: string;
@@ -28,10 +29,6 @@ export type HomeMessages = {
   regression: string;
   automated: string;
   manual: string;
-  critical: string;
-  high: string;
-  medium: string;
-  low: string;
 };
 
 export default function Page({ params }: { params: { projectId: string } }) {
@@ -62,14 +59,19 @@ export default function Page({ params }: { params: { projectId: string } }) {
     regression: t('regression'),
     automated: t('automated'),
     manual: t('manual'),
-    critical: t('critical'),
-    high: t('high'),
-    medium: t('medium'),
-    low: t('low'),
   };
+
+  const pt = useTranslations('Priority');
+  const priorityMessages: PriorityMessages = {
+    critical: pt('critical'),
+    high: pt('high'),
+    medium: pt('medium'),
+    low: pt('low'),
+  };
+
   return (
     <>
-      <ProjectHome projectId={params.projectId} messages={messages} />
+      <ProjectHome projectId={params.projectId} messages={messages} priorityMessages={priorityMessages} />
     </>
   );
 }

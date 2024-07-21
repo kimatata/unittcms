@@ -55,12 +55,12 @@ export default function Page({ params }: { params: { projectId: string; runId: s
     close: t('close'),
   };
 
-  const priorityTranslation = useTranslations('Priority');
+  const pt = useTranslations('Priority');
   const priorityMessages: PriorityMessages = {
-    critical: priorityTranslation('critical'),
-    high: priorityTranslation('high'),
-    medium: priorityTranslation('medium'),
-    low: priorityTranslation('low'),
+    critical: pt('critical'),
+    high: pt('high'),
+    medium: pt('medium'),
+    low: pt('low'),
   };
 
   return (

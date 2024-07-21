@@ -68,10 +68,6 @@ type RunMessages = {
   priority: string;
   status: string;
   actions: string;
-  critical: string;
-  high: string;
-  medium: string;
-  low: string;
   untested: string;
   passed: string;
   failed: string;

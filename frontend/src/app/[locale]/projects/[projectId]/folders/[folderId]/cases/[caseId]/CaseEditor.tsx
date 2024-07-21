@@ -6,12 +6,13 @@ import { Save, Plus, ArrowLeft, Circle } from 'lucide-react';
 import { priorities, testTypes, templates } from '@/config/selection';
 import CaseStepsEditor from './CaseStepsEditor';
 import CaseAttachmentsEditor from './CaseAttachmentsEditor';
-import { CaseType, AttachmentType, CaseMessages, StepType } from '@/types/case';
 import { fetchCase, updateCase } from '@/utils/caseControl';
 import { updateSteps } from './stepControl';
 import { fetchCreateAttachments, fetchDownloadAttachment, fetchDeleteAttachment } from './attachmentControl';
 import { TokenContext } from '@/utils/TokenProvider';
 import { useFormGuard } from '@/utils/formGuard';
+import { CaseType, AttachmentType, CaseMessages, StepType } from '@/types/case';
+import { PriorityMessages } from '@/types/priority';
 
 const defaultTestCase = {
   id: 0,
@@ -36,10 +37,11 @@ type Props = {
   folderId: string;
   caseId: string;
   messages: CaseMessages;
+  priorityMessages: PriorityMessages;
   locale: string;
 };
 
-export default function CaseEditor({ projectId, folderId, caseId, messages, locale }: Props) {
+export default function CaseEditor({ projectId, folderId, caseId, messages, priorityMessages, locale }: Props) {
   const context = useContext(TokenContext);
   const [testCase, setTestCase] = useState<CaseType>(defaultTestCase);
   const [isTitleInvalid, setIsTitleInvalid] = useState<boolean>(false);
@@ -262,7 +264,7 @@ export default function CaseEditor({ projectId, folderId, caseId, messages, loca
           >
             {priorities.map((priority, index) => (
               <SelectItem key={priority.uid} value={index}>
-                {messages[priority.uid]}
+                {priorityMessages[priority.uid]}
               </SelectItem>
             ))}
           </Select>

@@ -26,11 +26,12 @@ import {
   CircleSlash2,
 } from 'lucide-react';
 import { NextUiLinkClasses } from '@/src/navigation';
-import { priorities, testRunCaseStatus } from '@/config/selection';
+import { testRunCaseStatus } from '@/config/selection';
 import { CaseType } from '@/types/case';
 import { RunMessages } from '@/types/run';
 import TestCaseDetailDialog from './TestCaseDetailDialog';
 import { PriorityMessages } from '@/types/priority';
+import TestCasePriority from '@/components/TestCasePriority';
 
 type Props = {
   cases: CaseType[];
@@ -95,7 +96,6 @@ export default function TestCaseSelector({
   }, [sortDescriptor, cases]);
 
   const notIncludedCaseClass = 'text-neutral-200 dark:text-neutral-600';
-  const chipBaseClass = 'flex items-center text-default-600';
 
   const renderStatusIcon = (uid: string) => {
     if (uid === 'untested') {
@@ -142,13 +142,8 @@ export default function TestCaseSelector({
         );
       case 'priority':
         return (
-          <div className={isIncluded ? chipBaseClass : chipBaseClass + notIncludedCaseClass}>
-            <Circle
-              size={8}
-              color={isIncluded ? priorities[cellValue].color : '#d4d4d8'}
-              fill={isIncluded ? priorities[cellValue].color : '#d4d4d8'}
-            />
-            <div className="ms-3">{messages[priorities[cellValue].uid]}</div>
+          <div className={isIncluded ? '' : notIncludedCaseClass}>
+            <TestCasePriority priorityValue={cellValue} priorityMessages={priorityMessages} />
           </div>
         );
       case 'runStatus':

@@ -13,6 +13,7 @@ import TestPriorityChart from './TestPriorityDonutChart';
 import TestProgressBarChart from './TestProgressColumnChart';
 import Config from '@/config/config';
 import { useTheme } from 'next-themes';
+import { PriorityMessages } from '@/types/priority';
 const apiServer = Config.apiServer;
 
 async function fetchProject(jwt: string, projectId: number) {
@@ -41,9 +42,10 @@ async function fetchProject(jwt: string, projectId: number) {
 type Props = {
   projectId: string;
   messages: HomeMessages;
+  priorityMessages: PriorityMessages;
 };
 
-export function ProjectHome({ projectId, messages }: Props) {
+export function ProjectHome({ projectId, messages, priorityMessages }: Props) {
   const context = useContext(TokenContext);
   const { theme, setTheme } = useTheme();
   const [project, setProject] = useState({
@@ -134,7 +136,7 @@ export function ProjectHome({ projectId, messages }: Props) {
         </div>
         <div style={{ width: '30rem', height: '18rem' }}>
           <h3>{messages.byPriority}</h3>
-          <TestPriorityChart priorityCounts={priorityCounts} messages={messages} theme={theme} />
+          <TestPriorityChart priorityCounts={priorityCounts} priorityMessages={priorityMessages} theme={theme} />
         </div>
       </div>
     </div>
