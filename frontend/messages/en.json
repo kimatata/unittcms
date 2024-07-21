@@ -1,4 +1,10 @@
 {
+  "Priority": {
+    "critical": "Critical",
+    "high": "High",
+    "medium": "Medium",
+    "low": "Low"
+  },
   "Index": {
     "get_started": "Get Started",
     "demo": "Demo",

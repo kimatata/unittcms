@@ -101,11 +101,6 @@ type CaseMessages = {
   pleaseEnterTitle: string;
   description: string;
   testCaseDescription: string;
-  priority: string;
-  critical: string;
-  high: string;
-  medium: string;
-  low: string;
   type: string;
   other: string;
   security: string;

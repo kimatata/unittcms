@@ -1,8 +1,9 @@
-import { Button, Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Chip, Divider } from '@nextui-org/react';
+import { Button, Modal, ModalContent, ModalHeader, ModalBody, ModalFooter } from '@nextui-org/react';
+import { testTypes, templates } from '@/config/selection';
+import TestCasePriority from '@/components/TestCasePriority';
 import { RunMessages } from '@/types/run';
 import { CaseType } from '@/types/case';
-import { Circle } from 'lucide-react';
-import { priorities, testTypes, templates } from '@/config/selection';
+import { PriorityMessages } from '@/types/priority';
 
 type Props = {
   isOpen: boolean;
@@ -10,9 +11,17 @@ type Props = {
   onCancel: () => void;
   onChangeStatus: (changeCaseId: number, status: number) => {};
   messages: RunMessages;
+  priorityMessages: PriorityMessages;
 };
 
-export default function showTestCaseDetailDialog({ isOpen, testCase, onCancel, onChangeStatus, messages }: Props) {
+export default function showTestCaseDetailDialog({
+  isOpen,
+  testCase,
+  onCancel,
+  onChangeStatus,
+  messages,
+  priorityMessages,
+}: Props) {
   return (
     <Modal
       isOpen={isOpen}
@@ -34,19 +43,7 @@ export default function showTestCaseDetailDialog({ isOpen, testCase, onCancel, o
           <div className="flex my-2">
             <div className="w-1/2">
               <p className={'font-bold'}>{messages.priority}</p>
-              <Chip
-                startContent={
-                  <Circle
-                    size={8}
-                    className="me-2"
-                    color={priorities[testCase.priority].color}
-                    fill={priorities[testCase.priority].color}
-                  />
-                }
-                variant="light"
-              >
-                {messages[priorities[testCase.priority].uid]}
-              </Chip>
+              <TestCasePriority priorityValue={testCase.priority} priorityMessages={priorityMessages} />
             </div>
 
             <div className="w-1/2">

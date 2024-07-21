@@ -30,6 +30,7 @@ import { priorities, testRunCaseStatus } from '@/config/selection';
 import { CaseType } from '@/types/case';
 import { RunMessages } from '@/types/run';
 import TestCaseDetailDialog from './TestCaseDetailDialog';
+import { PriorityMessages } from '@/types/priority';
 
 type Props = {
   cases: CaseType[];
@@ -40,6 +41,7 @@ type Props = {
   onIncludeCase: (includeCaseId: number) => {};
   onExcludeCase: (excludeCaseId: number) => {};
   messages: RunMessages;
+  priorityMessages: PriorityMessages;
 };
 
 export default function TestCaseSelector({
@@ -51,6 +53,7 @@ export default function TestCaseSelector({
   onIncludeCase,
   onExcludeCase,
   messages,
+  priorityMessages,
 }: Props) {
   const headerColumns = [
     { name: messages.id, uid: 'id', sortable: true },
@@ -303,6 +306,7 @@ export default function TestCaseSelector({
         onCancel={hideTestCaseDetailDialog}
         onChangeStatus={(showingCaseId, newStatus) => onChangeStatus(showingCaseId, newStatus)}
         messages={messages}
+        priorityMessages={priorityMessages}
       />
     </>
   );

@@ -1,4 +1,11 @@
 {
+  "Priority": {
+    "priority": "優先度",
+    "critical": "致",
+    "high": "高",
+    "medium": "中",
+    "low": "低"
+  },
   "Index": {
     "get_started": "テスト管理を始める",
     "demo": "デモ",

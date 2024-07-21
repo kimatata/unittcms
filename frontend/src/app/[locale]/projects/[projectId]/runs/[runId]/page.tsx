@@ -1,9 +1,11 @@
 import RunEditor from './RunEditor';
 import { useTranslations } from 'next-intl';
+import { RunMessages } from '@/types/run';
+import { PriorityMessages } from '@/types/priority';
 
 export default function Page({ params }: { params: { projectId: string; runId: string; locale: string } }) {
   const t = useTranslations('Run');
-  const messages = {
+  const messages: RunMessages = {
     backToRuns: t('back_to_runs'),
     updating: t('updating'),
     update: t('update'),
@@ -22,10 +24,6 @@ export default function Page({ params }: { params: { projectId: string; runId: s
     priority: t('priority'),
     actions: t('actions'),
     status: t('status'),
-    critical: t('critical'),
-    high: t('high'),
-    medium: t('medium'),
-    low: t('low'),
     untested: t('untested'),
     passed: t('passed'),
     failed: t('failed'),
@@ -57,5 +55,21 @@ export default function Page({ params }: { params: { projectId: string; runId: s
     close: t('close'),
   };
 
-  return <RunEditor projectId={params.projectId} runId={params.runId} messages={messages} locale={params.locale} />;
+  const priorityTranslation = useTranslations('Priority');
+  const priorityMessages: PriorityMessages = {
+    critical: priorityTranslation('critical'),
+    high: priorityTranslation('high'),
+    medium: priorityTranslation('medium'),
+    low: priorityTranslation('low'),
+  };
+
+  return (
+    <RunEditor
+      projectId={params.projectId}
+      runId={params.runId}
+      messages={messages}
+      priorityMessages={priorityMessages}
+      locale={params.locale}
+    />
+  );
 }

@@ -37,6 +37,7 @@ import { fetchFolders } from '../../folders/foldersControl';
 import { TokenContext } from '@/utils/TokenProvider';
 import { useTheme } from 'next-themes';
 import { useFormGuard } from '@/utils/formGuard';
+import { PriorityMessages } from '@/types/priority';
 
 const defaultTestRun = {
   id: 0,
@@ -53,10 +54,11 @@ type Props = {
   projectId: string;
   runId: string;
   messages: RunMessages;
+  priorityMessages: PriorityMessages;
   locale: string;
 };
 
-export default function RunEditor({ projectId, runId, messages, locale }: Props) {
+export default function RunEditor({ projectId, runId, messages, priorityMessages, locale }: Props) {
   const context = useContext(TokenContext);
   const { theme, setTheme } = useTheme();
   const [testRun, setTestRun] = useState<RunType>(defaultTestRun);
@@ -314,6 +316,7 @@ export default function RunEditor({ projectId, runId, messages, locale }: Props)
               onIncludeCase={(includeTestId) => handleIncludeExcludeCase(true, includeTestId)}
               onExcludeCase={(excludeCaseId) => handleIncludeExcludeCase(false, excludeCaseId)}
               messages={messages}
+              priorityMessages={priorityMessages}
             />
           </div>
         </div>
