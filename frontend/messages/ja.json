@@ -1,5 +1,5 @@
 {
-  "Status": {
+  "RunCaseStatus": {
     "untested": "未実行",
     "passed": "成功",
     "failed": "失敗",

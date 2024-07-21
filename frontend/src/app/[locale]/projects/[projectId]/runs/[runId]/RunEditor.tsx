@@ -38,7 +38,7 @@ import { TokenContext } from '@/utils/TokenProvider';
 import { useTheme } from 'next-themes';
 import { useFormGuard } from '@/utils/formGuard';
 import { PriorityMessages } from '@/types/priority';
-import { TestStatusMessages } from '@/types/testStatus';
+import { TestRunCaseStatusMessages } from '@/types/testRunCaseStatus';
 
 const defaultTestRun = {
   id: 0,
@@ -55,12 +55,19 @@ type Props = {
   projectId: string;
   runId: string;
   messages: RunMessages;
-  statusMessages: TestStatusMessages;
+  testRunCaseStatusMessages: TestRunCaseStatusMessages;
   priorityMessages: PriorityMessages;
   locale: string;
 };
 
-export default function RunEditor({ projectId, runId, messages, statusMessages, priorityMessages, locale }: Props) {
+export default function RunEditor({
+  projectId,
+  runId,
+  messages,
+  testRunCaseStatusMessages,
+  priorityMessages,
+  locale,
+}: Props) {
   const context = useContext(TokenContext);
   const { theme, setTheme } = useTheme();
   const [testRun, setTestRun] = useState<RunType>(defaultTestRun);
@@ -206,7 +213,11 @@ export default function RunEditor({ projectId, runId, messages, statusMessages, 
                 </Tooltip>
               </div>
 
-              <RunProgressChart statusCounts={runStatusCounts} statusMessages={statusMessages} theme={theme} />
+              <RunProgressChart
+                statusCounts={runStatusCounts}
+                testRunCaseStatusMessages={testRunCaseStatusMessages}
+                theme={theme}
+              />
             </div>
           </div>
           <div className="flex-grow">
@@ -318,7 +329,7 @@ export default function RunEditor({ projectId, runId, messages, statusMessages, 
               onIncludeCase={(includeTestId) => handleIncludeExcludeCase(true, includeTestId)}
               onExcludeCase={(excludeCaseId) => handleIncludeExcludeCase(false, excludeCaseId)}
               messages={messages}
-              statusMessages={statusMessages}
+              testRunCaseStatusMessages={testRunCaseStatusMessages}
               priorityMessages={priorityMessages}
             />
           </div>

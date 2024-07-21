@@ -2,7 +2,7 @@ import RunEditor from './RunEditor';
 import { useTranslations } from 'next-intl';
 import { RunMessages } from '@/types/run';
 import { PriorityMessages } from '@/types/priority';
-import { TestStatusMessages } from '@/types/testStatus';
+import { TestRunCaseStatusMessages } from '@/types/testRunCaseStatus';
 
 export default function Page({ params }: { params: { projectId: string; runId: string; locale: string } }) {
   const t = useTranslations('Run');
@@ -38,13 +38,13 @@ export default function Page({ params }: { params: { projectId: string; runId: s
     close: t('close'),
   };
 
-  const st = useTranslations('Status');
-  const statusMessages: TestStatusMessages = {
-    untested: st('untested'),
-    passed: st('passed'),
-    failed: st('failed'),
-    retest: st('retest'),
-    skipped: st('skipped'),
+  const rcst = useTranslations('RunCaseStatus');
+  const testRunCaseStatusMessages: TestRunCaseStatusMessages = {
+    untested: rcst('untested'),
+    passed: rcst('passed'),
+    failed: rcst('failed'),
+    retest: rcst('retest'),
+    skipped: rcst('skipped'),
   };
 
   const pt = useTranslations('Priority');
@@ -60,7 +60,7 @@ export default function Page({ params }: { params: { projectId: string; runId: s
       projectId={params.projectId}
       runId={params.runId}
       messages={messages}
-      statusMessages={statusMessages}
+      testRunCaseStatusMessages={testRunCaseStatusMessages}
       priorityMessages={priorityMessages}
       locale={params.locale}
     />

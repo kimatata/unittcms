@@ -13,7 +13,7 @@ import { useTheme } from 'next-themes';
 import TestTypesChart from './TestTypesDonutChart';
 import TestPriorityChart from './TestPriorityDonutChart';
 import TestProgressBarChart from './TestProgressColumnChart';
-import { TestStatusMessages } from '@/types/testStatus';
+import { TestRunCaseStatusMessages } from '@/types/testRunCaseStatus';
 import { TestTypeMessages } from '@/types/testType';
 import { PriorityMessages } from '@/types/priority';
 
@@ -45,12 +45,18 @@ async function fetchProject(jwt: string, projectId: number) {
 type Props = {
   projectId: string;
   messages: HomeMessages;
-  statusMessages: TestStatusMessages;
+  testRunCaseStatusMessages: TestRunCaseStatusMessages;
   testTypeMessages: TestTypeMessages;
   priorityMessages: PriorityMessages;
 };
 
-export function ProjectHome({ projectId, messages, statusMessages, testTypeMessages, priorityMessages }: Props) {
+export function ProjectHome({
+  projectId,
+  messages,
+  testRunCaseStatusMessages,
+  testTypeMessages,
+  priorityMessages,
+}: Props) {
   const context = useContext(TokenContext);
   const { theme, setTheme } = useTheme();
   const [project, setProject] = useState({
@@ -97,7 +103,7 @@ export function ProjectHome({ projectId, messages, statusMessages, testTypeMessa
       const priorityRet = aggregateTestPriority(project);
       setPriorityCounts([...priorityRet]);
 
-      const { series, categories } = aggregateProgress(project, statusMessages);
+      const { series, categories } = aggregateProgress(project, testRunCaseStatusMessages);
       setProgressSeries([...series]);
       setProgressCategories([...categories]);
     }

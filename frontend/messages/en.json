@@ -1,5 +1,5 @@
 {
-  "Status": {
+  "RunCaseStatus": {
     "untested": "Untested",
     "passed": "Passed",
     "failed": "Failed",

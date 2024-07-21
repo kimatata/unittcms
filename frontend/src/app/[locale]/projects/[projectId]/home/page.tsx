@@ -2,7 +2,7 @@ import { ProjectHome } from './ProjectHome';
 import { useTranslations } from 'next-intl';
 import { PriorityMessages } from '@/types/priority';
 import { TestTypeMessages } from '@/types/testType';
-import { TestStatusMessages } from '@/types/testStatus';
+import { TestRunCaseStatusMessages } from '@/types/testRunCaseStatus';
 
 export type HomeMessages = {
   folders: string;
@@ -26,13 +26,13 @@ export default function Page({ params }: { params: { projectId: string } }) {
     byPriority: t('by_priority'),
   };
 
-  const st = useTranslations('Status');
-  const statusMessages: TestStatusMessages = {
-    untested: st('untested'),
-    passed: st('passed'),
-    failed: st('failed'),
-    retest: st('retest'),
-    skipped: st('skipped'),
+  const rcst = useTranslations('RunCaseStatus');
+  const testRunCaseStatusMessages: TestRunCaseStatusMessages = {
+    untested: rcst('untested'),
+    passed: rcst('passed'),
+    failed: rcst('failed'),
+    retest: rcst('retest'),
+    skipped: rcst('skipped'),
   };
 
   const tt = useTranslations('Type');
@@ -65,7 +65,7 @@ export default function Page({ params }: { params: { projectId: string } }) {
       <ProjectHome
         projectId={params.projectId}
         messages={messages}
-        statusMessages={statusMessages}
+        testRunCaseStatusMessages={testRunCaseStatusMessages}
         testTypeMessages={testTypeMessages}
         priorityMessages={priorityMessages}
       />

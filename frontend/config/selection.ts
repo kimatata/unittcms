@@ -1,6 +1,6 @@
 import { TestTypeType } from '@/types/testType';
 import { PriorityType } from '@/types/priority';
-import { TestStatusType } from '@/types/testStatus';
+import { TestRunCaseStatusType } from '@/types/testRunCaseStatus';
 
 const roles = [{ uid: 'administrator' }, { uid: 'user' }];
 
@@ -13,7 +13,18 @@ const locales = [
   { code: 'ja', name: '日本語' },
 ];
 
-const testRunCaseStatus: TestStatusType[] = [
+// The status of each test run
+const testRunStatus = [
+  { uid: 'new' },
+  { uid: 'inProgress' },
+  { uid: 'underReview' },
+  { uid: 'rejected' },
+  { uid: 'done' },
+  { uid: 'closed' },
+];
+
+// The status of each test case in test run
+const testRunCaseStatus: TestRunCaseStatusType[] = [
   {
     uid: 'untested',
     color: 'primary',
@@ -56,15 +67,6 @@ const automationStatus = [
 ];
 
 const templates = [{ uid: 'text' }, { uid: 'step' }];
-
-const testRunStatus = [
-  { uid: 'new' },
-  { uid: 'inProgress' },
-  { uid: 'underReview' },
-  { uid: 'rejected' },
-  { uid: 'done' },
-  { uid: 'closed' },
-];
 
 export {
   roles,
