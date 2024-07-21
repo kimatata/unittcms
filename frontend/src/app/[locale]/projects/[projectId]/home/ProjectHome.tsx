@@ -10,11 +10,13 @@ import { TokenContext } from '@/utils/TokenProvider';
 import { aggregateBasicInfo, aggregateTestPriority, aggregateTestType, aggregateProgress } from './aggregate';
 import Config from '@/config/config';
 import { useTheme } from 'next-themes';
-import { PriorityMessages } from '@/types/priority';
-import { TestTypeMessages } from '@/types/testType';
 import TestTypesChart from './TestTypesDonutChart';
 import TestPriorityChart from './TestPriorityDonutChart';
 import TestProgressBarChart from './TestProgressColumnChart';
+import { TestStatusMessages } from '@/types/testStatus';
+import { TestTypeMessages } from '@/types/testType';
+import { PriorityMessages } from '@/types/priority';
+
 const apiServer = Config.apiServer;
 
 async function fetchProject(jwt: string, projectId: number) {
@@ -43,11 +45,12 @@ async function fetchProject(jwt: string, projectId: number) {
 type Props = {
   projectId: string;
   messages: HomeMessages;
+  statusMessages: TestStatusMessages;
   testTypeMessages: TestTypeMessages;
   priorityMessages: PriorityMessages;
 };
 
-export function ProjectHome({ projectId, messages, testTypeMessages, priorityMessages }: Props) {
+export function ProjectHome({ projectId, messages, statusMessages, testTypeMessages, priorityMessages }: Props) {
   const context = useContext(TokenContext);
   const { theme, setTheme } = useTheme();
   const [project, setProject] = useState({
@@ -71,7 +74,7 @@ export function ProjectHome({ projectId, messages, testTypeMessages, priorityMes
       }
 
       try {
-        const data = await fetchProject(context.token.access_token, projectId);
+        const data = await fetchProject(context.token.access_token, Number(projectId));
         setProject(data);
       } catch (error: any) {
         console.error('Error in effect:', error.message);
@@ -94,7 +97,7 @@ export function ProjectHome({ projectId, messages, testTypeMessages, priorityMes
       const priorityRet = aggregateTestPriority(project);
       setPriorityCounts([...priorityRet]);
 
-      const { series, categories } = aggregateProgress(project, messages);
+      const { series, categories } = aggregateProgress(project, statusMessages);
       setProgressSeries([...series]);
       setProgressCategories([...categories]);
     }

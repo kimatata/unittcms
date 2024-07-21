@@ -1,4 +1,11 @@
 {
+  "Status": {
+    "untested": "未実行",
+    "passed": "成功",
+    "failed": "失敗",
+    "retest": "再テスト",
+    "skipped": "スキップ"
+  },
   "Priority": {
     "priority": "優先度",
     "critical": "致",
@@ -129,11 +136,6 @@
     "test_cases": "テストケース",
     "test_runs": "テストラン",
     "progress": "進捗",
-    "untested": "未実行",
-    "passed": "成功",
-    "failed": "失敗",
-    "retest": "再テスト",
-    "skipped": "スキップ",
     "test_classification": "テスト分類",
     "by_type": "タイプ別",
     "by_priority": "優先度別"
@@ -242,11 +244,6 @@
     "priority": "優先度",
     "status": "ステータス",
     "actions": "アクション",
-    "untested": "未実行",
-    "passed": "成功",
-    "failed": "失敗",
-    "retest": "再テスト",
-    "skipped": "スキップ",
     "select_test_case": "テストケースを選択",
     "test_case_selection": "テストケース選択",
     "include_in_run": "テストランに含める",

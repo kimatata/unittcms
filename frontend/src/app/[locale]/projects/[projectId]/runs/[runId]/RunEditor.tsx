@@ -38,6 +38,7 @@ import { TokenContext } from '@/utils/TokenProvider';
 import { useTheme } from 'next-themes';
 import { useFormGuard } from '@/utils/formGuard';
 import { PriorityMessages } from '@/types/priority';
+import { TestStatusMessages } from '@/types/testStatus';
 
 const defaultTestRun = {
   id: 0,
@@ -54,11 +55,12 @@ type Props = {
   projectId: string;
   runId: string;
   messages: RunMessages;
+  statusMessages: TestStatusMessages;
   priorityMessages: PriorityMessages;
   locale: string;
 };
 
-export default function RunEditor({ projectId, runId, messages, priorityMessages, locale }: Props) {
+export default function RunEditor({ projectId, runId, messages, statusMessages, priorityMessages, locale }: Props) {
   const context = useContext(TokenContext);
   const { theme, setTheme } = useTheme();
   const [testRun, setTestRun] = useState<RunType>(defaultTestRun);
@@ -204,7 +206,7 @@ export default function RunEditor({ projectId, runId, messages, priorityMessages
                 </Tooltip>
               </div>
 
-              <RunProgressChart statusCounts={runStatusCounts} messages={messages} theme={theme} />
+              <RunProgressChart statusCounts={runStatusCounts} statusMessages={statusMessages} theme={theme} />
             </div>
           </div>
           <div className="flex-grow">
@@ -316,6 +318,7 @@ export default function RunEditor({ projectId, runId, messages, priorityMessages
               onIncludeCase={(includeTestId) => handleIncludeExcludeCase(true, includeTestId)}
               onExcludeCase={(excludeCaseId) => handleIncludeExcludeCase(false, excludeCaseId)}
               messages={messages}
+              statusMessages={statusMessages}
               priorityMessages={priorityMessages}
             />
           </div>

@@ -32,6 +32,7 @@ import { RunMessages } from '@/types/run';
 import TestCaseDetailDialog from './TestCaseDetailDialog';
 import { PriorityMessages } from '@/types/priority';
 import TestCasePriority from '@/components/TestCasePriority';
+import { TestStatusMessages } from '@/types/testStatus';
 
 type Props = {
   cases: CaseType[];
@@ -42,6 +43,7 @@ type Props = {
   onIncludeCase: (includeCaseId: number) => {};
   onExcludeCase: (excludeCaseId: number) => {};
   messages: RunMessages;
+  statusMessages: TestStatusMessages;
   priorityMessages: PriorityMessages;
 };
 
@@ -54,6 +56,7 @@ export default function TestCaseSelector({
   onIncludeCase,
   onExcludeCase,
   messages,
+  statusMessages,
   priorityMessages,
 }: Props) {
   const headerColumns = [
@@ -157,7 +160,7 @@ export default function TestCaseSelector({
                 startContent={isIncluded && renderStatusIcon(testRunCaseStatus[runStatus].uid)}
                 endContent={isIncluded && <ChevronDown size={16} />}
               >
-                <span className="w-12">{isIncluded && messages[testRunCaseStatus[runStatus].uid]}</span>
+                <span className="w-12">{isIncluded && statusMessages[testRunCaseStatus[runStatus].uid]}</span>
               </Button>
             </DropdownTrigger>
             <DropdownMenu disabledKeys={disabledStatusKeys} aria-label="test case actions">
@@ -167,7 +170,7 @@ export default function TestCaseSelector({
                   startContent={renderStatusIcon(runCaseStatus.uid)}
                   onPress={() => onChangeStatus(testCase.id, index)}
                 >
-                  {messages[runCaseStatus.uid]}
+                  {statusMessages[runCaseStatus.uid]}
                 </DropdownItem>
               ))}
             </DropdownMenu>

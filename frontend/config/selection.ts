@@ -1,5 +1,6 @@
 import { TestTypeType } from '@/types/testType';
 import { PriorityType } from '@/types/priority';
+import { TestStatusType } from '@/types/testStatus';
 
 const roles = [{ uid: 'administrator' }, { uid: 'user' }];
 
@@ -10,6 +11,18 @@ const categoricalPalette = ['#fba91e', '#6ea56c', '#3ac6e1', '#feda2f', '#f15f47
 const locales = [
   { code: 'en', name: 'English' },
   { code: 'ja', name: '日本語' },
+];
+
+const testRunCaseStatus: TestStatusType[] = [
+  {
+    uid: 'untested',
+    color: 'primary',
+    chartColor: '#3ac6e1',
+  },
+  { uid: 'passed', color: 'success', chartColor: '#6ea56c' },
+  { uid: 'failed', color: 'danger', chartColor: '#f15f47' },
+  { uid: 'retest', color: 'warning', chartColor: '#fba91e' },
+  { uid: 'skipped', color: 'primary', chartColor: '#805aab' },
 ];
 
 const priorities: PriorityType[] = [
@@ -51,18 +64,6 @@ const testRunStatus = [
   { uid: 'rejected' },
   { uid: 'done' },
   { uid: 'closed' },
-];
-
-const testRunCaseStatus = [
-  {
-    uid: 'untested',
-    color: 'primary',
-    chartColor: '#3ac6e1',
-  },
-  { uid: 'passed', color: 'success', chartColor: '#6ea56c' },
-  { uid: 'failed', color: 'danger', chartColor: '#f15f47' },
-  { uid: 'retest', color: 'warning', chartColor: '#fba91e' },
-  { uid: 'skipped', color: 'primary', chartColor: '#805aab' },
 ];
 
 export {
