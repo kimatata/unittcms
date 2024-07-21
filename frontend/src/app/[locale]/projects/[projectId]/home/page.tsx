@@ -1,6 +1,7 @@
 import { ProjectHome } from './ProjectHome';
 import { useTranslations } from 'next-intl';
 import { PriorityMessages } from '@/types/priority';
+import { TestTypeMessages } from '@/types/testType';
 
 export type HomeMessages = {
   folders: string;
@@ -15,20 +16,6 @@ export type HomeMessages = {
   testClassification: string;
   byType: string;
   byPriority: string;
-  testTypes: string;
-  other: string;
-  security: string;
-  performance: string;
-  accessibility: string;
-  functional: string;
-  acceptance: string;
-  usability: string;
-  smokeSanity: string;
-  compatibility: string;
-  destructive: string;
-  regression: string;
-  automated: string;
-  manual: string;
 };
 
 export default function Page({ params }: { params: { projectId: string } }) {
@@ -46,19 +33,23 @@ export default function Page({ params }: { params: { projectId: string } }) {
     testClassification: t('test_classification'),
     byType: t('by_type'),
     byPriority: t('by_priority'),
-    other: t('other'),
-    security: t('security'),
-    performance: t('performance'),
-    accessibility: t('accessibility'),
-    functional: t('functional'),
-    acceptance: t('acceptance'),
-    usability: t('usability'),
-    smokeSanity: t('smoke_sanity'),
-    compatibility: t('compatibility'),
-    destructive: t('destructive'),
-    regression: t('regression'),
-    automated: t('automated'),
-    manual: t('manual'),
+  };
+
+  const tt = useTranslations('Type');
+  const testTypeMessages: TestTypeMessages = {
+    other: tt('other'),
+    security: tt('security'),
+    performance: tt('performance'),
+    accessibility: tt('accessibility'),
+    functional: tt('functional'),
+    acceptance: tt('acceptance'),
+    usability: tt('usability'),
+    smokeSanity: tt('smoke_sanity'),
+    compatibility: tt('compatibility'),
+    destructive: tt('destructive'),
+    regression: tt('regression'),
+    automated: tt('automated'),
+    manual: tt('manual'),
   };
 
   const pt = useTranslations('Priority');
@@ -71,7 +62,12 @@ export default function Page({ params }: { params: { projectId: string } }) {
 
   return (
     <>
-      <ProjectHome projectId={params.projectId} messages={messages} priorityMessages={priorityMessages} />
+      <ProjectHome
+        projectId={params.projectId}
+        messages={messages}
+        testTypeMessages={testTypeMessages}
+        priorityMessages={priorityMessages}
+      />
     </>
   );
 }

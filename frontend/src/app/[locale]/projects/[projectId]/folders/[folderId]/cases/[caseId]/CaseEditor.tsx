@@ -13,6 +13,7 @@ import { TokenContext } from '@/utils/TokenProvider';
 import { useFormGuard } from '@/utils/formGuard';
 import { CaseType, AttachmentType, CaseMessages, StepType } from '@/types/case';
 import { PriorityMessages } from '@/types/priority';
+import { TestTypeMessages } from '@/types/testType';
 
 const defaultTestCase = {
   id: 0,
@@ -37,11 +38,20 @@ type Props = {
   folderId: string;
   caseId: string;
   messages: CaseMessages;
+  testTypeMessages: TestTypeMessages;
   priorityMessages: PriorityMessages;
   locale: string;
 };
 
-export default function CaseEditor({ projectId, folderId, caseId, messages, priorityMessages, locale }: Props) {
+export default function CaseEditor({
+  projectId,
+  folderId,
+  caseId,
+  messages,
+  testTypeMessages,
+  priorityMessages,
+  locale,
+}: Props) {
   const context = useContext(TokenContext);
   const [testCase, setTestCase] = useState<CaseType>(defaultTestCase);
   const [isTitleInvalid, setIsTitleInvalid] = useState<boolean>(false);
@@ -285,7 +295,7 @@ export default function CaseEditor({ projectId, folderId, caseId, messages, prio
           >
             {testTypes.map((type, index) => (
               <SelectItem key={type.uid} value={index}>
-                {messages[type.uid]}
+                {testTypeMessages[type.uid]}
               </SelectItem>
             ))}
           </Select>

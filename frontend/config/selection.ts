@@ -1,3 +1,4 @@
+import { TestTypeType } from '@/types/testType';
 import { PriorityType } from '@/types/priority';
 
 const roles = [{ uid: 'administrator' }, { uid: 'user' }];
@@ -18,7 +19,7 @@ const priorities: PriorityType[] = [
   { uid: 'low', color: '#94d2bd', chartColor: '#94d2bd' },
 ];
 
-const testTypes = [
+const testTypes: TestTypeType[] = [
   { uid: 'other', chartColor: categoricalPalette[0] },
   { uid: 'security', chartColor: categoricalPalette[1] },
   { uid: 'performance', chartColor: categoricalPalette[2] },

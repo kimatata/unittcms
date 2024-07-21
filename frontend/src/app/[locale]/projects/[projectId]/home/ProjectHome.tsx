@@ -8,12 +8,13 @@ import { ProgressSeriesType } from '@/types/run';
 import { HomeMessages } from './page';
 import { TokenContext } from '@/utils/TokenProvider';
 import { aggregateBasicInfo, aggregateTestPriority, aggregateTestType, aggregateProgress } from './aggregate';
-import TestTypesChart from './TestTypesDonutChart';
-import TestPriorityChart from './TestPriorityDonutChart';
-import TestProgressBarChart from './TestProgressColumnChart';
 import Config from '@/config/config';
 import { useTheme } from 'next-themes';
 import { PriorityMessages } from '@/types/priority';
+import { TestTypeMessages } from '@/types/testType';
+import TestTypesChart from './TestTypesDonutChart';
+import TestPriorityChart from './TestPriorityDonutChart';
+import TestProgressBarChart from './TestProgressColumnChart';
 const apiServer = Config.apiServer;
 
 async function fetchProject(jwt: string, projectId: number) {
@@ -42,10 +43,11 @@ async function fetchProject(jwt: string, projectId: number) {
 type Props = {
   projectId: string;
   messages: HomeMessages;
+  testTypeMessages: TestTypeMessages;
   priorityMessages: PriorityMessages;
 };
 
-export function ProjectHome({ projectId, messages, priorityMessages }: Props) {
+export function ProjectHome({ projectId, messages, testTypeMessages, priorityMessages }: Props) {
   const context = useContext(TokenContext);
   const { theme, setTheme } = useTheme();
   const [project, setProject] = useState({
@@ -132,7 +134,7 @@ export function ProjectHome({ projectId, messages, priorityMessages }: Props) {
       <div className="flex pb-20">
         <div style={{ width: '32rem', height: '18rem' }}>
           <h3>{messages.byType}</h3>
-          <TestTypesChart typesCounts={typesCounts} messages={messages} theme={theme} />
+          <TestTypesChart typesCounts={typesCounts} testTypeMessages={testTypeMessages} theme={theme} />
         </div>
         <div style={{ width: '30rem', height: '18rem' }}>
           <h3>{messages.byPriority}</h3>
