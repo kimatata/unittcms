@@ -1,31 +1,84 @@
-import { Button, Modal, ModalContent, ModalHeader, ModalBody, ModalFooter } from '@nextui-org/react';
+import { useState, useEffect, useContext } from 'react';
+import { Button, Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Avatar, Textarea } from '@nextui-org/react';
 import { testTypes, templates } from '@/config/selection';
 import { RunMessages } from '@/types/run';
-import { CaseType } from '@/types/case';
+import { CaseType, StepType } from '@/types/case';
 import { PriorityMessages } from '@/types/priority';
 import TestCasePriority from '@/components/TestCasePriority';
+import { TokenContext } from '@/utils/TokenProvider';
+import { fetchCase } from '@/utils/caseControl';
+import { TestTypeMessages } from '@/types/testType';
 
 type Props = {
   isOpen: boolean;
-  testCase: CaseType;
+  caseId: number;
   onCancel: () => void;
   onChangeStatus: (changeCaseId: number, status: number) => {};
   messages: RunMessages;
+  testTypeMessages: TestTypeMessages;
   priorityMessages: PriorityMessages;
 };
 
-export default function showTestCaseDetailDialog({
+const defaultTestCase = {
+  id: 0,
+  title: '',
+  state: 0,
+  priority: 0,
+  type: 0,
+  automationStatus: 0,
+  description: '',
+  template: 0,
+  preConditions: '',
+  expectedResults: '',
+  folderId: 0,
+};
+
+export default function TestCaseDetailDialog({
   isOpen,
-  testCase,
+  caseId,
   onCancel,
   onChangeStatus,
   messages,
+  testTypeMessages,
   priorityMessages,
 }: Props) {
+  const context = useContext(TokenContext);
+  const [testCase, setTestCase] = useState<CaseType>(defaultTestCase);
+
+  useEffect(() => {
+    async function fetchDataEffect() {
+      if (!context.isSignedIn()) {
+        return;
+      }
+
+      if (!caseId || caseId <= 0) {
+        return;
+      }
+
+      try {
+        const data = await fetchCase(context.token.access_token, Number(caseId));
+        if (data.Steps && data.Steps.length > 0) {
+          data.Steps.sort((a: StepType, b: StepType) => {
+            const stepNoA = a.caseSteps.stepNo;
+            const stepNoB = b.caseSteps.stepNo;
+            return stepNoA - stepNoB;
+          });
+        }
+
+        setTestCase(data);
+      } catch (error: any) {
+        console.error('Error in effect:', error.message);
+      }
+    }
+
+    fetchDataEffect();
+  }, [context, caseId]);
+
   return (
     <Modal
       isOpen={isOpen}
-      size="3xl"
+      size="5xl"
+      scrollBehavior="outside"
       onOpenChange={() => {
         onCancel();
       }}
@@ -48,40 +101,55 @@ export default function showTestCaseDetailDialog({
 
             <div className="w-1/2">
               <p className={'font-bold'}>{messages.type}</p>
-              <div>{messages[testTypes[testCase.type].uid]}</div>
+              <div>{testTypeMessages[testTypes[testCase.type].uid]}</div>
             </div>
           </div>
         </ModalBody>
         <ModalBody>
           {templates[testCase.template].uid === 'text' ? (
-            <div className="flex my-2">
-              <div className="w-1/2">
-                <p className={'font-bold'}>{messages.preconditions}</p>
-                <div>{testCase.preConditions}</div>
+            <>
+              <p className={'font-bold mt-2'}>{messages.testDetail}</p>
+              <div className="flex my-2">
+                <div className="w-1/2">
+                  <p className={'font-bold'}>{messages.preconditions}</p>
+                  <div>{testCase.preConditions}</div>
+                </div>
+                <div className="w-1/2">
+                  <p className={'font-bold'}>{messages.expectedResult}</p>
+                  <div>{testCase.expectedResults}</div>
+                </div>
               </div>
-
-              <div className="w-1/2">
-                <p className={'font-bold'}>{messages.expectedResult}</p>
-                <div>{testCase.expectedResults}</div>
-              </div>
-            </div>
+            </>
           ) : (
-            <div className="flex my-2">
+            <>
+              <p className={'font-bold mt-2'}>{messages.steps}</p>
               {testCase.Steps &&
-                testCase.Steps.map((step, index) => (
-                  <>
-                    <div className="w-1/2">
-                      <p className={'font-bold'}>{messages.preconditions}</p>
-                      <div>{step.step}</div>
+                testCase.Steps.map((step) => (
+                  <div key={step.id} className="flex items-center my-1">
+                    <Avatar className="me-2" size="sm" name={step.caseSteps.stepNo.toString()} />
+                    <div key={step.id} className="grow flex gap-2">
+                      <div className="w-1/2">
+                        <Textarea
+                          isReadOnly
+                          size="sm"
+                          variant="flat"
+                          label={messages.detailsOfTheStep}
+                          value={step.step}
+                        />
+                      </div>
+                      <div className="w-1/2">
+                        <Textarea
+                          isReadOnly
+                          size="sm"
+                          variant="flat"
+                          label={messages.expectedResult}
+                          value={step.result}
+                        />
+                      </div>
                     </div>
-
-                    <div className="w-1/2">
-                      <p className={'font-bold'}>{messages.expectedResult}</p>
-                      <div>{step.result}</div>
-                    </div>
-                  </>
+                  </div>
                 ))}
-            </div>
+            </>
           )}
         </ModalBody>
         <ModalFooter>

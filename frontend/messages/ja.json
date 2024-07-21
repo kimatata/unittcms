@@ -254,6 +254,7 @@
     "are_you_sure_leave": "ページを離れてもよろしいですか",
     "type": "タイプ",
     "test_detail": "テスト詳細",
+    "steps": "ステップ",
     "preconditions": "前提条件",
     "expected_result": "期待結果",
     "details_of_the_step": "ステップ詳細",

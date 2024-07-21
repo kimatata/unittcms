@@ -39,6 +39,7 @@ import { useTheme } from 'next-themes';
 import { useFormGuard } from '@/utils/formGuard';
 import { PriorityMessages } from '@/types/priority';
 import { RunStatusMessages, TestRunCaseStatusMessages } from '@/types/status';
+import { TestTypeMessages } from '@/types/testType';
 
 const defaultTestRun = {
   id: 0,
@@ -58,6 +59,7 @@ type Props = {
   runStatusMessages: RunStatusMessages;
   testRunCaseStatusMessages: TestRunCaseStatusMessages;
   priorityMessages: PriorityMessages;
+  testTypeMessages: TestTypeMessages;
   locale: string;
 };
 
@@ -68,6 +70,7 @@ export default function RunEditor({
   runStatusMessages,
   testRunCaseStatusMessages,
   priorityMessages,
+  testTypeMessages,
   locale,
 }: Props) {
   const context = useContext(TokenContext);
@@ -333,6 +336,7 @@ export default function RunEditor({
               messages={messages}
               testRunCaseStatusMessages={testRunCaseStatusMessages}
               priorityMessages={priorityMessages}
+              testTypeMessages={testTypeMessages}
             />
           </div>
         </div>

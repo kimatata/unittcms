@@ -3,6 +3,7 @@ import { useTranslations } from 'next-intl';
 import { RunMessages } from '@/types/run';
 import { PriorityMessages } from '@/types/priority';
 import { RunStatusMessages, TestRunCaseStatusMessages } from '@/types/status';
+import { TestTypeMessages } from '@/types/testType';
 
 export default function Page({ params }: { params: { projectId: string; runId: string; locale: string } }) {
   const t = useTranslations('Run');
@@ -26,6 +27,8 @@ export default function Page({ params }: { params: { projectId: string; runId: s
     noCasesFound: t('no_cases_found'),
     areYouSureLeave: t('are_you_sure_leave'),
     type: t('type'),
+    testDetail: t('test_detail'),
+    steps: t('steps'),
     preconditions: t('preconditions'),
     expectedResult: t('expected_result'),
     detailsOfTheStep: t('details_of_the_step'),
@@ -59,6 +62,23 @@ export default function Page({ params }: { params: { projectId: string; runId: s
     low: pt('low'),
   };
 
+  const tt = useTranslations('Type');
+  const testTypeMessages: TestTypeMessages = {
+    other: tt('other'),
+    security: tt('security'),
+    performance: tt('performance'),
+    accessibility: tt('accessibility'),
+    functional: tt('functional'),
+    acceptance: tt('acceptance'),
+    usability: tt('usability'),
+    smokeSanity: tt('smoke_sanity'),
+    compatibility: tt('compatibility'),
+    destructive: tt('destructive'),
+    regression: tt('regression'),
+    automated: tt('automated'),
+    manual: tt('manual'),
+  };
+
   return (
     <RunEditor
       projectId={params.projectId}
@@ -67,6 +87,7 @@ export default function Page({ params }: { params: { projectId: string; runId: s
       runStatusMessages={runStatusMessages}
       testRunCaseStatusMessages={testRunCaseStatusMessages}
       priorityMessages={priorityMessages}
+      testTypeMessages={testTypeMessages}
       locale={params.locale}
     />
   );

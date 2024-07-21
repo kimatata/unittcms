@@ -252,6 +252,8 @@
     "no_cases_found": "No cases found",
     "are_you_sure_leave": "Are you sure you want to leave the page?",
     "type": "Type",
+    "test_detail": "Test detail",
+    "steps": "Steps",
     "preconditions": "Preconditions",
     "expected_result": "Expected result",
     "details_of_the_step": "Details of the step",

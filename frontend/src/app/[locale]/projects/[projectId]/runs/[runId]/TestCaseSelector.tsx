@@ -32,7 +32,8 @@ import { RunMessages } from '@/types/run';
 import TestCaseDetailDialog from './TestCaseDetailDialog';
 import { PriorityMessages } from '@/types/priority';
 import TestCasePriority from '@/components/TestCasePriority';
-import { TestRunCaseStatusMessages } from '@/types/testRunCaseStatus';
+import { TestTypeMessages } from '@/types/testType';
+import { TestRunCaseStatusMessages } from '@/types/status';
 
 type Props = {
   cases: CaseType[];
@@ -45,6 +46,7 @@ type Props = {
   messages: RunMessages;
   testRunCaseStatusMessages: TestRunCaseStatusMessages;
   priorityMessages: PriorityMessages;
+  testTypeMessages: TestTypeMessages;
 };
 
 export default function TestCaseSelector({
@@ -57,6 +59,7 @@ export default function TestCaseSelector({
   onExcludeCase,
   messages,
   testRunCaseStatusMessages,
+  testTypeMessages,
   priorityMessages,
 }: Props) {
   const headerColumns = [
@@ -138,7 +141,7 @@ export default function TestCaseSelector({
             size="sm"
             variant="light"
             className="data-[hover=true]:bg-transparent"
-            onPress={() => showTestCaseDetailDialog(testCase)}
+            onPress={() => showTestCaseDetailDialog(testCase.id)}
           >
             <span className={NextUiLinkClasses}>{cellValue}</span>
           </Button>
@@ -244,22 +247,10 @@ export default function TestCaseSelector({
 
   // Test Case Detail
   const [isTestCaseDetailDialogOpen, setIsTestCaseDetailDialogOpen] = useState(false);
-  const [showingTestCase, setShowingTestCase] = useState<CaseType>({
-    id: 0,
-    title: '',
-    state: 0,
-    priority: 0,
-    type: 0,
-    automationStatus: 0,
-    description: '',
-    template: 0,
-    preConditions: '',
-    expectedResults: '',
-    folderId: 0,
-  });
-  const showTestCaseDetailDialog = (showTestCase: CaseType) => {
+  const [showingTestCaseId, setShowingTestCaseId] = useState<number>(0);
+  const showTestCaseDetailDialog = (showTestCaseId: number) => {
     setIsTestCaseDetailDialogOpen(true);
-    setShowingTestCase(showTestCase);
+    setShowingTestCaseId(showTestCaseId);
   };
   const hideTestCaseDetailDialog = () => {
     setIsTestCaseDetailDialogOpen(false);
@@ -302,11 +293,12 @@ export default function TestCaseSelector({
 
       <TestCaseDetailDialog
         isOpen={isTestCaseDetailDialogOpen}
-        testCase={showingTestCase}
+        caseId={showingTestCaseId}
         onCancel={hideTestCaseDetailDialog}
         onChangeStatus={(showingCaseId, newStatus) => onChangeStatus(showingCaseId, newStatus)}
         messages={messages}
         priorityMessages={priorityMessages}
+        testTypeMessages={testTypeMessages}
       />
     </>
   );
