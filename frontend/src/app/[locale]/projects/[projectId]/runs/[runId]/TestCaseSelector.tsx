@@ -16,6 +16,7 @@ import {
 } from '@nextui-org/react';
 import {
   ChevronDown,
+  MoveDiagonal,
   MoreVertical,
   CopyPlus,
   CopyMinus,
@@ -25,7 +26,6 @@ import {
   CircleX,
   CircleSlash2,
 } from 'lucide-react';
-import { NextUiLinkClasses } from '@/src/navigation';
 import { testRunCaseStatus } from '@/config/selection';
 import { CaseType } from '@/types/case';
 import { RunMessages } from '@/types/run';
@@ -140,10 +140,11 @@ export default function TestCaseSelector({
           <Button
             size="sm"
             variant="light"
-            className="data-[hover=true]:bg-transparent"
+            className="group"
+            endContent={<MoveDiagonal size={12} className="text-transparent group-hover:text-inherit" />}
             onPress={() => showTestCaseDetailDialog(testCase.id)}
           >
-            <span className={NextUiLinkClasses}>{cellValue}</span>
+            {cellValue}
           </Button>
         );
       case 'priority':
