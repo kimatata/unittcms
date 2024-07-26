@@ -1,3 +1,7 @@
+import { RunStatusType, TestRunCaseStatusType } from '@/types/status';
+import { TestTypeType } from '@/types/testType';
+import { PriorityType } from '@/types/priority';
+
 const roles = [{ uid: 'administrator' }, { uid: 'user' }];
 
 const memberRoles = [{ uid: 'manager' }, { uid: 'developer' }, { uid: 'reporter' }];
@@ -9,14 +13,37 @@ const locales = [
   { code: 'ja', name: '日本語' },
 ];
 
-const priorities = [
+// The status of each test run
+const testRunStatus: RunStatusType[] = [
+  { uid: 'new' },
+  { uid: 'inProgress' },
+  { uid: 'underReview' },
+  { uid: 'rejected' },
+  { uid: 'done' },
+  { uid: 'closed' },
+];
+
+// The status of each test case in test run
+const testRunCaseStatus: TestRunCaseStatusType[] = [
+  {
+    uid: 'untested',
+    color: 'primary',
+    chartColor: '#3ac6e1',
+  },
+  { uid: 'passed', color: 'success', chartColor: '#6ea56c' },
+  { uid: 'failed', color: 'danger', chartColor: '#f15f47' },
+  { uid: 'retest', color: 'warning', chartColor: '#fba91e' },
+  { uid: 'skipped', color: 'primary', chartColor: '#805aab' },
+];
+
+const priorities: PriorityType[] = [
   { uid: 'critical', color: '#bb3e03', chartColor: '#bb3e03' },
   { uid: 'high', color: '#ca6702', chartColor: '#ca6702' },
   { uid: 'medium', color: '#ee9b00', chartColor: '#ee9b00' },
   { uid: 'low', color: '#94d2bd', chartColor: '#94d2bd' },
 ];
 
-const testTypes = [
+const testTypes: TestTypeType[] = [
   { uid: 'other', chartColor: categoricalPalette[0] },
   { uid: 'security', chartColor: categoricalPalette[1] },
   { uid: 'performance', chartColor: categoricalPalette[2] },
@@ -40,27 +67,6 @@ const automationStatus = [
 ];
 
 const templates = [{ uid: 'text' }, { uid: 'step' }];
-
-const testRunStatus = [
-  { uid: 'new' },
-  { uid: 'inProgress' },
-  { uid: 'underReview' },
-  { uid: 'rejected' },
-  { uid: 'done' },
-  { uid: 'closed' },
-];
-
-const testRunCaseStatus = [
-  {
-    uid: 'untested',
-    color: 'primary',
-    chartColor: '#3ac6e1',
-  },
-  { uid: 'passed', color: 'success', chartColor: '#6ea56c' },
-  { uid: 'failed', color: 'danger', chartColor: '#f15f47' },
-  { uid: 'retest', color: 'warning', chartColor: '#fba91e' },
-  { uid: 'skipped', color: 'primary', chartColor: '#805aab' },
-];
 
 export {
   roles,

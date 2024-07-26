@@ -17,7 +17,8 @@ import {
 import { Link, NextUiLinkClasses } from '@/src/navigation';
 import { Plus, MoreVertical, Trash, Circle } from 'lucide-react';
 import { CaseType, CasesMessages } from '@/types/case';
-import { priorities } from '@/config/selection';
+import { PriorityMessages } from '@/types/priority';
+import TestCasePriority from '@/components/TestCasePriority';
 
 type Props = {
   projectId: string;
@@ -27,6 +28,7 @@ type Props = {
   onDeleteCase: (caseId: number) => void;
   onDeleteCases: (caseIds: number[]) => void;
   messages: CasesMessages;
+  priorityMessages: PriorityMessages;
   locale: string;
 };
 
@@ -38,6 +40,7 @@ export default function TestCaseTable({
   onDeleteCase,
   onDeleteCases,
   messages,
+  priorityMessages,
   locale,
 }: Props) {
   const headerColumns = [
@@ -89,12 +92,7 @@ export default function TestCaseTable({
           </Button>
         );
       case 'priority':
-        return (
-          <div className="flex items-center">
-            <Circle size={8} color={priorities[cellValue].color} fill={priorities[cellValue].color} />
-            <div className="ms-3">{messages[priorities[cellValue].uid]}</div>
-          </div>
-        );
+        return <TestCasePriority priorityValue={cellValue} priorityMessages={priorityMessages} />;
       case 'actions':
         return (
           <Dropdown>

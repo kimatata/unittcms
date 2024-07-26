@@ -8,11 +8,15 @@ import { ProgressSeriesType } from '@/types/run';
 import { HomeMessages } from './page';
 import { TokenContext } from '@/utils/TokenProvider';
 import { aggregateBasicInfo, aggregateTestPriority, aggregateTestType, aggregateProgress } from './aggregate';
+import Config from '@/config/config';
+import { useTheme } from 'next-themes';
 import TestTypesChart from './TestTypesDonutChart';
 import TestPriorityChart from './TestPriorityDonutChart';
 import TestProgressBarChart from './TestProgressColumnChart';
-import Config from '@/config/config';
-import { useTheme } from 'next-themes';
+import { TestRunCaseStatusMessages } from '@/types/status';
+import { TestTypeMessages } from '@/types/testType';
+import { PriorityMessages } from '@/types/priority';
+
 const apiServer = Config.apiServer;
 
 async function fetchProject(jwt: string, projectId: number) {
@@ -41,9 +45,18 @@ async function fetchProject(jwt: string, projectId: number) {
 type Props = {
   projectId: string;
   messages: HomeMessages;
+  testRunCaseStatusMessages: TestRunCaseStatusMessages;
+  testTypeMessages: TestTypeMessages;
+  priorityMessages: PriorityMessages;
 };
 
-export function ProjectHome({ projectId, messages }: Props) {
+export function ProjectHome({
+  projectId,
+  messages,
+  testRunCaseStatusMessages,
+  testTypeMessages,
+  priorityMessages,
+}: Props) {
   const context = useContext(TokenContext);
   const { theme, setTheme } = useTheme();
   const [project, setProject] = useState({
@@ -67,7 +80,7 @@ export function ProjectHome({ projectId, messages }: Props) {
       }
 
       try {
-        const data = await fetchProject(context.token.access_token, projectId);
+        const data = await fetchProject(context.token.access_token, Number(projectId));
         setProject(data);
       } catch (error: any) {
         console.error('Error in effect:', error.message);
@@ -90,7 +103,7 @@ export function ProjectHome({ projectId, messages }: Props) {
       const priorityRet = aggregateTestPriority(project);
       setPriorityCounts([...priorityRet]);
 
-      const { series, categories } = aggregateProgress(project, messages);
+      const { series, categories } = aggregateProgress(project, testRunCaseStatusMessages);
       setProgressSeries([...series]);
       setProgressCategories([...categories]);
     }
@@ -130,11 +143,11 @@ export function ProjectHome({ projectId, messages }: Props) {
       <div className="flex pb-20">
         <div style={{ width: '32rem', height: '18rem' }}>
           <h3>{messages.byType}</h3>
-          <TestTypesChart typesCounts={typesCounts} messages={messages} theme={theme} />
+          <TestTypesChart typesCounts={typesCounts} testTypeMessages={testTypeMessages} theme={theme} />
         </div>
         <div style={{ width: '30rem', height: '18rem' }}>
           <h3>{messages.byPriority}</h3>
-          <TestPriorityChart priorityCounts={priorityCounts} messages={messages} theme={theme} />
+          <TestPriorityChart priorityCounts={priorityCounts} priorityMessages={priorityMessages} theme={theme} />
         </div>
       </div>
     </div>

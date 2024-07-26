@@ -2,16 +2,17 @@ import React from 'react';
 import { useState, useEffect } from 'react';
 import dynamic from 'next/dynamic';
 import { testRunCaseStatus } from '@/config/selection';
-import { RunStatusCountType, RunMessages } from '@/types/run';
+import { RunStatusCountType } from '@/types/run';
+import { TestRunCaseStatusMessages } from '@/types/status';
 const Chart = dynamic(() => import('react-apexcharts'), { ssr: false });
 
 type Props = {
   statusCounts: RunStatusCountType[];
-  messages: RunMessages;
+  testRunCaseStatusMessages: TestRunCaseStatusMessages;
   theme: string | undefined;
 };
 
-export default function RunProgressDounut({ statusCounts, messages, theme }: Props) {
+export default function RunProgressDounut({ statusCounts, testRunCaseStatusMessages, theme }: Props) {
   const [chartData, setChartData] = useState({
     series: [],
     options: {
@@ -28,7 +29,7 @@ export default function RunProgressDounut({ statusCounts, messages, theme }: Pro
           return found ? found.count : 0;
         });
 
-        const labels = testRunCaseStatus.map((entry) => messages[entry.uid]);
+        const labels = testRunCaseStatus.map((entry) => testRunCaseStatusMessages[entry.uid]);
         const colors = testRunCaseStatus.map((entry) => entry.chartColor);
         const legend = {
           labels: {

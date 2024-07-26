@@ -37,6 +37,9 @@ import { fetchFolders } from '../../folders/foldersControl';
 import { TokenContext } from '@/utils/TokenProvider';
 import { useTheme } from 'next-themes';
 import { useFormGuard } from '@/utils/formGuard';
+import { PriorityMessages } from '@/types/priority';
+import { RunStatusMessages, TestRunCaseStatusMessages } from '@/types/status';
+import { TestTypeMessages } from '@/types/testType';
 
 const defaultTestRun = {
   id: 0,
@@ -53,10 +56,23 @@ type Props = {
   projectId: string;
   runId: string;
   messages: RunMessages;
+  runStatusMessages: RunStatusMessages;
+  testRunCaseStatusMessages: TestRunCaseStatusMessages;
+  priorityMessages: PriorityMessages;
+  testTypeMessages: TestTypeMessages;
   locale: string;
 };
 
-export default function RunEditor({ projectId, runId, messages, locale }: Props) {
+export default function RunEditor({
+  projectId,
+  runId,
+  messages,
+  runStatusMessages,
+  testRunCaseStatusMessages,
+  priorityMessages,
+  testTypeMessages,
+  locale,
+}: Props) {
   const context = useContext(TokenContext);
   const { theme, setTheme } = useTheme();
   const [testRun, setTestRun] = useState<RunType>(defaultTestRun);
@@ -202,7 +218,11 @@ export default function RunEditor({ projectId, runId, messages, locale }: Props)
                 </Tooltip>
               </div>
 
-              <RunProgressChart statusCounts={runStatusCounts} messages={messages} theme={theme} />
+              <RunProgressChart
+                statusCounts={runStatusCounts}
+                testRunCaseStatusMessages={testRunCaseStatusMessages}
+                theme={theme}
+              />
             </div>
           </div>
           <div className="flex-grow">
@@ -246,7 +266,7 @@ export default function RunEditor({ projectId, runId, messages, locale }: Props)
               >
                 {testRunStatus.map((status, index) => (
                   <SelectItem key={status.uid} value={index}>
-                    {messages[status.uid]}
+                    {runStatusMessages[status.uid]}
                   </SelectItem>
                 ))}
               </Select>
@@ -310,10 +330,13 @@ export default function RunEditor({ projectId, runId, messages, locale }: Props)
               isDisabled={!context.isProjectReporter(Number(projectId))}
               selectedKeys={selectedKeys}
               onSelectionChange={setSelectedKeys}
-              onStatusChange={handleChangeStatus}
+              onChangeStatus={handleChangeStatus}
               onIncludeCase={(includeTestId) => handleIncludeExcludeCase(true, includeTestId)}
               onExcludeCase={(excludeCaseId) => handleIncludeExcludeCase(false, excludeCaseId)}
               messages={messages}
+              testRunCaseStatusMessages={testRunCaseStatusMessages}
+              priorityMessages={priorityMessages}
+              testTypeMessages={testTypeMessages}
             />
           </div>
         </div>

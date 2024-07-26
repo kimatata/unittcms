@@ -1,5 +1,7 @@
+import { PriorityMessages } from '@/types/priority';
 import CaseEditor from './CaseEditor';
 import { useTranslations } from 'next-intl';
+import { TestTypeMessages } from '@/types/testType';
 
 export default function Page({
   params,
@@ -22,33 +24,16 @@ export default function Page({
     description: t('description'),
     testCaseDescription: t('test_case_description'),
     priority: t('priority'),
-    critical: t('critical'),
-    high: t('high'),
-    medium: t('medium'),
-    low: t('low'),
     type: t('type'),
-    other: t('other'),
-    security: t('security'),
-    performance: t('performance'),
-    accessibility: t('accessibility'),
-    functional: t('functional'),
-    acceptance: t('acceptance'),
-    usability: t('usability'),
-    smokeSanity: t('smoke_sanity'),
-    compatibility: t('compatibility'),
-    destructive: t('destructive'),
-    regression: t('regression'),
-    automated: t('automated'),
-    manual: t('manual'),
     template: t('template'),
     testDetail: t('test_detail'),
     preconditions: t('preconditions'),
+    expectedResult: t('expected_result'),
     step: t('step'),
     text: t('text'),
     steps: t('steps'),
     newStep: t('new_step'),
     detailsOfTheStep: t('details_of_the_step'),
-    expectedResult: t('expected_result'),
     deleteThisStep: t('delete_this_step'),
     insertStep: t('insert_step'),
     attachments: t('attachments'),
@@ -61,12 +46,39 @@ export default function Page({
     areYouSureLeave: t('are_you_sure_leave'),
   };
 
+  const tt = useTranslations('Type');
+  const testTypeMessages: TestTypeMessages = {
+    other: tt('other'),
+    security: tt('security'),
+    performance: tt('performance'),
+    accessibility: tt('accessibility'),
+    functional: tt('functional'),
+    acceptance: tt('acceptance'),
+    usability: tt('usability'),
+    smokeSanity: tt('smoke_sanity'),
+    compatibility: tt('compatibility'),
+    destructive: tt('destructive'),
+    regression: tt('regression'),
+    automated: tt('automated'),
+    manual: tt('manual'),
+  };
+
+  const priorityTranslation = useTranslations('Priority');
+  const priorityMessages: PriorityMessages = {
+    critical: priorityTranslation('critical'),
+    high: priorityTranslation('high'),
+    medium: priorityTranslation('medium'),
+    low: priorityTranslation('low'),
+  };
+
   return (
     <CaseEditor
       projectId={params.projectId}
       folderId={params.folderId}
       caseId={params.caseId}
       messages={messages}
+      testTypeMessages={testTypeMessages}
+      priorityMessages={priorityMessages}
       locale={params.locale}
     />
   );

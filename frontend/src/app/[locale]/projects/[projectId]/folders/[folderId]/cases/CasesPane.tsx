@@ -6,15 +6,17 @@ import { fetchCases, createCase, deleteCases } from '@/utils/caseControl';
 import { CaseType, CasesMessages } from '@/types/case';
 import DeleteConfirmDialog from '@/components/DeleteConfirmDialog';
 import CaseDialog from './CaseDialog';
+import { PriorityMessages } from '@/types/priority';
 
 type Props = {
   projectId: string;
   folderId: string;
   messages: CasesMessages;
+  priorityMessages: PriorityMessages;
   locale: string;
 };
 
-export default function CasesPane({ projectId, folderId, messages, locale }: Props) {
+export default function CasesPane({ projectId, folderId, messages, priorityMessages, locale }: Props) {
   const [cases, setCases] = useState<CaseType[]>([]);
   const context = useContext(TokenContext);
   const [isCaseDialogOpen, setIsCaseDialogOpen] = useState(false);
@@ -81,6 +83,7 @@ export default function CasesPane({ projectId, folderId, messages, locale }: Pro
         onDeleteCase={onDeleteCase}
         onDeleteCases={onDeleteCases}
         messages={messages}
+        priorityMessages={priorityMessages}
         locale={locale}
       />
 
