@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, ReactNode } from 'react';
 import {
   Table,
   TableHeader,
@@ -129,7 +129,7 @@ export default function TestCaseSelector({
     return isIncluded;
   };
 
-  const renderCell = (testCase: CaseType, columnKey: Key) => {
+  const renderCell = (testCase: CaseType, columnKey: string): ReactNode => {
     const cellValue = testCase[columnKey as keyof CaseType];
     const isIncluded = isCaseIncluded(testCase);
     const runStatus = testCase.RunCases && testCase.RunCases.length > 0 ? testCase.RunCases[0].status : 0;
@@ -144,13 +144,13 @@ export default function TestCaseSelector({
             endContent={<MoveDiagonal size={12} className="text-transparent group-hover:text-inherit" />}
             onPress={() => showTestCaseDetailDialog(testCase.id)}
           >
-            {cellValue}
+            {cellValue as string}
           </Button>
         );
       case 'priority':
         return (
           <div className={isIncluded ? '' : notIncludedCaseClass}>
-            <TestCasePriority priorityValue={cellValue} priorityMessages={priorityMessages} />
+            <TestCasePriority priorityValue={cellValue as number} priorityMessages={priorityMessages} />
           </div>
         );
       case 'runStatus':
@@ -219,7 +219,7 @@ export default function TestCaseSelector({
           </Dropdown>
         );
       default:
-        return cellValue;
+        return cellValue as string;
     }
   };
 

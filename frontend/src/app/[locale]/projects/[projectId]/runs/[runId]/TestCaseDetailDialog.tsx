@@ -109,14 +109,24 @@ export default function TestCaseDetailDialog({
           {templates[testCase.template].uid === 'text' ? (
             <>
               <p className={'font-bold mt-2'}>{messages.testDetail}</p>
-              <div className="flex my-2">
+              <div className="flex gap-2 my-2">
                 <div className="w-1/2">
-                  <p className={'font-bold'}>{messages.preconditions}</p>
-                  <div>{testCase.preConditions}</div>
+                  <Textarea
+                    isReadOnly
+                    size="sm"
+                    variant="flat"
+                    label={messages.preconditions}
+                    value={testCase.preConditions}
+                  />
                 </div>
                 <div className="w-1/2">
-                  <p className={'font-bold'}>{messages.expectedResult}</p>
-                  <div>{testCase.expectedResults}</div>
+                  <Textarea
+                    isReadOnly
+                    size="sm"
+                    variant="flat"
+                    label={messages.expectedResult}
+                    value={testCase.expectedResults}
+                  />
                 </div>
               </div>
             </>
