@@ -7,10 +7,9 @@ import Avatar from 'boring-avatars';
 type Props = {
   users: UserType[];
   messages: AdminMessages;
-  locale: string;
 };
 
-export default function UsersTable({ users, messages, locale }: Props) {
+export default function UsersTable({ users, messages }: Props) {
   const headerColumns = [
     { name: messages.avatar, uid: 'avatar', sortable: false },
     { name: messages.id, uid: 'id', sortable: true },
@@ -34,7 +33,7 @@ export default function UsersTable({ users, messages, locale }: Props) {
     });
   }, [sortDescriptor, users]);
 
-  const renderCell = useCallback((user: UserType, columnKey: Key) => {
+  const renderCell = useCallback((user: UserType, columnKey: string) => {
     const cellValue = user[columnKey as keyof UserType];
 
     switch (columnKey) {
@@ -54,7 +53,8 @@ export default function UsersTable({ users, messages, locale }: Props) {
       case 'name':
         return cellValue;
       case 'role':
-        return <span>{messages[roles[cellValue].uid]}</span>;
+        return <span>{messages[roles[cellValue as number].uid]}</span>;
+
       default:
         return cellValue;
     }
@@ -101,7 +101,9 @@ export default function UsersTable({ users, messages, locale }: Props) {
         </TableHeader>
         <TableBody emptyContent={messages.noUsersFound} items={sortedItems}>
           {(item) => (
-            <TableRow key={item.id}>{(columnKey) => <TableCell>{renderCell(item, columnKey)}</TableCell>}</TableRow>
+            <TableRow key={item.id}>
+              {(columnKey) => <TableCell>{renderCell(item, columnKey as string)}</TableCell>}
+            </TableRow>
           )}
         </TableBody>
       </Table>

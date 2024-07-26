@@ -11,7 +11,7 @@ export type UserType = {
 
 export type TokenProps = {
   toastMessages: ToastMessages;
-  locale: string;
+  locale: LocaleCodeType;
   children?: React.ReactNode;
 };
 
@@ -73,6 +73,8 @@ export type AdminMessages = {
   username: string;
   role: string;
   noUsersFound: string;
+  administrator: string;
+  user: string;
 };
 
 export type AccountDropDownMessages = {

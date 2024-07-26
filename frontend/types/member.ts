@@ -1,3 +1,11 @@
+export type GlobalRoleType = {
+  uid: 'administrator' | 'user';
+};
+
+export type MemberRoleType = {
+  uid: 'manager' | 'developer' | 'reporter';
+};
+
 export type MembersMessages = {
   memberManagement: string;
   avatar: string;

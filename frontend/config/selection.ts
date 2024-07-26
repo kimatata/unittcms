@@ -1,14 +1,15 @@
+import { GlobalRoleType, MemberRoleType } from '@/types/member';
 import { RunStatusType, TestRunCaseStatusType } from '@/types/status';
 import { TestTypeType } from '@/types/testType';
 import { PriorityType } from '@/types/priority';
+import { LocaleType } from '@/types/locale';
 
-const roles = [{ uid: 'administrator' }, { uid: 'user' }];
-
-const memberRoles = [{ uid: 'manager' }, { uid: 'developer' }, { uid: 'reporter' }];
+const roles: GlobalRoleType[] = [{ uid: 'administrator' }, { uid: 'user' }];
+const memberRoles: MemberRoleType[] = [{ uid: 'manager' }, { uid: 'developer' }, { uid: 'reporter' }];
 
 const categoricalPalette = ['#fba91e', '#6ea56c', '#3ac6e1', '#feda2f', '#f15f47', '#244470', '#9c80bb', '#f595a6'];
 
-const locales = [
+const locales: LocaleType[] = [
   { code: 'en', name: 'English' },
   { code: 'ja', name: '日本語' },
 ];
