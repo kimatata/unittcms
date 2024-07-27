@@ -33,7 +33,7 @@ export default function FoldersPane({ projectId, messages, locale }: Props) {
         return;
       }
       try {
-        const folders: FolderType[] = await fetchFolders(context.token.access_token, projectId);
+        const folders: FolderType[] = await fetchFolders(context.token.access_token, Number(projectId));
         setFolders(folders);
 
         // no folder on project

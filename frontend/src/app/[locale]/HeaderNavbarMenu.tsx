@@ -23,6 +23,7 @@ import { locales } from '@/config/selection';
 import DropdownAccount from './DropdownAccount';
 import DropdownLanguage from './DropdownLanguage';
 import UserAvatar from '@/components/UserAvatar';
+import { LocaleCodeType } from '@/types/locale';
 
 type NabbarMenuMessages = {
   projects: string;
@@ -39,7 +40,7 @@ type NabbarMenuMessages = {
 
 type Props = {
   messages: NabbarMenuMessages;
-  locale: string;
+  locale: LocaleCodeType;
 };
 
 export default function HeaderNavbarMenu({ messages, locale }: Props) {
@@ -202,7 +203,11 @@ export default function HeaderNavbarMenu({ messages, locale }: Props) {
                 title={messages.signOut}
                 startContent={<ArrowRightFromLine size={16} />}
                 onPress={() => {
-                  context.setToken(null);
+                  context.setToken({
+                    access_token: '',
+                    expires_at: 0,
+                    user: null,
+                  });
                   context.removeTokenFromLocalStorage();
                   router.push(`/`, { locale: locale });
                   setIsMenuOpen(false);

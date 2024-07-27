@@ -1,4 +1,4 @@
-import { GlobalRoleType, MemberRoleType } from '@/types/member';
+import { AutomationStatusType, GlobalRoleType, MemberRoleType, TemplateType } from '@/types/base';
 import { RunStatusType, TestRunCaseStatusType } from '@/types/status';
 import { TestTypeType } from '@/types/testType';
 import { PriorityType } from '@/types/priority';
@@ -60,14 +60,14 @@ const testTypes: TestTypeType[] = [
   { uid: 'manual', chartColor: categoricalPalette[4] },
 ];
 
-const automationStatus = [
-  { name: 'Automated', uid: 'automated' },
-  { name: 'Automation Not Required', uid: 'automation-not-required' },
-  { name: 'Cannot Be Automated', uid: 'cannot-be-automated' },
-  { name: 'Obsolete', uid: 'obsolete' },
+const automationStatus: AutomationStatusType[] = [
+  { uid: 'automated' },
+  { uid: 'automation-not-required' },
+  { uid: 'cannot-be-automated' },
+  { uid: 'obsolete' },
 ];
 
-const templates = [{ uid: 'text' }, { uid: 'step' }];
+const templates: TemplateType[] = [{ uid: 'text' }, { uid: 'step' }];
 
 export {
   roles,

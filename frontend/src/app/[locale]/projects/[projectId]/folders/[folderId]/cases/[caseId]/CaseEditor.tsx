@@ -136,11 +136,20 @@ export default function CaseEditor({
 
   const handleDrop = async (event: DragEvent) => {
     event.preventDefault();
-    handleFetchCreateAttachments(Number(caseId), event.dataTransfer.files);
+    if (event.dataTransfer) {
+      const filesArray = Array.from(event.dataTransfer.files);
+      handleFetchCreateAttachments(Number(caseId), filesArray);
+    }
   };
 
   const handleInput = (event: DragEvent) => {
-    handleFetchCreateAttachments(Number(caseId), event.target.files);
+    if (event.target) {
+      const input = event.target as HTMLInputElement;
+      if (input.files) {
+        const filesArray = Array.from(input.files);
+        handleFetchCreateAttachments(Number(caseId), filesArray);
+      }
+    }
   };
 
   const handleFetchCreateAttachments = async (caseId: number, files: File[]) => {
@@ -149,28 +158,36 @@ export default function CaseEditor({
     if (newAttachments) {
       const newAttachmentsWithJoinTable = [];
       newAttachments.forEach((attachment: AttachmentType) => {
-        attachment.caseAttachments = { AttachmentId: attachment.id };
+        attachment.caseAttachments = {
+          createdAt: new Date(),
+          updatedAt: new Date(),
+          caseId: 0,
+          attachmentId: attachment.id,
+        };
         newAttachmentsWithJoinTable.push(attachment);
       });
       const updatedAttachments = testCase.Attachments;
-      updatedAttachments.push(...newAttachments);
+      if (updatedAttachments) {
+        updatedAttachments.push(...newAttachments);
 
-      setTestCase({
-        ...testCase,
-        Attachments: updatedAttachments,
-      });
+        setTestCase({
+          ...testCase,
+          Attachments: updatedAttachments,
+        });
+      }
     }
   };
 
   const onAttachmentDelete = async (attachmentId: number) => {
     await fetchDeleteAttachment(attachmentId);
+    if (testCase.Attachments) {
+      const filteredAttachments = testCase.Attachments.filter((attachment) => attachment.id !== attachmentId);
 
-    const filteredAttachments = testCase.Attachments.filter((attachment) => attachment.id !== attachmentId);
-
-    setTestCase({
-      ...testCase,
-      Attachments: filteredAttachments,
-    });
+      setTestCase({
+        ...testCase,
+        Attachments: filteredAttachments,
+      });
+    }
   };
 
   useEffect(() => {
@@ -261,10 +278,12 @@ export default function CaseEditor({
             size="sm"
             variant="bordered"
             selectedKeys={[priorities[testCase.priority].uid]}
-            onSelectionChange={(e) => {
-              const selectedUid = e.anchorKey;
-              const index = priorities.findIndex((priority) => priority.uid === selectedUid);
-              setTestCase({ ...testCase, priority: index });
+            onSelectionChange={(newSelection) => {
+              if (newSelection !== 'all' && newSelection.size !== 0) {
+                const selectedUid = Array.from(newSelection)[0];
+                const index = priorities.findIndex((priority) => priority.uid === selectedUid);
+                setTestCase({ ...testCase, priority: index });
+              }
             }}
             startContent={
               <Circle size={8} color={priorities[testCase.priority].color} fill={priorities[testCase.priority].color} />
@@ -285,10 +304,12 @@ export default function CaseEditor({
             size="sm"
             variant="bordered"
             selectedKeys={[testTypes[testCase.type].uid]}
-            onSelectionChange={(e) => {
-              const selectedUid = e.anchorKey;
-              const index = testTypes.findIndex((type) => type.uid === selectedUid);
-              setTestCase({ ...testCase, type: index });
+            onSelectionChange={(newSelection) => {
+              if (newSelection !== 'all' && newSelection.size !== 0) {
+                const selectedUid = Array.from(newSelection)[0];
+                const index = testTypes.findIndex((type) => type.uid === selectedUid);
+                setTestCase({ ...testCase, type: index });
+              }
             }}
             label={messages.type}
             className="mt-3 max-w-xs"
@@ -306,10 +327,12 @@ export default function CaseEditor({
             size="sm"
             variant="bordered"
             selectedKeys={[templates[testCase.template].uid]}
-            onSelectionChange={(e) => {
-              const selectedUid = e.anchorKey;
-              const index = templates.findIndex((template) => template.uid === selectedUid);
-              setTestCase({ ...testCase, template: index });
+            onSelectionChange={(newSelection) => {
+              if (newSelection !== 'all' && newSelection.size !== 0) {
+                const selectedUid = Array.from(newSelection)[0];
+                const index = templates.findIndex((template) => template.uid === selectedUid);
+                setTestCase({ ...testCase, template: index });
+              }
             }}
             label={messages.template}
             className="mt-3 max-w-xs"

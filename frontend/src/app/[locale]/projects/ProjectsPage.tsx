@@ -7,10 +7,11 @@ import { ProjectType, ProjectsMessages } from '@/types/project';
 import ProjectsTable from './ProjectsTable';
 import ProjectDialog from '@/components/ProjectDialog';
 import { fetchProjects, createProject } from '@/utils/projectsControl';
+import { LocaleCodeType } from '@/types/locale';
 
 export type Props = {
   messages: ProjectsMessages;
-  locale: string;
+  locale: LocaleCodeType;
 };
 
 export default function ProjectsPage({ messages, locale }: Props) {

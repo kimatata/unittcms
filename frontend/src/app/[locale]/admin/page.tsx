@@ -1,6 +1,7 @@
 import { useTranslations } from 'next-intl';
 import AdminPage from './AdminPage';
-import { PageType } from '@/types/common';
+import { PageType } from '@/types/base';
+import { LocaleCodeType } from '@/types/locale';
 
 export default function Page({ params }: PageType) {
   const t = useTranslations('Admin');
@@ -19,7 +20,7 @@ export default function Page({ params }: PageType) {
 
   return (
     <div className="w-full flex items-center justify-center">
-      <AdminPage messages={messages} locale={params.locale} />
+      <AdminPage messages={messages} locale={params.locale as LocaleCodeType} />
     </div>
   );
 }

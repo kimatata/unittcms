@@ -1,6 +1,7 @@
-import { PageType } from '@/types/common';
+import { PageType } from '@/types/base';
 import AuthPage from '../authPage';
 import { useTranslations } from 'next-intl';
+import { LocaleCodeType } from '@/types/locale';
 
 export default function Page({ params }: PageType) {
   const t = useTranslations('Auth');
@@ -25,7 +26,7 @@ export default function Page({ params }: PageType) {
   };
   return (
     <>
-      <AuthPage isSignup={false} messages={messages} locale={params.locale} />
+      <AuthPage isSignup={false} messages={messages} locale={params.locale as LocaleCodeType} />
     </>
   );
 }

@@ -7,13 +7,14 @@ import { CaseType, CasesMessages } from '@/types/case';
 import DeleteConfirmDialog from '@/components/DeleteConfirmDialog';
 import CaseDialog from './CaseDialog';
 import { PriorityMessages } from '@/types/priority';
+import { LocaleCodeType } from '@/types/locale';
 
 type Props = {
   projectId: string;
   folderId: string;
   messages: CasesMessages;
   priorityMessages: PriorityMessages;
-  locale: string;
+  locale: LocaleCodeType;
 };
 
 export default function CasesPane({ projectId, folderId, messages, priorityMessages, locale }: Props) {
@@ -67,7 +68,7 @@ export default function CasesPane({ projectId, folderId, messages, priorityMessa
 
   const onConfirm = async () => {
     if (deleteCaseIds.length > 0) {
-      await deleteCases(context.token.access_token, deleteCaseIds, projectId);
+      await deleteCases(context.token.access_token, deleteCaseIds, Number(projectId));
       setCases(cases.filter((entry) => !deleteCaseIds.includes(entry.id)));
       closeDeleteConfirmDialog();
     }

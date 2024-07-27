@@ -1,7 +1,8 @@
 import { useTranslations } from 'next-intl';
 import HeaderNavbarMenu from './HeaderNavbarMenu';
+import { LocaleCodeType } from '@/types/locale';
 
-export default function Header(params: { locale: string }) {
+export default function Header(params: { locale: LocaleCodeType }) {
   const t = useTranslations('Header');
   const messages = {
     projects: t('projects'),

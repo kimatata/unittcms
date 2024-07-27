@@ -77,9 +77,4 @@ function generateRandomEmail() {
   return `${randomString}@example.com`;
 }
 
-function getRandomAvatarPath() {
-  const randomIndex = Math.floor(Math.random() * avatars.length);
-  return avatars[randomIndex];
-}
-
-export { signUp, signIn, signInAsGuest, getRandomAvatarPath };
+export { signUp, signIn, signInAsGuest };

@@ -1,10 +1,12 @@
-import { PageType } from '@/types/common';
+import { PageType } from '@/types/base';
 import ProjectsPage from './ProjectsPage';
 import { useTranslations } from 'next-intl';
+import { LocaleCodeType } from '@/types/locale';
+import { ProjectsMessages } from '@/types/project';
 
 export default function Page({ params }: PageType) {
   const t = useTranslations('Projects');
-  const messages = {
+  const messages: ProjectsMessages = {
     projectList: t('projectList'),
     project: t('project'),
     newProject: t('new_project'),
@@ -20,12 +22,13 @@ export default function Page({ params }: PageType) {
     ifYouMakePublic: t('if_you_make_public'),
     close: t('close'),
     create: t('create'),
+    update: t('update'),
     pleaseEnter: t('please_enter'),
     noProjectsFound: t('no_projects_found'),
   };
   return (
     <>
-      <ProjectsPage messages={messages} locale={params.locale} />
+      <ProjectsPage messages={messages} locale={params.locale as LocaleCodeType} />
     </>
   );
 }

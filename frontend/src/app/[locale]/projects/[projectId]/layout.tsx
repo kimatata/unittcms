@@ -1,3 +1,4 @@
+import { ProjectMessages } from '@/types/project';
 import Sidebar from './Sidebar';
 import { useTranslations } from 'next-intl';
 
@@ -9,7 +10,7 @@ export default function SidebarLayout({
   params: { locale: string };
 }) {
   const t = useTranslations('Project');
-  const messages = {
+  const messages: ProjectMessages = {
     home: t('home'),
     testCases: t('test_cases'),
     testRuns: t('test_runs'),

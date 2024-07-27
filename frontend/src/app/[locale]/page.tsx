@@ -4,9 +4,9 @@ import { title, subtitle } from '@/components/primitives';
 import PaneMainTitle from './PaneMainTitle';
 import PaneMainFeatures from './PaneMainFeatures';
 import DemoImage from './DemoImage';
-import { PageType } from '@/types/common';
+import { PageType } from '@/types/base';
+import { LocaleCodeType } from '@/types/locale';
 
-// export default function Home(params: { locale: string }) {
 export default function Home({ params }: PageType) {
   const t = useTranslations('Index');
 
@@ -37,7 +37,7 @@ export default function Home({ params }: PageType) {
     <section className="mx-auto max-w-screen-xl my-12">
       <div className="flex flex-wrap">
         <div className="w-full md:w-7/12 order-last md:order-first p-4">
-          <PaneMainTitle locale={params.locale} />
+          <PaneMainTitle locale={params.locale as LocaleCodeType} />
         </div>
 
         <div className="w-full md:w-5/12 p-4">

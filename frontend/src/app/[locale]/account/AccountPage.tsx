@@ -7,6 +7,7 @@ import Avatar from 'boring-avatars';
 import { fetchMyProjects } from '@/utils/projectsControl';
 import { ProjectType } from '@/types/project';
 import PublicityChip from '@/components/PublicityChip';
+import { LocaleCodeType } from '@/types/locale';
 
 type AccountPageMessages = {
   yourProjects: string;
@@ -17,7 +18,7 @@ type AccountPageMessages = {
 
 type Props = {
   messages: AccountPageMessages;
-  locale: string;
+  locale: LocaleCodeType;
 };
 
 export default function AccountPage({ messages, locale }: Props) {
@@ -50,13 +51,13 @@ export default function AccountPage({ messages, locale }: Props) {
               <CardHeader className="flex gap-6">
                 <Avatar
                   size={48}
-                  name={context.token.user.username}
+                  name={context.token!.user!.username}
                   variant="beam"
                   colors={['#0A0310', '#49007E', '#FF005B', '#FF7D10', '#FFB238']}
                 />
                 <div className="flex flex-col">
-                  <p className="text-xl font-bold">{context.token.user.username}</p>
-                  <p className="text-lg text-default-500">{context.token.user.email}</p>
+                  <p className="text-xl font-bold">{context.token!.user!.username}</p>
+                  <p className="text-lg text-default-500">{context.token!.user!.email}</p>
                 </div>
               </CardHeader>
             </Card>

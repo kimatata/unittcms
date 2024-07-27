@@ -45,8 +45,8 @@ type RunCaseType = {
 type CaseAttachmentType = {
   createdAt: Date;
   updatedAt: Date;
-  CaseId: number;
-  AttachmentId: number;
+  caseId: number;
+  attachmentId: number;
 };
 
 type AttachmentType = {
@@ -97,6 +97,7 @@ type CaseMessages = {
   pleaseEnterTitle: string;
   description: string;
   testCaseDescription: string;
+  priority: string;
   type: string;
   template: string;
   testDetail: string;
