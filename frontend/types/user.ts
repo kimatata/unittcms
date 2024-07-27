@@ -1,3 +1,4 @@
+import { LocaleCodeType } from './locale';
 import { ToastMessages } from './toast';
 
 export type UserType = {

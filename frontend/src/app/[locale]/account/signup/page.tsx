@@ -1,7 +1,8 @@
+import { PageType } from '@/types/common';
 import AuthPage from '../authPage';
 import { useTranslations } from 'next-intl';
 
-export default function Page(params: { locale: string }) {
+export default function Page({ params }: PageType) {
   const t = useTranslations('Auth');
   const messages = {
     title: t('signup'),

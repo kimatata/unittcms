@@ -128,6 +128,7 @@
     "if_you_make_public": "Making a project public makes it visible to users who are not project members.",
     "close": "Close",
     "create": "Create",
+    "update": "Update",
     "please_enter": "Please enter project name",
     "no_projects_found": "No projects found"
   },

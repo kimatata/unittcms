@@ -1,7 +1,8 @@
+import { PageType } from '@/types/common';
 import ProjectsPage from './ProjectsPage';
 import { useTranslations } from 'next-intl';
 
-export default function Page(params: { locale: string }) {
+export default function Page({ params }: PageType) {
   const t = useTranslations('Projects');
   const messages = {
     projectList: t('projectList'),

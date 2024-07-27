@@ -1,6 +1,8 @@
 import { useTranslations } from 'next-intl';
 import AccountPage from './AccountPage';
-export default function Page(params: { locale: string }) {
+import { PageType } from '@/types/common';
+
+export default function Page({ params }: PageType) {
   const t = useTranslations('Auth');
   const messages = {
     yourProjects: t('your_projects'),

@@ -1,7 +1,8 @@
 import { useTranslations } from 'next-intl';
 import AdminPage from './AdminPage';
+import { PageType } from '@/types/common';
 
-export default function Page(params: { locale: string }) {
+export default function Page({ params }: PageType) {
   const t = useTranslations('Admin');
   const messages = {
     admin: t('admin'),

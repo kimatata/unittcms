@@ -10,7 +10,7 @@ export default function PublicityChip({ context }: Props) {
   return context.isSignedIn() ? (
     <Avatar
       size={16}
-      name={context.token.user.username}
+      name={context.token!.user!.username}
       variant="beam"
       colors={['#0A0310', '#49007E', '#FF005B', '#FF7D10', '#FFB238']}
     />

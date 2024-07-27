@@ -15,6 +15,7 @@ export type ProjectType = {
 
 export type ProjectsMessages = {
   projectList: string;
+  project: string;
   newProject: string;
   id: string;
   publicity: string;
@@ -28,6 +29,7 @@ export type ProjectsMessages = {
   ifYouMakePublic: string;
   close: string;
   create: string;
+  update: string;
   pleaseEnter: string;
   noProjectsFound: string;
 };

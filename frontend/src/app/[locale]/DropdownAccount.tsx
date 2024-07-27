@@ -18,7 +18,11 @@ export default function DropdownAccount({ messages, locale, onItemPress }: Props
   const context = useContext(TokenContext);
 
   const signOut = () => {
-    context.setToken(null);
+    context.setToken({
+      access_token: '',
+      expires_at: 0,
+      user: null,
+    });
     context.removeTokenFromLocalStorage();
     router.push(`/`, { locale: locale });
   };
@@ -74,7 +78,7 @@ export default function DropdownAccount({ messages, locale, onItemPress }: Props
           startContent={<UserAvatar context={context} />}
           endContent={<ChevronDown size={16} />}
         >
-          {context.isSignedIn() ? context.token.user.username : messages.signIn}
+          {context.isSignedIn() ? context.token!.user!.username : messages.signIn}
         </Button>
       </DropdownTrigger>
       {context.isSignedIn() ? (

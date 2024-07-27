@@ -4,8 +4,10 @@ import { title, subtitle } from '@/components/primitives';
 import PaneMainTitle from './PaneMainTitle';
 import PaneMainFeatures from './PaneMainFeatures';
 import DemoImage from './DemoImage';
+import { PageType } from '@/types/common';
 
-export default function Home(params: { locale: string }) {
+// export default function Home(params: { locale: string }) {
+export default function Home({ params }: PageType) {
   const t = useTranslations('Index');
 
   const demoImages = [
