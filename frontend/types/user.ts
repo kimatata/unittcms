@@ -11,8 +11,8 @@ export type UserType = {
 };
 
 export type TokenProps = {
-  toastMessages: ToastMessages;
-  locale: LocaleCodeType;
+  toastMessages?: ToastMessages;
+  locale?: LocaleCodeType;
   children?: React.ReactNode;
 };
 
