@@ -3,7 +3,7 @@ import { useEffect, useState, useContext } from 'react';
 import { Button } from '@nextui-org/react';
 import { Plus } from 'lucide-react';
 import { TokenContext } from '@/utils/TokenProvider';
-import { ProjectType, ProjectsMessages } from '@/types/project';
+import { ProjectDialogMessages, ProjectType, ProjectsMessages } from '@/types/project';
 import ProjectsTable from './ProjectsTable';
 import ProjectDialog from '@/components/ProjectDialog';
 import { fetchProjects, createProject } from '@/utils/projectsControl';
@@ -11,10 +11,11 @@ import { LocaleCodeType } from '@/types/locale';
 
 export type Props = {
   messages: ProjectsMessages;
+  projectDialogMessages: ProjectDialogMessages;
   locale: LocaleCodeType;
 };
 
-export default function ProjectsPage({ messages, locale }: Props) {
+export default function ProjectsPage({ messages, projectDialogMessages, locale }: Props) {
   const context = useContext(TokenContext);
   const [projects, setProjects] = useState<ProjectType[]>([]);
 
@@ -74,7 +75,7 @@ export default function ProjectsPage({ messages, locale }: Props) {
         editingProject={editingProject}
         onCancel={closeDialog}
         onSubmit={onSubmit}
-        messages={messages}
+        projectDialogMessages={projectDialogMessages}
       />
     </div>
   );

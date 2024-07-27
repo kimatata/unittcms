@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, ReactNode } from 'react';
 import {
   Table,
   TableHeader,
@@ -17,6 +17,7 @@ import { Link, NextUiLinkClasses } from '@/src/navigation';
 import { MoreVertical } from 'lucide-react';
 import { RunsMessages, RunType } from '@/types/run';
 import dayjs from 'dayjs';
+import { LocaleCodeType } from '@/types/locale';
 
 type Props = {
   projectId: string;
@@ -24,7 +25,7 @@ type Props = {
   runs: RunType[];
   onDeleteRun: (runId: number) => void;
   messages: RunsMessages;
-  locale: string;
+  locale: LocaleCodeType;
 };
 
 export default function RunsTable({ projectId, isDisabled, runs, onDeleteRun, messages, locale }: Props) {
@@ -63,19 +64,19 @@ export default function RunsTable({ projectId, isDisabled, runs, onDeleteRun, me
     return text.length > maxLength ? text.slice(0, maxLength) + '...' : text;
   };
 
-  const renderCell = (run: RunType, columnKey: Key) => {
+  const renderCell = (run: RunType, columnKey: string) => {
     const cellValue = run[columnKey as keyof RunType];
 
     switch (columnKey) {
       case 'id':
-        return <span>{cellValue}</span>;
+        return <span>{cellValue as number}</span>;
       case 'name':
         const maxLength = 30;
         const truncatedDescription = truncateText(run.description, maxLength);
         return (
           <div>
             <Link href={`/projects/${projectId}/runs/${run.id}`} locale={locale} className={NextUiLinkClasses}>
-              {cellValue}
+              {cellValue as string}
             </Link>
             <div className="text-xs text-default-500">
               <div>{truncatedDescription}</div>
@@ -83,7 +84,7 @@ export default function RunsTable({ projectId, isDisabled, runs, onDeleteRun, me
           </div>
         );
       case 'updatedAt':
-        return <span>{dayjs(cellValue).format('YYYY/MM/DD HH:mm')}</span>;
+        return <span>{dayjs(cellValue as string).format('YYYY/MM/DD HH:mm')}</span>;
       case 'actions':
         return (
           <Dropdown>
@@ -145,7 +146,9 @@ export default function RunsTable({ projectId, isDisabled, runs, onDeleteRun, me
         </TableHeader>
         <TableBody emptyContent={messages.noRunsFound} items={sortedItems}>
           {(item) => (
-            <TableRow key={item.id}>{(columnKey) => <TableCell>{renderCell(item, columnKey)}</TableCell>}</TableRow>
+            <TableRow key={item.id}>
+              {(columnKey) => <TableCell>{renderCell(item, columnKey as string) as ReactNode}</TableCell>}
+            </TableRow>
           )}
         </TableBody>
       </Table>

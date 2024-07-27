@@ -4,6 +4,7 @@ import dynamic from 'next/dynamic';
 import { testRunCaseStatus } from '@/config/selection';
 import { RunStatusCountType } from '@/types/run';
 import { TestRunCaseStatusMessages } from '@/types/status';
+import { ChartDataType } from '@/types/chart';
 const Chart = dynamic(() => import('react-apexcharts'), { ssr: false });
 
 type Props = {
@@ -13,7 +14,7 @@ type Props = {
 };
 
 export default function RunProgressDounut({ statusCounts, testRunCaseStatusMessages, theme }: Props) {
-  const [chartData, setChartData] = useState({
+  const [chartData, setChartData] = useState<ChartDataType>({
     series: [],
     options: {
       labels: [],

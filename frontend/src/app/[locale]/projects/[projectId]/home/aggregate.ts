@@ -1,6 +1,7 @@
 import { ProjectType } from '@/types/project';
 import { testTypes, priorities, testRunCaseStatus } from '@/config/selection';
 import { TestRunCaseStatusMessages } from '@/types/status';
+import { CasePriorityCountType, CaseTypeCountType } from '@/types/chart';
 
 // aggregate folder, case, run mum
 function aggregateBasicInfo(project: ProjectType) {
@@ -15,48 +16,58 @@ function aggregateBasicInfo(project: ProjectType) {
   return { folderNum, runNum, caseNum };
 }
 
-// aggregate test types of each case
-function aggregateTestType(project: ProjectType) {
-  const typesCounts = {};
+function aggregateTestType(project: ProjectType): CaseTypeCountType[] {
+  // count how many test cases are for each type
+  const typesCounts: number[] = testTypes.map((entry) => {
+    return 0;
+  });
   project.Folders.forEach((folder) => {
     folder.Cases.forEach((testcase) => {
       const type = testcase.type;
-      typesCounts[type] = (typesCounts[type] || 0) + 1;
+      typesCounts[type]++;
     });
   });
 
-  const result = [];
+  const result: CaseTypeCountType[] = [];
   for (let type = 0; type <= testTypes.length; type++) {
-    result.push({ type: type, count: typesCounts[type] || 0 });
+    result.push({ type: type, count: typesCounts[type] });
   }
 
   return result;
 }
 
 function aggregateTestPriority(project: ProjectType) {
-  const priorityCounts = {};
+  // count how many test cases are for each priority
+  const priorityCounts: number[] = priorities.map((entry) => {
+    return 0;
+  });
   project.Folders.forEach((folder) => {
     folder.Cases.forEach((testcase) => {
       const priority = testcase.priority;
-      priorityCounts[priority] = (priorityCounts[priority] || 0) + 1;
+      priorityCounts[priority]++;
     });
   });
 
-  const result = [];
+  const result: CasePriorityCountType[] = [];
   for (let priority = 0; priority <= priorities.length; priority++) {
-    result.push({ priority: priority, count: priorityCounts[priority] || 0 });
+    result.push({ priority: priority, count: priorityCounts[priority] });
   }
 
   return result;
 }
 
 function aggregateProgress(project: ProjectType, testRunCaseStatusMessages: TestRunCaseStatusMessages) {
-  let series = testRunCaseStatus.map((status) => {
+  type ChartSeries = { name: string; data: number[] };
+  let series: ChartSeries[] = testRunCaseStatus.map((status) => {
     return { name: testRunCaseStatusMessages[status.uid], data: [] };
   });
-  let categories = [];
+  let categories: string[] = [];
 
   project.Runs.forEach((run) => {
+    if (!run.RunCases) {
+      return;
+    }
+
     run.RunCases.forEach((runCase) => {
       const createdAtDate = new Date(runCase.createdAt);
       const dateString = createdAtDate.toISOString().slice(0, 10);
@@ -72,6 +83,10 @@ function aggregateProgress(project: ProjectType, testRunCaseStatusMessages: Test
   });
 
   project.Runs.forEach((run) => {
+    if (!run.RunCases) {
+      return;
+    }
+
     run.RunCases.forEach((runCase) => {
       const createdAtDate = new Date(runCase.createdAt);
       const dateString = createdAtDate.toISOString().slice(0, 10);

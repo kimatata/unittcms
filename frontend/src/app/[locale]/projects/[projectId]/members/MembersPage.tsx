@@ -40,11 +40,13 @@ export default function MembersPage({ projectId, messages, locale }: Props) {
   }, [context]);
 
   const handleAddMember = async (userAdded: UserType) => {
-    const newMember = await addMember(context.token.access_token, userAdded.id, projectId);
-    newMember.User = userAdded;
-    const updateMembers = [...members];
-    updateMembers.push(newMember);
-    setMembers(updateMembers);
+    if (userAdded.id) {
+      const newMember = await addMember(context.token.access_token, userAdded.id, Number(projectId));
+      newMember.User = userAdded;
+      const updateMembers = [...members];
+      updateMembers.push(newMember);
+      setMembers(updateMembers);
+    }
 
     setIsDialogOpen(false);
   };
@@ -64,22 +66,24 @@ export default function MembersPage({ projectId, messages, locale }: Props) {
 
   const onConfirm = async () => {
     if (deleteMemberId) {
-      await deleteMember(context.token.access_token, deleteMemberId, projectId);
+      await deleteMember(context.token.access_token, deleteMemberId, Number(projectId));
       setMembers(members.filter((member) => member.User.id !== deleteMemberId));
       closeDeleteConfirmDialog();
     }
   };
 
   const handleChangeRole = async (userEdit: UserType, role: number) => {
-    await updateMember(context.token.access_token, userEdit.id, projectId, role);
-    setMembers((prevMembers) => {
-      return prevMembers.map((member) => {
-        if (member.User.id === userEdit.id) {
-          return { ...member, role: role };
-        }
-        return member;
+    if (userEdit.id) {
+      await updateMember(context.token.access_token, userEdit.id, Number(projectId), role);
+      setMembers((prevMembers) => {
+        return prevMembers.map((member) => {
+          if (member.User.id === userEdit.id) {
+            return { ...member, role: role };
+          }
+          return member;
+        });
       });
-    });
+    }
   };
 
   return (

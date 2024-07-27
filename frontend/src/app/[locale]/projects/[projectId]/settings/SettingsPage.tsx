@@ -7,7 +7,7 @@ import { Pencil, Trash } from 'lucide-react';
 import { SettingsMessages } from '@/types/settings';
 import { TokenContext } from '@/utils/TokenProvider';
 import { deleteProject, fetchProject, updateProject } from '@/utils/projectsControl';
-import { ProjectType } from '@/types/project';
+import { ProjectDialogMessages, ProjectType } from '@/types/project';
 import DeleteConfirmDialog from '@/components/DeleteConfirmDialog';
 import { useRouter } from '@/src/navigation';
 import ProjectDialog from '@/components/ProjectDialog';
@@ -17,10 +17,11 @@ import { findUser } from '@/utils/usersControl';
 type Props = {
   projectId: string;
   messages: SettingsMessages;
+  projectDialogMessages: ProjectDialogMessages;
   locale: string;
 };
 
-export default function SettingsPage({ projectId, messages, locale }: Props) {
+export default function SettingsPage({ projectId, messages, projectDialogMessages, locale }: Props) {
   const context = useContext(TokenContext);
   const router = useRouter();
   const [project, setProject] = useState<ProjectType>({
@@ -152,7 +153,7 @@ export default function SettingsPage({ projectId, messages, locale }: Props) {
         editingProject={project}
         onCancel={() => setIsProjectDialogOpen(false)}
         onSubmit={onSubmit}
-        messages={messages}
+        projectDialogMessages={projectDialogMessages}
       />
 
       <DeleteConfirmDialog

@@ -1,5 +1,5 @@
 'use client';
-import { useState, useEffect, useContext } from 'react';
+import { useState, useEffect, useContext, ChangeEvent, DragEvent } from 'react';
 import { Input, Textarea, Select, SelectItem, Button, Divider, Tooltip } from '@nextui-org/react';
 import { useRouter } from '@/src/navigation';
 import { Save, Plus, ArrowLeft, Circle } from 'lucide-react';
@@ -134,7 +134,7 @@ export default function CaseEditor({
     }
   };
 
-  const handleDrop = async (event: DragEvent) => {
+  const handleDrop = (event: DragEvent<HTMLElement>) => {
     event.preventDefault();
     if (event.dataTransfer) {
       const filesArray = Array.from(event.dataTransfer.files);
@@ -142,7 +142,7 @@ export default function CaseEditor({
     }
   };
 
-  const handleInput = (event: DragEvent) => {
+  const handleInput = (event: ChangeEvent) => {
     if (event.target) {
       const input = event.target as HTMLInputElement;
       if (input.files) {
@@ -388,41 +388,47 @@ export default function CaseEditor({
                 {messages.newStep}
               </Button>
             </div>
-            <CaseStepsEditor
-              isDisabled={!context.isProjectDeveloper(Number(projectId))}
-              steps={testCase.Steps}
-              onStepUpdate={(stepId, changeStep) => {
-                setTestCase({
-                  ...testCase,
-                  Steps: testCase.Steps.map((step) => {
-                    if (step.id === stepId) {
-                      return changeStep;
-                    } else {
-                      return step;
-                    }
-                  }),
-                });
-              }}
-              onStepPlus={onPlusClick}
-              onStepDelete={onDeleteClick}
-              messages={messages}
-            />
+            {testCase.Steps && (
+              <CaseStepsEditor
+                isDisabled={!context.isProjectDeveloper(Number(projectId))}
+                steps={testCase.Steps}
+                onStepUpdate={(stepId, changeStep) => {
+                  if (testCase.Steps) {
+                    setTestCase({
+                      ...testCase,
+                      Steps: testCase.Steps.map((step) => {
+                        if (step.id === stepId) {
+                          return changeStep;
+                        } else {
+                          return step;
+                        }
+                      }),
+                    });
+                  }
+                }}
+                onStepPlus={onPlusClick}
+                onStepDelete={onDeleteClick}
+                messages={messages}
+              />
+            )}
           </div>
         )}
 
         <Divider className="my-6" />
         <h6 className="font-bold">{messages.attachments}</h6>
-        <CaseAttachmentsEditor
-          isDisabled={!context.isProjectDeveloper(Number(projectId))}
-          attachments={testCase.Attachments}
-          onAttachmentDownload={(attachmentId: number, downloadFileName: string) =>
-            fetchDownloadAttachment(attachmentId, downloadFileName)
-          }
-          onAttachmentDelete={onAttachmentDelete}
-          onFilesDrop={handleDrop}
-          onFilesInput={handleInput}
-          messages={messages}
-        />
+        {testCase.Attachments && (
+          <CaseAttachmentsEditor
+            isDisabled={!context.isProjectDeveloper(Number(projectId))}
+            attachments={testCase.Attachments}
+            onAttachmentDownload={(attachmentId: number, downloadFileName: string) =>
+              fetchDownloadAttachment(attachmentId, downloadFileName)
+            }
+            onAttachmentDelete={onAttachmentDelete}
+            onFilesDrop={handleDrop}
+            onFilesInput={handleInput}
+            messages={messages}
+          />
+        )}
       </div>
     </>
   );

@@ -2,18 +2,18 @@
 import React from 'react';
 import { useState, useEffect, useContext } from 'react';
 import { Button, Input, Modal, ModalContent, ModalHeader, ModalBody, ModalFooter } from '@nextui-org/react';
-import { SettingsMessages } from '@/types/settings';
 import { TokenContext } from '@/utils/TokenProvider';
 import { UserType } from '@/types/user';
 import { searchUsers } from '@/utils/usersControl';
 import CandidatesTable from './CandidatesTable';
+import { MembersMessages } from '@/types/member';
 
 type Props = {
   isOpen: boolean;
   projectId: string;
   onCancel: () => void;
   onAddMember: (memberAdded: UserType) => void;
-  messages: SettingsMessages;
+  messages: MembersMessages;
 };
 
 export default function AddMemberDialog({ isOpen, projectId, onCancel, onAddMember, messages }: Props) {

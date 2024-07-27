@@ -7,6 +7,7 @@ type RunType = {
   projectId: number;
   createdAt: string;
   updatedAt: string;
+  RunCases?: RunCaseType[];
 };
 
 type RunCaseType = {
@@ -15,6 +16,8 @@ type RunCaseType = {
   caseId: number;
   status: number;
   editState: 'notChanged' | 'changed' | 'new' | 'deleted';
+  createdAt: string;
+  updatedAt: string;
 };
 
 type RunStatusCountType = {

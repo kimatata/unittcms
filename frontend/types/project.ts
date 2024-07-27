@@ -13,15 +13,8 @@ export type ProjectType = {
   Runs: RunType[]; // additional property
 };
 
-export type ProjectsMessages = {
-  projectList: string;
+export type ProjectDialogMessages = {
   project: string;
-  newProject: string;
-  id: string;
-  publicity: string;
-  name: string;
-  detail: string;
-  lastUpdate: string;
   projectName: string;
   projectDetail: string;
   public: string;
@@ -31,6 +24,18 @@ export type ProjectsMessages = {
   create: string;
   update: string;
   pleaseEnter: string;
+};
+
+export type ProjectsMessages = {
+  projectList: string;
+  newProject: string;
+  id: string;
+  publicity: string;
+  public: string;
+  private: string;
+  name: string;
+  detail: string;
+  lastUpdate: string;
   noProjectsFound: string;
 };
 
