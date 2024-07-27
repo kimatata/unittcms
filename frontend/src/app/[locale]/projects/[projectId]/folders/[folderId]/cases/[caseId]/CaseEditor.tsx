@@ -1,5 +1,5 @@
 'use client';
-import { useState, useEffect, useContext } from 'react';
+import { useState, useEffect, useContext, ChangeEvent, DragEvent } from 'react';
 import { Input, Textarea, Select, SelectItem, Button, Divider, Tooltip } from '@nextui-org/react';
 import { useRouter } from '@/src/navigation';
 import { Save, Plus, ArrowLeft, Circle } from 'lucide-react';
@@ -134,13 +134,22 @@ export default function CaseEditor({
     }
   };
 
-  const handleDrop = async (event: DragEvent) => {
+  const handleDrop = (event: DragEvent<HTMLElement>) => {
     event.preventDefault();
-    handleFetchCreateAttachments(Number(caseId), event.dataTransfer.files);
+    if (event.dataTransfer) {
+      const filesArray = Array.from(event.dataTransfer.files);
+      handleFetchCreateAttachments(Number(caseId), filesArray);
+    }
   };
 
-  const handleInput = (event: DragEvent) => {
-    handleFetchCreateAttachments(Number(caseId), event.target.files);
+  const handleInput = (event: ChangeEvent) => {
+    if (event.target) {
+      const input = event.target as HTMLInputElement;
+      if (input.files) {
+        const filesArray = Array.from(input.files);
+        handleFetchCreateAttachments(Number(caseId), filesArray);
+      }
+    }
   };
 
   const handleFetchCreateAttachments = async (caseId: number, files: File[]) => {
@@ -149,28 +158,36 @@ export default function CaseEditor({
     if (newAttachments) {
       const newAttachmentsWithJoinTable = [];
       newAttachments.forEach((attachment: AttachmentType) => {
-        attachment.caseAttachments = { AttachmentId: attachment.id };
+        attachment.caseAttachments = {
+          createdAt: new Date(),
+          updatedAt: new Date(),
+          caseId: 0,
+          attachmentId: attachment.id,
+        };
         newAttachmentsWithJoinTable.push(attachment);
       });
       const updatedAttachments = testCase.Attachments;
-      updatedAttachments.push(...newAttachments);
+      if (updatedAttachments) {
+        updatedAttachments.push(...newAttachments);
 
-      setTestCase({
-        ...testCase,
-        Attachments: updatedAttachments,
-      });
+        setTestCase({
+          ...testCase,
+          Attachments: updatedAttachments,
+        });
+      }
     }
   };
 
   const onAttachmentDelete = async (attachmentId: number) => {
     await fetchDeleteAttachment(attachmentId);
+    if (testCase.Attachments) {
+      const filteredAttachments = testCase.Attachments.filter((attachment) => attachment.id !== attachmentId);
 
-    const filteredAttachments = testCase.Attachments.filter((attachment) => attachment.id !== attachmentId);
-
-    setTestCase({
-      ...testCase,
-      Attachments: filteredAttachments,
-    });
+      setTestCase({
+        ...testCase,
+        Attachments: filteredAttachments,
+      });
+    }
   };
 
   useEffect(() => {
@@ -261,10 +278,12 @@ export default function CaseEditor({
             size="sm"
             variant="bordered"
             selectedKeys={[priorities[testCase.priority].uid]}
-            onSelectionChange={(e) => {
-              const selectedUid = e.anchorKey;
-              const index = priorities.findIndex((priority) => priority.uid === selectedUid);
-              setTestCase({ ...testCase, priority: index });
+            onSelectionChange={(newSelection) => {
+              if (newSelection !== 'all' && newSelection.size !== 0) {
+                const selectedUid = Array.from(newSelection)[0];
+                const index = priorities.findIndex((priority) => priority.uid === selectedUid);
+                setTestCase({ ...testCase, priority: index });
+              }
             }}
             startContent={
               <Circle size={8} color={priorities[testCase.priority].color} fill={priorities[testCase.priority].color} />
@@ -285,10 +304,12 @@ export default function CaseEditor({
             size="sm"
             variant="bordered"
             selectedKeys={[testTypes[testCase.type].uid]}
-            onSelectionChange={(e) => {
-              const selectedUid = e.anchorKey;
-              const index = testTypes.findIndex((type) => type.uid === selectedUid);
-              setTestCase({ ...testCase, type: index });
+            onSelectionChange={(newSelection) => {
+              if (newSelection !== 'all' && newSelection.size !== 0) {
+                const selectedUid = Array.from(newSelection)[0];
+                const index = testTypes.findIndex((type) => type.uid === selectedUid);
+                setTestCase({ ...testCase, type: index });
+              }
             }}
             label={messages.type}
             className="mt-3 max-w-xs"
@@ -306,10 +327,12 @@ export default function CaseEditor({
             size="sm"
             variant="bordered"
             selectedKeys={[templates[testCase.template].uid]}
-            onSelectionChange={(e) => {
-              const selectedUid = e.anchorKey;
-              const index = templates.findIndex((template) => template.uid === selectedUid);
-              setTestCase({ ...testCase, template: index });
+            onSelectionChange={(newSelection) => {
+              if (newSelection !== 'all' && newSelection.size !== 0) {
+                const selectedUid = Array.from(newSelection)[0];
+                const index = templates.findIndex((template) => template.uid === selectedUid);
+                setTestCase({ ...testCase, template: index });
+              }
             }}
             label={messages.template}
             className="mt-3 max-w-xs"
@@ -365,41 +388,47 @@ export default function CaseEditor({
                 {messages.newStep}
               </Button>
             </div>
-            <CaseStepsEditor
-              isDisabled={!context.isProjectDeveloper(Number(projectId))}
-              steps={testCase.Steps}
-              onStepUpdate={(stepId, changeStep) => {
-                setTestCase({
-                  ...testCase,
-                  Steps: testCase.Steps.map((step) => {
-                    if (step.id === stepId) {
-                      return changeStep;
-                    } else {
-                      return step;
-                    }
-                  }),
-                });
-              }}
-              onStepPlus={onPlusClick}
-              onStepDelete={onDeleteClick}
-              messages={messages}
-            />
+            {testCase.Steps && (
+              <CaseStepsEditor
+                isDisabled={!context.isProjectDeveloper(Number(projectId))}
+                steps={testCase.Steps}
+                onStepUpdate={(stepId, changeStep) => {
+                  if (testCase.Steps) {
+                    setTestCase({
+                      ...testCase,
+                      Steps: testCase.Steps.map((step) => {
+                        if (step.id === stepId) {
+                          return changeStep;
+                        } else {
+                          return step;
+                        }
+                      }),
+                    });
+                  }
+                }}
+                onStepPlus={onPlusClick}
+                onStepDelete={onDeleteClick}
+                messages={messages}
+              />
+            )}
           </div>
         )}
 
         <Divider className="my-6" />
         <h6 className="font-bold">{messages.attachments}</h6>
-        <CaseAttachmentsEditor
-          isDisabled={!context.isProjectDeveloper(Number(projectId))}
-          attachments={testCase.Attachments}
-          onAttachmentDownload={(attachmentId: number, downloadFileName: string) =>
-            fetchDownloadAttachment(attachmentId, downloadFileName)
-          }
-          onAttachmentDelete={onAttachmentDelete}
-          onFilesDrop={handleDrop}
-          onFilesInput={handleInput}
-          messages={messages}
-        />
+        {testCase.Attachments && (
+          <CaseAttachmentsEditor
+            isDisabled={!context.isProjectDeveloper(Number(projectId))}
+            attachments={testCase.Attachments}
+            onAttachmentDownload={(attachmentId: number, downloadFileName: string) =>
+              fetchDownloadAttachment(attachmentId, downloadFileName)
+            }
+            onAttachmentDelete={onAttachmentDelete}
+            onFilesDrop={handleDrop}
+            onFilesInput={handleInput}
+            messages={messages}
+          />
+        )}
       </div>
     </>
   );

@@ -11,12 +11,13 @@ import { isValidEmail, isValidPassword } from './validate';
 import { TokenContext } from '@/utils/TokenProvider';
 import { useRouter } from '@/src/navigation';
 import Config from '@/config/config';
+import { LocaleCodeType } from '@/types/locale';
 const isDemoSite = Config.isDemoSite;
 
 type Props = {
-  isSignup: Boolean;
+  isSignup: boolean;
   messages: AuthMessages;
-  locale: string;
+  locale: LocaleCodeType;
 };
 
 export default function AuthPage({ isSignup, messages, locale }: Props) {

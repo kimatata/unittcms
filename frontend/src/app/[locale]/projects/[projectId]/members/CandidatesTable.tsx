@@ -1,24 +1,24 @@
 import { useMemo, useCallback } from 'react';
 import { Button, Table, TableHeader, TableColumn, TableBody, TableRow, TableCell } from '@nextui-org/react';
 import { UserType } from '@/types/user';
-import { SettingsMessages } from '@/types/settings';
 import Avatar from 'boring-avatars';
+import { MembersMessages } from '@/types/member';
 
 type Props = {
   candidates: UserType[];
   onAddPress: (userAdded: UserType) => void;
-  messages: SettingsMessages;
+  messages: MembersMessages;
 };
 
 export default function MembersTable({ candidates, onAddPress, messages }: Props) {
   const headerColumns = [
-    { name: messages.avatar, uid: 'avatar' },
-    { name: messages.email, uid: 'email' },
-    { name: messages.username, uid: 'username' },
-    { name: messages.add, uid: 'add' },
+    { name: messages.avatar, uid: 'avatar', sortable: false },
+    { name: messages.email, uid: 'email', sortable: false },
+    { name: messages.username, uid: 'username', sortable: false },
+    { name: messages.add, uid: 'add', sortable: false },
   ];
 
-  const renderCell = useCallback((candidate: UserType, columnKey: Key) => {
+  const renderCell = useCallback((candidate: UserType, columnKey: string) => {
     const cellValue = candidate[columnKey as keyof UserType];
 
     switch (columnKey) {
@@ -81,7 +81,9 @@ export default function MembersTable({ candidates, onAddPress, messages }: Props
         </TableHeader>
         <TableBody emptyContent={messages.noMembersFound} items={candidates}>
           {(item) => (
-            <TableRow key={item.id}>{(columnKey) => <TableCell>{renderCell(item, columnKey)}</TableCell>}</TableRow>
+            <TableRow key={item.id}>
+              {(columnKey) => <TableCell>{renderCell(item, columnKey as string)}</TableCell>}
+            </TableRow>
           )}
         </TableBody>
       </Table>

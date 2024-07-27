@@ -12,17 +12,17 @@ import {
   ModalBody,
   ModalFooter,
 } from '@nextui-org/react';
-import { ProjectType, ProjectsMessages } from '@/types/project';
+import { ProjectType, ProjectDialogMessages } from '@/types/project';
 
 type Props = {
   isOpen: boolean;
   editingProject: ProjectType | null;
   onCancel: () => void;
   onSubmit: (name: string, detail: string, isPublic: boolean) => void;
-  messages: ProjectsMessages;
+  projectDialogMessages: ProjectDialogMessages;
 };
 
-export default function ProjectDialog({ isOpen, editingProject, onCancel, onSubmit, messages }: Props) {
+export default function ProjectDialog({ isOpen, editingProject, onCancel, onSubmit, projectDialogMessages }: Props) {
   const [projectName, setProjectName] = useState({
     text: editingProject ? editingProject.name : '',
     isInvalid: false,
@@ -83,7 +83,7 @@ export default function ProjectDialog({ isOpen, editingProject, onCancel, onSubm
       setProjectName({
         text: '',
         isInvalid: true,
-        errorMessage: messages.pleaseEnter,
+        errorMessage: projectDialogMessages.pleaseEnter,
       });
 
       return;
@@ -101,11 +101,11 @@ export default function ProjectDialog({ isOpen, editingProject, onCancel, onSubm
       }}
     >
       <ModalContent>
-        <ModalHeader className="flex flex-col gap-1">{messages.project}</ModalHeader>
+        <ModalHeader className="flex flex-col gap-1">{projectDialogMessages.project}</ModalHeader>
         <ModalBody>
           <Input
             type="text"
-            label={messages.projectName}
+            label={projectDialogMessages.projectName}
             value={projectName.text}
             isInvalid={projectName.isInvalid}
             errorMessage={projectName.errorMessage}
@@ -117,7 +117,7 @@ export default function ProjectDialog({ isOpen, editingProject, onCancel, onSubm
             }}
           />
           <Textarea
-            label={messages.projectDetail}
+            label={projectDialogMessages.projectDetail}
             value={projectDetail.text}
             isInvalid={projectDetail.isInvalid}
             errorMessage={projectDetail.errorMessage}
@@ -129,16 +129,16 @@ export default function ProjectDialog({ isOpen, editingProject, onCancel, onSubm
             }}
           />
           <Checkbox isSelected={isProjectPublic} onValueChange={setIsProjectPublic}>
-            {messages.public}
+            {projectDialogMessages.public}
           </Checkbox>
-          <div className="text-small text-default-500">{messages.ifYouMakePublic}</div>
+          <div className="text-small text-default-500">{projectDialogMessages.ifYouMakePublic}</div>
         </ModalBody>
         <ModalFooter>
           <Button variant="light" onPress={onCancel}>
-            {messages.close}
+            {projectDialogMessages.close}
           </Button>
           <Button color="primary" onPress={validate}>
-            {editingProject ? messages.update : messages.create}
+            {editingProject ? projectDialogMessages.update : projectDialogMessages.create}
           </Button>
         </ModalFooter>
       </ModalContent>

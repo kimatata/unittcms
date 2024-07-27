@@ -45,8 +45,8 @@ type RunCaseType = {
 type CaseAttachmentType = {
   createdAt: Date;
   updatedAt: Date;
-  CaseId: number;
-  AttachmentId: number;
+  caseId: number;
+  attachmentId: number;
 };
 
 type AttachmentType = {
@@ -57,16 +57,6 @@ type AttachmentType = {
   createdAt: Date;
   updatedAt: Date;
   caseAttachments: CaseAttachmentType;
-};
-
-type CaseTypeCountType = {
-  type: number;
-  count: number;
-};
-
-type CasePriorityCountType = {
-  priority: number;
-  count: number;
 };
 
 type CasesMessages = {
@@ -97,6 +87,7 @@ type CaseMessages = {
   pleaseEnterTitle: string;
   description: string;
   testCaseDescription: string;
+  priority: string;
   type: string;
   template: string;
   testDetail: string;
@@ -119,12 +110,4 @@ type CaseMessages = {
   areYouSureLeave: string;
 };
 
-export type {
-  CaseType,
-  StepType,
-  AttachmentType,
-  CaseTypeCountType,
-  CasePriorityCountType,
-  CasesMessages,
-  CaseMessages,
-};
+export type { CaseType, StepType, AttachmentType, CasesMessages, CaseMessages };

@@ -9,7 +9,7 @@ type Props = {
   attachments: AttachmentType[];
   onAttachmentDownload: (attachmentId: number, downloadFileName: string) => void;
   onAttachmentDelete: (attachmentId: number) => void;
-  onFilesDrop: (event: DragEvent) => void;
+  onFilesDrop: (event: DragEvent<HTMLElement>) => void;
   onFilesInput: (event: ChangeEvent) => void;
   messages: CaseMessages;
 };

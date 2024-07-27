@@ -3,9 +3,10 @@ import { Button, Link as NextUiLink } from '@nextui-org/react';
 import { MoveUpRight } from 'lucide-react';
 import { Link } from '@/src/navigation';
 import { useTranslations } from 'next-intl';
+import { LocaleCodeType } from '@/types/locale';
 
 type Props = {
-  locale: string;
+  locale: LocaleCodeType;
 };
 
 export default function MainTitle({ locale }: Props) {

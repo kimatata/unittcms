@@ -1,6 +1,7 @@
 import { PriorityMessages } from '@/types/priority';
 import CasesPane from './CasesPane';
 import { useTranslations } from 'next-intl';
+import { LocaleCodeType } from '@/types/locale';
 
 export default function Page({ params }: { params: { projectId: string; folderId: string; locale: string } }) {
   const t = useTranslations('Cases');
@@ -36,7 +37,7 @@ export default function Page({ params }: { params: { projectId: string; folderId
       <CasesPane
         projectId={params.projectId}
         folderId={params.folderId}
-        locale={params.locale}
+        locale={params.locale as LocaleCodeType}
         messages={messages}
         priorityMessages={priorityMessages}
       />

@@ -5,11 +5,12 @@ import { UserType, AdminMessages } from '@/types/user';
 import { TokenContext } from '@/utils/TokenProvider';
 import UsersTable from './UsersTable';
 import Config from '@/config/config';
+import { LocaleCodeType } from '@/types/locale';
 const apiServer = Config.apiServer;
 
 type Props = {
   messages: AdminMessages;
-  locale: string;
+  locale: LocaleCodeType;
 };
 
 async function fetchUsers(jwt: string) {
@@ -62,7 +63,7 @@ export default function AdminPage({ messages, locale }: Props) {
         <h3 className="font-bold">{messages.userManagement}</h3>
       </div>
 
-      <UsersTable users={users} messages={messages} locale={locale} />
+      <UsersTable users={users} messages={messages} />
     </div>
   );
 }

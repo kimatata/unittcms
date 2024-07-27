@@ -77,7 +77,7 @@ export default function RunEditor({
   const { theme, setTheme } = useTheme();
   const [testRun, setTestRun] = useState<RunType>(defaultTestRun);
   const [folders, setFolders] = useState<FolderType[]>([]);
-  const [runStatusCounts, setRunStatusCounts] = useState<RunStatusCountType[]>();
+  const [runStatusCounts, setRunStatusCounts] = useState<RunStatusCountType[]>([]);
   const [selectedKeys, setSelectedKeys] = useState<Selection>(new Set([]));
   const [selectedFolder, setSelectedFolder] = useState<FolderType | null>(null);
   const [testCases, setTestCases] = useState<CaseType[]>([]);
@@ -256,10 +256,12 @@ export default function RunEditor({
                 size="sm"
                 variant="bordered"
                 selectedKeys={[testRunStatus[testRun.state].uid]}
-                onSelectionChange={(e) => {
-                  const selectedUid = e.anchorKey;
-                  const index = testRunStatus.findIndex((template) => template.uid === selectedUid);
-                  setTestRun({ ...testRun, state: index });
+                onSelectionChange={(newSelection) => {
+                  if (newSelection !== 'all' && newSelection.size !== 0) {
+                    const selectedUid = Array.from(newSelection)[0];
+                    const index = testRunStatus.findIndex((template) => template.uid === selectedUid);
+                    setTestRun({ ...testRun, state: index });
+                  }
                 }}
                 label={messages.status}
                 className="mt-3 max-w-xs"
@@ -278,7 +280,7 @@ export default function RunEditor({
         <div className="flex items-center justify-between">
           <h6 className="h-8 font-bold">{messages.selectTestCase}</h6>
           <div>
-            {(selectedKeys.size > 0 || selectedKeys === 'all') && (
+            {(selectedKeys === 'all' || selectedKeys.size > 0) && (
               <Dropdown>
                 <DropdownTrigger>
                   <Button

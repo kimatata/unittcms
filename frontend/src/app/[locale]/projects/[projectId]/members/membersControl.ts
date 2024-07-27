@@ -24,7 +24,7 @@ async function fetchProjectMembers(jwt: string, projectId: string) {
   }
 }
 
-async function addMember(jwt: string, userId: string, projectId: string) {
+async function addMember(jwt: string, userId: number, projectId: number) {
   const fetchOptions = {
     method: 'POST',
     headers: {
@@ -47,7 +47,7 @@ async function addMember(jwt: string, userId: string, projectId: string) {
   }
 }
 
-async function deleteMember(jwt: string, userId: string, projectId: string) {
+async function deleteMember(jwt: string, userId: number, projectId: number) {
   const fetchOptions = {
     method: 'DELETE',
     headers: {
@@ -68,7 +68,7 @@ async function deleteMember(jwt: string, userId: string, projectId: string) {
   }
 }
 
-async function updateMember(jwt: string, userId: string, projectId: string, role: number) {
+async function updateMember(jwt: string, userId: number, projectId: number, role: number) {
   const fetchOptions = {
     method: 'PUT',
     headers: {

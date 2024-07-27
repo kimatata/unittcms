@@ -2,18 +2,18 @@ import React from 'react';
 import { useState, useEffect } from 'react';
 import dynamic from 'next/dynamic';
 import { testTypes } from '@/config/selection';
-import { CaseTypeCountType } from '@/types/case';
 import { TestTypeMessages } from '@/types/testType';
+import { CaseTypeCountType, ChartDataType } from '@/types/chart';
 const Chart = dynamic(() => import('react-apexcharts'), { ssr: false });
 
 type Props = {
   typesCounts: CaseTypeCountType[];
   testTypeMessages: TestTypeMessages;
-  theme: string;
+  theme: string | undefined;
 };
 
 export default function TestTypesDonutChart({ typesCounts, testTypeMessages, theme }: Props) {
-  const [chartData, setChartData] = useState({
+  const [chartData, setChartData] = useState<ChartDataType>({
     series: [],
     options: {
       labels: [],

@@ -3,7 +3,6 @@ import { useState, useEffect, useContext } from 'react';
 import { title, subtitle } from '@/components/primitives';
 import { Card, CardBody, Chip, Divider } from '@nextui-org/react';
 import { Folder, Clipboard, FlaskConical } from 'lucide-react';
-import { CaseTypeCountType, CasePriorityCountType } from '@/types/case';
 import { ProgressSeriesType } from '@/types/run';
 import { HomeMessages } from './page';
 import { TokenContext } from '@/utils/TokenProvider';
@@ -16,6 +15,8 @@ import TestProgressBarChart from './TestProgressColumnChart';
 import { TestRunCaseStatusMessages } from '@/types/status';
 import { TestTypeMessages } from '@/types/testType';
 import { PriorityMessages } from '@/types/priority';
+import { ProjectType } from '@/types/project';
+import { CasePriorityCountType, CaseTypeCountType } from '@/types/chart';
 
 const apiServer = Config.apiServer;
 
@@ -59,19 +60,24 @@ export function ProjectHome({
 }: Props) {
   const context = useContext(TokenContext);
   const { theme, setTheme } = useTheme();
-  const [project, setProject] = useState({
+  const [project, setProject] = useState<ProjectType>({
+    id: 0,
     name: '',
     detail: '',
-    Folders: [{ Cases: [] }],
-    Runs: [{ RunCases: [] }],
+    isPublic: false,
+    userId: 0,
+    createdAt: '',
+    updatedAt: '',
+    Folders: [],
+    Runs: [],
   });
   const [folderNum, setFolderNum] = useState(0);
   const [caseNum, setCaseNum] = useState(0);
   const [runNum, setRunNum] = useState(0);
-  const [typesCounts, setTypesCounts] = useState<CaseTypeCountType[]>();
-  const [priorityCounts, setPriorityCounts] = useState<CasePriorityCountType[]>();
-  const [progressCategories, setProgressCategories] = useState<string[]>();
-  const [progressSeries, setProgressSeries] = useState<ProgressSeriesType[]>();
+  const [typesCounts, setTypesCounts] = useState<CaseTypeCountType[]>([]);
+  const [priorityCounts, setPriorityCounts] = useState<CasePriorityCountType[]>([]);
+  const [progressCategories, setProgressCategories] = useState<string[]>([]);
+  const [progressSeries, setProgressSeries] = useState<ProgressSeriesType[]>([]);
 
   useEffect(() => {
     async function fetchDataEffect() {
@@ -92,6 +98,9 @@ export function ProjectHome({
 
   useEffect(() => {
     async function aggregate() {
+      if (!project) {
+        return;
+      }
       const { folderNum, runNum, caseNum } = aggregateBasicInfo(project);
       setFolderNum(folderNum);
       setRunNum(runNum);

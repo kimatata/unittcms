@@ -1,6 +1,9 @@
 import { useTranslations } from 'next-intl';
 import AccountPage from './AccountPage';
-export default function Page(params: { locale: string }) {
+import { PageType } from '@/types/base';
+import { LocaleCodeType } from '@/types/locale';
+
+export default function Page({ params }: PageType) {
   const t = useTranslations('Auth');
   const messages = {
     yourProjects: t('your_projects'),
@@ -9,5 +12,5 @@ export default function Page(params: { locale: string }) {
     noProjectsFound: t('no_projects_found'),
   };
 
-  return <AccountPage messages={messages} locale={params.locale} />;
+  return <AccountPage messages={messages} locale={params.locale as LocaleCodeType} />;
 }
