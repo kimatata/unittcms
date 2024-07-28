@@ -6,6 +6,23 @@ UnitTCMS is an open source test case management system. The application is free 
 
 [📘Docs](https://kimatata.github.io/unittcms/docs)
 
+## Getting Started
+
+```bash
+git clone https://github.com/kimatata/unittcms.git
+```
+
+and start containers with the following command.
+
+```bash
+cd unittcms
+docker-compose up --build
+```
+
+You can access the app at `http://localhost:8000`
+
+[Looking for a non-Docker way?](https://kimatata.github.io/unittcms/docs/getstarted/manual)
+
 ## Features
 
 ### Project-Based

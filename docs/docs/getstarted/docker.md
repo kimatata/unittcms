@@ -13,6 +13,7 @@ git clone https://github.com/kimatata/unittcms.git
 and start containers with the following command.
 
 ```bash
+cd unittcms
 docker-compose up --build
 ```
 
