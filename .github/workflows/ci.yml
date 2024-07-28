@@ -19,18 +19,23 @@ jobs:
     - uses: actions/checkout@v4
 
     # root
-    - name: Format and unit test
+    - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v3
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
-    - run: npm ci
-    - run: npm run format # prettier
-    - run: npm run test # vitest
+    - name: Install dependencies
+      run: npm ci
+    - name: Format code
+      run: npm run format
+    - name: Run unit tests
+      run: npm run test
 
     # frontend
-    - name: nextjs build
+    - name: Install frontend dependencies
       working-directory: ./frontend
-    - run: npm ci
-    - run: npm run build # nextjs build
+      run: npm ci
+    - name: Build frontend
+      working-directory: ./frontend
+      run: npm run build
 
