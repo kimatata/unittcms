@@ -1,0 +1,36 @@
+name: UnitTCMS CI
+
+on:
+  push:
+    branches: [ "main", "develop" ]
+  pull_request:
+    branches: [ "main", "develop" ]
+
+jobs:
+  unittcms-test:
+
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [20.x]
+
+    steps:
+    - uses: actions/checkout@v4
+
+    # root
+    - name: Format and unit test
+      uses: actions/setup-node@v3
+      with:
+        node-version: ${{ matrix.node-version }}
+        cache: 'npm'
+    - run: npm ci
+    - run: npm run format # prettier
+    - run: npm run test # vitest
+
+    # frontend
+    - name: nextjs build
+      working-directory: ./frontend
+      run: npm ci
+      run: npm run build # nextjs build
+
