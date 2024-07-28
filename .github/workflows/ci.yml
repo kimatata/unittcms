@@ -31,6 +31,6 @@ jobs:
     # frontend
     - name: nextjs build
       working-directory: ./frontend
-      run: npm ci
-      run: npm run build # nextjs build
+    - run: npm ci
+    - run: npm run build # nextjs build
 
