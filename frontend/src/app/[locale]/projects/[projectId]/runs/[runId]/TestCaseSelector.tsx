@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, ReactNode } from 'react';
 import {
   Table,
   TableHeader,
@@ -16,6 +16,7 @@ import {
 } from '@nextui-org/react';
 import {
   ChevronDown,
+  MoveDiagonal,
   MoreVertical,
   CopyPlus,
   CopyMinus,
@@ -25,19 +26,27 @@ import {
   CircleX,
   CircleSlash2,
 } from 'lucide-react';
-import { priorities, testRunCaseStatus } from '@/config/selection';
+import { testRunCaseStatus } from '@/config/selection';
 import { CaseType } from '@/types/case';
 import { RunMessages } from '@/types/run';
+import TestCaseDetailDialog from './TestCaseDetailDialog';
+import { PriorityMessages } from '@/types/priority';
+import TestCasePriority from '@/components/TestCasePriority';
+import { TestTypeMessages } from '@/types/testType';
+import { TestRunCaseStatusMessages } from '@/types/status';
 
 type Props = {
   cases: CaseType[];
   isDisabled: boolean;
   selectedKeys: Selection;
   onSelectionChange: React.Dispatch<React.SetStateAction<Selection>>;
-  onStatusChange: (changeCaseId: number, status: number) => {};
+  onChangeStatus: (changeCaseId: number, status: number) => {};
   onIncludeCase: (includeCaseId: number) => {};
   onExcludeCase: (excludeCaseId: number) => {};
   messages: RunMessages;
+  testRunCaseStatusMessages: TestRunCaseStatusMessages;
+  priorityMessages: PriorityMessages;
+  testTypeMessages: TestTypeMessages;
 };
 
 export default function TestCaseSelector({
@@ -45,10 +54,13 @@ export default function TestCaseSelector({
   isDisabled,
   selectedKeys,
   onSelectionChange,
-  onStatusChange,
+  onChangeStatus,
   onIncludeCase,
   onExcludeCase,
   messages,
+  testRunCaseStatusMessages,
+  testTypeMessages,
+  priorityMessages,
 }: Props) {
   const headerColumns = [
     { name: messages.id, uid: 'id', sortable: true },
@@ -90,7 +102,6 @@ export default function TestCaseSelector({
   }, [sortDescriptor, cases]);
 
   const notIncludedCaseClass = 'text-neutral-200 dark:text-neutral-600';
-  const chipBaseClass = 'flex items-center text-default-600';
 
   const renderStatusIcon = (uid: string) => {
     if (uid === 'untested') {
@@ -118,21 +129,28 @@ export default function TestCaseSelector({
     return isIncluded;
   };
 
-  const renderCell = (testCase: CaseType, columnKey: Key) => {
+  const renderCell = (testCase: CaseType, columnKey: string): ReactNode => {
     const cellValue = testCase[columnKey as keyof CaseType];
     const isIncluded = isCaseIncluded(testCase);
     const runStatus = testCase.RunCases && testCase.RunCases.length > 0 ? testCase.RunCases[0].status : 0;
 
     switch (columnKey) {
+      case 'title':
+        return (
+          <Button
+            size="sm"
+            variant="light"
+            className="group"
+            endContent={<MoveDiagonal size={12} className="text-transparent group-hover:text-inherit" />}
+            onPress={() => showTestCaseDetailDialog(testCase.id)}
+          >
+            {cellValue as string}
+          </Button>
+        );
       case 'priority':
         return (
-          <div className={isIncluded ? chipBaseClass : chipBaseClass + notIncludedCaseClass}>
-            <Circle
-              size={8}
-              color={isIncluded ? priorities[cellValue].color : '#d4d4d8'}
-              fill={isIncluded ? priorities[cellValue].color : '#d4d4d8'}
-            />
-            <div className="ms-3">{messages[priorities[cellValue].uid]}</div>
+          <div className={isIncluded ? '' : notIncludedCaseClass}>
+            <TestCasePriority priorityValue={cellValue as number} priorityMessages={priorityMessages} />
           </div>
         );
       case 'runStatus':
@@ -146,7 +164,9 @@ export default function TestCaseSelector({
                 startContent={isIncluded && renderStatusIcon(testRunCaseStatus[runStatus].uid)}
                 endContent={isIncluded && <ChevronDown size={16} />}
               >
-                <span className="w-12">{isIncluded && messages[testRunCaseStatus[runStatus].uid]}</span>
+                <span className="w-12">
+                  {isIncluded && testRunCaseStatusMessages[testRunCaseStatus[runStatus].uid]}
+                </span>
               </Button>
             </DropdownTrigger>
             <DropdownMenu disabledKeys={disabledStatusKeys} aria-label="test case actions">
@@ -154,9 +174,9 @@ export default function TestCaseSelector({
                 <DropdownItem
                   key={runCaseStatus.uid}
                   startContent={renderStatusIcon(runCaseStatus.uid)}
-                  onPress={() => onStatusChange(testCase.id, index)}
+                  onPress={() => onChangeStatus(testCase.id, index)}
                 >
-                  {messages[runCaseStatus.uid]}
+                  {testRunCaseStatusMessages[runCaseStatus.uid]}
                 </DropdownItem>
               ))}
             </DropdownMenu>
@@ -199,7 +219,7 @@ export default function TestCaseSelector({
           </Dropdown>
         );
       default:
-        return cellValue;
+        return cellValue as string;
     }
   };
 
@@ -224,6 +244,17 @@ export default function TestCaseSelector({
 
   const handleSelectionChange = (keys: Selection) => {
     onSelectionChange(keys);
+  };
+
+  // Test Case Detail
+  const [isTestCaseDetailDialogOpen, setIsTestCaseDetailDialogOpen] = useState(false);
+  const [showingTestCaseId, setShowingTestCaseId] = useState<number>(0);
+  const showTestCaseDetailDialog = (showTestCaseId: number) => {
+    setIsTestCaseDetailDialogOpen(true);
+    setShowingTestCaseId(showTestCaseId);
+  };
+  const hideTestCaseDetailDialog = () => {
+    setIsTestCaseDetailDialogOpen(false);
   };
 
   return (
@@ -260,6 +291,16 @@ export default function TestCaseSelector({
           ))}
         </TableBody>
       </Table>
+
+      <TestCaseDetailDialog
+        isOpen={isTestCaseDetailDialogOpen}
+        caseId={showingTestCaseId}
+        onCancel={hideTestCaseDetailDialog}
+        onChangeStatus={(showingCaseId, newStatus) => onChangeStatus(showingCaseId, newStatus)}
+        messages={messages}
+        priorityMessages={priorityMessages}
+        testTypeMessages={testTypeMessages}
+      />
     </>
   );
 }

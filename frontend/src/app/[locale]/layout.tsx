@@ -5,8 +5,9 @@ import Header from './Header';
 import clsx from 'clsx';
 import { getTranslations } from 'next-intl/server';
 import { useTranslations } from 'next-intl';
+import { LocaleCodeType } from '@/types/locale';
 
-export async function generateMetadata({ params: { locale } }) {
+export async function generateMetadata({ params: { locale } }: { params: { locale: LocaleCodeType } }) {
   const t = await getTranslations({ locale, namespace: 'Header' });
   return {
     title: t('title'),
@@ -24,7 +25,7 @@ export default function RootLayout({
   params: { locale },
 }: {
   children: React.ReactNode;
-  params: { locale: string };
+  params: { locale: LocaleCodeType };
 }) {
   const t = useTranslations('Toast');
   const toastMessages = {

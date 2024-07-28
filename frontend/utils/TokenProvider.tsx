@@ -136,9 +136,13 @@ const TokenProvider = ({ toastMessages, locale, children }: TokenProps) => {
     const ret = tokenCheckSignInPage(token, pathname);
     if (!ret.ok) {
       if (ret.reason === 'notoken') {
-        toastContext.showToast(toastMessages.needSignedIn, 'error');
+        if (toastMessages) {
+          toastContext.showToast(toastMessages.needSignedIn, 'error');
+        }
       } else if (ret.reason === 'expired') {
-        toastContext.showToast(toastMessages.sessionExpired, 'error');
+        if (toastMessages) {
+          toastContext.showToast(toastMessages.sessionExpired, 'error');
+        }
       }
 
       router.push(ret.redirectPath, { locale: locale });

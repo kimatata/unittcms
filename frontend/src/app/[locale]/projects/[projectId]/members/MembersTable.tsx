@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, ReactNode } from 'react';
 import {
   Button,
   Table,
@@ -15,16 +15,16 @@ import {
 } from '@nextui-org/react';
 import { ChevronDown } from 'lucide-react';
 import { MemberType, UserType } from '@/types/user';
-import { SettingsMessages } from '@/types/settings';
 import { memberRoles } from '@/config/selection';
 import Avatar from 'boring-avatars';
+import { MembersMessages } from '@/types/member';
 
 type Props = {
   members: MemberType[];
   isDisabled: boolean;
   onChangeRole: (userEdit: UserType, role: number) => void;
   onDeleteMember: (deletedUserId: number) => void;
-  messages: SettingsMessages;
+  messages: MembersMessages;
 };
 
 export default function MembersTable({ members, isDisabled, onChangeRole, onDeleteMember, messages }: Props) {
@@ -42,17 +42,17 @@ export default function MembersTable({ members, isDisabled, onChangeRole, onDele
   });
 
   const sortedItems = useMemo(() => {
-    return [...members].sort((a: UserType, b: UserType) => {
-      const first = a[sortDescriptor.column as keyof UserType] as number;
-      const second = b[sortDescriptor.column as keyof UserType] as number;
+    return [...members].sort((a: MemberType, b: MemberType) => {
+      const first = a[sortDescriptor.column as keyof MemberType] as number;
+      const second = b[sortDescriptor.column as keyof MemberType] as number;
       const cmp = first < second ? -1 : first > second ? 1 : 0;
 
       return sortDescriptor.direction === 'descending' ? -cmp : cmp;
     });
   }, [sortDescriptor, members]);
 
-  const renderCell = (member: UserType, columnKey: Key) => {
-    const cellValue = member[columnKey as keyof UserType];
+  const renderCell = (member: MemberType, columnKey: string) => {
+    const cellValue = member[columnKey as keyof MemberType];
 
     switch (columnKey) {
       case 'avatar':
@@ -73,7 +73,7 @@ export default function MembersTable({ members, isDisabled, onChangeRole, onDele
           <Dropdown>
             <DropdownTrigger>
               <Button size="sm" isDisabled={isDisabled} variant="light" endContent={<ChevronDown size={16} />}>
-                <span className="w-12">{messages[memberRoles[cellValue].uid]}</span>
+                <span className="w-12">{messages[memberRoles[cellValue as number].uid]}</span>
               </Button>
             </DropdownTrigger>
             <DropdownMenu aria-label="test case actions">
@@ -92,7 +92,11 @@ export default function MembersTable({ members, isDisabled, onChangeRole, onDele
             isDisabled={isDisabled}
             color="danger"
             variant="light"
-            onClick={() => onDeleteMember(member.User.id)}
+            onClick={() => {
+              if (member.User.id) {
+                onDeleteMember(member.User.id);
+              }
+            }}
           >
             {messages.deleteMember}
           </Button>
@@ -143,7 +147,9 @@ export default function MembersTable({ members, isDisabled, onChangeRole, onDele
         </TableHeader>
         <TableBody emptyContent={messages.noMembersFound} items={sortedItems}>
           {(item) => (
-            <TableRow key={item.id}>{(columnKey) => <TableCell>{renderCell(item, columnKey)}</TableCell>}</TableRow>
+            <TableRow key={item.id}>
+              {(columnKey) => <TableCell>{renderCell(item, columnKey as string) as ReactNode}</TableCell>}
+            </TableRow>
           )}
         </TableBody>
       </Table>

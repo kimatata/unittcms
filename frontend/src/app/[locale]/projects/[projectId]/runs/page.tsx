@@ -1,3 +1,4 @@
+import { LocaleCodeType } from '@/types/locale';
 import RunsPage from './RunsPage';
 import { useTranslations } from 'next-intl';
 
@@ -27,7 +28,7 @@ export default function Page({ params }: { params: { projectId: string; locale: 
 
   return (
     <>
-      <RunsPage projectId={params.projectId} locale={params.locale} messages={messages} />
+      <RunsPage projectId={params.projectId} locale={params.locale as LocaleCodeType} messages={messages} />
     </>
   );
 }

@@ -3,16 +3,17 @@ import { useState, useEffect } from 'react';
 import dynamic from 'next/dynamic';
 import { ProgressSeriesType } from '@/types/run';
 import { testRunCaseStatus } from '@/config/selection';
+import { ChartDataType } from '@/types/chart';
 const Chart = dynamic(() => import('react-apexcharts'), { ssr: false });
 
 type Props = {
   progressSeries: ProgressSeriesType[];
   progressCategories: string[];
-  theme: string;
+  theme: string | undefined;
 };
 
 export default function TestProgressBarChart({ progressSeries, progressCategories, theme }: Props) {
-  const [chartData, setChartData] = useState({
+  const [chartData, setChartData] = useState<ChartDataType>({
     series: [],
     options: {
       labels: [],

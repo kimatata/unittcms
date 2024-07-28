@@ -45,8 +45,8 @@ type RunCaseType = {
 type CaseAttachmentType = {
   createdAt: Date;
   updatedAt: Date;
-  CaseId: number;
-  AttachmentId: number;
+  caseId: number;
+  attachmentId: number;
 };
 
 type AttachmentType = {
@@ -57,16 +57,6 @@ type AttachmentType = {
   createdAt: Date;
   updatedAt: Date;
   caseAttachments: CaseAttachmentType;
-};
-
-type CaseTypeCountType = {
-  type: number;
-  count: number;
-};
-
-type CasePriorityCountType = {
-  priority: number;
-  count: number;
 };
 
 type CasesMessages = {
@@ -81,10 +71,6 @@ type CasesMessages = {
   delete: string;
   newTestCase: string;
   status: string;
-  critical: string;
-  high: string;
-  medium: string;
-  low: string;
   noCasesFound: string;
   caseTitle: string;
   caseDescription: string;
@@ -102,33 +88,16 @@ type CaseMessages = {
   description: string;
   testCaseDescription: string;
   priority: string;
-  critical: string;
-  high: string;
-  medium: string;
-  low: string;
   type: string;
-  other: string;
-  security: string;
-  performance: string;
-  accessibility: string;
-  functional: string;
-  acceptance: string;
-  usability: string;
-  smokeSanity: string;
-  compatibility: string;
-  destructive: string;
-  regression: string;
-  automated: string;
-  manual: string;
   template: string;
   testDetail: string;
   preconditions: string;
+  expectedResult: string;
   step: string;
   text: string;
   steps: string;
   newStep: string;
   detailsOfTheStep: string;
-  expectedResult: string;
   deleteThisStep: string;
   insertStep: string;
   attachments: string;
@@ -141,12 +110,4 @@ type CaseMessages = {
   areYouSureLeave: string;
 };
 
-export type {
-  CaseType,
-  StepType,
-  AttachmentType,
-  CaseTypeCountType,
-  CasePriorityCountType,
-  CasesMessages,
-  CaseMessages,
-};
+export type { CaseType, StepType, AttachmentType, CasesMessages, CaseMessages };

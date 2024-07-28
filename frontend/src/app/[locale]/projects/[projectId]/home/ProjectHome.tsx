@@ -3,16 +3,21 @@ import { useState, useEffect, useContext } from 'react';
 import { title, subtitle } from '@/components/primitives';
 import { Card, CardBody, Chip, Divider } from '@nextui-org/react';
 import { Folder, Clipboard, FlaskConical } from 'lucide-react';
-import { CaseTypeCountType, CasePriorityCountType } from '@/types/case';
 import { ProgressSeriesType } from '@/types/run';
 import { HomeMessages } from './page';
 import { TokenContext } from '@/utils/TokenProvider';
 import { aggregateBasicInfo, aggregateTestPriority, aggregateTestType, aggregateProgress } from './aggregate';
+import Config from '@/config/config';
+import { useTheme } from 'next-themes';
 import TestTypesChart from './TestTypesDonutChart';
 import TestPriorityChart from './TestPriorityDonutChart';
 import TestProgressBarChart from './TestProgressColumnChart';
-import Config from '@/config/config';
-import { useTheme } from 'next-themes';
+import { TestRunCaseStatusMessages } from '@/types/status';
+import { TestTypeMessages } from '@/types/testType';
+import { PriorityMessages } from '@/types/priority';
+import { ProjectType } from '@/types/project';
+import { CasePriorityCountType, CaseTypeCountType } from '@/types/chart';
+
 const apiServer = Config.apiServer;
 
 async function fetchProject(jwt: string, projectId: number) {
@@ -41,24 +46,38 @@ async function fetchProject(jwt: string, projectId: number) {
 type Props = {
   projectId: string;
   messages: HomeMessages;
+  testRunCaseStatusMessages: TestRunCaseStatusMessages;
+  testTypeMessages: TestTypeMessages;
+  priorityMessages: PriorityMessages;
 };
 
-export function ProjectHome({ projectId, messages }: Props) {
+export function ProjectHome({
+  projectId,
+  messages,
+  testRunCaseStatusMessages,
+  testTypeMessages,
+  priorityMessages,
+}: Props) {
   const context = useContext(TokenContext);
   const { theme, setTheme } = useTheme();
-  const [project, setProject] = useState({
+  const [project, setProject] = useState<ProjectType>({
+    id: 0,
     name: '',
     detail: '',
-    Folders: [{ Cases: [] }],
-    Runs: [{ RunCases: [] }],
+    isPublic: false,
+    userId: 0,
+    createdAt: '',
+    updatedAt: '',
+    Folders: [],
+    Runs: [],
   });
   const [folderNum, setFolderNum] = useState(0);
   const [caseNum, setCaseNum] = useState(0);
   const [runNum, setRunNum] = useState(0);
-  const [typesCounts, setTypesCounts] = useState<CaseTypeCountType[]>();
-  const [priorityCounts, setPriorityCounts] = useState<CasePriorityCountType[]>();
-  const [progressCategories, setProgressCategories] = useState<string[]>();
-  const [progressSeries, setProgressSeries] = useState<ProgressSeriesType[]>();
+  const [typesCounts, setTypesCounts] = useState<CaseTypeCountType[]>([]);
+  const [priorityCounts, setPriorityCounts] = useState<CasePriorityCountType[]>([]);
+  const [progressCategories, setProgressCategories] = useState<string[]>([]);
+  const [progressSeries, setProgressSeries] = useState<ProgressSeriesType[]>([]);
 
   useEffect(() => {
     async function fetchDataEffect() {
@@ -67,7 +86,7 @@ export function ProjectHome({ projectId, messages }: Props) {
       }
 
       try {
-        const data = await fetchProject(context.token.access_token, projectId);
+        const data = await fetchProject(context.token.access_token, Number(projectId));
         setProject(data);
       } catch (error: any) {
         console.error('Error in effect:', error.message);
@@ -79,6 +98,9 @@ export function ProjectHome({ projectId, messages }: Props) {
 
   useEffect(() => {
     async function aggregate() {
+      if (!project) {
+        return;
+      }
       const { folderNum, runNum, caseNum } = aggregateBasicInfo(project);
       setFolderNum(folderNum);
       setRunNum(runNum);
@@ -90,7 +112,7 @@ export function ProjectHome({ projectId, messages }: Props) {
       const priorityRet = aggregateTestPriority(project);
       setPriorityCounts([...priorityRet]);
 
-      const { series, categories } = aggregateProgress(project, messages);
+      const { series, categories } = aggregateProgress(project, testRunCaseStatusMessages);
       setProgressSeries([...series]);
       setProgressCategories([...categories]);
     }
@@ -130,11 +152,11 @@ export function ProjectHome({ projectId, messages }: Props) {
       <div className="flex pb-20">
         <div style={{ width: '32rem', height: '18rem' }}>
           <h3>{messages.byType}</h3>
-          <TestTypesChart typesCounts={typesCounts} messages={messages} theme={theme} />
+          <TestTypesChart typesCounts={typesCounts} testTypeMessages={testTypeMessages} theme={theme} />
         </div>
         <div style={{ width: '30rem', height: '18rem' }}>
           <h3>{messages.byPriority}</h3>
-          <TestPriorityChart priorityCounts={priorityCounts} messages={messages} theme={theme} />
+          <TestPriorityChart priorityCounts={priorityCounts} priorityMessages={priorityMessages} theme={theme} />
         </div>
       </div>
     </div>

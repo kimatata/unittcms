@@ -2,18 +2,18 @@ import React from 'react';
 import { useState, useEffect } from 'react';
 import dynamic from 'next/dynamic';
 import { testTypes } from '@/config/selection';
-import { CaseTypeCountType } from '@/types/case';
-import { HomeMessages } from './page';
+import { TestTypeMessages } from '@/types/testType';
+import { CaseTypeCountType, ChartDataType } from '@/types/chart';
 const Chart = dynamic(() => import('react-apexcharts'), { ssr: false });
 
 type Props = {
   typesCounts: CaseTypeCountType[];
-  messages: HomeMessages;
-  theme: string;
+  testTypeMessages: TestTypeMessages;
+  theme: string | undefined;
 };
 
-export default function TestTypesDonutChart({ typesCounts, messages, theme }: Props) {
-  const [chartData, setChartData] = useState({
+export default function TestTypesDonutChart({ typesCounts, testTypeMessages, theme }: Props) {
+  const [chartData, setChartData] = useState<ChartDataType>({
     series: [],
     options: {
       labels: [],
@@ -29,7 +29,7 @@ export default function TestTypesDonutChart({ typesCounts, messages, theme }: Pr
           return found ? found.count : 0;
         });
 
-        const labels = testTypes.map((entry) => messages[entry.uid]);
+        const labels = testTypes.map((entry) => testTypeMessages[entry.uid]);
         const colors = testTypes.map((entry) => entry.chartColor);
         const legend = {
           labels: {

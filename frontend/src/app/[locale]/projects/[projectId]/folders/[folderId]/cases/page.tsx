@@ -1,5 +1,7 @@
+import { PriorityMessages } from '@/types/priority';
 import CasesPane from './CasesPane';
 import { useTranslations } from 'next-intl';
+import { LocaleCodeType } from '@/types/locale';
 
 export default function Page({ params }: { params: { projectId: string; folderId: string; locale: string } }) {
   const t = useTranslations('Cases');
@@ -15,10 +17,6 @@ export default function Page({ params }: { params: { projectId: string; folderId
     areYouSure: t('are_you_sure'),
     newTestCase: t('new_test_case'),
     status: t('status'),
-    critical: t('critical'),
-    high: t('high'),
-    medium: t('medium'),
-    low: t('low'),
     noCasesFound: t('no_cases_found'),
     caseTitle: t('case_title'),
     caseDescription: t('case_description'),
@@ -26,9 +24,23 @@ export default function Page({ params }: { params: { projectId: string; folderId
     pleaseEnter: t('please_enter'),
   };
 
+  const priorityTranslation = useTranslations('Priority');
+  const priorityMessages: PriorityMessages = {
+    critical: priorityTranslation('critical'),
+    high: priorityTranslation('high'),
+    medium: priorityTranslation('medium'),
+    low: priorityTranslation('low'),
+  };
+
   return (
     <>
-      <CasesPane projectId={params.projectId} folderId={params.folderId} locale={params.locale} messages={messages} />
+      <CasesPane
+        projectId={params.projectId}
+        folderId={params.folderId}
+        locale={params.locale as LocaleCodeType}
+        messages={messages}
+        priorityMessages={priorityMessages}
+      />
     </>
   );
 }

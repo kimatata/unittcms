@@ -2,18 +2,19 @@ import React from 'react';
 import { useState, useEffect } from 'react';
 import dynamic from 'next/dynamic';
 import { priorities } from '@/config/selection';
-import { CasePriorityCountType } from '@/types/case';
-import { HomeMessages } from './page';
+import { CasePriorityCountType } from '@/types/chart';
+import { PriorityMessages } from '@/types/priority';
+import { ChartDataType } from '@/types/chart';
 const Chart = dynamic(() => import('react-apexcharts'), { ssr: false });
 
 type Props = {
   priorityCounts: CasePriorityCountType[];
-  messages: HomeMessages;
-  theme: string;
+  priorityMessages: PriorityMessages;
+  theme: string | undefined;
 };
 
-export default function TestPriorityDonutChart({ priorityCounts, messages, theme }: Props) {
-  const [chartData, setChartData] = useState({
+export default function TestPriorityDonutChart({ priorityCounts, priorityMessages, theme }: Props) {
+  const [chartData, setChartData] = useState<ChartDataType>({
     series: [],
     options: {
       labels: [],
@@ -29,7 +30,7 @@ export default function TestPriorityDonutChart({ priorityCounts, messages, theme
           return found ? found.count : 0;
         });
 
-        const labels = priorities.map((entry) => messages[entry.uid]);
+        const labels = priorities.map((entry) => priorityMessages[entry.uid]);
         const colors = priorities.map((entry) => entry.chartColor);
         const legend = {
           labels: {

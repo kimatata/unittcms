@@ -7,6 +7,7 @@ type RunType = {
   projectId: number;
   createdAt: string;
   updatedAt: string;
+  RunCases?: RunCaseType[];
 };
 
 type RunCaseType = {
@@ -15,6 +16,8 @@ type RunCaseType = {
   caseId: number;
   status: number;
   editState: 'notChanged' | 'changed' | 'new' | 'deleted';
+  createdAt: string;
+  updatedAt: string;
 };
 
 type RunStatusCountType = {
@@ -59,30 +62,22 @@ type RunMessages = {
   title: string;
   pleaseEnter: string;
   description: string;
-  new: string;
-  inProgress: string;
-  underReview: string;
-  rejected: string;
-  done: string;
-  closed: string;
   priority: string;
   status: string;
   actions: string;
-  critical: string;
-  high: string;
-  medium: string;
-  low: string;
-  untested: string;
-  passed: string;
-  failed: string;
-  retest: string;
-  skipped: string;
   selectTestCase: string;
   testCaseSelection: string;
   includeInRun: string;
   excludeFromRun: string;
   noCasesFound: string;
   areYouSureLeave: string;
+  type: string;
+  testDetail: string;
+  steps: string;
+  preconditions: string;
+  expectedResult: string;
+  detailsOfTheStep: string;
+  close: string;
 };
 
 export type { RunType, RunCaseType, RunStatusCountType, ProgressSeriesType, RunsMessages, RunMessages };

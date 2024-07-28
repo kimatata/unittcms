@@ -246,6 +246,8 @@ async function updateRunCases(jwt: string, runId: number, testCases: CaseType[])
         runId: runId,
         status: itr.RunCases[0].status,
         editState: itr.RunCases[0].editState,
+        createdAt: '0',
+        updatedAt: '0',
       });
     }
   });

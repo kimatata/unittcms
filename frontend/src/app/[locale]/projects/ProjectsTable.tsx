@@ -1,14 +1,15 @@
-import { useState, useMemo, useCallback } from 'react';
+import { useState, useMemo, useCallback, ReactNode } from 'react';
 import { Table, TableHeader, TableColumn, TableBody, TableRow, TableCell, SortDescriptor } from '@nextui-org/react';
 import { Link, NextUiLinkClasses } from '@/src/navigation';
 import { ProjectType, ProjectsMessages } from '@/types/project';
 import dayjs from 'dayjs';
 import PublicityChip from '@/components/PublicityChip';
+import { LocaleCodeType } from '@/types/locale';
 
 type Props = {
   projects: ProjectType[];
   messages: ProjectsMessages;
-  locale: string;
+  locale: LocaleCodeType;
 };
 
 export default function ProjectsTable({ projects, messages, locale }: Props) {
@@ -38,21 +39,23 @@ export default function ProjectsTable({ projects, messages, locale }: Props) {
     return text.length > maxLength ? text.slice(0, maxLength) + '...' : text;
   };
 
-  const renderCell = useCallback((project: ProjectType, columnKey: Key) => {
+  const renderCell = useCallback((project: ProjectType, columnKey: string): ReactNode => {
     const cellValue = project[columnKey as keyof ProjectType];
 
     switch (columnKey) {
       case 'id':
-        return <span>{cellValue}</span>;
+        return <span>{cellValue as number}</span>;
       case 'isPublic':
-        return <PublicityChip isPublic={cellValue} publicText={messages.public} privateText={messages.private} />;
+        return (
+          <PublicityChip isPublic={cellValue as boolean} publicText={messages.public} privateText={messages.private} />
+        );
       case 'name':
         const maxLength = 30;
         const truncatedDetail = truncateText(project.detail, maxLength);
         return (
           <div>
             <Link href={`/projects/${project.id}/home`} locale={locale} className={NextUiLinkClasses}>
-              {cellValue}
+              {cellValue as string}
             </Link>
             <div className="text-xs text-default-500">
               <div>{truncatedDetail}</div>
@@ -60,9 +63,9 @@ export default function ProjectsTable({ projects, messages, locale }: Props) {
           </div>
         );
       case 'updatedAt':
-        return <span>{dayjs(cellValue).format('YYYY/MM/DD HH:mm')}</span>;
+        return <span>{dayjs(cellValue as number).format('YYYY/MM/DD HH:mm')}</span>;
       default:
-        return cellValue;
+        return cellValue as string;
     }
   }, []);
 
@@ -107,7 +110,9 @@ export default function ProjectsTable({ projects, messages, locale }: Props) {
         </TableHeader>
         <TableBody emptyContent={messages.noProjectsFound} items={sortedItems}>
           {(item) => (
-            <TableRow key={item.id}>{(columnKey) => <TableCell>{renderCell(item, columnKey)}</TableCell>}</TableRow>
+            <TableRow key={item.id}>
+              {(columnKey) => <TableCell>{renderCell(item, columnKey as string)}</TableCell>}
+            </TableRow>
           )}
         </TableBody>
       </Table>

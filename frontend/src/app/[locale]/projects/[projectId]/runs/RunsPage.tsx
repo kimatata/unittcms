@@ -8,10 +8,11 @@ import { RunType, RunsMessages } from '@/types/run';
 import RunDialog from './RunDialog';
 import DeleteConfirmDialog from '@/components/DeleteConfirmDialog';
 import { TokenContext } from '@/utils/TokenProvider';
+import { LocaleCodeType } from '@/types/locale';
 
 type Props = {
   projectId: string;
-  locale: string;
+  locale: LocaleCodeType;
   messages: RunsMessages;
 };
 

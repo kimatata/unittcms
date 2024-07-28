@@ -1,4 +1,4 @@
-import { useState, useMemo, useCallback } from 'react';
+import { useState, useMemo, useCallback, ReactNode } from 'react';
 import {
   Table,
   TableHeader,
@@ -15,9 +15,11 @@ import {
   SortDescriptor,
 } from '@nextui-org/react';
 import { Link, NextUiLinkClasses } from '@/src/navigation';
-import { Plus, MoreVertical, Trash, Circle } from 'lucide-react';
+import { Plus, MoreVertical, Trash } from 'lucide-react';
 import { CaseType, CasesMessages } from '@/types/case';
-import { priorities } from '@/config/selection';
+import { PriorityMessages } from '@/types/priority';
+import TestCasePriority from '@/components/TestCasePriority';
+import { LocaleCodeType } from '@/types/locale';
 
 type Props = {
   projectId: string;
@@ -27,7 +29,8 @@ type Props = {
   onDeleteCase: (caseId: number) => void;
   onDeleteCases: (caseIds: number[]) => void;
   messages: CasesMessages;
-  locale: string;
+  priorityMessages: PriorityMessages;
+  locale: LocaleCodeType;
 };
 
 export default function TestCaseTable({
@@ -38,6 +41,7 @@ export default function TestCaseTable({
   onDeleteCase,
   onDeleteCases,
   messages,
+  priorityMessages,
   locale,
 }: Props) {
   const headerColumns = [
@@ -70,12 +74,12 @@ export default function TestCaseTable({
     onDeleteCase(deleteCaseId);
   };
 
-  const renderCell = useCallback((testCase: CaseType, columnKey: Key) => {
+  const renderCell = useCallback((testCase: CaseType, columnKey: string): ReactNode => {
     const cellValue = testCase[columnKey as keyof CaseType];
 
     switch (columnKey) {
       case 'id':
-        return <span>{cellValue}</span>;
+        return <span>{cellValue as number}</span>;
       case 'title':
         return (
           <Button size="sm" variant="light" className="data-[hover=true]:bg-transparent">
@@ -84,17 +88,12 @@ export default function TestCaseTable({
               locale={locale}
               className={NextUiLinkClasses}
             >
-              {cellValue}
+              {cellValue as string}
             </Link>
           </Button>
         );
       case 'priority':
-        return (
-          <div className="flex items-center">
-            <Circle size={8} color={priorities[cellValue].color} fill={priorities[cellValue].color} />
-            <div className="ms-3">{messages[priorities[cellValue].uid]}</div>
-          </div>
-        );
+        return <TestCasePriority priorityValue={cellValue as number} priorityMessages={priorityMessages} />;
       case 'actions':
         return (
           <Dropdown>
@@ -115,7 +114,7 @@ export default function TestCaseTable({
           </Dropdown>
         );
       default:
-        return cellValue;
+        return cellValue as string;
     }
   }, []);
 
@@ -154,7 +153,7 @@ export default function TestCaseTable({
       <div className="border-b-1 dark:border-neutral-700 w-full p-3 flex items-center justify-between">
         <h3 className="font-bold">{messages.testCaseList}</h3>
         <div>
-          {(selectedKeys.size > 0 || selectedKeys === 'all') && (
+          {((selectedKeys !== 'all' && selectedKeys.size > 0) || selectedKeys === 'all') && (
             <Button
               startContent={<Trash size={16} />}
               size="sm"
@@ -202,7 +201,9 @@ export default function TestCaseTable({
         </TableHeader>
         <TableBody emptyContent={messages.noCasesFound} items={sortedItems}>
           {(item) => (
-            <TableRow key={item.id}>{(columnKey) => <TableCell>{renderCell(item, columnKey)}</TableCell>}</TableRow>
+            <TableRow key={item.id}>
+              {(columnKey) => <TableCell>{renderCell(item, columnKey as string)}</TableCell>}
+            </TableRow>
           )}
         </TableBody>
       </Table>

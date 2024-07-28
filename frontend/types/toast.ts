@@ -8,5 +8,5 @@ export type ToastMessages = {
 };
 
 export type ToastContextType = {
-  showToast: (text: string, mode: string) => {};
+  showToast: (text: string, mode: string) => void;
 };

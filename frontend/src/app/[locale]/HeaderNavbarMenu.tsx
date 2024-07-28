@@ -23,6 +23,7 @@ import { locales } from '@/config/selection';
 import DropdownAccount from './DropdownAccount';
 import DropdownLanguage from './DropdownLanguage';
 import UserAvatar from '@/components/UserAvatar';
+import { LocaleCodeType } from '@/types/locale';
 
 type NabbarMenuMessages = {
   projects: string;
@@ -39,7 +40,7 @@ type NabbarMenuMessages = {
 
 type Props = {
   messages: NabbarMenuMessages;
-  locale: string;
+  locale: LocaleCodeType;
 };
 
 export default function HeaderNavbarMenu({ messages, locale }: Props) {
@@ -143,7 +144,7 @@ export default function HeaderNavbarMenu({ messages, locale }: Props) {
           <DropdownAccount messages={messages} locale={locale} onItemPress={() => {}} />
           <DropdownLanguage locale={locale} onChangeLocale={changeLocale} />
         </div>
-        <NavbarMenuToggle className="md:hidden" onClick={() => setIsMenuOpen(!isMenuOpen)} />
+        <NavbarMenuToggle className="md:hidden" onPress={() => setIsMenuOpen(!isMenuOpen)} />
       </NavbarContent>
 
       <NavbarMenu>
@@ -202,7 +203,11 @@ export default function HeaderNavbarMenu({ messages, locale }: Props) {
                 title={messages.signOut}
                 startContent={<ArrowRightFromLine size={16} />}
                 onPress={() => {
-                  context.setToken(null);
+                  context.setToken({
+                    access_token: '',
+                    expires_at: 0,
+                    user: null,
+                  });
                   context.removeTokenFromLocalStorage();
                   router.push(`/`, { locale: locale });
                   setIsMenuOpen(false);
@@ -220,7 +225,7 @@ export default function HeaderNavbarMenu({ messages, locale }: Props) {
                 key="signin"
                 startContent={<ArrowRightToLine size={16} />}
                 title={messages.signIn}
-                onClick={() => {
+                onPress={() => {
                   router.push('/account/signin', { locale: locale });
                   setIsMenuOpen(false);
                 }}
@@ -229,7 +234,7 @@ export default function HeaderNavbarMenu({ messages, locale }: Props) {
                 key="signup"
                 title={messages.signUp}
                 startContent={<PenTool size={16} />}
-                onClick={() => {
+                onPress={() => {
                   router.push('/account/signup', { locale: locale });
                   setIsMenuOpen(false);
                 }}
@@ -248,7 +253,7 @@ export default function HeaderNavbarMenu({ messages, locale }: Props) {
                 key={entry.code}
                 startContent={<Globe size={16} />}
                 title={entry.name}
-                onClick={() => {
+                onPress={() => {
                   changeLocale(entry.code);
                   setIsMenuOpen(false);
                 }}

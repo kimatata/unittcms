@@ -27,9 +27,9 @@ module.exports = function (sequelize) {
         return res.status(401).json({ error: 'Authentication failed' });
       }
       const accessToken = jwt.sign({ userId: user.id }, secretKey, {
-        expiresIn: '1h',
+        expiresIn: '24h',
       });
-      const expiresAt = Date.now() + 3600 * 1000; // expire date(ms)
+      const expiresAt = Date.now() + 3600 * 1000 * 24; // expire date(ms)
 
       res.status(200).json({ access_token: accessToken, expires_at: expiresAt, user });
     } catch (error) {
