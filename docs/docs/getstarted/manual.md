@@ -24,7 +24,7 @@ Move to backend directory, then install dependencies.
 
 ```bash
 cd backend
-npm install
+npm ci
 ```
 
 Initialize the database with the following command.
@@ -45,7 +45,7 @@ Move to frontend directory, then install dependencies.
 
 ```bash
 cd frontend
-npm install
+npm ci
 ```
 
 Build frontend code

@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "start": "node index",
+    "start": "node --env-file=.env index",
+    "dev": "node index",
     "migrate": "bash scripts/migrate.sh",
     "seed": "bash scripts/seed.sh",
     "drop": "bash scripts/drop.sh"
