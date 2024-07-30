@@ -163,6 +163,18 @@ export default function RunEditor({
     setSelectedKeys(new Set([]));
   };
 
+  const resetEditStateAll = () => {
+    const newTestCases = [...testCases];
+    newTestCases.forEach((itr) => {
+      if (itr.RunCases && itr.RunCases.length > 0) {
+        itr.RunCases[0].editState = 'notChanged';
+      }
+    });
+
+    setTestCases(newTestCases);
+    setSelectedKeys(new Set([]));
+  };
+
   const baseClass = '';
   const selectedClass = `${baseClass} bg-neutral-200 dark:bg-neutral-700`;
 
@@ -192,6 +204,7 @@ export default function RunEditor({
             setIsUpdating(true);
             await updateRun(context.token.access_token, testRun);
             await updateRunCases(context.token.access_token, Number(runId), testCases);
+            resetEditStateAll();
             setIsUpdating(false);
             setIsDirty(false);
           }}

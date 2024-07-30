@@ -198,10 +198,17 @@ function includeExcludeTestCases(
         } else if (targetCase.RunCases[0].editState === 'new') {
           // do nothing
         } else if (targetCase.RunCases[0].editState === 'deleted') {
-          targetCase.RunCases[0].editState = 'changed';
+          if (targetCase.RunCases[0].id > 0) {
+            // when id is valid (already included)
+            targetCase.RunCases[0].editState = 'changed';
+          } else {
+            // when id is invalid (has not included)
+            targetCase.RunCases[0].editState = 'new';
+          }
         }
       } else {
         const newRunCase = {
+          id: -1,
           runId: runId,
           status: 0,
           editState: 'new',
