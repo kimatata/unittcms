@@ -153,7 +153,7 @@ export default function RunEditor({
     setIsDirty(true);
     let keys: number[] = [];
     if (selectedKeys === 'all') {
-      keys = testCases.map((item) => item.id);
+      keys = filteredTestCases.map((item) => item.id);
     } else {
       keys = Array.from(selectedKeys).map(Number);
     }
@@ -330,7 +330,10 @@ export default function RunEditor({
               {folders.map((folder, index) => (
                 <ListboxItem
                   key={index}
-                  onClick={() => setSelectedFolder(folder)}
+                  onPress={() => {
+                    setSelectedKeys(new Set([])); // reset selection
+                    setSelectedFolder(folder);
+                  }}
                   startContent={<Folder size={20} color="#F7C24E" fill="#F7C24E" />}
                   className={selectedFolder && folder.id === selectedFolder.id ? selectedClass : baseClass}
                 >
