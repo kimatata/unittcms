@@ -18,7 +18,7 @@ import {
   DropdownMenu,
   DropdownItem,
 } from '@nextui-org/react';
-import { Save, ArrowLeft, Folder, ChevronDown, CopyPlus, CopyMinus, RotateCw } from 'lucide-react';
+import { Save, Circle, ArrowLeft, Folder, ChevronDown, CopyPlus, CopyMinus, RotateCw } from 'lucide-react';
 import RunProgressChart from './RunPregressDonutChart';
 import TestCaseSelector from './TestCaseSelector';
 import { testRunStatus } from '@/config/selection';
@@ -94,6 +94,16 @@ export default function RunEditor({
     setRunStatusCounts(statusCounts);
   };
 
+  const initTestCases = async () => {
+    const casesData = await fetchProjectCases(context.token.access_token, Number(projectId));
+    casesData.forEach((testCase: CaseType) => {
+      if (testCase.RunCases && testCase.RunCases.length > 0) {
+        testCase.RunCases[0].editState = 'notChanged';
+      }
+    });
+    setTestCases(casesData);
+  };
+
   useEffect(() => {
     async function fetchDataEffect() {
       if (!context.isSignedIn()) {
@@ -105,14 +115,7 @@ export default function RunEditor({
         const foldersData = await fetchFolders(context.token.access_token, Number(projectId));
         setFolders(foldersData);
         setSelectedFolder(foldersData[0]);
-
-        const casesData = await fetchProjectCases(context.token.access_token, Number(projectId));
-        casesData.forEach((testCase: CaseType) => {
-          if (testCase.RunCases && testCase.RunCases.length > 0) {
-            testCase.RunCases[0].editState = 'notChanged';
-          }
-        });
-        setTestCases(casesData);
+        initTestCases();
       } catch (error: any) {
         console.error('Error in effect:', error.message);
       }
@@ -163,16 +166,13 @@ export default function RunEditor({
     setSelectedKeys(new Set([]));
   };
 
-  const resetEditStateAll = () => {
-    const newTestCases = [...testCases];
-    newTestCases.forEach((itr) => {
-      if (itr.RunCases && itr.RunCases.length > 0) {
-        itr.RunCases[0].editState = 'notChanged';
-      }
-    });
-
-    setTestCases(newTestCases);
-    setSelectedKeys(new Set([]));
+  const onSave = async () => {
+    setIsUpdating(true);
+    await updateRun(context.token.access_token, testRun);
+    await updateRunCases(context.token.access_token, Number(runId), testCases);
+    await initTestCases();
+    setIsUpdating(false);
+    setIsDirty(false);
   };
 
   const baseClass = '';
@@ -194,23 +194,19 @@ export default function RunEditor({
           </Tooltip>
           <h3 className="font-bold ms-2">{testRun.name}</h3>
         </div>
-        <Button
-          startContent={<Save size={16} />}
-          size="sm"
-          isDisabled={!context.isProjectReporter(Number(projectId))}
-          color="primary"
-          isLoading={isUpdating}
-          onPress={async () => {
-            setIsUpdating(true);
-            await updateRun(context.token.access_token, testRun);
-            await updateRunCases(context.token.access_token, Number(runId), testCases);
-            resetEditStateAll();
-            setIsUpdating(false);
-            setIsDirty(false);
-          }}
-        >
-          {isUpdating ? messages.updating : messages.update}
-        </Button>
+        <div className="flex items-center">
+          {isDirty && <Circle size={8} color="#525252" fill="#525252" className="me-1" />}
+          <Button
+            startContent={<Save size={16} />}
+            size="sm"
+            isDisabled={!context.isProjectReporter(Number(projectId))}
+            color="primary"
+            isLoading={isUpdating}
+            onPress={onSave}
+          >
+            {isUpdating ? messages.updating : messages.update}
+          </Button>
+        </div>
       </div>
 
       <div className="container mx-auto max-w-5xl pt-6 px-6 flex-grow">
