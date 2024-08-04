@@ -1,4 +1,4 @@
-import { Textarea, Button, Tooltip } from '@nextui-org/react';
+import { Textarea, Button, Tooltip, Avatar } from '@nextui-org/react';
 import { CaseMessages, StepType } from '@/types/case';
 import { Plus, Trash } from 'lucide-react';
 
@@ -25,32 +25,33 @@ export default function StepsEditor({ isDisabled, steps, onStepUpdate, onStepPlu
   return (
     <>
       {filteredSteps.map((step, index) => (
-        <div key={index} className="flex">
-          <div className="bg-neutral-50 dark:bg-neutral-600 rounded-full flex items-center justify-center min-w-unit-8 w-unit-8 h-unit-8 mt-3 me-2">
-            <div>{step.caseSteps.stepNo}</div>
+        <div key={index} className="flex items-center my-1">
+          <Avatar className="me-2" size="sm" name={step.caseSteps.stepNo.toString()} />
+          <div key={step.id} className="grow flex gap-2">
+            <div className="w-1/2">
+              <Textarea
+                size="sm"
+                variant="bordered"
+                label={messages.detailsOfTheStep}
+                value={step.step}
+                onValueChange={(changeValue) => {
+                  onStepUpdate(step.id, { ...step, step: changeValue, editState: 'changed' });
+                }}
+              />
+            </div>
+            <div className="w-1/2">
+              <Textarea
+                size="sm"
+                variant="bordered"
+                label={messages.expectedResult}
+                value={step.result}
+                onValueChange={(changeValue) => {
+                  onStepUpdate(step.id, { ...step, result: changeValue, editState: 'changed' });
+                }}
+              />
+            </div>
           </div>
-          <Textarea
-            size="sm"
-            variant="bordered"
-            label={messages.detailsOfTheStep}
-            value={step.step}
-            onValueChange={(changeValue) => {
-              onStepUpdate(step.id, { ...step, step: changeValue, editState: 'changed' });
-            }}
-            className="mt-3 me-1"
-          />
-
-          <Textarea
-            size="sm"
-            variant="bordered"
-            label={messages.expectedResult}
-            value={step.result}
-            onValueChange={(changeValue) => {
-              onStepUpdate(step.id, { ...step, result: changeValue, editState: 'changed' });
-            }}
-            className="mt-3 ms-1"
-          />
-          <div className="mt-3 ms-1">
+          <div className="flex flex-col">
             <Tooltip content={messages.deleteThisStep} placement="left">
               <Button
                 isIconOnly

@@ -225,24 +225,27 @@ export default function CaseEditor({
           </Tooltip>
           <h3 className="font-bold ms-2">{testCase.title}</h3>
         </div>
-        <Button
-          startContent={<Save size={16} />}
-          size="sm"
-          isDisabled={!context.isProjectDeveloper(Number(projectId))}
-          color="primary"
-          isLoading={isUpdating}
-          onPress={async () => {
-            setIsUpdating(true);
-            await updateCase(context.token.access_token, testCase);
-            if (testCase.Steps) {
-              await updateSteps(context.token.access_token, Number(caseId), testCase.Steps);
-            }
-            setIsUpdating(false);
-            setIsDirty(false);
-          }}
-        >
-          {isUpdating ? messages.updating : messages.update}
-        </Button>
+        <div className="flex items-center">
+          {isDirty && <Circle size={8} color="#525252" fill="#525252" className="me-1" />}
+          <Button
+            startContent={<Save size={16} />}
+            size="sm"
+            isDisabled={!context.isProjectDeveloper(Number(projectId))}
+            color="primary"
+            isLoading={isUpdating}
+            onPress={async () => {
+              setIsUpdating(true);
+              await updateCase(context.token.access_token, testCase);
+              if (testCase.Steps) {
+                await updateSteps(context.token.access_token, Number(caseId), testCase.Steps);
+              }
+              setIsUpdating(false);
+              setIsDirty(false);
+            }}
+          >
+            {isUpdating ? messages.updating : messages.update}
+          </Button>
+        </div>
       </div>
 
       <div className="p-5">
@@ -375,7 +378,7 @@ export default function CaseEditor({
           </div>
         ) : (
           <div>
-            <div className="flex items-center">
+            <div className="flex items-center mb-3">
               <h6 className="font-bold">{messages.steps}</h6>
               <Button
                 startContent={<Plus size={16} />}
