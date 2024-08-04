@@ -19,17 +19,18 @@ export default function Page({ params }: PageType) {
     noProjectsFound: t('no_projects_found'),
   };
 
+  const pt = useTranslations('ProjectDialog');
   const projectDialogMessages: ProjectDialogMessages = {
-    project: t('project'),
-    projectName: t('project_name'),
-    projectDetail: t('project_detail'),
-    public: t('public'),
-    private: t('private'),
-    ifYouMakePublic: t('if_you_make_public'),
-    close: t('close'),
-    create: t('create'),
-    update: t('update'),
-    pleaseEnter: t('please_enter'),
+    project: pt('project'),
+    projectName: pt('project_name'),
+    projectDetail: pt('project_detail'),
+    public: pt('public'),
+    private: pt('private'),
+    ifYouMakePublic: pt('if_you_make_public'),
+    close: pt('close'),
+    create: pt('create'),
+    update: pt('update'),
+    pleaseEnter: pt('please_enter'),
   };
 
   return (
