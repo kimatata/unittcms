@@ -8,5 +8,5 @@ export type ToastMessages = {
 };
 
 export type ToastContextType = {
-  showToast: (text: string, mode: string) => void;
+  showToast: (text: string, mode: 'error' | 'dark') => void;
 };

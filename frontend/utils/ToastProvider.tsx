@@ -6,7 +6,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 const defaultContext = {
-  showToast: (text: string, mode: string) => {},
+  showToast: (text: string, mode: 'error' | 'dark') => {},
 };
 const ToastContext = createContext<ToastContextType>(defaultContext);
 
@@ -15,7 +15,7 @@ const ToastProvider = ({ children }: ToastProps) => {
     if (mode === 'error') {
       toast.error(text);
     } else {
-      toast(text, { theme: 'light' });
+      toast(text, { theme: 'dark' });
     }
   };
 
@@ -25,7 +25,7 @@ const ToastProvider = ({ children }: ToastProps) => {
 
   return (
     <ToastContext.Provider value={toastContext}>
-      <ToastContainer position="bottom-right" hideProgressBar={true} theme="colored" />
+      <ToastContainer position="bottom-right" hideProgressBar={true} />
       {children}
     </ToastContext.Provider>
   );

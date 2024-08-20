@@ -18,6 +18,7 @@ export default function Page({
     backToCases: t('back_to_cases'),
     updating: t('updating'),
     update: t('update'),
+    updatedTestCase: t('updated_test_case'),
     basic: t('basic'),
     title: t('title'),
     pleaseEnterTitle: t('please_enter_title'),
