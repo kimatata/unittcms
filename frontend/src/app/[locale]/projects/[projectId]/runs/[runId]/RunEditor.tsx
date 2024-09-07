@@ -35,6 +35,7 @@ import {
 } from '../runsControl';
 import { fetchFolders } from '../../folders/foldersControl';
 import { TokenContext } from '@/utils/TokenProvider';
+import { ToastContext } from '@/utils/ToastProvider';
 import { useTheme } from 'next-themes';
 import { useFormGuard } from '@/utils/formGuard';
 import { PriorityMessages } from '@/types/priority';
@@ -73,7 +74,8 @@ export default function RunEditor({
   testTypeMessages,
   locale,
 }: Props) {
-  const context = useContext(TokenContext);
+  const tokenContext = useContext(TokenContext);
+  const toastContext = useContext(ToastContext);
   const { theme, setTheme } = useTheme();
   const [testRun, setTestRun] = useState<RunType>(defaultTestRun);
   const [folders, setFolders] = useState<FolderType[]>([]);
@@ -89,13 +91,13 @@ export default function RunEditor({
   useFormGuard(isDirty, messages.areYouSureLeave);
 
   const fetchRunAndStatusCount = async () => {
-    const { run, statusCounts } = await fetchRun(context.token.access_token, Number(runId));
+    const { run, statusCounts } = await fetchRun(tokenContext.token.access_token, Number(runId));
     setTestRun(run);
     setRunStatusCounts(statusCounts);
   };
 
   const initTestCases = async () => {
-    const casesData = await fetchProjectCases(context.token.access_token, Number(projectId));
+    const casesData = await fetchProjectCases(tokenContext.token.access_token, Number(projectId));
     casesData.forEach((testCase: CaseType) => {
       if (testCase.RunCases && testCase.RunCases.length > 0) {
         testCase.RunCases[0].editState = 'notChanged';
@@ -106,13 +108,13 @@ export default function RunEditor({
 
   useEffect(() => {
     async function fetchDataEffect() {
-      if (!context.isSignedIn()) {
+      if (!tokenContext.isSignedIn()) {
         return;
       }
 
       try {
         await fetchRunAndStatusCount();
-        const foldersData = await fetchFolders(context.token.access_token, Number(projectId));
+        const foldersData = await fetchFolders(tokenContext.token.access_token, Number(projectId));
         setFolders(foldersData);
         setSelectedFolder(foldersData[0]);
         initTestCases();
@@ -122,7 +124,7 @@ export default function RunEditor({
     }
 
     fetchDataEffect();
-  }, [context]);
+  }, [tokenContext]);
 
   useEffect(() => {
     function onFilter() {
@@ -168,9 +170,11 @@ export default function RunEditor({
 
   const onSave = async () => {
     setIsUpdating(true);
-    await updateRun(context.token.access_token, testRun);
-    await updateRunCases(context.token.access_token, Number(runId), testCases);
+    await updateRun(tokenContext.token.access_token, testRun);
+    await updateRunCases(tokenContext.token.access_token, Number(runId), testCases);
     await initTestCases();
+
+    toastContext.showToast(messages.updatedTestRun, 'dark');
     setIsUpdating(false);
     setIsDirty(false);
   };
@@ -199,7 +203,7 @@ export default function RunEditor({
           <Button
             startContent={<Save size={16} />}
             size="sm"
-            isDisabled={!context.isProjectReporter(Number(projectId))}
+            isDisabled={!tokenContext.isProjectReporter(Number(projectId))}
             color="primary"
             isLoading={isUpdating}
             onPress={onSave}
@@ -294,7 +298,7 @@ export default function RunEditor({
                 <DropdownTrigger>
                   <Button
                     size="sm"
-                    isDisabled={!context.isProjectReporter(Number(projectId))}
+                    isDisabled={!tokenContext.isProjectReporter(Number(projectId))}
                     color="primary"
                     endContent={<ChevronDown size={16} />}
                   >
@@ -341,7 +345,7 @@ export default function RunEditor({
           <div className="w-9/12">
             <TestCaseSelector
               cases={filteredTestCases}
-              isDisabled={!context.isProjectReporter(Number(projectId))}
+              isDisabled={!tokenContext.isProjectReporter(Number(projectId))}
               selectedKeys={selectedKeys}
               onSelectionChange={setSelectedKeys}
               onChangeStatus={handleChangeStatus}

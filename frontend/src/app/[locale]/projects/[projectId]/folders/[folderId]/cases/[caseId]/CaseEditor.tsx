@@ -10,6 +10,7 @@ import { fetchCase, updateCase } from '@/utils/caseControl';
 import { updateSteps } from './stepControl';
 import { fetchCreateAttachments, fetchDownloadAttachment, fetchDeleteAttachment } from './attachmentControl';
 import { TokenContext } from '@/utils/TokenProvider';
+import { ToastContext } from '@/utils/ToastProvider';
 import { useFormGuard } from '@/utils/formGuard';
 import { CaseType, AttachmentType, CaseMessages, StepType } from '@/types/case';
 import { PriorityMessages } from '@/types/priority';
@@ -52,7 +53,8 @@ export default function CaseEditor({
   priorityMessages,
   locale,
 }: Props) {
-  const context = useContext(TokenContext);
+  const toakenContext = useContext(TokenContext);
+  const toastContext = useContext(ToastContext);
   const [testCase, setTestCase] = useState<CaseType>(defaultTestCase);
   const [isTitleInvalid, setIsTitleInvalid] = useState<boolean>(false);
   const [isUpdating, setIsUpdating] = useState<boolean>(false);
@@ -192,11 +194,11 @@ export default function CaseEditor({
 
   useEffect(() => {
     async function fetchDataEffect() {
-      if (!context.isSignedIn()) {
+      if (!toakenContext.isSignedIn()) {
         return;
       }
       try {
-        const data = await fetchCase(context.token.access_token, Number(caseId));
+        const data = await fetchCase(toakenContext.token.access_token, Number(caseId));
         data.Steps.forEach((step: StepType) => {
           step.editState = 'notChanged';
         });
@@ -207,7 +209,7 @@ export default function CaseEditor({
     }
 
     fetchDataEffect();
-  }, [context]);
+  }, [toakenContext]);
 
   return (
     <>
@@ -230,15 +232,17 @@ export default function CaseEditor({
           <Button
             startContent={<Save size={16} />}
             size="sm"
-            isDisabled={!context.isProjectDeveloper(Number(projectId))}
+            isDisabled={!toakenContext.isProjectDeveloper(Number(projectId))}
             color="primary"
             isLoading={isUpdating}
             onPress={async () => {
               setIsUpdating(true);
-              await updateCase(context.token.access_token, testCase);
+              await updateCase(toakenContext.token.access_token, testCase);
               if (testCase.Steps) {
-                await updateSteps(context.token.access_token, Number(caseId), testCase.Steps);
+                await updateSteps(toakenContext.token.access_token, Number(caseId), testCase.Steps);
               }
+
+              toastContext.showToast(messages.updatedTestCase, 'dark');
               setIsUpdating(false);
               setIsDirty(false);
             }}
@@ -383,7 +387,7 @@ export default function CaseEditor({
               <Button
                 startContent={<Plus size={16} />}
                 size="sm"
-                isDisabled={!context.isProjectDeveloper(Number(projectId))}
+                isDisabled={!toakenContext.isProjectDeveloper(Number(projectId))}
                 color="primary"
                 className="ms-3"
                 onPress={() => onPlusClick(1)}
@@ -393,7 +397,7 @@ export default function CaseEditor({
             </div>
             {testCase.Steps && (
               <CaseStepsEditor
-                isDisabled={!context.isProjectDeveloper(Number(projectId))}
+                isDisabled={!toakenContext.isProjectDeveloper(Number(projectId))}
                 steps={testCase.Steps}
                 onStepUpdate={(stepId, changeStep) => {
                   if (testCase.Steps) {
@@ -421,7 +425,7 @@ export default function CaseEditor({
         <h6 className="font-bold">{messages.attachments}</h6>
         {testCase.Attachments && (
           <CaseAttachmentsEditor
-            isDisabled={!context.isProjectDeveloper(Number(projectId))}
+            isDisabled={!toakenContext.isProjectDeveloper(Number(projectId))}
             attachments={testCase.Attachments}
             onAttachmentDownload={(attachmentId: number, downloadFileName: string) =>
               fetchDownloadAttachment(attachmentId, downloadFileName)

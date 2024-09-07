@@ -82,6 +82,7 @@ type CaseMessages = {
   backToCases: string;
   updating: string;
   update: string;
+  updatedTestCase: string;
   basic: string;
   title: string;
   pleaseEnterTitle: string;
