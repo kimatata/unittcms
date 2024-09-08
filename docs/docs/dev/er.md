@@ -5,7 +5,7 @@ sidebar_position: 4
 # Entity Relationship
 
 <div style={{overflowX: 'auto'}}>
-<div style={{width: '200%'}}>
+<div style={{width: '150%'}}>
 
 ```mermaid
 erDiagram
@@ -18,8 +18,8 @@ erDiagram
   "plans(unimplemented)" ||--o{ "planRuns(unimplemented)": "plan has planRuns"
   runs ||--o{ "planRuns(unimplemented)": "run has planRuns"
   folders ||--o{ cases: "folder has cases"
-  cases ||--o{ caseSteps: "has"
   steps ||--o{ caseSteps: "has"
+  cases ||--o{ caseSteps: "has"
   cases ||--o{ caseAttachments: "has"
   attachments ||--o{ caseAttachments: "has"
   cases ||--o{ "caseTags(unimplemented)": "has"
