@@ -51,6 +51,6 @@ Defined test cases can be reused multiple times in test runs, enabling efficient
 
 ### Project member management
 
-Support team development by adding or removing members from projects. You can assign roles and set permissions for each member in detail. We provide three main roles: 'Manager' who manages the entire project, 'Designer' who designs the tests, and 'Reporter' who executes the tests.
+Support team development by adding or removing members from projects. You can assign roles and set permissions for each member in detail. We provide three main roles: 'Manager' who manages the entire project, 'Developer' who designs the tests, and 'Reporter' who executes the tests.
 
 ![Member Management](./frontend/public/top/light/member.png)
