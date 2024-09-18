@@ -67,7 +67,7 @@
     "run_management_title": "Test Run Management",
     "run_management_subtitle": "Defined test cases can be reused multiple times in test runs, enabling efficient test cycles. Additionally, you can visually monitor the status of test runs and projects.",
     "member_management_title": "Member Management",
-    "member_management_subtitle": "Support team development by adding or removing members from projects. You can assign roles and set permissions for each member in detail. We provide three main roles: 'Manager' who manages the entire project, 'Designer' who designs the tests, and 'Reporter' who executes the tests. "
+    "member_management_subtitle": "Support team development by adding or removing members from projects. You can assign roles and set permissions for each member in detail. We provide three main roles: 'Manager' who manages the entire project, 'Developer' who designs the tests, and 'Reporter' who executes the tests. "
   },
   "Header": {
     "title": "Open Source Test Case Management System",
