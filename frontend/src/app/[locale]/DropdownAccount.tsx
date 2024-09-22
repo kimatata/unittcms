@@ -24,7 +24,7 @@ export default function DropdownAccount({ messages, locale, onItemPress }: Props
       user: null,
     });
     context.removeTokenFromLocalStorage();
-    router.push(`/`, { locale: locale });
+    router.push(`/account/signin`, { locale: locale });
   };
 
   const signinItems = [
