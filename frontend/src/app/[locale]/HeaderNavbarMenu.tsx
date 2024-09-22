@@ -209,7 +209,7 @@ export default function HeaderNavbarMenu({ messages, locale }: Props) {
                     user: null,
                   });
                   context.removeTokenFromLocalStorage();
-                  router.push(`/`, { locale: locale });
+                  router.push(`/account/signin`, { locale: locale });
                   setIsMenuOpen(false);
                 }}
               />
