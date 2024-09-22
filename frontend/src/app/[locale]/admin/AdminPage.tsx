@@ -6,6 +6,7 @@ import { TokenContext } from '@/utils/TokenProvider';
 import UsersTable from './UsersTable';
 import Config from '@/config/config';
 import { LocaleCodeType } from '@/types/locale';
+import { updateUserRole } from '@/utils/usersControl';
 const apiServer = Config.apiServer;
 
 type Props = {
@@ -42,7 +43,7 @@ export default function AdminPage({ messages, locale }: Props) {
 
   useEffect(() => {
     async function fetchDataEffect() {
-      if (!context.isSignedIn()) {
+      if (!context.isAdmin()) {
         return;
       }
 
@@ -57,13 +58,33 @@ export default function AdminPage({ messages, locale }: Props) {
     fetchDataEffect();
   }, [context]);
 
+  const handleChangeRole = async (userEdit: UserType, role: number) => {
+    if (!context.isAdmin()) {
+      console.log('you are not admin', context);
+      return;
+    }
+
+    if (userEdit.id) {
+      const data = await updateUserRole(context.token.access_token, userEdit.id, role);
+      console.log(data);
+      setUsers((prevUsers) => {
+        return prevUsers.map((user) => {
+          if (user.id === userEdit.id) {
+            return { ...user, role: role };
+          }
+          return user;
+        });
+      });
+    }
+  };
+
   return (
     <div className="container mx-auto max-w-3xl pt-16 px-6 flex-grow">
       <div className="w-full p-3 flex items-center justify-between">
         <h3 className="font-bold">{messages.userManagement}</h3>
       </div>
 
-      <UsersTable users={users} messages={messages} />
+      <UsersTable users={users} onChangeRole={handleChangeRole} messages={messages} />
     </div>
   );
 }

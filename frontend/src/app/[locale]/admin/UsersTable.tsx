@@ -1,15 +1,30 @@
 import { useState, useMemo, useCallback } from 'react';
-import { Table, TableHeader, TableColumn, TableBody, TableRow, TableCell, SortDescriptor } from '@nextui-org/react';
+import {
+  Button,
+  Table,
+  TableHeader,
+  TableColumn,
+  TableBody,
+  TableRow,
+  TableCell,
+  SortDescriptor,
+  DropdownTrigger,
+  Dropdown,
+  DropdownMenu,
+  DropdownItem,
+} from '@nextui-org/react';
+import { ChevronDown } from 'lucide-react';
 import { UserType, AdminMessages } from '@/types/user';
 import { roles } from '@/config/selection';
 import Avatar from 'boring-avatars';
 
 type Props = {
   users: UserType[];
+  onChangeRole: (userEdit: UserType, role: number) => void;
   messages: AdminMessages;
 };
 
-export default function UsersTable({ users, messages }: Props) {
+export default function UsersTable({ users, onChangeRole, messages }: Props) {
   const headerColumns = [
     { name: messages.avatar, uid: 'avatar', sortable: false },
     { name: messages.id, uid: 'id', sortable: true },
@@ -53,7 +68,22 @@ export default function UsersTable({ users, messages }: Props) {
       case 'name':
         return cellValue;
       case 'role':
-        return <span>{messages[roles[cellValue as number].uid]}</span>;
+        return (
+          <Dropdown>
+            <DropdownTrigger>
+              <Button size="sm" variant="light" endContent={<ChevronDown size={16} />}>
+                <span className="w-20">{messages[roles[cellValue as number].uid]}</span>
+              </Button>
+            </DropdownTrigger>
+            <DropdownMenu aria-label="global role actions">
+              {roles.map((role, index) => (
+                <DropdownItem key={index} onPress={() => onChangeRole(user, index)}>
+                  {messages[role.uid]}
+                </DropdownItem>
+              ))}
+            </DropdownMenu>
+          </Dropdown>
+        );
 
       default:
         return cellValue;
