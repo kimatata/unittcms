@@ -13,7 +13,7 @@
     "@playwright/test": "^1.45.1",
     "@types/node": "^20.14.10",
     "@vitest/coverage-v8": "^1.6.0",
-    "prettier": "^3.2.5",
+    "prettier": "^3.3.3",
     "vitest": "^1.6.0"
   }
 }
