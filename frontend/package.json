@@ -20,7 +20,7 @@
     "autoprefixer": "10.4.16",
     "boring-avatars": "^1.10.2",
     "clsx": "^2.0.0",
-    "dayjs": "^1.11.10",
+    "dayjs": "^1.11.13",
     "eslint": "8.48.0",
     "eslint-config-next": "14.0.2",
     "framer-motion": "^11.2.6",
