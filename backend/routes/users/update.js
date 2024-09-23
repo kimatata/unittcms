@@ -8,9 +8,17 @@ module.exports = function (sequelize) {
   const { verifySignedIn, verifyAdmin } = require('../../middleware/auth')(sequelize);
   const User = defineUser(sequelize, DataTypes);
 
-  router.put('/role/:userId', verifySignedIn, verifyAdmin, async (req, res) => {
+  router.put('/:userId', verifySignedIn, verifyAdmin, async (req, res) => {
+    // param check
     const userId = req.params.userId;
-    const newRole = req.query.newRole;
+    if (!userId) {
+      return res.status(400).json({ error: 'userId is required' });
+    }
+
+    const { newRole } = req.body;
+    if (!newRole) {
+      return res.status(400).json({ error: 'newRole is required' });
+    }
 
     try {
       const targetUser = await User.findByPk(userId);
@@ -34,17 +42,11 @@ module.exports = function (sequelize) {
         }
       }
 
-      // Trying to downgrade yourself?
-      let isSelfDowngrade = false;
-      if (req.userId === targetUser.id && newRole === userRoleIndex) {
-        isSelfDowngrade = true;
-      }
-
       await targetUser.update({
         role: newRole,
       });
 
-      res.json({ user: targetUser, redirect: isSelfDowngrade });
+      res.json({ user: targetUser });
     } catch (error) {
       console.error(error);
       res.status(500).send('Internal Server Error');

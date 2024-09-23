@@ -40,7 +40,7 @@ app.use('/', indexRoute);
 
 // "users"
 const usersIndexRoute = require('./routes/users/index')(sequelize);
-const usersUpdateRole = require('./routes/users/updateRole')(sequelize);
+const usersUpdateRole = require('./routes/users/update')(sequelize);
 const usersFindRoute = require('./routes/users/find')(sequelize);
 const usersSearchRoute = require('./routes/users/search')(sequelize);
 const signUpRoute = require('./routes/users/signup')(sequelize);
