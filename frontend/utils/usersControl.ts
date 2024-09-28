@@ -48,15 +48,20 @@ async function searchUsers(jwt: string, projectId: number, searchText: string) {
 }
 
 async function updateUserRole(jwt: string, userId: number, newRole: number) {
+  const updateUserData = {
+    newRole,
+  };
+
   const fetchOptions = {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
       Authorization: `Bearer ${jwt}`,
     },
+    body: JSON.stringify(updateUserData),
   };
 
-  const url = `${apiServer}/users/role/${userId}?newRole=${newRole}`;
+  const url = `${apiServer}/users/${userId}`;
 
   try {
     const response = await fetch(url, fetchOptions);

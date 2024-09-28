@@ -76,6 +76,10 @@ export type AdminMessages = {
   noUsersFound: string;
   administrator: string;
   user: string;
+  quitAdmin: string;
+  quit: string;
+  quitConfirm: string;
+  close: string;
 };
 
 export type AccountDropDownMessages = {

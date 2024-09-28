@@ -123,7 +123,11 @@
     "role": "ロール",
     "administrator": "管理者",
     "user": "ユーザー",
-    "no_users_found": "ユーザーがいません"
+    "no_users_found": "ユーザーがいません",
+    "quit_admin": "管理者を辞める",
+    "close": "閉じる",
+    "quit": "辞める",
+    "quit_confirm": "管理者権限を放棄すると管理ページにアクセスできなくなります。"
   },
   "Projects": {
     "projectList": "プロジェクト一覧",

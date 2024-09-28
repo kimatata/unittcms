@@ -122,7 +122,11 @@
     "role": "Role",
     "administrator": "Administrator",
     "user": "User",
-    "no_users_found": "No users found"
+    "no_users_found": "No users found",
+    "quit_admin": "Quit Administrator",
+    "close": "Close",
+    "quit": "Quit",
+    "quit_confirm": "If you relinquish your administrator privileges, you will no longer be able to access the administration page."
   },
   "Projects": {
     "projectList": "Project List",

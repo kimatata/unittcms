@@ -1,11 +1,12 @@
-const express = require('express');
+import express from 'express';
+import { DataTypes } from 'sequelize';
+import defineUser from '../../models/users.js';
+import { roles } from './authSettings.js';
+import authMiddleware from '../../middleware/auth.js';
 const router = express.Router();
-const defineUser = require('../../models/users');
-const { DataTypes } = require('sequelize');
-const { roles } = require('./authSettings');
 
-module.exports = function (sequelize) {
-  const { verifySignedIn, verifyAdmin } = require('../../middleware/auth')(sequelize);
+export default function (sequelize) {
+  const { verifySignedIn, verifyAdmin } = authMiddleware(sequelize);
   const User = defineUser(sequelize, DataTypes);
 
   router.put('/:userId', verifySignedIn, verifyAdmin, async (req, res) => {
@@ -16,7 +17,7 @@ module.exports = function (sequelize) {
     }
 
     const { newRole } = req.body;
-    if (!newRole) {
+    if (newRole === undefined || newRole === null) {
       return res.status(400).json({ error: 'newRole is required' });
     }
 
@@ -30,7 +31,7 @@ module.exports = function (sequelize) {
       const userRoleIndex = roles.findIndex((entry) => entry.uid === 'user');
 
       // At least one administrator is required.
-      if (targetUser.id === adminRoleIndex && newRole === userRoleIndex) {
+      if (newRole === userRoleIndex) {
         const adminCount = await User.count({
           where: {
             role: adminRoleIndex,
@@ -54,4 +55,4 @@ module.exports = function (sequelize) {
   });
 
   return router;
-};
+}
