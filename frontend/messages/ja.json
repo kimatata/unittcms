@@ -123,7 +123,14 @@
     "role": "ロール",
     "administrator": "管理者",
     "user": "ユーザー",
-    "no_users_found": "ユーザーがいません"
+    "no_users_found": "ユーザーがいません",
+    "quit_admin": "管理者を辞める",
+    "close": "閉じる",
+    "quit": "辞める",
+    "quit_confirm": "管理者権限を放棄すると管理ページにアクセスできなくなります。",
+    "role_changed": "ロールを更新しました",
+    "lost_admin_auth": "管理者権限を失いました",
+    "at_least": "最低1人以上の管理者が必要です。"
   },
   "Projects": {
     "projectList": "プロジェクト一覧",

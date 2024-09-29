@@ -49,6 +49,11 @@ app.use('/users', usersFindRoute);
 app.use('/users', usersSearchRoute);
 app.use('/users', signUpRoute);
 app.use('/users', signInRoute);
+// ESM import
+(async () => {
+  const updateRoute = await import('./routes/users/update.mjs');
+  app.use('/users', updateRoute.default(sequelize));
+})();
 
 // "/projects"
 const projectsIndexRoute = require('./routes/projects/index')(sequelize);
