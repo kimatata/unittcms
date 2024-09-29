@@ -13,12 +13,12 @@ export default function (sequelize) {
     // param check
     const userId = req.params.userId;
     if (!userId) {
-      return res.status(400).json({ error: 'userId is required' });
+      return res.status(400).send('userId is required');
     }
 
     const { newRole } = req.body;
     if (newRole === undefined || newRole === null) {
-      return res.status(400).json({ error: 'newRole is required' });
+      return res.status(400).send('newRole is required');
     }
 
     try {

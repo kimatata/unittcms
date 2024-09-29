@@ -80,6 +80,9 @@ export type AdminMessages = {
   quit: string;
   quitConfirm: string;
   close: string;
+  roleChanged: string;
+  lostAdminAuth: string;
+  atLeast: string;
 };
 
 export type AccountDropDownMessages = {

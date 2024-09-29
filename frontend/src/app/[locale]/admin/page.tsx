@@ -20,6 +20,9 @@ export default function Page({ params }: PageType) {
     quit: t('quit'),
     quitConfirm: t('quit_confirm'),
     close: t('close'),
+    roleChanged: t('role_changed'),
+    lostAdminAuth: t('lost_admin_auth'),
+    atLeast: t('at_least'),
   };
 
   return (

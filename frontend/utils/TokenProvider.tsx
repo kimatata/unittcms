@@ -118,7 +118,6 @@ const TokenProvider = ({ toastMessages, locale, children }: TokenProps) => {
   const restoreTokenFromLocalStorage = () => {
     const tokenString = localStorage.getItem(LOCAL_STORAGE_KEY);
     if (tokenString) {
-      console.log('restore', tokenString);
       const restoredToken = JSON.parse(tokenString);
       setToken(restoredToken);
     }

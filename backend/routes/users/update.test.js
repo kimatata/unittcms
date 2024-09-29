@@ -47,12 +47,21 @@ describe('updateUserRole', () => {
     app.use('/users', updateRoute(sequelize));
   });
 
+  it('call update API without new role', async () => {
+    const response = await request(app).put('/users/2').send();
+
+    expect(response.status).toBe(400);
+    expect(response.text).toBe('newRole is required');
+  });
+
   it('promote not existing user to admin will return 404', async () => {
     mockUser.findByPk.mockResolvedValue(null); // No user found
     const response = await request(app).put('/users/2').send({
       newRole: 0,
     });
+
     expect(response.status).toBe(404);
+    expect(response.text).toBe('User not found');
   });
 
   it('promote existing user to admin will return 200', async () => {
@@ -77,6 +86,7 @@ describe('updateUserRole', () => {
     }); // Downgrading admin to user
 
     expect(response.status).toBe(400);
+    expect(response.text).toBe('At least one administrator is required.');
   });
 
   it('should handle internal server errors', async () => {
@@ -91,5 +101,6 @@ describe('updateUserRole', () => {
     });
 
     expect(response.status).toBe(500);
+    expect(response.text).toBe('Internal Server Error');
   });
 });

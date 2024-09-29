@@ -1,4 +1,4 @@
-import { useState, useMemo, useCallback } from 'react';
+import { useState, useMemo } from 'react';
 import {
   Button,
   Table,
@@ -20,11 +20,12 @@ import Avatar from 'boring-avatars';
 
 type Props = {
   users: UserType[];
+  myself: UserType | null;
   onChangeRole: (userEdit: UserType, role: number) => void;
   messages: AdminMessages;
 };
 
-export default function UsersTable({ users, onChangeRole, messages }: Props) {
+export default function UsersTable({ users, myself, onChangeRole, messages }: Props) {
   const headerColumns = [
     { name: messages.avatar, uid: 'avatar', sortable: false },
     { name: messages.id, uid: 'id', sortable: true },
@@ -48,7 +49,15 @@ export default function UsersTable({ users, onChangeRole, messages }: Props) {
     });
   }, [sortDescriptor, users]);
 
-  const renderCell = useCallback((user: UserType, columnKey: string) => {
+  const isMyself = (myself: UserType | null, user: UserType) => {
+    if (myself && myself.id === user.id) {
+      return true;
+    } else {
+      return false;
+    }
+  };
+
+  const renderCell = (user: UserType, columnKey: string) => {
     const cellValue = user[columnKey as keyof UserType];
 
     switch (columnKey) {
@@ -71,7 +80,12 @@ export default function UsersTable({ users, onChangeRole, messages }: Props) {
         return (
           <Dropdown>
             <DropdownTrigger>
-              <Button size="sm" variant="light" endContent={<ChevronDown size={16} />}>
+              <Button
+                size="sm"
+                isDisabled={isMyself(myself, user)}
+                variant="light"
+                endContent={<ChevronDown size={16} />}
+              >
                 <span className="w-20">{messages[roles[cellValue as number].uid]}</span>
               </Button>
             </DropdownTrigger>
@@ -88,7 +102,7 @@ export default function UsersTable({ users, onChangeRole, messages }: Props) {
       default:
         return cellValue;
     }
-  }, []);
+  };
 
   const classNames = useMemo(
     () => ({

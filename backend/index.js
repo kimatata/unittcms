@@ -40,17 +40,20 @@ app.use('/', indexRoute);
 
 // "users"
 const usersIndexRoute = require('./routes/users/index')(sequelize);
-const usersUpdateRole = require('./routes/users/update')(sequelize);
 const usersFindRoute = require('./routes/users/find')(sequelize);
 const usersSearchRoute = require('./routes/users/search')(sequelize);
 const signUpRoute = require('./routes/users/signup')(sequelize);
 const signInRoute = require('./routes/users/signin')(sequelize);
 app.use('/users', usersIndexRoute);
-app.use('/users', usersUpdateRole);
 app.use('/users', usersFindRoute);
 app.use('/users', usersSearchRoute);
 app.use('/users', signUpRoute);
 app.use('/users', signInRoute);
+// ESM import
+(async () => {
+  const updateRoute = await import('./routes/users/update.mjs');
+  app.use('/users', updateRoute.default(sequelize));
+})();
 
 // "/projects"
 const projectsIndexRoute = require('./routes/projects/index')(sequelize);
