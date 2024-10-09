@@ -1,3 +1,9 @@
+/**
+ * 
+ * @param {import('sequelize').Sequelize} sequelize 
+ * @param {*} DataTypes 
+ * @returns 
+ */
 function defineUser(sequelize, DataTypes) {
   const User = sequelize.define('User', {
     email: {
@@ -20,7 +26,7 @@ function defineUser(sequelize, DataTypes) {
     avatarPath: {
       type: DataTypes.STRING,
     },
-  });
+  }, { underscored: true });
 
   User.associate = (models) => {
     User.hasMany(models.Project, { foreignKey: 'userId' });
