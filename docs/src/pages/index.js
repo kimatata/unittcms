@@ -9,15 +9,18 @@ export default function Home() {
   const { siteConfig } = useDocusaurusContext();
   return (
     <Layout title={`Hello from ${siteConfig.title}`} description="Description will go into a meta tag in <head />">
-      <header className={clsx('hero hero--primary', styles.heroBanner)}>
+      <header className={clsx('hero', styles.heroBanner)}>
         <div className="container">
           <Heading as="h1" className="hero__title">
             UnitTCMS Docs
           </Heading>
           <p className="hero__subtitle">Open Source Test Case Management System</p>
-          <div>
-            <Link className="button button--secondary button--lg" to="/docs">
-              Move to Docs📰
+          <div className={styles.buttons}>
+            <Link className="button button--primary button--lg" to="/docs">
+              Docs📰
+            </Link>
+            <Link className="button button--secondary button--lg" to="https://github.com/kimatata/unittcms">
+              GitHub
             </Link>
           </div>
         </div>

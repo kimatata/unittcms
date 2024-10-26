@@ -1,4 +1,18 @@
-# UnitTCMS
+<p align="center">
+  <a href="https://www.unittcms.org/en">
+    <img width="20%" src="https://raw.githubusercontent.com/kimatata/unittcms/refs/heads/main/frontend/public/favicon/icon-192.png" alt="UnitTCMS" />
+    <h1 align="center">UnitTCMS</h1>
+  </a>
+</p>
+</br>
+<p align="center">
+  <a href="https://github.com/kimatata/unittcms/blob/main/LICENSE">
+    <img src="https://img.shields.io/github/license/kimatata/unittcms" alt="License">
+  </a>
+  <a href="https://github.com/kimatata/unittcms/releases">
+    <img src="https://img.shields.io/github/v/release/kimatata/unittcms" alt="Release">
+  </a>
+</p>
 
 UnitTCMS is an open source test case management system. The application is free and designed for self-hosted use. It can be used in environments with strict security requirements. For more information, please visit the demo site and docs.
 
@@ -22,6 +36,16 @@ docker-compose up --build
 You can access the app at `http://localhost:8000`
 
 [Looking for a non-Docker way?](https://kimatata.github.io/unittcms/docs/getstarted/manual)
+
+## Why UnitTCMS
+
+There are many test case management tools available in the market, which can be categorized into proprietary and open-source solutions.
+
+Proprietary tools often come with modern, user-friendly interfaces but tend to be cloud-based, which may raise security concerns for some organizations. While some of them do offer on-premises options, these tend to be significantly more expensive.
+
+There are also open-source tools, but many feature older user interfaces that involve frequent page reloads, which can hinder usability.
+
+With these challenges in mind, I set out to develop a modern, user-friendly, open-source test case management tool that anyone can use for free in a secure, self-hosted environment.
 
 ## Features
 
