@@ -5,8 +5,13 @@
 
 .heroBanner {
   padding: 4rem 0;
+  text-align: center;
   position: relative;
   overflow: hidden;
+}
+
+.heroTitle {
+  color: blueviolet;
 }
 
 @media screen and (max-width: 996px) {
@@ -18,6 +23,7 @@
 
 .buttons {
   display: flex;
+  column-gap: 10px;
   align-items: center;
   justify-content: center;
 }
