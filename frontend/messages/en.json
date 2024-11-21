@@ -111,7 +111,9 @@
     "your_projects": "Your Projects",
     "public": "Public",
     "private": "Private",
-    "no_projects_found": "No projects found"
+    "no_projects_found": "No projects found",
+    "not_own_any_projects": "You don't own any projects.",
+    "find_projects": "Find projects"
   },
   "Admin": {
     "user_management": "User Management",

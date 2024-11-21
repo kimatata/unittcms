@@ -112,7 +112,8 @@
     "your_projects": "保有プロジェクト",
     "public": "パブリック",
     "private": "プライベート",
-    "no_projects_found": "プロジェクトがありません"
+    "not_own_any_projects": "所有しているプロジェクトがありません。",
+    "find_projects": "プロジェクトを探す"
   },
   "Admin": {
     "user_management": "ユーザー管理",
