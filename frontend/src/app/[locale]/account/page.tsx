@@ -10,6 +10,8 @@ export default function Page({ params }: PageType) {
     public: t('public'),
     private: t('private'),
     noProjectsFound: t('no_projects_found'),
+    notOwnAnyProjects: t('not_own_any_projects'),
+    findProjects: t('find_projects'),
   };
 
   return <AccountPage messages={messages} locale={params.locale as LocaleCodeType} />;

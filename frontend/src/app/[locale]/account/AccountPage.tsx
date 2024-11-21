@@ -1,19 +1,21 @@
 'use client';
 import { useState, useEffect, useContext } from 'react';
 import { Link, NextUiLinkClasses } from '@/src/navigation';
-import { Card, CardHeader, CardFooter } from '@nextui-org/react';
+import { Button, Card, CardHeader, CardFooter } from '@nextui-org/react';
 import { TokenContext } from '@/utils/TokenProvider';
 import Avatar from 'boring-avatars';
 import { fetchMyProjects } from '@/utils/projectsControl';
 import { ProjectType } from '@/types/project';
 import PublicityChip from '@/components/PublicityChip';
 import { LocaleCodeType } from '@/types/locale';
+import { ArrowRight } from 'lucide-react';
 
 type AccountPageMessages = {
   yourProjects: string;
   public: string;
   private: string;
-  noProjectsFound: string;
+  notOwnAnyProjects: string;
+  findProjects: string;
 };
 
 type Props = {
@@ -82,7 +84,14 @@ export default function AccountPage({ messages, locale }: Props) {
                 );
               })
             ) : (
-              <div className="text-default-500">{messages.noProjectsFound}</div>
+              <>
+                <span className="text-default-500 me-2">{messages.notOwnAnyProjects}</span>
+                <Link href={`/projects/`} locale={locale} className={NextUiLinkClasses}>
+                  <Button variant="flat" size="sm" endContent={<ArrowRight size={12} />}>
+                    {messages.findProjects}
+                  </Button>
+                </Link>
+              </>
             )}
           </div>
         </div>
