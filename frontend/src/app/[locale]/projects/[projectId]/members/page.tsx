@@ -1,5 +1,15 @@
+import { LocaleCodeType } from '@/types/locale';
 import MembersPage from './MembersPage';
+import { getTranslations } from 'next-intl/server';
 import { useTranslations } from 'next-intl';
+
+export async function generateMetadata({ params: { locale } }: { params: { locale: LocaleCodeType } }) {
+  const t = await getTranslations({ locale, namespace: 'Members' });
+  return {
+    title: `${t('member_management')} | UnitTCMS`,
+    robots: { index: false, follow: false },
+  };
+}
 
 export default function Page({ params }: { params: { projectId: string; locale: string } }) {
   const t = useTranslations('Members');

@@ -134,7 +134,7 @@
     "at_least": "最低1人以上の管理者が必要です。"
   },
   "Projects": {
-    "projectList": "プロジェクト一覧",
+    "project_list": "プロジェクト一覧",
     "new_project": "新規プロジェクト",
     "id": "ID",
     "publicity": "公開",
@@ -146,6 +146,7 @@
     "no_projects_found": "プロジェクトがありません"
   },
   "Project": {
+    "project": "プロジェクト",
     "home": "ホーム",
     "test_cases": "テストケース",
     "test_runs": "テストラン",
@@ -153,6 +154,7 @@
     "settings": "設定"
   },
   "Home": {
+    "home": "ホーム",
     "Folders": "フォルダー",
     "test_cases": "テストケース",
     "test_runs": "テストラン",

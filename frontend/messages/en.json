@@ -111,7 +111,6 @@
     "your_projects": "Your Projects",
     "public": "Public",
     "private": "Private",
-    "no_projects_found": "No projects found",
     "not_own_any_projects": "You don't own any projects.",
     "find_projects": "Find projects"
   },
@@ -134,7 +133,7 @@
     "at_least": "At least one administrator is required"
   },
   "Projects": {
-    "projectList": "Project List",
+    "project_list": "Project List",
     "new_project": "New Project",
     "id": "ID",
     "publicity": "Publicity",
@@ -146,6 +145,7 @@
     "no_projects_found": "No projects found"
   },
   "Project": {
+    "project": "Project",
     "home": "Home",
     "test_cases": "Test Cases",
     "test_runs": "Test Runs",
@@ -153,6 +153,7 @@
     "settings": "Settings"
   },
   "Home": {
+    "home": "Home",
     "Folders": "Folders",
     "test_cases": "Test Cases",
     "test_runs": "Test Runs",

@@ -7,7 +7,7 @@ import { ProjectDialogMessages, ProjectsMessages } from '@/types/project';
 export default function Page({ params }: PageType) {
   const t = useTranslations('Projects');
   const messages: ProjectsMessages = {
-    projectList: t('projectList'),
+    projectList: t('project_list'),
     newProject: t('new_project'),
     id: t('id'),
     publicity: t('publicity'),
