@@ -1,7 +1,16 @@
 import { PageType } from '@/types/base';
 import AuthPage from '../authPage';
+import { getTranslations } from 'next-intl/server';
 import { useTranslations } from 'next-intl';
 import { LocaleCodeType } from '@/types/locale';
+
+export async function generateMetadata({ params: { locale } }: { params: { locale: LocaleCodeType } }) {
+  const t = await getTranslations({ locale, namespace: 'Auth' });
+  return {
+    title: `${t('signin')} | UnitTCMS`,
+    robots: { index: false, follow: false },
+  };
+}
 
 export default function Page({ params }: PageType) {
   const t = useTranslations('Auth');

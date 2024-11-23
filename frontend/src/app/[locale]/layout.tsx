@@ -6,17 +6,26 @@ import clsx from 'clsx';
 import { getTranslations } from 'next-intl/server';
 import { useTranslations } from 'next-intl';
 import { LocaleCodeType } from '@/types/locale';
+import { headers } from 'next/headers';
 
 export async function generateMetadata({ params: { locale } }: { params: { locale: LocaleCodeType } }) {
+  const headersList = headers();
+  const host = headersList.get('host');
+  const isOfficialDomain = host === 'unittcms.org' ? true : false;
   const t = await getTranslations({ locale, namespace: 'Header' });
+
   return {
-    title: t('title'),
+    title: `${t('title')} | UnitTCMS`,
     description: t('description'),
     icons: {
       icon: '/favicon/favicon.ico',
       shortcut: '/favicon/favicon-16x16.png',
       apple: '/favicon/apple-touch-icon.png',
     },
+    alternates: {
+      canonical: `https://www.unittcms.org/${locale}`,
+    },
+    robots: isOfficialDomain ? { index: true, follow: true } : { index: false, follow: true },
   };
 }
 

@@ -1,8 +1,17 @@
+import { getTranslations } from 'next-intl/server';
 import { useTranslations } from 'next-intl';
 import AdminPage from './AdminPage';
 import { PageType } from '@/types/base';
 import { LocaleCodeType } from '@/types/locale';
 import { AdminMessages } from '@/types/user';
+
+export async function generateMetadata({ params: { locale } }: { params: { locale: LocaleCodeType } }) {
+  const t = await getTranslations({ locale, namespace: 'Admin' });
+  return {
+    title: `${t('user_management')} | UnitTCMS`,
+    robots: { index: false, follow: false },
+  };
+}
 
 export default function Page({ params }: PageType) {
   const t = useTranslations('Admin');

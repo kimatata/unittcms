@@ -1,7 +1,17 @@
+import { LocaleCodeType } from '@/types/locale';
 import { ProjectDialogMessages } from '@/types/project';
 import SettingsPage from './SettingsPage';
+import { getTranslations } from 'next-intl/server';
 import { useTranslations } from 'next-intl';
 import { SettingsMessages } from '@/types/settings';
+
+export async function generateMetadata({ params: { locale } }: { params: { locale: LocaleCodeType } }) {
+  const t = await getTranslations({ locale, namespace: 'Settings' });
+  return {
+    title: `${t('project_management')} | UnitTCMS`,
+    robots: { index: false, follow: false },
+  };
+}
 
 export default function Page({ params }: { params: { projectId: string; locale: string } }) {
   const t = useTranslations('Settings');
