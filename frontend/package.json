@@ -11,7 +11,7 @@
   "dependencies": {
     "@nextui-org/react": "^2.3.6",
     "@nextui-org/theme": "^2.2.3",
-    "@react-aria/ssr": "^3.8.0",
+    "@react-aria/ssr": "^3.9.7",
     "@react-aria/visually-hidden": "^3.8.15",
     "@types/node": "22.7.7",
     "@types/react": "18.2.21",
