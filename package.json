@@ -10,7 +10,7 @@
     "report": "playwright show-report"
   },
   "devDependencies": {
-    "@playwright/test": "^1.48.2",
+    "@playwright/test": "^1.49.1",
     "@types/node": "^22.8.1",
     "@vitest/coverage-v8": "^1.6.0",
     "express": "^4.21.0",
