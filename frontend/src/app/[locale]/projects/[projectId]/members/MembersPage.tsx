@@ -95,7 +95,7 @@ export default function MembersPage({ projectId, messages, locale }: Props) {
           size="sm"
           color="primary"
           isDisabled={!context.isProjectManager(Number(projectId))}
-          onClick={() => setIsDialogOpen(true)}
+          onPress={() => setIsDialogOpen(true)}
         >
           {messages.addMember}
         </Button>

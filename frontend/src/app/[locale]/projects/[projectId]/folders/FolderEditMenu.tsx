@@ -30,10 +30,10 @@ export default function FolderEditMenu({ folder, isDisabled, onEditClick, onDele
         </Button>
       </DropdownTrigger>
       <DropdownMenu aria-label="Static Actions" disabledKeys={disabledKeys}>
-        <DropdownItem key="edit" onClick={() => onEditClick(folder)}>
+        <DropdownItem key="edit" onPress={() => onEditClick(folder)}>
           {messages.editFolder}
         </DropdownItem>
-        <DropdownItem key="delete" className="text-danger" color="danger" onClick={() => onDeleteClick(folder.id)}>
+        <DropdownItem key="delete" className="text-danger" color="danger" onPress={() => onDeleteClick(folder.id)}>
           {messages.deleteFolder}
         </DropdownItem>
       </DropdownMenu>

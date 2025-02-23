@@ -2,7 +2,7 @@
 import { createContext, useState, useEffect, useContext } from 'react';
 import { ProjectRoleType, TokenContextType, TokenType } from '@/types/user';
 import { TokenProps } from '@/types/user';
-import { useRouter, usePathname } from '@/src/navigation';
+import { useRouter, usePathname } from '@/src/i18n/routing';
 import {
   isSignedIn as tokenIsSinedIn,
   isAdmin as tokenIsAdmin,

@@ -4,7 +4,7 @@ import { useState, useEffect, useContext } from 'react';
 import { UserType, AdminMessages } from '@/types/user';
 import { TokenContext } from '@/utils/TokenProvider';
 import { ToastContext } from '@/utils/ToastProvider';
-import { useRouter } from '@/src/navigation';
+import { useRouter } from '@/src/i18n/routing';
 import UsersTable from './UsersTable';
 import Config from '@/config/config';
 import { LocaleCodeType } from '@/types/locale';

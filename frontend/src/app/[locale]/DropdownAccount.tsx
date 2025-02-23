@@ -3,7 +3,7 @@ import { Button, DropdownTrigger, Dropdown, DropdownMenu, DropdownItem } from '@
 import { ChevronDown, PenTool, ArrowRightFromLine, ArrowRightToLine } from 'lucide-react';
 import { useContext } from 'react';
 import { TokenContext } from '@/utils/TokenProvider';
-import { useRouter } from '@/src/navigation';
+import { useRouter } from '@/src/i18n/routing';
 import { AccountDropDownMessages } from '@/types/user';
 import UserAvatar from '@/components/UserAvatar';
 

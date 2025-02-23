@@ -9,7 +9,7 @@ import { TokenContext } from '@/utils/TokenProvider';
 import { deleteProject, fetchProject, updateProject } from '@/utils/projectsControl';
 import { ProjectDialogMessages, ProjectType } from '@/types/project';
 import DeleteConfirmDialog from '@/components/DeleteConfirmDialog';
-import { useRouter } from '@/src/navigation';
+import { useRouter } from '@/src/i18n/routing';
 import ProjectDialog from '@/components/ProjectDialog';
 import { UserType } from '@/types/user';
 import { findUser } from '@/utils/usersControl';
@@ -94,7 +94,7 @@ export default function SettingsPage({ projectId, messages, projectDialogMessage
             size="sm"
             color="danger"
             isDisabled={!context.isProjectOwner(Number(projectId))}
-            onClick={() => setIsDeleteConfirmDialogOpen(true)}
+            onPress={() => setIsDeleteConfirmDialogOpen(true)}
           >
             {messages.deleteProject}
           </Button>
@@ -103,7 +103,7 @@ export default function SettingsPage({ projectId, messages, projectDialogMessage
             size="sm"
             color="primary"
             isDisabled={!context.isProjectOwner(Number(projectId))}
-            onClick={() => setIsProjectDialogOpen(true)}
+            onPress={() => setIsProjectDialogOpen(true)}
             className="ms-2"
           >
             {messages.editProject}

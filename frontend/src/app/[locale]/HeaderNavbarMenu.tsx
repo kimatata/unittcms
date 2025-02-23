@@ -1,7 +1,7 @@
 'use client';
 import { useState, useContext } from 'react';
 import { TokenContext } from '@/utils/TokenProvider';
-import { Link, useRouter } from '@/src/navigation';
+import { Link, useRouter } from '@/src/i18n/routing';
 import { usePathname } from 'next/navigation';
 import Image from 'next/image';
 import {
@@ -144,7 +144,7 @@ export default function HeaderNavbarMenu({ messages, locale }: Props) {
           <DropdownAccount messages={messages} locale={locale} onItemPress={() => {}} />
           <DropdownLanguage locale={locale} onChangeLocale={changeLocale} />
         </div>
-        <NavbarMenuToggle className="md:hidden" onPress={() => setIsMenuOpen(!isMenuOpen)} />
+        <NavbarMenuToggle className="md:hidden" onChange={() => setIsMenuOpen(!isMenuOpen)} />
       </NavbarContent>
 
       <NavbarMenu>

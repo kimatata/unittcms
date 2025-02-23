@@ -1,6 +1,6 @@
 'use client';
 import { useState, useEffect, useContext } from 'react';
-import { Link, NextUiLinkClasses } from '@/src/navigation';
+import { Link, NextUiLinkClasses } from '@/src/i18n/routing';
 import { Button, Card, CardHeader, CardFooter } from '@nextui-org/react';
 import { TokenContext } from '@/utils/TokenProvider';
 import Avatar from 'boring-avatars';

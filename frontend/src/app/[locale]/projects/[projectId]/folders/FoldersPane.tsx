@@ -3,7 +3,7 @@ import { FolderType, FoldersMessages } from '@/types/folder';
 import { useState, useEffect, useContext } from 'react';
 import { Button, Listbox, ListboxItem } from '@nextui-org/react';
 import { Folder, Plus } from 'lucide-react';
-import { usePathname, useRouter } from '@/src/navigation';
+import { usePathname, useRouter } from '@/src/i18n/routing';
 import { TokenContext } from '@/utils/TokenProvider';
 import useGetCurrentIds from '@/utils/useGetCurrentIds';
 import FolderDialog from './FolderDialog';
@@ -124,7 +124,7 @@ export default function FoldersPane({ projectId, messages, locale }: Props) {
           variant="bordered"
           className="m-2"
           isDisabled={!context.isProjectDeveloper(Number(projectId))}
-          onClick={openDialogForCreate}
+          onPress={openDialogForCreate}
         >
           {messages.newFolder}
         </Button>
@@ -132,7 +132,7 @@ export default function FoldersPane({ projectId, messages, locale }: Props) {
           {folders.map((folder, index) => (
             <ListboxItem
               key={index}
-              onClick={() => router.push(`/projects/${projectId}/folders/${folder.id}/cases`, { locale: locale })}
+              onPress={() => router.push(`/projects/${projectId}/folders/${folder.id}/cases`, { locale: locale })}
               startContent={<Folder size={20} color="#F7C24E" fill="#F7C24E" />}
               className={selectedFolder && folder.id === selectedFolder.id ? selectedClass : baseClass}
               endContent={

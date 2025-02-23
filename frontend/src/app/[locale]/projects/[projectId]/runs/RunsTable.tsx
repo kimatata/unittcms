@@ -13,7 +13,7 @@ import {
   DropdownItem,
   SortDescriptor,
 } from '@nextui-org/react';
-import { Link, NextUiLinkClasses } from '@/src/navigation';
+import { Link, NextUiLinkClasses } from '@/src/i18n/routing';
 import { MoreVertical } from 'lucide-react';
 import { RunsMessages, RunType } from '@/types/run';
 import dayjs from 'dayjs';
@@ -94,7 +94,7 @@ export default function RunsTable({ projectId, isDisabled, runs, onDeleteRun, me
               </Button>
             </DropdownTrigger>
             <DropdownMenu aria-label="run actions" disabledKeys={disabledKeys}>
-              <DropdownItem className="text-danger" key="delete" onClick={() => onDeleteRun(run.id)}>
+              <DropdownItem className="text-danger" key="delete" onPress={() => onDeleteRun(run.id)}>
                 {messages.deleteRun}
               </DropdownItem>
             </DropdownMenu>

@@ -92,7 +92,7 @@ export default function MembersTable({ members, isDisabled, onChangeRole, onDele
             isDisabled={isDisabled}
             color="danger"
             variant="light"
-            onClick={() => {
+            onPress={() => {
               if (member.User.id) {
                 onDeleteMember(member.User.id);
               }

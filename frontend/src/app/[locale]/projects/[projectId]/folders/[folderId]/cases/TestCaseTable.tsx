@@ -14,7 +14,7 @@ import {
   Selection,
   SortDescriptor,
 } from '@nextui-org/react';
-import { Link, NextUiLinkClasses } from '@/src/navigation';
+import { Link, NextUiLinkClasses } from '@/src/i18n/routing';
 import { Plus, MoreVertical, Trash } from 'lucide-react';
 import { CaseType, CasesMessages } from '@/types/case';
 import { PriorityMessages } from '@/types/priority';
@@ -104,6 +104,7 @@ export default function TestCaseTable({
             </DropdownTrigger>
             <DropdownMenu aria-label="test case actions">
               <DropdownItem
+                key="delete-case"
                 className="text-danger"
                 isDisabled={isDisabled}
                 onPress={() => handleDeleteCase(testCase.id)}

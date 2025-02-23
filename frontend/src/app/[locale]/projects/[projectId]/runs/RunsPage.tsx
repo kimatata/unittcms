@@ -104,7 +104,7 @@ export default function RunsPage({ projectId, locale, messages }: Props) {
             size="sm"
             isDisabled={!context.isProjectReporter(Number(projectId))}
             color="primary"
-            onClick={openDialogForCreate}
+            onPress={openDialogForCreate}
           >
             {messages.newRun}
           </Button>

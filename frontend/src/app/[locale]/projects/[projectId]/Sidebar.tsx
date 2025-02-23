@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react';
 import { Listbox, ListboxItem } from '@nextui-org/react';
 import { Home, Files, FlaskConical, Users, Settings } from 'lucide-react';
-import { usePathname, useRouter } from '@/src/navigation';
+import { usePathname, useRouter } from '@/src/i18n/routing';
 import useGetCurrentIds from '@/utils/useGetCurrentIds';
 import { ProjectMessages } from '@/types/project';
 
@@ -87,7 +87,7 @@ export default function Sidebar({ messages, locale }: Props) {
           <ListboxItem
             key={itr.key}
             startContent={itr.startContent}
-            onClick={() => handleTabClick(itr.key)}
+            onPress={() => handleTabClick(itr.key)}
             className={currentKey === itr.key ? selectedClass : baseClass}
           >
             {itr.text}
