@@ -14,7 +14,7 @@ import {
   Selection,
   SortDescriptor,
 } from '@nextui-org/react';
-import { Link, NextUiLinkClasses } from '@/src/navigation';
+import { Link, NextUiLinkClasses } from '@/src/i18n/routing';
 import { Plus, MoreVertical, Trash } from 'lucide-react';
 import { CaseType, CasesMessages } from '@/types/case';
 import { PriorityMessages } from '@/types/priority';

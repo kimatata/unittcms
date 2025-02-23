@@ -9,7 +9,7 @@ import { TokenContext } from '@/utils/TokenProvider';
 import { deleteProject, fetchProject, updateProject } from '@/utils/projectsControl';
 import { ProjectDialogMessages, ProjectType } from '@/types/project';
 import DeleteConfirmDialog from '@/components/DeleteConfirmDialog';
-import { useRouter } from '@/src/navigation';
+import { useRouter } from '@/src/i18n/routing';
 import ProjectDialog from '@/components/ProjectDialog';
 import { UserType } from '@/types/user';
 import { findUser } from '@/utils/usersControl';

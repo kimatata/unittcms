@@ -3,7 +3,7 @@ import { FolderType, FoldersMessages } from '@/types/folder';
 import { useState, useEffect, useContext } from 'react';
 import { Button, Listbox, ListboxItem } from '@nextui-org/react';
 import { Folder, Plus } from 'lucide-react';
-import { usePathname, useRouter } from '@/src/navigation';
+import { usePathname, useRouter } from '@/src/i18n/routing';
 import { TokenContext } from '@/utils/TokenProvider';
 import useGetCurrentIds from '@/utils/useGetCurrentIds';
 import FolderDialog from './FolderDialog';

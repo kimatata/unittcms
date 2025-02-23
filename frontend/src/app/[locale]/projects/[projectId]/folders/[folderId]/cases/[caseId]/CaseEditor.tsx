@@ -1,7 +1,7 @@
 'use client';
 import { useState, useEffect, useContext, ChangeEvent, DragEvent } from 'react';
 import { Input, Textarea, Select, SelectItem, Button, Divider, Tooltip } from '@nextui-org/react';
-import { useRouter } from '@/src/navigation';
+import { useRouter } from '@/src/i18n/routing';
 import { Save, Plus, ArrowLeft, Circle } from 'lucide-react';
 import { priorities, testTypes, templates } from '@/config/selection';
 import CaseStepsEditor from './CaseStepsEditor';
