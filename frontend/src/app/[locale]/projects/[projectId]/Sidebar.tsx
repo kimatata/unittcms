@@ -87,7 +87,7 @@ export default function Sidebar({ messages, locale }: Props) {
           <ListboxItem
             key={itr.key}
             startContent={itr.startContent}
-            onClick={() => handleTabClick(itr.key)}
+            onPress={() => handleTabClick(itr.key)}
             className={currentKey === itr.key ? selectedClass : baseClass}
           >
             {itr.text}

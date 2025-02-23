@@ -62,7 +62,7 @@ export default function ProjectsPage({ messages, projectDialogMessages, locale }
       <div className="w-full p-3 flex items-center justify-between">
         <h3 className="font-bold">{messages.projectList}</h3>
         <div>
-          <Button startContent={<Plus size={16} />} size="sm" color="primary" onClick={openDialogForCreate}>
+          <Button startContent={<Plus size={16} />} size="sm" color="primary" onPress={openDialogForCreate}>
             {messages.newProject}
           </Button>
         </div>

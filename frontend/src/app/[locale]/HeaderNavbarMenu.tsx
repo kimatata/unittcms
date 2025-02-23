@@ -144,7 +144,7 @@ export default function HeaderNavbarMenu({ messages, locale }: Props) {
           <DropdownAccount messages={messages} locale={locale} onItemPress={() => {}} />
           <DropdownLanguage locale={locale} onChangeLocale={changeLocale} />
         </div>
-        <NavbarMenuToggle className="md:hidden" onPress={() => setIsMenuOpen(!isMenuOpen)} />
+        <NavbarMenuToggle className="md:hidden" onChange={() => setIsMenuOpen(!isMenuOpen)} />
       </NavbarContent>
 
       <NavbarMenu>

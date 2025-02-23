@@ -104,6 +104,7 @@ export default function TestCaseTable({
             </DropdownTrigger>
             <DropdownMenu aria-label="test case actions">
               <DropdownItem
+                key="delete-case"
                 className="text-danger"
                 isDisabled={isDisabled}
                 onPress={() => handleDeleteCase(testCase.id)}

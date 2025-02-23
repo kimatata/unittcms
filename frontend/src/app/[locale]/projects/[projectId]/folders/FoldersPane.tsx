@@ -124,7 +124,7 @@ export default function FoldersPane({ projectId, messages, locale }: Props) {
           variant="bordered"
           className="m-2"
           isDisabled={!context.isProjectDeveloper(Number(projectId))}
-          onClick={openDialogForCreate}
+          onPress={openDialogForCreate}
         >
           {messages.newFolder}
         </Button>
@@ -132,7 +132,7 @@ export default function FoldersPane({ projectId, messages, locale }: Props) {
           {folders.map((folder, index) => (
             <ListboxItem
               key={index}
-              onClick={() => router.push(`/projects/${projectId}/folders/${folder.id}/cases`, { locale: locale })}
+              onPress={() => router.push(`/projects/${projectId}/folders/${folder.id}/cases`, { locale: locale })}
               startContent={<Folder size={20} color="#F7C24E" fill="#F7C24E" />}
               className={selectedFolder && folder.id === selectedFolder.id ? selectedClass : baseClass}
               endContent={

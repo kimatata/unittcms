@@ -94,7 +94,7 @@ export default function SettingsPage({ projectId, messages, projectDialogMessage
             size="sm"
             color="danger"
             isDisabled={!context.isProjectOwner(Number(projectId))}
-            onClick={() => setIsDeleteConfirmDialogOpen(true)}
+            onPress={() => setIsDeleteConfirmDialogOpen(true)}
           >
             {messages.deleteProject}
           </Button>
@@ -103,7 +103,7 @@ export default function SettingsPage({ projectId, messages, projectDialogMessage
             size="sm"
             color="primary"
             isDisabled={!context.isProjectOwner(Number(projectId))}
-            onClick={() => setIsProjectDialogOpen(true)}
+            onPress={() => setIsProjectDialogOpen(true)}
             className="ms-2"
           >
             {messages.editProject}

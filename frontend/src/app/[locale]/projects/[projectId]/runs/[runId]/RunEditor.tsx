@@ -307,14 +307,16 @@ export default function RunEditor({
                 </DropdownTrigger>
                 <DropdownMenu aria-label="test case select actions">
                   <DropdownItem
+                    key="include"
                     startContent={<CopyPlus size={16} />}
-                    onClick={() => handleBulkIncludeExcludeCases(true)}
+                    onPress={() => handleBulkIncludeExcludeCases(true)}
                   >
                     {messages.includeInRun}
                   </DropdownItem>
                   <DropdownItem
+                    key="exclude"
                     startContent={<CopyMinus size={16} />}
-                    onClick={() => handleBulkIncludeExcludeCases(false)}
+                    onPress={() => handleBulkIncludeExcludeCases(false)}
                   >
                     {messages.excludeFromRun}
                   </DropdownItem>

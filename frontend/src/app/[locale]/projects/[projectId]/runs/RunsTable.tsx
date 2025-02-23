@@ -94,7 +94,7 @@ export default function RunsTable({ projectId, isDisabled, runs, onDeleteRun, me
               </Button>
             </DropdownTrigger>
             <DropdownMenu aria-label="run actions" disabledKeys={disabledKeys}>
-              <DropdownItem className="text-danger" key="delete" onClick={() => onDeleteRun(run.id)}>
+              <DropdownItem className="text-danger" key="delete" onPress={() => onDeleteRun(run.id)}>
                 {messages.deleteRun}
               </DropdownItem>
             </DropdownMenu>
