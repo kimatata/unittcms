@@ -1,7 +1,7 @@
 'use client';
 import React from 'react';
 import { useState, useContext } from 'react';
-import { Input, Button, Card, CardHeader, CardBody } from '@nextui-org/react';
+import { Input, Button, Card, CardHeader, CardBody } from '@heroui/react';
 import { Link } from '@/src/i18n/routing';
 import { ChevronRight, Eye, EyeOff } from 'lucide-react';
 import { UserType, AuthMessages } from '@/types/user';

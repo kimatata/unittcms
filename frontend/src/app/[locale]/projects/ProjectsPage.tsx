@@ -1,6 +1,6 @@
 'use client';
 import { useEffect, useState, useContext } from 'react';
-import { Button } from '@nextui-org/react';
+import { Button } from '@heroui/react';
 import { Plus } from 'lucide-react';
 import { TokenContext } from '@/utils/TokenProvider';
 import { ProjectDialogMessages, ProjectType, ProjectsMessages } from '@/types/project';

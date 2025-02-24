@@ -17,7 +17,8 @@ import {
   Dropdown,
   DropdownMenu,
   DropdownItem,
-} from '@nextui-org/react';
+  addToast,
+} from '@heroui/react';
 import { Save, Circle, ArrowLeft, Folder, ChevronDown, CopyPlus, CopyMinus, RotateCw } from 'lucide-react';
 import RunProgressChart from './RunPregressDonutChart';
 import TestCaseSelector from './TestCaseSelector';
@@ -35,7 +36,6 @@ import {
 } from '../runsControl';
 import { fetchFolders } from '../../folders/foldersControl';
 import { TokenContext } from '@/utils/TokenProvider';
-import { ToastContext } from '@/utils/ToastProvider';
 import { useTheme } from 'next-themes';
 import { useFormGuard } from '@/utils/formGuard';
 import { PriorityMessages } from '@/types/priority';
@@ -75,7 +75,6 @@ export default function RunEditor({
   locale,
 }: Props) {
   const tokenContext = useContext(TokenContext);
-  const toastContext = useContext(ToastContext);
   const { theme, setTheme } = useTheme();
   const [testRun, setTestRun] = useState<RunType>(defaultTestRun);
   const [folders, setFolders] = useState<FolderType[]>([]);
@@ -174,7 +173,10 @@ export default function RunEditor({
     await updateRunCases(tokenContext.token.access_token, Number(runId), testCases);
     await initTestCases();
 
-    toastContext.showToast(messages.updatedTestRun, 'dark');
+    addToast({
+      title: 'Info',
+      description: messages.updatedTestRun,
+    });
     setIsUpdating(false);
     setIsDirty(false);
   };
@@ -279,10 +281,8 @@ export default function RunEditor({
                 label={messages.status}
                 className="mt-3 max-w-xs"
               >
-                {testRunStatus.map((status, index) => (
-                  <SelectItem key={status.uid} value={index}>
-                    {runStatusMessages[status.uid]}
-                  </SelectItem>
+                {testRunStatus.map((status) => (
+                  <SelectItem key={status.uid}>{runStatusMessages[status.uid]}</SelectItem>
                 ))}
               </Select>
             </div>

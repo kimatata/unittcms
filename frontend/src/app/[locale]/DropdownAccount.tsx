@@ -1,5 +1,5 @@
 'use client';
-import { Button, DropdownTrigger, Dropdown, DropdownMenu, DropdownItem } from '@nextui-org/react';
+import { Button, DropdownTrigger, Dropdown, DropdownMenu, DropdownItem } from '@heroui/react';
 import { ChevronDown, PenTool, ArrowRightFromLine, ArrowRightToLine } from 'lucide-react';
 import { useContext } from 'react';
 import { TokenContext } from '@/utils/TokenProvider';

@@ -1,5 +1,5 @@
 import { useState, useMemo, useCallback, ReactNode } from 'react';
-import { Table, TableHeader, TableColumn, TableBody, TableRow, TableCell, SortDescriptor } from '@nextui-org/react';
+import { Table, TableHeader, TableColumn, TableBody, TableRow, TableCell, SortDescriptor } from '@heroui/react';
 import { Link, NextUiLinkClasses } from '@/src/i18n/routing';
 import { ProjectType, ProjectsMessages } from '@/types/project';
 import dayjs from 'dayjs';

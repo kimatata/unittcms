@@ -13,7 +13,7 @@ import {
   DropdownItem,
   Selection,
   SortDescriptor,
-} from '@nextui-org/react';
+} from '@heroui/react';
 import {
   ChevronDown,
   MoveDiagonal,

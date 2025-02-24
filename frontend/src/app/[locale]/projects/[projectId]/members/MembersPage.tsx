@@ -1,7 +1,7 @@
 'use client';
 import React from 'react';
 import { useState, useEffect, useContext } from 'react';
-import { Button } from '@nextui-org/react';
+import { Button } from '@heroui/react';
 import { Plus } from 'lucide-react';
 import { MemberType, UserType } from '@/types/user';
 import { MembersMessages } from '@/types/member';

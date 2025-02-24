@@ -1,4 +1,4 @@
-import { Image, Button, Tooltip, Card, CardBody } from '@nextui-org/react';
+import { Image, Button, Tooltip, Card, CardBody } from '@heroui/react';
 import { AttachmentType, CaseMessages } from '@/types/case';
 import { Trash, ArrowDownToLine, ArrowUpFromLine } from 'lucide-react';
 import { isImage } from './isImage';

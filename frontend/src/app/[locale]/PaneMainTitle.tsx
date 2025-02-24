@@ -1,5 +1,5 @@
 import { title, subtitle } from '@/components/primitives';
-import { Button, Link as NextUiLink } from '@nextui-org/react';
+import { Button, Link as NextUiLink } from '@heroui/react';
 import { MoveUpRight } from 'lucide-react';
 import { Link } from '@/src/i18n/routing';
 import { useTranslations } from 'next-intl';

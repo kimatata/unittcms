@@ -1,5 +1,5 @@
 'use client';
-import { Button, DropdownTrigger, Dropdown, DropdownMenu, DropdownItem } from '@nextui-org/react';
+import { Button, DropdownTrigger, Dropdown, DropdownMenu, DropdownItem } from '@heroui/react';
 import { Globe, ChevronDown } from 'lucide-react';
 import { locales } from '@/config/selection';
 

@@ -12,7 +12,7 @@ import {
   Dropdown,
   DropdownMenu,
   DropdownItem,
-} from '@nextui-org/react';
+} from '@heroui/react';
 import { ChevronDown } from 'lucide-react';
 import { MemberType, UserType } from '@/types/user';
 import { memberRoles } from '@/config/selection';

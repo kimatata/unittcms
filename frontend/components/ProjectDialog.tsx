@@ -11,7 +11,7 @@ import {
   ModalHeader,
   ModalBody,
   ModalFooter,
-} from '@nextui-org/react';
+} from '@heroui/react';
 import { ProjectType, ProjectDialogMessages } from '@/types/project';
 
 type Props = {

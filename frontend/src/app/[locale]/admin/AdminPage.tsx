@@ -3,13 +3,12 @@ import React from 'react';
 import { useState, useEffect, useContext } from 'react';
 import { UserType, AdminMessages } from '@/types/user';
 import { TokenContext } from '@/utils/TokenProvider';
-import { ToastContext } from '@/utils/ToastProvider';
 import { useRouter } from '@/src/i18n/routing';
 import UsersTable from './UsersTable';
 import Config from '@/config/config';
 import { LocaleCodeType } from '@/types/locale';
 import { updateUserRole } from '@/utils/usersControl';
-import { Button } from '@nextui-org/react';
+import { Button, addToast } from '@heroui/react';
 import { roles } from '@/config/selection';
 import DeleteConfirmDialog from '@/components/DeleteConfirmDialog';
 const apiServer = Config.apiServer;
@@ -45,7 +44,6 @@ async function fetchUsers(jwt: string) {
 export default function AdminPage({ messages, locale }: Props) {
   const router = useRouter();
   const tokenContext = useContext(TokenContext);
-  const toastContext = useContext(ToastContext);
   const [users, setUsers] = useState<UserType[]>([]);
   const [myself, setMyself] = useState<UserType | null>(null);
 
@@ -85,7 +83,10 @@ export default function AdminPage({ messages, locale }: Props) {
     if (userEdit.id) {
       const data = await updateUserRole(tokenContext.token.access_token, userEdit.id, role);
       if (data.user) {
-        toastContext.showToast(messages.roleChanged, 'dark');
+        addToast({
+          title: 'Info',
+          description: messages.roleChanged,
+        });
         setUsers((prevUsers) => {
           return prevUsers.map((user) => {
             if (user.id === userEdit.id) {
@@ -104,10 +105,16 @@ export default function AdminPage({ messages, locale }: Props) {
       const data = await updateUserRole(tokenContext.token.access_token, myself.id, userRoleIndex);
 
       if (data && data.user) {
-        toastContext.showToast(messages.lostAdminAuth, 'dark');
+        addToast({
+          title: 'Info',
+          description: messages.lostAdminAuth,
+        });
         router.push(`/`, { locale: locale });
       } else {
-        toastContext.showToast(messages.atLeast, 'error');
+        addToast({
+          title: 'Info',
+          description: messages.atLeast,
+        });
       }
     }
   };

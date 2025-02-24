@@ -15,7 +15,7 @@ import {
   Chip,
   ListboxItem,
   Listbox,
-} from '@nextui-org/react';
+} from '@heroui/react';
 import { ArrowRightFromLine, ArrowRightToLine, File, Globe, MoveUpRight, PenTool } from 'lucide-react';
 import { ThemeSwitch } from '@/components/ThemeSwitch';
 import { GithubIcon } from '@/components/icons';

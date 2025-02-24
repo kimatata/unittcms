@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Button, Dropdown, DropdownTrigger, DropdownMenu, DropdownItem } from '@nextui-org/react';
+import { Button, Dropdown, DropdownTrigger, DropdownMenu, DropdownItem } from '@heroui/react';
 import { MoreVertical } from 'lucide-react';
 import { FolderType, FoldersMessages } from '@/types/folder';
 

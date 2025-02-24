@@ -1,5 +1,5 @@
 import { useTranslations } from 'next-intl';
-import { Divider } from '@nextui-org/react';
+import { Divider } from '@heroui/react';
 import { title, subtitle } from '@/components/primitives';
 import PaneMainTitle from './PaneMainTitle';
 import PaneMainFeatures from './PaneMainFeatures';
