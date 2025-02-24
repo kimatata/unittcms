@@ -22,7 +22,7 @@
     "boring-avatars": "^1.11.2",
     "clsx": "^2.1.1",
     "dayjs": "^1.11.13",
-    "eslint": "8.57.1",
+    "eslint": "9.21.0",
     "eslint-config-next": "14.2.24",
     "framer-motion": "^11.18.2",
     "intl-messageformat": "^10.7.15",
