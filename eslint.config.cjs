@@ -18,6 +18,7 @@ module.exports = [
   // esRecommended,
   // prettier,
   // tsRecommended,
+  { name: 'global', ignores: ['**/node_modules/', '**/coverage/', '**/docs/'] },
   {
     name: 'Frontend',
     files: ['frontend/**/*.{js,jsx,ts,tsx}'],
@@ -27,7 +28,7 @@ module.exports = [
         ...globals.browser,
       },
     },
-    ignores: ['**/.next/', '**/node_modules/'],
+    ignores: ['**/.next/'],
   },
   {
     name: 'Backend',
@@ -35,7 +36,6 @@ module.exports = [
     languageOptions: {
       globals: globals.node,
     },
-    ignores: ['**/node_modules/'],
     rules: {
       'no-console': 'off',
     },
