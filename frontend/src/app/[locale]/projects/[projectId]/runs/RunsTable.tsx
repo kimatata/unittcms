@@ -12,7 +12,7 @@ import {
   DropdownMenu,
   DropdownItem,
   SortDescriptor,
-} from '@nextui-org/react';
+} from '@heroui/react';
 import { Link, NextUiLinkClasses } from '@/src/i18n/routing';
 import { MoreVertical } from 'lucide-react';
 import { RunsMessages, RunType } from '@/types/run';

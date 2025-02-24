@@ -1,5 +1,5 @@
 import { useState, useEffect, useContext } from 'react';
-import { Button, Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Avatar, Textarea } from '@nextui-org/react';
+import { Button, Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Avatar, Textarea } from '@heroui/react';
 import { testTypes, templates } from '@/config/selection';
 import { RunMessages } from '@/types/run';
 import { CaseType, StepType } from '@/types/case';

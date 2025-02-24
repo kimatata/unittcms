@@ -13,7 +13,7 @@ import {
   checkSignInPage as tokenCheckSignInPage,
   fetchMyRoles,
 } from './token';
-import { ToastContext } from './ToastProvider';
+import { addToast } from '@heroui/react';
 const LOCAL_STORAGE_KEY = 'unittcms-auth-token';
 
 function storeTokenToLocalStorage(token: TokenType) {
@@ -53,7 +53,6 @@ const TokenContext = createContext<TokenContextType>(defaultContext);
 const TokenProvider = ({ toastMessages, locale, children }: TokenProps) => {
   const router = useRouter();
   const pathname = usePathname();
-  const toastContext = useContext(ToastContext);
 
   const [hasRestoreFinished, setHasRestoreFinished] = useState(false);
   const [token, setToken] = useState<TokenType>({
@@ -137,11 +136,19 @@ const TokenProvider = ({ toastMessages, locale, children }: TokenProps) => {
     if (!ret.ok) {
       if (ret.reason === 'notoken') {
         if (toastMessages) {
-          toastContext.showToast(toastMessages.needSignedIn, 'error');
+          addToast({
+            title: 'Info',
+            description: toastMessages.needSignedIn,
+            color: 'danger',
+          });
         }
       } else if (ret.reason === 'expired') {
         if (toastMessages) {
-          toastContext.showToast(toastMessages.sessionExpired, 'error');
+          addToast({
+            title: 'Info',
+            description: toastMessages.sessionExpired,
+            color: 'danger',
+          });
         }
       }
 

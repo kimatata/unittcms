@@ -9,8 +9,9 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@nextui-org/react": "^2.6.11",
-    "@nextui-org/theme": "^2.4.5",
+    "@heroui/react": "^2.6.11",
+    "@heroui/system": "^2.4.10",
+    "@heroui/theme": "^2.4.5",
     "@react-aria/ssr": "^3.9.7",
     "@react-aria/visually-hidden": "^3.8.19",
     "@types/node": "22.13.5",
@@ -33,7 +34,6 @@
     "react": "^18.3.1",
     "react-apexcharts": "^1.7.0",
     "react-dom": "18.3.1",
-    "react-toastify": "^10.0.6",
     "sharp": "^0.33.5",
     "tailwind-variants": "^0.3.1",
     "tailwindcss": "^3.4.17",

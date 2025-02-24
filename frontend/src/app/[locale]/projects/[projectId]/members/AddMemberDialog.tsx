@@ -1,7 +1,7 @@
 'use client';
 import React from 'react';
 import { useState, useEffect, useContext } from 'react';
-import { Button, Input, Modal, ModalContent, ModalHeader, ModalBody, ModalFooter } from '@nextui-org/react';
+import { Button, Input, Modal, ModalContent, ModalHeader, ModalBody, ModalFooter } from '@heroui/react';
 import { TokenContext } from '@/utils/TokenProvider';
 import { UserType } from '@/types/user';
 import { searchUsers } from '@/utils/usersControl';

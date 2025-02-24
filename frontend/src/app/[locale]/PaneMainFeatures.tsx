@@ -1,4 +1,4 @@
-import { Card, CardHeader, CardBody, Avatar } from '@nextui-org/react';
+import { Card, CardHeader, CardBody, Avatar } from '@heroui/react';
 import { Scale, Folder, Check, Globe } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 

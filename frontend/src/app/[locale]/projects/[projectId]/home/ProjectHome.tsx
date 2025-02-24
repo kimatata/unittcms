@@ -1,7 +1,7 @@
 'use client';
 import { useState, useEffect, useContext } from 'react';
 import { title, subtitle } from '@/components/primitives';
-import { Card, CardBody, Chip, Divider } from '@nextui-org/react';
+import { Card, CardBody, Chip, Divider } from '@heroui/react';
 import { Folder, Clipboard, FlaskConical } from 'lucide-react';
 import { ProgressSeriesType } from '@/types/run';
 import { HomeMessages } from './page';

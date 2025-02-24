@@ -1,4 +1,4 @@
-import { Textarea, Button, Tooltip, Avatar } from '@nextui-org/react';
+import { Textarea, Button, Tooltip, Avatar } from '@heroui/react';
 import { CaseMessages, StepType } from '@/types/case';
 import { Plus, Trash } from 'lucide-react';
 

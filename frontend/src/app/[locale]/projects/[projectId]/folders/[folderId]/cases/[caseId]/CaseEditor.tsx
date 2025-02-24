@@ -1,6 +1,6 @@
 'use client';
 import { useState, useEffect, useContext, ChangeEvent, DragEvent } from 'react';
-import { Input, Textarea, Select, SelectItem, Button, Divider, Tooltip } from '@nextui-org/react';
+import { Input, Textarea, Select, SelectItem, Button, Divider, Tooltip, addToast } from '@heroui/react';
 import { useRouter } from '@/src/i18n/routing';
 import { Save, Plus, ArrowLeft, Circle } from 'lucide-react';
 import { priorities, testTypes, templates } from '@/config/selection';
@@ -10,7 +10,6 @@ import { fetchCase, updateCase } from '@/utils/caseControl';
 import { updateSteps } from './stepControl';
 import { fetchCreateAttachments, fetchDownloadAttachment, fetchDeleteAttachment } from './attachmentControl';
 import { TokenContext } from '@/utils/TokenProvider';
-import { ToastContext } from '@/utils/ToastProvider';
 import { useFormGuard } from '@/utils/formGuard';
 import { CaseType, AttachmentType, CaseMessages, StepType } from '@/types/case';
 import { PriorityMessages } from '@/types/priority';
@@ -54,7 +53,6 @@ export default function CaseEditor({
   locale,
 }: Props) {
   const tokenContext = useContext(TokenContext);
-  const toastContext = useContext(ToastContext);
   const [testCase, setTestCase] = useState<CaseType>(defaultTestCase);
   const [isTitleInvalid, setIsTitleInvalid] = useState<boolean>(false);
   const [isUpdating, setIsUpdating] = useState<boolean>(false);
@@ -242,7 +240,10 @@ export default function CaseEditor({
                 await updateSteps(tokenContext.token.access_token, Number(caseId), testCase.Steps);
               }
 
-              toastContext.showToast(messages.updatedTestCase, 'dark');
+              addToast({
+                title: 'Info',
+                description: messages.updatedTestCase,
+              });
               setIsUpdating(false);
               setIsDirty(false);
             }}
@@ -298,10 +299,8 @@ export default function CaseEditor({
             label={messages.priority}
             className="mt-3 max-w-xs"
           >
-            {priorities.map((priority, index) => (
-              <SelectItem key={priority.uid} value={index}>
-                {priorityMessages[priority.uid]}
-              </SelectItem>
+            {priorities.map((priority) => (
+              <SelectItem key={priority.uid}>{priorityMessages[priority.uid]}</SelectItem>
             ))}
           </Select>
         </div>
@@ -321,10 +320,8 @@ export default function CaseEditor({
             label={messages.type}
             className="mt-3 max-w-xs"
           >
-            {testTypes.map((type, index) => (
-              <SelectItem key={type.uid} value={index}>
-                {testTypeMessages[type.uid]}
-              </SelectItem>
+            {testTypes.map((type) => (
+              <SelectItem key={type.uid}>{testTypeMessages[type.uid]}</SelectItem>
             ))}
           </Select>
         </div>
@@ -344,10 +341,8 @@ export default function CaseEditor({
             label={messages.template}
             className="mt-3 max-w-xs"
           >
-            {templates.map((template, index) => (
-              <SelectItem key={template.uid} value={index}>
-                {messages[template.uid]}
-              </SelectItem>
+            {templates.map((template) => (
+              <SelectItem key={template.uid}>{messages[template.uid]}</SelectItem>
             ))}
           </Select>
         </div>

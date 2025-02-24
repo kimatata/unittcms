@@ -1,5 +1,5 @@
 'use client';
-import { Image } from '@nextui-org/react';
+import { Image } from '@heroui/react';
 import { useState, useEffect } from 'react';
 import { useTheme } from 'next-themes';
 

@@ -1,7 +1,7 @@
 'use client';
 import { FolderType, FoldersMessages } from '@/types/folder';
 import { useState, useEffect, useContext } from 'react';
-import { Button, Listbox, ListboxItem } from '@nextui-org/react';
+import { Button, Listbox, ListboxItem } from '@heroui/react';
 import { Folder, Plus } from 'lucide-react';
 import { usePathname, useRouter } from '@/src/i18n/routing';
 import { TokenContext } from '@/utils/TokenProvider';
