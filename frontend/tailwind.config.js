@@ -1,5 +1,4 @@
-const { heroui } = require('@heroui/theme');
-import { heroui } from '@heroui/theme';
+const { heroui } = require('@heroui/react');
 
 /** @type {import('tailwindcss').Config} */
 module.exports = {
@@ -9,12 +8,11 @@ module.exports = {
     './app/**/*.{js,ts,jsx,tsx,mdx}',
     './src/app/**/*.{js,ts,jsx,tsx,mdx}',
     './node_modules/@heroui/theme/dist/**/*.{js,ts,jsx,tsx}',
-    './node_modules/@heroui/theme/dist/components/(toast|spinner).js',
   ],
+  darkMode: 'class',
   theme: {
     extend: {},
   },
-  darkMode: 'class',
   plugins: [
     heroui({
       themes: {
@@ -38,6 +36,5 @@ module.exports = {
         },
       },
     }),
-    heroui(),
   ],
 };
