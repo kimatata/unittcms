@@ -9,7 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@heroui/react": "^2.6.11",
+    "@heroui/react": "^2.7.4",
     "@heroui/system": "^2.4.10",
     "@heroui/theme": "^2.4.5",
     "@react-aria/ssr": "^3.9.7",
