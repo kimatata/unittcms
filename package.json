@@ -18,6 +18,6 @@
     "sequelize": "^6.37.4",
     "sqlite3": "^5.1.7",
     "supertest": "^7.0.0",
-    "vitest": "^1.6.0"
+    "vitest": "^3.0.7"
   }
 }
