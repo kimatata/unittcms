@@ -18,7 +18,7 @@
     "express-rate-limit": "^7.4.1",
     "jsonwebtoken": "^9.0.2",
     "multer": "^1.4.5-lts.1",
-    "sequelize": "^6.37.5",
+    "sequelize": "^6.37.6",
     "sequelize-cli": "^6.6.2",
     "sqlite3": "^5.1.7"
   }
