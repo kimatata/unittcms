@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "@heroui/react": "^2.6.11",
-    "@heroui/system": "^2.4.10",
+    "@heroui/system": "^2.4.12",
     "@heroui/theme": "^2.4.5",
     "@react-aria/ssr": "^3.9.7",
     "@react-aria/visually-hidden": "^3.8.19",
