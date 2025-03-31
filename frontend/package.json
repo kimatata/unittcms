@@ -14,7 +14,7 @@
     "@heroui/theme": "^2.4.5",
     "@react-aria/ssr": "^3.9.7",
     "@react-aria/visually-hidden": "^3.8.19",
-    "@types/node": "22.13.5",
+    "@types/node": "22.13.14",
     "@types/react": "18.3.18",
     "@types/react-dom": "18.3.5",
     "apexcharts": "^4.5.0",
