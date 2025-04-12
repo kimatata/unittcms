@@ -190,6 +190,25 @@ export default function CaseEditor({
     }
   };
 
+  const onStepUpdate = (stepId: number, changeStep: StepType) => {
+    if (changeStep.editState === 'notChanged') {
+      changeStep.editState = 'changed';
+    }
+
+    if (testCase.Steps) {
+      setTestCase({
+        ...testCase,
+        Steps: testCase.Steps.map((step) => {
+          if (step.id === stepId) {
+            return changeStep;
+          } else {
+            return step;
+          }
+        }),
+      });
+    }
+  };
+
   useEffect(() => {
     async function fetchDataEffect() {
       if (!tokenContext.isSignedIn()) {
@@ -394,20 +413,7 @@ export default function CaseEditor({
               <CaseStepsEditor
                 isDisabled={!tokenContext.isProjectDeveloper(Number(projectId))}
                 steps={testCase.Steps}
-                onStepUpdate={(stepId, changeStep) => {
-                  if (testCase.Steps) {
-                    setTestCase({
-                      ...testCase,
-                      Steps: testCase.Steps.map((step) => {
-                        if (step.id === stepId) {
-                          return changeStep;
-                        } else {
-                          return step;
-                        }
-                      }),
-                    });
-                  }
-                }}
+                onStepUpdate={onStepUpdate}
                 onStepPlus={onPlusClick}
                 onStepDelete={onDeleteClick}
                 messages={messages}
