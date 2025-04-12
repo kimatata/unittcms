@@ -9,7 +9,7 @@ type Props = {
 };
 
 export default function DemoImage({ imageName, altText }: Props) {
-  const { theme, setTheme } = useTheme();
+  const { theme } = useTheme();
   const [currentTheme, setCurrentTheme] = useState('light');
 
   useEffect(() => {
@@ -20,13 +20,7 @@ export default function DemoImage({ imageName, altText }: Props) {
 
   return (
     <>
-      <Image
-        src={`/top/${currentTheme}/${imageName}.png`}
-        alt={altText}
-        height={500}
-        shadow="md"
-        className="max-w-full"
-      />
+      <Image src={`/top/${currentTheme}/${imageName}.png`} alt={altText} shadow="md" className="max-w-full" />
     </>
   );
 }
