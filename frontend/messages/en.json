@@ -223,7 +223,7 @@
     "download": "Download",
     "delete_file": "Delete file",
     "click_to_upload": "Click to upload",
-    "or_drag_and_drop": "or drag and drop",
+    "or_drag_and_drop": " or drag and drop",
     "max_file_size": "Max. file size",
     "are_you_sure_leave": "Are you sure you want to leave the page?"
   },
