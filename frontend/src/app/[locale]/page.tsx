@@ -99,7 +99,7 @@ export default function Home({ params }: PageType) {
 
       <Divider className="my-12" />
       <div className="w-full text-center py-2">
-        <div>Copyright © 2024 UnitTCMS</div>
+        <div>Copyright © 2024-present UnitTCMS</div>
       </div>
     </section>
   );
