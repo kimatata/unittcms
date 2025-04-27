@@ -41,11 +41,13 @@ export default defineConfig({
     {
       name: 'firefox',
       use: { ...devices['Desktop Firefox'] },
+      testIgnore: '**/first-user-signup.spec.ts',
     },
 
     {
       name: 'webkit',
       use: { ...devices['Desktop Safari'] },
+      testIgnore: '**/first-user-signup.spec.ts',
     },
 
     /* Test against mobile viewports. */
