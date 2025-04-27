@@ -26,7 +26,7 @@ jobs:
         run: npx playwright install
 
       - name: Start docker containers
-        run: docker-compose up --build
+        run: docker-compose up --build -d
 
       - name: Run E2E tests
         run: npm run e2e
