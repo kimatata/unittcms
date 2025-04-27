@@ -26,7 +26,7 @@ jobs:
         run: npm install
 
       - name: Install Playwright
-        run: npx playwright install
+        run: npx playwright install --with-deps
 
       - name: Start docker containers
         run: docker-compose up --build -d
