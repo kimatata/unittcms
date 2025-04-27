@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
 
 test('First User signup and create project', async ({ page }) => {
-  const screenshotDir = 'playwright-report/screenshots/first-user-signup';
+  const screenshotDir = 'playwright-screenshots/first-user-signup';
 
   // Move to Sign up page
   await page.goto('http://localhost:8000/en/account/signup');
