@@ -3,5 +3,6 @@ coverage/
 .env
 /test-results/
 /playwright-report/
+/playwright-screenshots/
 /blob-report/
 /playwright/.cache/
