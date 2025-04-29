@@ -97,11 +97,16 @@ export default function AuthPage({ isSignup, messages, locale }: Props) {
     <Card className="w-[480px] mt-16">
       <CardHeader className="px-4 pt-4 pb-0 flex justify-between">
         <h4 className="font-bold text-large">{messages.title}</h4>
-        <Link href={isSignup ? '/account/signin' : '/account/signup'} locale={locale}>
-          <Button color="primary" variant="light" endContent={<ChevronRight size={16} />}>
-            {messages.linkTitle}
-          </Button>
-        </Link>
+        <Button
+          as={Link}
+          href={isSignup ? '/account/signin' : '/account/signup'}
+          locale={locale}
+          color="primary"
+          variant="light"
+          endContent={<ChevronRight size={16} />}
+        >
+          {messages.linkTitle}
+        </Button>
       </CardHeader>
       <CardBody className="overflow-visible px-4 pt-0 pb-4">
         <form>

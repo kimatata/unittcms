@@ -101,12 +101,7 @@ export default function HeaderNavbarMenu({ messages, locale }: Props) {
         {commonLinks.map((link) =>
           link.isExternal ? (
             <NavbarItem key={link.uid} className="hidden md:block">
-              <NextUiLink
-                isExternal
-                href={link.href}
-                showAnchorIcon
-                anchorIcon={<MoveUpRight size={12} className="ms-1" />}
-              >
+              <NextUiLink isExternal href={link.href} showAnchorIcon>
                 {link.label}
               </NextUiLink>
             </NavbarItem>
