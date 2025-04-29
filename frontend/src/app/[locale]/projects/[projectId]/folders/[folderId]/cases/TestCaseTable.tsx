@@ -14,8 +14,8 @@ import {
   Selection,
   SortDescriptor,
 } from '@heroui/react';
-import { Link, NextUiLinkClasses } from '@/src/i18n/routing';
 import { Plus, MoreVertical, Trash } from 'lucide-react';
+import { Link } from '@/src/i18n/routing';
 import { CaseType, CasesMessages } from '@/types/case';
 import { PriorityMessages } from '@/types/priority';
 import TestCasePriority from '@/components/TestCasePriority';
@@ -82,14 +82,15 @@ export default function TestCaseTable({
         return <span>{cellValue as number}</span>;
       case 'title':
         return (
-          <Button size="sm" variant="light" className="data-[hover=true]:bg-transparent">
-            <Link
-              href={`/projects/${projectId}/folders/${testCase.folderId}/cases/${testCase.id}`}
-              locale={locale}
-              className={NextUiLinkClasses}
-            >
-              {cellValue as string}
-            </Link>
+          <Button
+            size="sm"
+            as={Link}
+            href={`/projects/${projectId}/folders/${testCase.folderId}/cases/${testCase.id}`}
+            locale={locale}
+            variant="light"
+            className="data-[hover=true]:bg-transparent"
+          >
+            {cellValue as string}
           </Button>
         );
       case 'priority':

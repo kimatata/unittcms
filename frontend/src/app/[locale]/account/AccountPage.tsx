@@ -86,11 +86,16 @@ export default function AccountPage({ messages, locale }: Props) {
             ) : (
               <>
                 <span className="text-default-500 me-2">{messages.notOwnAnyProjects}</span>
-                <Link href={`/projects/`} locale={locale} className={NextUiLinkClasses}>
-                  <Button variant="flat" size="sm" endContent={<ArrowRight size={12} />}>
-                    {messages.findProjects}
-                  </Button>
-                </Link>
+                <Button
+                  as={Link}
+                  href={`/projects/`}
+                  locale={locale}
+                  variant="flat"
+                  size="sm"
+                  endContent={<ArrowRight size={12} />}
+                >
+                  {messages.findProjects}
+                </Button>
               </>
             )}
           </div>
