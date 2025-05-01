@@ -6,3 +6,4 @@ coverage/
 /playwright-screenshots/
 /blob-report/
 /playwright/.cache/
+.DS_Store
