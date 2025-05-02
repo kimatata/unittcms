@@ -5,9 +5,9 @@
   "scripts": {
     "start": "node --env-file=.env index",
     "dev": "node index",
-    "migrate": "bash scripts/migrate.sh",
-    "seed": "bash scripts/seed.sh",
-    "drop": "bash scripts/drop.sh"
+    "migrate": "sequelize db:migrate",
+    "seed": "sequelize db:seed:all",
+    "drop": "sequelize db:migrate:undo:all"
   },
   "author": "",
   "license": "ISC",
