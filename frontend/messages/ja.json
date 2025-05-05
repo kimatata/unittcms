@@ -189,6 +189,7 @@
     "close": "閉じる",
     "are_you_sure": "テストケースを削除してもよろしいですか?",
     "new_test_case": "新規テストケース",
+    "download_csv": "CSVダウンロード",
     "status": "ステータス",
     "no_cases_found": "テストケースがありません",
     "case_title": "テストケースタイトル",
