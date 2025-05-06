@@ -36,7 +36,6 @@ type RunsMessages = {
   newRun: string;
   editRun: string;
   deleteRun: string;
-  export: string;
   id: string;
   name: string;
   description: string;
