@@ -14,7 +14,7 @@ import {
   Selection,
   SortDescriptor,
 } from '@heroui/react';
-import { Plus, MoreVertical, Trash } from 'lucide-react';
+import { Plus, MoreVertical, Trash, Download } from 'lucide-react';
 import { Link } from '@/src/i18n/routing';
 import { CaseType, CasesMessages } from '@/types/case';
 import { PriorityMessages } from '@/types/priority';
@@ -28,6 +28,7 @@ type Props = {
   onCreateCase: () => void;
   onDeleteCase: (caseId: number) => void;
   onDeleteCases: (caseIds: number[]) => void;
+  onCsvDownload: () => void;
   messages: CasesMessages;
   priorityMessages: PriorityMessages;
   locale: LocaleCodeType;
@@ -40,6 +41,7 @@ export default function TestCaseTable({
   onCreateCase,
   onDeleteCase,
   onDeleteCases,
+  onCsvDownload,
   messages,
   priorityMessages,
   locale,
@@ -154,6 +156,7 @@ export default function TestCaseTable({
     <>
       <div className="border-b-1 dark:border-neutral-700 w-full p-3 flex items-center justify-between">
         <h3 className="font-bold">{messages.testCaseList}</h3>
+
         <div>
           {((selectedKeys !== 'all' && selectedKeys.size > 0) || selectedKeys === 'all') && (
             <Button
@@ -167,6 +170,16 @@ export default function TestCaseTable({
               {messages.delete}
             </Button>
           )}
+          <Button
+            startContent={<Download size={16} />}
+            size="sm"
+            variant="bordered"
+            isDisabled={isDisabled}
+            className="me-2"
+            onPress={onCsvDownload}
+          >
+            {messages.downloadCsv}
+          </Button>
           <Button
             startContent={<Plus size={16} />}
             size="sm"

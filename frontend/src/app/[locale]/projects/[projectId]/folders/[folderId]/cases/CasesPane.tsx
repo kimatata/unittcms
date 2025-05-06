@@ -1,11 +1,11 @@
 'use client';
 import { useState, useEffect, useContext } from 'react';
-import { TokenContext } from '@/utils/TokenProvider';
 import TestCaseTable from './TestCaseTable';
-import { fetchCases, createCase, deleteCases } from '@/utils/caseControl';
+import CaseDialog from './CaseDialog';
+import { TokenContext } from '@/utils/TokenProvider';
+import { fetchCases, createCase, deleteCases, csvDownload } from '@/utils/caseControl';
 import { CaseType, CasesMessages } from '@/types/case';
 import DeleteConfirmDialog from '@/components/DeleteConfirmDialog';
-import CaseDialog from './CaseDialog';
 import { PriorityMessages } from '@/types/priority';
 import { LocaleCodeType } from '@/types/locale';
 
@@ -74,6 +74,10 @@ export default function CasesPane({ projectId, folderId, messages, priorityMessa
     }
   };
 
+  const onCsvDownload = async () => {
+    await csvDownload(context.token.access_token, Number(folderId));
+  };
+
   return (
     <>
       <TestCaseTable
@@ -83,6 +87,7 @@ export default function CasesPane({ projectId, folderId, messages, priorityMessa
         onCreateCase={() => setIsCaseDialogOpen(true)}
         onDeleteCase={onDeleteCase}
         onDeleteCases={onDeleteCases}
+        onCsvDownload={onCsvDownload}
         messages={messages}
         priorityMessages={priorityMessages}
         locale={locale}
