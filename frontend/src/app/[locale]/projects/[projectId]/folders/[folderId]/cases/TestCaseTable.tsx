@@ -13,8 +13,9 @@ import {
   DropdownItem,
   Selection,
   SortDescriptor,
+  ButtonGroup,
 } from '@heroui/react';
-import { Plus, MoreVertical, Trash, Download } from 'lucide-react';
+import { Plus, MoreVertical, Trash, Download, FileDown, ChevronDown, FileJson, FileSpreadsheet } from 'lucide-react';
 import { Link } from '@/src/i18n/routing';
 import { CaseType, CasesMessages } from '@/types/case';
 import { PriorityMessages } from '@/types/priority';
@@ -28,7 +29,7 @@ type Props = {
   onCreateCase: () => void;
   onDeleteCase: (caseId: number) => void;
   onDeleteCases: (caseIds: number[]) => void;
-  onCsvDownload: () => void;
+  onExportCases: (type: string) => void;
   messages: CasesMessages;
   priorityMessages: PriorityMessages;
   locale: LocaleCodeType;
@@ -41,7 +42,7 @@ export default function TestCaseTable({
   onCreateCase,
   onDeleteCase,
   onDeleteCases,
-  onCsvDownload,
+  onExportCases,
   messages,
   priorityMessages,
   locale,
@@ -58,6 +59,7 @@ export default function TestCaseTable({
     column: 'id',
     direction: 'ascending',
   });
+  const [exportType, setExportType] = useState(new Set(['json']));
 
   const sortedItems = useMemo(() => {
     if (cases.length === 0) {
@@ -133,6 +135,10 @@ export default function TestCaseTable({
     setSelectedKeys(new Set([]));
   };
 
+  const handleExportTypeChange = (keys: Selection) => {
+    setExportType(new Set(Array.from(keys as Set<string>)));
+  };
+
   const classNames = useMemo(
     () => ({
       wrapper: ['max-w-3xl'],
@@ -170,16 +176,38 @@ export default function TestCaseTable({
               {messages.delete}
             </Button>
           )}
-          <Button
-            startContent={<Download size={16} />}
-            size="sm"
-            variant="bordered"
-            isDisabled={isDisabled}
-            className="me-2"
-            onPress={onCsvDownload}
-          >
-            {messages.downloadCsv}
-          </Button>
+          <ButtonGroup className="me-2">
+            <Button
+              startContent={<FileDown size={16} />}
+              size="sm"
+              isDisabled={isDisabled}
+              onPress={() => onExportCases(Array.from(exportType)[0])}
+            >
+              {messages.export}
+            </Button>
+            <Dropdown placement="bottom-end">
+              <DropdownTrigger>
+                <Button isIconOnly size="sm">
+                  <ChevronDown size={16} />
+                </Button>
+              </DropdownTrigger>
+              <DropdownMenu
+                disallowEmptySelection
+                aria-label="Export options"
+                className="max-w-[300px]"
+                selectedKeys={exportType}
+                selectionMode="single"
+                onSelectionChange={handleExportTypeChange}
+              >
+                <DropdownItem key="json" startContent={<FileJson size={16} />}>
+                  json
+                </DropdownItem>
+                <DropdownItem key="csv" startContent={<FileSpreadsheet size={16} />}>
+                  csv
+                </DropdownItem>
+              </DropdownMenu>
+            </Dropdown>
+          </ButtonGroup>
           <Button
             startContent={<Plus size={16} />}
             size="sm"

@@ -21,6 +21,7 @@
     "papaparse": "^5.5.2",
     "sequelize": "^6.37.5",
     "sequelize-cli": "^6.6.2",
-    "sqlite3": "^5.1.7"
+    "sqlite3": "^5.1.7",
+    "xmlbuilder2": "^3.1.1"
   }
 }

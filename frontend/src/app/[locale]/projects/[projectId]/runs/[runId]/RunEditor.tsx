@@ -1,7 +1,5 @@
 'use client';
-import React from 'react';
 import { useState, useEffect, useContext } from 'react';
-import { useRouter } from '@/src/i18n/routing';
 import {
   Button,
   Input,
@@ -18,14 +16,24 @@ import {
   DropdownMenu,
   DropdownItem,
   addToast,
+  ButtonGroup,
+  Badge,
 } from '@heroui/react';
-import { Save, Circle, ArrowLeft, Folder, ChevronDown, CopyPlus, CopyMinus, RotateCw } from 'lucide-react';
-import RunProgressChart from './RunPregressDonutChart';
-import TestCaseSelector from './TestCaseSelector';
-import { testRunStatus } from '@/config/selection';
-import { RunType, RunStatusCountType, RunMessages } from '@/types/run';
-import { CaseType } from '@/types/case';
-import { FolderType } from '@/types/folder';
+import {
+  Save,
+  Circle,
+  ArrowLeft,
+  Folder,
+  ChevronDown,
+  CopyPlus,
+  CopyMinus,
+  RotateCw,
+  FileDown,
+  FileSpreadsheet,
+  FileCode,
+  FileJson,
+} from 'lucide-react';
+import { useTheme } from 'next-themes';
 import {
   fetchRun,
   updateRun,
@@ -33,10 +41,17 @@ import {
   fetchProjectCases,
   includeExcludeTestCases,
   changeStatus,
+  exportRun,
 } from '../runsControl';
 import { fetchFolders } from '../../folders/foldersControl';
+import RunProgressChart from './RunPregressDonutChart';
+import TestCaseSelector from './TestCaseSelector';
+import { useRouter } from '@/src/i18n/routing';
+import { testRunStatus } from '@/config/selection';
+import { RunType, RunStatusCountType, RunMessages } from '@/types/run';
+import { CaseType } from '@/types/case';
+import { FolderType } from '@/types/folder';
 import { TokenContext } from '@/utils/TokenProvider';
-import { useTheme } from 'next-themes';
 import { useFormGuard } from '@/utils/formGuard';
 import { PriorityMessages } from '@/types/priority';
 import { RunStatusMessages, TestRunCaseStatusMessages } from '@/types/status';
@@ -75,7 +90,7 @@ export default function RunEditor({
   locale,
 }: Props) {
   const tokenContext = useContext(TokenContext);
-  const { theme, setTheme } = useTheme();
+  const { theme } = useTheme();
   const [testRun, setTestRun] = useState<RunType>(defaultTestRun);
   const [folders, setFolders] = useState<FolderType[]>([]);
   const [runStatusCounts, setRunStatusCounts] = useState<RunStatusCountType[]>([]);
@@ -83,9 +98,10 @@ export default function RunEditor({
   const [selectedFolder, setSelectedFolder] = useState<FolderType | null>(null);
   const [testCases, setTestCases] = useState<CaseType[]>([]);
   const [filteredTestCases, setFilteredTestCases] = useState<CaseType[]>([]);
-  const [isNameInvalid, setIsNameInvalid] = useState<boolean>(false);
+  const [isNameInvalid] = useState<boolean>(false);
   const [isUpdating, setIsUpdating] = useState<boolean>(false);
   const [isDirty, setIsDirty] = useState(false);
+  const [exportType, setExportType] = useState(new Set(['xml']));
   const router = useRouter();
   useFormGuard(isDirty, messages.areYouSureLeave);
 
@@ -184,6 +200,10 @@ export default function RunEditor({
   const baseClass = '';
   const selectedClass = `${baseClass} bg-neutral-200 dark:bg-neutral-700`;
 
+  const handleExportTypeChange = (keys: Selection) => {
+    setExportType(new Set(Array.from(keys as Set<string>)));
+  };
+
   return (
     <>
       <div className="border-b-1 dark:border-neutral-700 w-full p-3 flex items-center justify-between">
@@ -201,9 +221,47 @@ export default function RunEditor({
           <h3 className="font-bold ms-2">{testRun.name}</h3>
         </div>
         <div className="flex items-center">
-          {isDirty && <Circle size={8} color="#525252" fill="#525252" className="me-1" />}
+          <ButtonGroup className="me-2">
+            <Button
+              startContent={<FileDown size={16} />}
+              size="sm"
+              isDisabled={!tokenContext.isProjectReporter(Number(projectId))}
+              onPress={() => exportRun(tokenContext.token.access_token, Number(testRun.id), Array.from(exportType)[0])}
+            >
+              {messages.export}
+            </Button>
+            <Dropdown placement="bottom-end">
+              <DropdownTrigger>
+                <Button isIconOnly size="sm">
+                  <ChevronDown size={16} />
+                </Button>
+              </DropdownTrigger>
+              <DropdownMenu
+                disallowEmptySelection
+                aria-label="Export options"
+                className="max-w-[300px]"
+                selectedKeys={exportType}
+                selectionMode="single"
+                onSelectionChange={handleExportTypeChange}
+              >
+                <DropdownItem key="xml" startContent={<FileCode size={16} />}>
+                  xml
+                </DropdownItem>
+                <DropdownItem key="json" startContent={<FileJson size={16} />}>
+                  json
+                </DropdownItem>
+                <DropdownItem key="csv" startContent={<FileSpreadsheet size={16} />}>
+                  csv
+                </DropdownItem>
+              </DropdownMenu>
+            </Dropdown>
+          </ButtonGroup>
           <Button
-            startContent={<Save size={16} />}
+            startContent={
+              <Badge isInvisible={!isDirty} color="danger" size="sm" content="" shape="circle">
+                <Save size={16} />
+              </Badge>
+            }
             size="sm"
             isDisabled={!tokenContext.isProjectReporter(Number(projectId))}
             color="primary"

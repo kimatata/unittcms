@@ -12,6 +12,7 @@ export default function Page({ params }: { params: { projectId: string; runId: s
     updating: t('updating'),
     update: t('update'),
     updatedTestRun: t('updated_test_run'),
+    export: t('export'),
     progress: t('progress'),
     refresh: t('refresh'),
     id: t('id'),

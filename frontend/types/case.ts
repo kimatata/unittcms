@@ -70,7 +70,7 @@ type CasesMessages = {
   areYouSure: string;
   delete: string;
   newTestCase: string;
-  downloadCsv: string;
+  export: string;
   status: string;
   noCasesFound: string;
   caseTitle: string;

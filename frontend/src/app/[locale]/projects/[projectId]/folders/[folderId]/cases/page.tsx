@@ -25,7 +25,7 @@ export default function Page({ params }: { params: { projectId: string; folderId
     close: t('close'),
     areYouSure: t('are_you_sure'),
     newTestCase: t('new_test_case'),
-    downloadCsv: t('download_csv'),
+    export: t('export'),
     status: t('status'),
     noCasesFound: t('no_cases_found'),
     caseTitle: t('case_title'),
