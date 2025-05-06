@@ -21,7 +21,6 @@ import {
 } from '@heroui/react';
 import {
   Save,
-  Circle,
   ArrowLeft,
   Folder,
   ChevronDown,
@@ -228,7 +227,7 @@ export default function RunEditor({
               isDisabled={!tokenContext.isProjectReporter(Number(projectId))}
               onPress={() => exportRun(tokenContext.token.access_token, Number(testRun.id), Array.from(exportType)[0])}
             >
-              {messages.export}
+              {messages.export} {exportType}
             </Button>
             <Dropdown placement="bottom-end">
               <DropdownTrigger>

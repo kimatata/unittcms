@@ -133,7 +133,7 @@ async function deleteCases(jwt: string, deleteCaseIds: number[], projectId: numb
 }
 
 async function exportCases(jwt: string, folderId: number, type: string) {
-  if (type !== 'xml' && type !== 'json' && type !== 'csv') {
+  if (type !== 'json' && type !== 'csv') {
     console.error('export type error. type:', type);
     return;
   }

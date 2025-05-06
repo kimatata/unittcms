@@ -183,7 +183,7 @@ export default function TestCaseTable({
               isDisabled={isDisabled}
               onPress={() => onExportCases(Array.from(exportType)[0])}
             >
-              {messages.export}
+              {messages.export} {exportType}
             </Button>
             <Dropdown placement="bottom-end">
               <DropdownTrigger>
