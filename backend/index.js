@@ -106,11 +106,13 @@ app.use('/attachments', attachmentsDeleteRoute);
 app.use('/attachments', attachmentsDownloadRoute);
 
 // "/runs"
+const runsDownloadRoute = require('./routes/runs/download')(sequelize);
 const runsIndexRoute = require('./routes/runs/index')(sequelize);
 const runsShowRoute = require('./routes/runs/show')(sequelize);
 const runsNewRoute = require('./routes/runs/new')(sequelize);
 const runsEditRoute = require('./routes/runs/edit')(sequelize);
 const runDeleteRoute = require('./routes/runs/delete')(sequelize);
+app.use('/runs', runsDownloadRoute);
 app.use('/runs', runsIndexRoute);
 app.use('/runs', runsShowRoute);
 app.use('/runs', runsNewRoute);

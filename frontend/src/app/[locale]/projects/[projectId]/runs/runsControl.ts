@@ -129,6 +129,39 @@ async function deleteRun(jwt: string, runId: number) {
   }
 }
 
+async function exportRun(jwt: string, runId: number, type: string) {
+  if (type !== 'xml' && type !== 'json' && type !== 'csv') {
+    console.error('export type error. type:', type);
+    return;
+  }
+  const url = `${apiServer}/runs/download/${runId}?type=${type}`;
+
+  try {
+    const response = await fetch(url, {
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${jwt}`,
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+
+    const blob = await response.blob();
+    const objectUrl = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = objectUrl;
+    a.download = `run_${runId}.${type}`;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    window.URL.revokeObjectURL(objectUrl);
+  } catch (error: any) {
+    console.error('Error fetching data:', error.message);
+  }
+}
+
 async function fetchRunCases(jwt: string, runId: number) {
   const url = `${apiServer}/runcases?runId=${runId}`;
 
@@ -310,6 +343,7 @@ export {
   createRun,
   updateRun,
   deleteRun,
+  exportRun,
   fetchRunCases,
   changeStatus,
   includeExcludeTestCases,

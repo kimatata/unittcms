@@ -3,7 +3,7 @@ import { useState, useEffect, useContext } from 'react';
 import TestCaseTable from './TestCaseTable';
 import CaseDialog from './CaseDialog';
 import { TokenContext } from '@/utils/TokenProvider';
-import { fetchCases, createCase, deleteCases, csvDownload } from '@/utils/caseControl';
+import { fetchCases, createCase, deleteCases, exportCases } from '@/utils/caseControl';
 import { CaseType, CasesMessages } from '@/types/case';
 import DeleteConfirmDialog from '@/components/DeleteConfirmDialog';
 import { PriorityMessages } from '@/types/priority';
@@ -74,8 +74,8 @@ export default function CasesPane({ projectId, folderId, messages, priorityMessa
     }
   };
 
-  const onCsvDownload = async () => {
-    await csvDownload(context.token.access_token, Number(folderId));
+  const onExportCases = async (type: string) => {
+    await exportCases(context.token.access_token, Number(folderId), type);
   };
 
   return (
@@ -87,7 +87,7 @@ export default function CasesPane({ projectId, folderId, messages, priorityMessa
         onCreateCase={() => setIsCaseDialogOpen(true)}
         onDeleteCase={onDeleteCase}
         onDeleteCases={onDeleteCases}
-        onCsvDownload={onCsvDownload}
+        onExportCases={onExportCases}
         messages={messages}
         priorityMessages={priorityMessages}
         locale={locale}

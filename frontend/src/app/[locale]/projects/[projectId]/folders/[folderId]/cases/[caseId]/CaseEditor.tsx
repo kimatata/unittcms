@@ -1,6 +1,6 @@
 'use client';
 import { useState, useEffect, useContext, ChangeEvent, DragEvent } from 'react';
-import { Input, Textarea, Select, SelectItem, Button, Divider, Tooltip, addToast } from '@heroui/react';
+import { Input, Textarea, Select, SelectItem, Button, Divider, Tooltip, addToast, Badge } from '@heroui/react';
 import { useRouter } from '@/src/i18n/routing';
 import { Save, Plus, ArrowLeft, Circle } from 'lucide-react';
 import { priorities, testTypes, templates } from '@/config/selection';
@@ -54,7 +54,7 @@ export default function CaseEditor({
 }: Props) {
   const tokenContext = useContext(TokenContext);
   const [testCase, setTestCase] = useState<CaseType>(defaultTestCase);
-  const [isTitleInvalid, setIsTitleInvalid] = useState<boolean>(false);
+  const [isTitleInvalid] = useState<boolean>(false);
   const [isUpdating, setIsUpdating] = useState<boolean>(false);
   const [plusCount, setPlusCount] = useState<number>(0);
   const [isDirty, setIsDirty] = useState(false);
@@ -245,9 +245,12 @@ export default function CaseEditor({
           <h3 className="font-bold ms-2">{testCase.title}</h3>
         </div>
         <div className="flex items-center">
-          {isDirty && <Circle size={8} color="#525252" fill="#525252" className="me-1" />}
           <Button
-            startContent={<Save size={16} />}
+            startContent={
+              <Badge isInvisible={!isDirty} color="danger" size="sm" content="" shape="circle">
+                <Save size={16} />
+              </Badge>
+            }
             size="sm"
             isDisabled={!tokenContext.isProjectDeveloper(Number(projectId))}
             color="primary"

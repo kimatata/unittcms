@@ -30,14 +30,20 @@ module.exports = function (sequelize) {
         return res.status(404).send('No cases found');
       }
 
-      const csv = Papa.unparse(cases, {
-        quotes: true,
-        skipEmptyLines: true,
-      });
+      if (type === 'json') {
+        return res.json(cases);
+      } else if (type === 'csv') {
+        const csv = Papa.unparse(cases, {
+          quotes: true,
+          skipEmptyLines: true,
+        });
 
-      res.setHeader('Content-Type', 'text/csv; charset=utf-8');
-      res.setHeader('Content-Disposition', `attachment; filename=cases_folder_${folderId}.csv`);
-      res.send(csv);
+        res.setHeader('Content-Type', 'text/csv; charset=utf-8');
+        res.setHeader('Content-Disposition', `attachment; filename=cases_folder_${folderId}.csv`);
+        return res.send(csv);
+      }
+
+      return res.status(400).json({ error: 'Unsupported type. Use ?type=json or ?type=csv' });
     } catch (error) {
       console.error(error);
       res.status(500).send('Internal Server Error');

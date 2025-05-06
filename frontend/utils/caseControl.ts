@@ -132,8 +132,12 @@ async function deleteCases(jwt: string, deleteCaseIds: number[], projectId: numb
   }
 }
 
-async function csvDownload(jwt: string, folderId: number) {
-  const url = `${apiServer}/cases/download?folderId=${folderId}&type=csv`;
+async function exportCases(jwt: string, folderId: number, type: string) {
+  if (type !== 'json' && type !== 'csv') {
+    console.error('export type error. type:', type);
+    return;
+  }
+  const url = `${apiServer}/cases/download?folderId=${folderId}&type=${type}`;
 
   try {
     const response = await fetch(url, {
@@ -151,7 +155,7 @@ async function csvDownload(jwt: string, folderId: number) {
     const objectUrl = window.URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = objectUrl;
-    a.download = `folder_${folderId}.csv`;
+    a.download = `folder_${folderId}.${type}`;
     document.body.appendChild(a);
     a.click();
     a.remove();
@@ -161,4 +165,4 @@ async function csvDownload(jwt: string, folderId: number) {
   }
 }
 
-export { fetchCase, fetchCases, updateCase, createCase, deleteCases, csvDownload };
+export { fetchCase, fetchCases, updateCase, createCase, deleteCases, exportCases };
