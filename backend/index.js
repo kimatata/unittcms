@@ -78,20 +78,20 @@ app.use('/folders', foldersEditRoute);
 app.use('/folders', foldersDeleteRoute);
 
 // "/cases"
+const casesDownloadRoute = require('./routes/cases/download')(sequelize);
 const casesIndexRoute = require('./routes/cases/index')(sequelize);
 const casesIndexByProjectIdRoute = require('./routes/cases/indexByProjectId')(sequelize);
 const casesShowRoute = require('./routes/cases/show')(sequelize);
 const casesNewRoute = require('./routes/cases/new')(sequelize);
 const casesEditRoute = require('./routes/cases/edit')(sequelize);
 const casesDeleteRoute = require('./routes/cases/delete')(sequelize);
-const casesDownloadRoute = require('./routes/cases/download')(sequelize);
+app.use('/cases', casesDownloadRoute);
 app.use('/cases', casesIndexRoute);
 app.use('/cases', casesIndexByProjectIdRoute);
 app.use('/cases', casesShowRoute);
 app.use('/cases', casesNewRoute);
 app.use('/cases', casesEditRoute);
 app.use('/cases', casesDeleteRoute);
-app.use('/cases', casesDownloadRoute);
 
 // "/steps"
 const stepsEditRoute = require('./routes/steps/edit')(sequelize);

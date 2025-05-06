@@ -9,9 +9,7 @@ module.exports = function (sequelize) {
   const { verifySignedIn } = require('../../middleware/auth')(sequelize);
   const { verifyProjectVisibleFromFolderId } = require('../../middleware/verifyVisible')(sequelize);
 
-  // router.get('/download', verifySignedIn, verifyProjectVisibleFromFolderId, async (req, res) => {
-  router.get('/download', async (req, res) => {
-    console.log('######This is cases/download');
+  router.get('/download', verifySignedIn, verifyProjectVisibleFromFolderId, async (req, res) => {
     const { folderId, type } = req.query;
 
     if (!folderId) {
@@ -21,7 +19,6 @@ module.exports = function (sequelize) {
     if (!type) {
       return res.status(400).json({ error: 'download type is required' });
     }
-    console.log('######', type);
 
     try {
       const cases = await Case.findAll({
@@ -29,19 +26,18 @@ module.exports = function (sequelize) {
         raw: true,
       });
 
-      // if (cases.length === 0) {
-      //   return res.status(404).send('No cases found');
-      // }
+      if (cases.length === 0) {
+        return res.status(404).send('No cases found');
+      }
 
       const csv = Papa.unparse(cases, {
         quotes: true,
         skipEmptyLines: true,
       });
 
-      // res.setHeader('Content-Type', 'text/csv; charset=utf-8');
-      // res.setHeader('Content-Disposition', `attachment; filename=cases_folder_${folderId}.csv`);
-      // res.send(csv);
-      res.send(200);
+      res.setHeader('Content-Type', 'text/csv; charset=utf-8');
+      res.setHeader('Content-Disposition', `attachment; filename=cases_folder_${folderId}.csv`);
+      res.send(csv);
     } catch (error) {
       console.error(error);
       res.status(500).send('Internal Server Error');

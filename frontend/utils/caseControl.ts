@@ -133,8 +133,7 @@ async function deleteCases(jwt: string, deleteCaseIds: number[], projectId: numb
 }
 
 async function csvDownload(jwt: string, folderId: number) {
-  // const url = `${apiServer}/cases/download?folderId=${folderId}&type=csv`;
-  const url = `${apiServer}/cases/download?folderId=${folderId}`;
+  const url = `${apiServer}/cases/download?folderId=${folderId}&type=csv`;
 
   try {
     const response = await fetch(url, {
@@ -144,7 +143,6 @@ async function csvDownload(jwt: string, folderId: number) {
       },
     });
 
-    console.log(response);
     if (!response.ok) {
       throw new Error(`HTTP error! Status: ${response.status}`);
     }

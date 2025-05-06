@@ -13,7 +13,6 @@ import {
   DropdownItem,
   Selection,
   SortDescriptor,
-  Tooltip,
 } from '@heroui/react';
 import { Plus, MoreVertical, Trash, Download } from 'lucide-react';
 import { Link } from '@/src/i18n/routing';
@@ -156,22 +155,7 @@ export default function TestCaseTable({
   return (
     <>
       <div className="border-b-1 dark:border-neutral-700 w-full p-3 flex items-center justify-between">
-        <div className="flex items-center">
-          <h3 className="font-bold">{messages.testCaseList}</h3>
-          <Tooltip content={messages.downloadCsv}>
-            <Button
-              isIconOnly
-              isDisabled={isDisabled}
-              size="sm"
-              radius="full"
-              variant="light"
-              className="ms-2"
-              onPress={onCsvDownload}
-            >
-              <Download size={16} />
-            </Button>
-          </Tooltip>
-        </div>
+        <h3 className="font-bold">{messages.testCaseList}</h3>
 
         <div>
           {((selectedKeys !== 'all' && selectedKeys.size > 0) || selectedKeys === 'all') && (
@@ -186,6 +170,16 @@ export default function TestCaseTable({
               {messages.delete}
             </Button>
           )}
+          <Button
+            startContent={<Download size={16} />}
+            size="sm"
+            variant="bordered"
+            isDisabled={isDisabled}
+            className="me-2"
+            onPress={onCsvDownload}
+          >
+            {messages.downloadCsv}
+          </Button>
           <Button
             startContent={<Plus size={16} />}
             size="sm"
