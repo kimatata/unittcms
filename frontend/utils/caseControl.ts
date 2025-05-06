@@ -132,4 +132,37 @@ async function deleteCases(jwt: string, deleteCaseIds: number[], projectId: numb
   }
 }
 
-export { fetchCase, fetchCases, updateCase, createCase, deleteCases };
+async function exportCases(jwt: string, folderId: number, type: string) {
+  if (type !== 'json' && type !== 'csv') {
+    console.error('export type error. type:', type);
+    return;
+  }
+  const url = `${apiServer}/cases/download?folderId=${folderId}&type=${type}`;
+
+  try {
+    const response = await fetch(url, {
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${jwt}`,
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+
+    const blob = await response.blob();
+    const objectUrl = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = objectUrl;
+    a.download = `folder_${folderId}.${type}`;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    window.URL.revokeObjectURL(objectUrl);
+  } catch (error: any) {
+    console.error('Error fetching data:', error.message);
+  }
+}
+
+export { fetchCase, fetchCases, updateCase, createCase, deleteCases, exportCases };

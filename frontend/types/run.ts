@@ -57,6 +57,7 @@ type RunMessages = {
   updating: string;
   update: string;
   updatedTestRun: string;
+  export: string;
   progress: string;
   refresh: string;
   id: string;

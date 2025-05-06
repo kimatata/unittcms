@@ -4,22 +4,6 @@ sidebar_position: 2
 
 # Backend
 
-## Environmental variables
-
-:::warning[Strongly Recommended]
-
-Although the system will work with default settings without setting environment variables, it is strongly recommended to set SECRET_KEY in production.
-
-:::
-
-Create `.env` File on `backend/`
-
-```.env
-FRONTEND_ORIGIN=http://localhost:8000
-PORT=8001
-SECRET_KEY=your-secret-key
-```
-
 ## Set up database
 
 ```bash

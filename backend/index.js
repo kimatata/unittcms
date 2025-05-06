@@ -78,12 +78,14 @@ app.use('/folders', foldersEditRoute);
 app.use('/folders', foldersDeleteRoute);
 
 // "/cases"
+const casesDownloadRoute = require('./routes/cases/download')(sequelize);
 const casesIndexRoute = require('./routes/cases/index')(sequelize);
 const casesIndexByProjectIdRoute = require('./routes/cases/indexByProjectId')(sequelize);
 const casesShowRoute = require('./routes/cases/show')(sequelize);
 const casesNewRoute = require('./routes/cases/new')(sequelize);
 const casesEditRoute = require('./routes/cases/edit')(sequelize);
 const casesDeleteRoute = require('./routes/cases/delete')(sequelize);
+app.use('/cases', casesDownloadRoute);
 app.use('/cases', casesIndexRoute);
 app.use('/cases', casesIndexByProjectIdRoute);
 app.use('/cases', casesShowRoute);
@@ -104,11 +106,13 @@ app.use('/attachments', attachmentsDeleteRoute);
 app.use('/attachments', attachmentsDownloadRoute);
 
 // "/runs"
+const runsDownloadRoute = require('./routes/runs/download')(sequelize);
 const runsIndexRoute = require('./routes/runs/index')(sequelize);
 const runsShowRoute = require('./routes/runs/show')(sequelize);
 const runsNewRoute = require('./routes/runs/new')(sequelize);
 const runsEditRoute = require('./routes/runs/edit')(sequelize);
 const runDeleteRoute = require('./routes/runs/delete')(sequelize);
+app.use('/runs', runsDownloadRoute);
 app.use('/runs', runsIndexRoute);
 app.use('/runs', runsShowRoute);
 app.use('/runs', runsNewRoute);

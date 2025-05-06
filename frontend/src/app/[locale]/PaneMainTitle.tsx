@@ -1,9 +1,9 @@
-import { title, subtitle } from '@/components/primitives';
 import { Button, Link as NextUiLink } from '@heroui/react';
 import { MoveUpRight } from 'lucide-react';
-import { Link } from '@/src/i18n/routing';
 import { useTranslations } from 'next-intl';
+import { title, subtitle } from '@/components/primitives';
 import { LocaleCodeType } from '@/types/locale';
+import ClientLink from '@/components/ClientLink';
 
 type Props = {
   locale: LocaleCodeType;
@@ -34,35 +34,37 @@ export default function MainTitle({ locale }: Props) {
       <h4 className={subtitle({ class: 'mt-4' })}>{t('integrate_and_manage')}</h4>
 
       <div className="mt-5">
-        <Link href={`/projects/`} locale={locale}>
-          <Button color="primary" radius="full" className="px-0">
-            {t('demo')}
-          </Button>
-        </Link>
+        <Button as={ClientLink} href={`/projects/`} locale={locale} color="primary" radius="full" className="px-0">
+          {t('demo')}
+        </Button>
 
-        <NextUiLink isExternal href="https://kimatata.github.io/unittcms/docs/getstarted/selfhost" aria-label="docs">
-          <Button
-            color="primary"
-            variant="bordered"
-            radius="full"
-            className="ms-2"
-            endContent={<MoveUpRight size={12} />}
-          >
-            {t('get_started')}
-          </Button>
-        </NextUiLink>
+        <Button
+          showAnchorIcon
+          as={NextUiLink}
+          isExternal
+          href="https://kimatata.github.io/unittcms/docs/getstarted/selfhost"
+          aria-label="docs"
+          color="primary"
+          variant="bordered"
+          radius="full"
+          className="ms-2"
+        >
+          {t('get_started')}
+        </Button>
 
-        <NextUiLink size="sm" isExternal href="https://github.com/kimatata/unittcms" aria-label="Github">
-          <Button
-            color="primary"
-            variant="bordered"
-            radius="full"
-            className="ms-2"
-            endContent={<MoveUpRight size={12} />}
-          >
-            GitHub
-          </Button>
-        </NextUiLink>
+        <Button
+          showAnchorIcon
+          as={NextUiLink}
+          isExternal
+          href="https://github.com/kimatata/unittcms"
+          aria-label="Github"
+          color="primary"
+          variant="bordered"
+          radius="full"
+          className="ms-2"
+        >
+          GitHub
+        </Button>
       </div>
     </div>
   );

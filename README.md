@@ -43,7 +43,7 @@ There are many test case management tools available in the market, which can be 
 
 Proprietary tools often come with modern, user-friendly interfaces but tend to be cloud-based, which may raise security concerns for some organizations. While some of them do offer on-premises options, these tend to be significantly more expensive.
 
-There are also open-source tools, but many feature older user interfaces that involve frequent page reloads, which can hinder usability.
+There are also open-source tools, but many feature older user interfaces that involve frequent full page reloads, which can hinder usability.
 
 With these challenges in mind, I set out to develop a modern, user-friendly, open-source test case management tool that anyone can use for free in a secure, self-hosted environment.
 

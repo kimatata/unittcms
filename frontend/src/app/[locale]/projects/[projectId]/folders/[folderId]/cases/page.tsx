@@ -1,7 +1,7 @@
-import { PriorityMessages } from '@/types/priority';
-import CasesPane from './CasesPane';
 import { getTranslations } from 'next-intl/server';
 import { useTranslations } from 'next-intl';
+import CasesPane from './CasesPane';
+import { PriorityMessages } from '@/types/priority';
 import { LocaleCodeType } from '@/types/locale';
 
 export async function generateMetadata({ params: { locale } }: { params: { locale: LocaleCodeType } }) {
@@ -25,6 +25,7 @@ export default function Page({ params }: { params: { projectId: string; folderId
     close: t('close'),
     areYouSure: t('are_you_sure'),
     newTestCase: t('new_test_case'),
+    export: t('export'),
     status: t('status'),
     noCasesFound: t('no_cases_found'),
     caseTitle: t('case_title'),

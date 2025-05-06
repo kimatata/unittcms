@@ -94,19 +94,14 @@ export default function HeaderNavbarMenu({ messages, locale }: Props) {
         <NavbarItem className="hidden md:block">
           <Chip size="sm" variant="flat">
             <Link className="data-[active=true]:text-primary data-[active=true]:font-medium" href="/" locale={locale}>
-              1.0.0-beta.11
+              1.0.0-beta.12
             </Link>
           </Chip>
         </NavbarItem>
         {commonLinks.map((link) =>
           link.isExternal ? (
             <NavbarItem key={link.uid} className="hidden md:block">
-              <NextUiLink
-                isExternal
-                href={link.href}
-                showAnchorIcon
-                anchorIcon={<MoveUpRight size={12} className="ms-1" />}
-              >
+              <NextUiLink isExternal href={link.href} showAnchorIcon>
                 {link.label}
               </NextUiLink>
             </NavbarItem>
