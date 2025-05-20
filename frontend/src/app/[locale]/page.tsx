@@ -6,7 +6,7 @@ import LandingPage from '@/src/app/[locale]/LandingPage';
 export default function Home({ params }: PageType) {
 
   if (!Config.isDemoSite) {
-    redirect(`/${params.locale}/account/signin`)
+    redirect(`/${params.locale}/projects`)
   }
 
   return <LandingPage params={params} />
