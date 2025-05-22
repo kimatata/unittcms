@@ -84,7 +84,7 @@
     "languages": "Languages"
   },
   "Toast": {
-    "need_signed_in": "You need signed in",
+    "need_signed_in": "You need to sign in",
     "session_expired": "Session expired"
   },
   "Auth": {
