@@ -1,8 +1,7 @@
-version: '3.8'
-
 services:
   unittcms:
     image: unittcms:latest
+    build: .
     ports:
       - '8000:8000'
     environment:
