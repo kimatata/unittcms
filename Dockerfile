@@ -64,9 +64,6 @@ WORKDIR /app
 # Copy custom combined_server.js that combines frontend and backend
 COPY combined_server.js ./
 
-# Switch to non-root user
-USER nextjs
-
 # Expose the port
 EXPOSE 8000
 
