@@ -1,6 +1,7 @@
 node_modules/
 coverage/
 .env
+database.sqlite
 /test-results/
 /playwright-report/
 /playwright-screenshots/
