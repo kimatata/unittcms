@@ -1,8 +1,17 @@
+const path = require('path');
 const express = require('express');
 const RateLimit = require('express-rate-limit');
-const path = require('path');
 const { Sequelize } = require('sequelize');
 const app = express();
+
+// enable frontend access
+const cors = require('cors');
+const frontendOrigin = process.env.FRONTEND_ORIGIN || 'http://localhost:8000';
+const corsOptions = {
+  origin: frontendOrigin,
+  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+};
+app.use(cors(corsOptions));
 
 // enable json middleware
 app.use(express.json());
@@ -19,9 +28,10 @@ app.use(limiter);
 app.use(express.static(path.join(__dirname, 'public')));
 
 // init sequalize
+const databasePath = path.resolve(__dirname, 'database/database.sqlite');
 const sequelize = new Sequelize({
   dialect: 'sqlite',
-  storage: 'database/database.sqlite',
+  storage: databasePath,
   logging: false,
 });
 
