@@ -10,7 +10,7 @@ First, clone the repository.
 git clone https://github.com/kimatata/unittcms.git
 ```
 
-and start containers with the following command.
+and start container with the following command.
 
 ```bash
 cd unittcms
