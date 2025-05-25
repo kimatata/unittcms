@@ -1,6 +1,6 @@
 const path = require('path');
 
-const databasePath = path.resolve(__dirname, '../../database/database.sqlite');
+const databasePath = path.resolve(__dirname, '../database/database.sqlite');
 
 module.exports = {
   development: {
@@ -14,5 +14,5 @@ module.exports = {
   production: {
     dialect: 'sqlite',
     storage: databasePath,
-  }
+  },
 };
