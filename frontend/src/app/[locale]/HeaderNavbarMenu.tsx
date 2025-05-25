@@ -24,6 +24,7 @@ import DropdownAccount from './DropdownAccount';
 import DropdownLanguage from './DropdownLanguage';
 import UserAvatar from '@/components/UserAvatar';
 import { LocaleCodeType } from '@/types/locale';
+import Config from '@/config/config';
 
 type NabbarMenuMessages = {
   projects: string;
@@ -54,19 +55,24 @@ export default function HeaderNavbarMenu({ messages, locale }: Props) {
       label: messages.projects,
       isExternal: false,
     },
-    {
-      uid: 'docs',
-      href: 'https://kimatata.github.io/unittcms/docs/getstarted/selfhost',
-      label: messages.docs,
-      isExternal: true,
-    },
-    {
-      uid: 'roadmap',
-      href: 'https://kimatata.github.io/unittcms/docs/roadmap/',
-      label: messages.roadmap,
-      isExternal: true,
-    },
   ];
+
+  if (Config.isDemoSite) {
+    commonLinks.push(
+      {
+        uid: 'docs',
+        href: 'https://kimatata.github.io/unittcms/docs/getstarted/selfhost',
+        label: messages.docs,
+        isExternal: true,
+      },
+      {
+        uid: 'roadmap',
+        href: 'https://kimatata.github.io/unittcms/docs/roadmap/',
+        label: messages.roadmap,
+        isExternal: true,
+      }
+    );
+  }
 
   const router = useRouter();
   const pathname = usePathname();
@@ -94,7 +100,7 @@ export default function HeaderNavbarMenu({ messages, locale }: Props) {
         <NavbarItem className="hidden md:block">
           <Chip size="sm" variant="flat">
             <Link className="data-[active=true]:text-primary data-[active=true]:font-medium" href="/" locale={locale}>
-              1.0.0-beta.12
+              1.0.0-beta.13
             </Link>
           </Chip>
         </NavbarItem>

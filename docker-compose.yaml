@@ -1,31 +1,15 @@
-version: '3.8'
-
 services:
-  backend:
-    image: unittcms-backend:latest
-    build:
-      context: ./backend
-    ports:
-      - '8001:8001'
-    environment:
-      - NODE_ENV=production
-      - FRONTEND_ORIGIN=http://localhost:8000
-      - PORT=8001
-    volumes:
-      - db-data:/app/database
-
-  frontend:
-    image: unittcms-frontend:latest
-    build:
-      context: ./frontend
+  unittcms:
+    image: unittcms:latest
+    build: .
     ports:
       - '8000:8000'
     environment:
-      - NODE_ENV=production
-      - NEXT_PUBLIC_BACKEND_ORIGIN=http://localhost:8001
       - PORT=8000
-    depends_on:
-      - backend
+      - SECRET_KEY=your_secret_key_here
+      - IS_DEMO=false # set to true to seed the database
+    volumes:
+      - db-data:/app/backend/database
 
 volumes:
   db-data:
