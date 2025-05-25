@@ -9,7 +9,7 @@ services:
       - SECRET_KEY=your_secret_key_here
       - IS_DEMO=false # set to true to seed the database
     volumes:
-      - db-data:/app/database
+      - db-data:/app/backend/database
 
 volumes:
   db-data:
