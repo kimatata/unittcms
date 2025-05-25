@@ -32,7 +32,7 @@ Move to backend directory, then install dependencies.
 
 ```bash
 cd backend
-npm ci
+npm install
 ```
 
 Initialize the database with the following command.
@@ -59,7 +59,7 @@ NEXT_PUBLIC_BACKEND_ORIGIN=http://localhost:8001
 
 ```bash
 cd frontend
-npm ci
+npm install
 ```
 
 Build frontend code
