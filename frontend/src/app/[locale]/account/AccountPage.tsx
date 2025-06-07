@@ -78,7 +78,11 @@ export default function AccountPage({ messages, locale }: Props) {
                     </CardHeader>
                     <CardFooter className="justify-between pt-0">
                       <p className="text-small text-default-500">{myProject.detail}</p>
-                      <PublicityChip isPublic={true} publicText={messages.public} privateText={messages.private} />
+                      <PublicityChip
+                        isPublic={myProject.isPublic}
+                        publicText={messages.public}
+                        privateText={messages.private}
+                      />
                     </CardFooter>
                   </Card>
                 );
