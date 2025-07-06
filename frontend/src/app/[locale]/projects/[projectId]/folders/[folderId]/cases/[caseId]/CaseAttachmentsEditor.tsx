@@ -42,7 +42,11 @@ export default function CaseAttachmentsEditor({
         {images.map((image, index) => (
           <Card key={index} radius="sm" className="mt-2 me-2 max-w-md">
             <CardBody>
-              <Image alt={image.title} src={`${apiServer}/${image.filename}`} className="object-cover h-40 w-40" />
+              <Image
+                alt={image.title}
+                src={`${apiServer}/uploads/${image.filename}`}
+                className="object-cover h-40 w-40"
+              />
               <div className="flex items-center justify-between">
                 <p>{image.title}</p>
                 <Tooltip content={messages.delete}>
