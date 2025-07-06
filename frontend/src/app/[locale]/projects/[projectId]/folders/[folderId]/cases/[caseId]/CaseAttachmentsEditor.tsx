@@ -1,8 +1,11 @@
 import { Image, Button, Tooltip, Card, CardBody } from '@heroui/react';
-import { AttachmentType, CaseMessages } from '@/types/case';
 import { Trash, ArrowDownToLine, ArrowUpFromLine } from 'lucide-react';
-import { isImage } from './isImage';
 import { ChangeEvent, DragEvent } from 'react';
+import { isImage } from './isImage';
+import { AttachmentType, CaseMessages } from '@/types/case';
+import Config from '@/config/config';
+
+const apiServer = Config.apiServer;
 
 type Props = {
   isDisabled: boolean;
@@ -23,8 +26,8 @@ export default function CaseAttachmentsEditor({
   onFilesInput,
   messages,
 }: Props) {
-  let images: AttachmentType[] = [];
-  let others: AttachmentType[] = [];
+  const images: AttachmentType[] = [];
+  const others: AttachmentType[] = [];
 
   attachments.forEach((attachment) => {
     if (isImage(attachment)) {
@@ -39,7 +42,7 @@ export default function CaseAttachmentsEditor({
         {images.map((image, index) => (
           <Card key={index} radius="sm" className="mt-2 me-2 max-w-md">
             <CardBody>
-              <Image alt={image.title} src={image.path} className="object-cover h-40 w-40" />
+              <Image alt={image.title} src={`${apiServer}/${image.filename}`} className="object-cover h-40 w-40" />
               <div className="flex items-center justify-between">
                 <p>{image.title}</p>
                 <Tooltip content={messages.delete}>

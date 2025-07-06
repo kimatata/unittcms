@@ -55,11 +55,9 @@ module.exports = function (sequelize) {
         return res.status(400).json({ error: 'No files uploaded' });
       }
 
-      const host = req.get('host');
-      const protocol = req.protocol;
       const attachmentsData = files.map((file) => ({
         title: file.originalname,
-        path: `${protocol}://${host}/uploads/${file.filename}`,
+        filename: file.filename,
       }));
 
       const newAttachments = await Attachment.bulkCreate(attachmentsData, {
