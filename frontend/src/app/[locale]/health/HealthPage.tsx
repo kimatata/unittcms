@@ -61,7 +61,7 @@ export default function HealthPage({ messages, locale }: Props) {
           <TableBody>
             <TableRow key="1">
               <TableCell>{messages.unittcms_version}</TableCell>
-              <TableCell>1.0.0-beta.14</TableCell>
+              <TableCell>1.0.0-beta.15</TableCell>
             </TableRow>
             <TableRow key="2">
               <TableCell>{messages.api_server}</TableCell>
