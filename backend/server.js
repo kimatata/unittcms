@@ -40,7 +40,7 @@ const indexRoute = require('./routes/index');
 app.use('/', indexRoute);
 
 // "/health"
-const healthIndexRoute = require('./routes/health/index');
+const healthIndexRoute = require('./routes/health/index')();
 app.use('/health', healthIndexRoute);
 
 // "users"

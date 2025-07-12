@@ -1,5 +1,4 @@
 import { Button, Link as NextUiLink } from '@heroui/react';
-import { MoveUpRight } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { title, subtitle } from '@/components/primitives';
 import { LocaleCodeType } from '@/types/locale';

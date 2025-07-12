@@ -97,13 +97,6 @@ export default function HeaderNavbarMenu({ messages, locale }: Props) {
             <p className="font-bold text-inherit ms-1">UnitTCMS</p>
           </Link>
         </NavbarBrand>
-        <NavbarItem className="hidden md:block">
-          <Chip size="sm" variant="flat">
-            <Link className="data-[active=true]:text-primary data-[active=true]:font-medium" href="/" locale={locale}>
-              1.0.0-beta.14
-            </Link>
-          </Chip>
-        </NavbarItem>
         {commonLinks.map((link) =>
           link.isExternal ? (
             <NavbarItem key={link.uid} className="hidden md:block">
