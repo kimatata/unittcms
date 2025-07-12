@@ -72,6 +72,7 @@ module.exports = function (sequelize) {
       await t.commit();
       res.json(newAttachments);
     } catch (error) {
+      console.error(error);
       await t.rollback();
       res.status(500).json({ error: 'Internal server error' });
     }
