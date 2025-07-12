@@ -8,7 +8,7 @@ function defineAttachment(sequelize, DataTypes) {
       type: DataTypes.STRING,
       allowNull: true,
     },
-    path: {
+    filename: {
       type: DataTypes.STRING,
       allowNull: false,
     },

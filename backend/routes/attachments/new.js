@@ -1,11 +1,11 @@
+const fs = require('fs');
+const path = require('path');
 const express = require('express');
 const router = express.Router();
-const path = require('path');
-const fs = require('fs');
 const multer = require('multer');
+const { DataTypes } = require('sequelize');
 const defineAttachment = require('../../models/attachments');
 const defineCaseAttachment = require('../../models/caseAttachments');
-const { DataTypes } = require('sequelize');
 
 module.exports = function (sequelize) {
   const Attachment = defineAttachment(sequelize, DataTypes);
