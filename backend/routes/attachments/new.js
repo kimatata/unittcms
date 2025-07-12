@@ -1,11 +1,11 @@
+const fs = require('fs');
+const path = require('path');
 const express = require('express');
 const router = express.Router();
-const path = require('path');
-const fs = require('fs');
 const multer = require('multer');
+const { DataTypes } = require('sequelize');
 const defineAttachment = require('../../models/attachments');
 const defineCaseAttachment = require('../../models/caseAttachments');
-const { DataTypes } = require('sequelize');
 
 module.exports = function (sequelize) {
   const Attachment = defineAttachment(sequelize, DataTypes);
@@ -55,11 +55,9 @@ module.exports = function (sequelize) {
         return res.status(400).json({ error: 'No files uploaded' });
       }
 
-      const host = req.get('host');
-      const protocol = req.protocol;
       const attachmentsData = files.map((file) => ({
         title: file.originalname,
-        path: `${protocol}://${host}/uploads/${file.filename}`,
+        filename: file.filename,
       }));
 
       const newAttachments = await Attachment.bulkCreate(attachmentsData, {
@@ -74,6 +72,7 @@ module.exports = function (sequelize) {
       await t.commit();
       res.json(newAttachments);
     } catch (error) {
+      console.error(error);
       await t.rollback();
       res.status(500).json({ error: 'Internal server error' });
     }

@@ -1,9 +1,9 @@
+const fs = require('fs');
+const path = require('path');
 const express = require('express');
 const router = express.Router();
-const path = require('path');
-const fs = require('fs');
-const defineAttachment = require('../../models/attachments');
 const { DataTypes } = require('sequelize');
+const defineAttachment = require('../../models/attachments');
 
 module.exports = function (sequelize) {
   const Attachment = defineAttachment(sequelize, DataTypes);
@@ -16,8 +16,7 @@ module.exports = function (sequelize) {
         return res.status(404).send('Attachment not found');
       }
 
-      const filename = attachment.path.split('/').pop();
-      const filePath = path.join(__dirname, `../../public/uploads/${filename}`);
+      const filePath = path.join(__dirname, `../../public/uploads/${attachment.filename}`);
 
       if (!fs.existsSync(filePath)) {
         return res.status(404).json({ error: 'File not found' });

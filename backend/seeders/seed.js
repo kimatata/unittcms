@@ -550,19 +550,18 @@ module.exports = {
       },
     ]);
 
-    const backendOrigin = process.env.BACKEND_ORIGIN || 'http://localhost:8001';
     await queryInterface.bulkInsert('attachments', [
       {
         title: 'Selenium logo',
         detail: '',
-        path: `${backendOrigin}/uploads/861px-Selenium_Logo.png`,
+        filename: '861px-Selenium_Logo.png',
         createdAt: new Date(),
         updatedAt: new Date(),
       },
       {
         title: 'vitest logo',
         detail: '',
-        path: `${backendOrigin}/uploads/logo-shadow.svg`,
+        filename: 'logo-shadow.svg',
         createdAt: new Date(),
         updatedAt: new Date(),
       },
