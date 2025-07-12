@@ -554,14 +554,14 @@ module.exports = {
       {
         title: 'Selenium logo',
         detail: '',
-        path: '861px-Selenium_Logo.png',
+        filename: '861px-Selenium_Logo.png',
         createdAt: new Date(),
         updatedAt: new Date(),
       },
       {
         title: 'vitest logo',
         detail: '',
-        path: 'logo-shadow.svg',
+        filename: 'logo-shadow.svg',
         createdAt: new Date(),
         updatedAt: new Date(),
       },
