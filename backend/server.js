@@ -39,6 +39,10 @@ const sequelize = new Sequelize({
 const indexRoute = require('./routes/index');
 app.use('/', indexRoute);
 
+// "/health"
+const healthIndexRoute = require('./routes/health/index')();
+app.use('/health', healthIndexRoute);
+
 // "users"
 const usersIndexRoute = require('./routes/users/index')(sequelize);
 const usersFindRoute = require('./routes/users/find')(sequelize);

@@ -3,7 +3,7 @@ const router = express.Router();
 
 // "/" GET
 router.get('/', (req, res) => {
-  res.send('Test Case Management API Server');
+  res.send('This is UnitTCMS API server');
 });
 
 module.exports = router;
