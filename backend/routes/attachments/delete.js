@@ -1,9 +1,9 @@
+const fs = require('fs');
+const path = require('path');
 const express = require('express');
 const router = express.Router();
-const path = require('path');
-const fs = require('fs');
-const defineAttachment = require('../../models/attachments');
 const { DataTypes } = require('sequelize');
+const defineAttachment = require('../../models/attachments');
 
 module.exports = function (sequelize) {
   const Attachment = defineAttachment(sequelize, DataTypes);
@@ -21,9 +21,7 @@ module.exports = function (sequelize) {
 
       // delete file from folder
       const uploadDir = path.join(__dirname, '../../public/uploads');
-      const url = attachment.path;
-      const fileName = url.substring(url.lastIndexOf('/') + 1);
-      const filePath = path.join(uploadDir, fileName);
+      const filePath = path.join(uploadDir, attachment.filename);
       fs.unlink(filePath, (err) => {
         if (err) {
           console.error('Error deleting file:', err);
