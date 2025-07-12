@@ -6,6 +6,7 @@ import DemoImage from './DemoImage';
 import { title, subtitle } from '@/components/primitives';
 import { PageType } from '@/types/base';
 import { LocaleCodeType } from '@/types/locale';
+import Footer from '@/components/Footer';
 
 export default function LandingPage({ params }: PageType) {
   const t = useTranslations('Index');
@@ -98,9 +99,7 @@ export default function LandingPage({ params }: PageType) {
       </div>
 
       <Divider className="my-12" />
-      <div className="w-full text-center py-2">
-        <div>Copyright © 2024-present UnitTCMS</div>
-      </div>
+      <Footer locale={params.locale as LocaleCodeType} />
     </section>
   );
 }

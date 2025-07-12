@@ -1,8 +1,8 @@
 import { AttachmentType } from '@/types/case';
 
 function isImage(attachmentFile: AttachmentType) {
-  let path = attachmentFile.path;
-  let extension = path.substring(path.lastIndexOf('.') + 1).toLowerCase();
+  const filename = attachmentFile.filename;
+  const extension = filename.substring(filename.lastIndexOf('.') + 1).toLowerCase();
   if (
     extension === 'png' ||
     extension === 'jpg' ||

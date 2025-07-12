@@ -22,16 +22,16 @@ describe('attachment control', () => {
       id: 1,
       title: '',
       detail: '',
-      path: '',
+      filename: '',
       createdAt: new Date(),
       updatedAt: new Date(),
       caseAttachments: sampleCaseAttachment,
     };
 
-    sampleAttachment.path = 'public/uploads/abc.png';
+    sampleAttachment.filename = 'abc.png';
     expect(isImage(sampleAttachment)).toBe(true);
 
-    sampleAttachment.path = 'public/uploads/abc.mp3';
+    sampleAttachment.filename = 'abc.mp3';
     expect(isImage(sampleAttachment)).toBe(false);
   });
 });

@@ -114,6 +114,14 @@
     "not_own_any_projects": "You don't own any projects.",
     "find_projects": "Find projects"
   },
+  "Health": {
+    "health_check": "Health Check",
+    "status": "Status",
+    "ok": "OK",
+    "error": "Error",
+    "api_server": "API Server",
+    "unittcms_version": "UnitTCMS Version"
+  },
   "Admin": {
     "user_management": "User Management",
     "avatar": "Avatar",

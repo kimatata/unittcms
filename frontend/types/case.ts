@@ -53,7 +53,7 @@ type AttachmentType = {
   id: number;
   title: string;
   detail: string;
-  path: string;
+  filename: string;
   createdAt: Date;
   updatedAt: Date;
   caseAttachments: CaseAttachmentType;
