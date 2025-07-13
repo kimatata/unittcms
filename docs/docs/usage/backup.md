@@ -6,12 +6,18 @@ sidebar_position: 2
 
 ## Database backup
 
-UnitTCMS uses SQLite for data persistence. Therefore, backing up the DB is simply backing up the SQLite DB file.
+UnitTCMS uses SQLite for data persistence. Therefore, backing up the database is simply backing up the SQLite DB file.
 
-Please backup the file `backend/database/database.sqlite`
+Please back up the file `backend/database/database.sqlite`.
+
+:::note[In Docker environment]
+
+In a docker environment, DB file is stored in a Docker named volume (`db-data`).
+
+:::
 
 ## Backup of uploaded files
 
-Uploaded files are managed separately from the DB. If you have uploaded files, you need to backup them too.
+Uploaded files are managed separately from the database. If you have uploaded files, you need to back them up too.
 
-Please backup the files under `backend/public/uploads` directory.
+Please back up the files under the `backend/public/uploads` directory.
