@@ -1,3 +1,4 @@
+import { logError } from '@/utils/errorHandler';
 import { ProjectRoleType, TokenType } from '@/types/user';
 import { roles, memberRoles } from '@/config/selection';
 import Config from '@/config/config';
@@ -56,8 +57,8 @@ async function fetchMyRoles(jwt: string) {
     }
     const data = await response.json();
     return data;
-  } catch (error: any) {
-    console.error('Error fetching data:', error.message);
+  } catch (error: unknown) {
+    logError('Error fetching data:', error);
   }
 }
 

@@ -1,3 +1,4 @@
+import { logError } from '@/utils/errorHandler';
 import Config from '@/config/config';
 const apiServer = Config.apiServer;
 
@@ -19,8 +20,8 @@ async function findUser(jwt: string, userId: number) {
     }
     const data = await response.json();
     return data;
-  } catch (error: any) {
-    console.error('Error fetching data:', error.message);
+  } catch (error: unknown) {
+    logError('Error fetching data:', error);
   }
 }
 
@@ -42,8 +43,8 @@ async function searchUsers(jwt: string, projectId: number, searchText: string) {
     }
     const data = await response.json();
     return data;
-  } catch (error: any) {
-    console.error('Error fetching data:', error.message);
+  } catch (error: unknown) {
+    logError('Error fetching data:', error);
   }
 }
 
@@ -70,8 +71,8 @@ async function updateUserRole(jwt: string, userId: number, newRole: number) {
     }
     const data = await response.json();
     return data;
-  } catch (error: any) {
-    console.error('Error fetching data:', error.message);
+  } catch (error: unknown) {
+    logError('Error fetching data:', error);
   }
 }
 

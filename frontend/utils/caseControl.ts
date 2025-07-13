@@ -1,3 +1,4 @@
+import { logError } from '@/utils/errorHandler';
 import Config from '@/config/config';
 const apiServer = Config.apiServer;
 import { CaseType } from '@/types/case';
@@ -20,8 +21,8 @@ async function fetchCase(jwt: string, caseId: number) {
 
     const data = await response.json();
     return data;
-  } catch (error: any) {
-    console.error('Error fetching data:', error.message);
+  } catch (error: unknown) {
+    logError('Error fetching data', error);
   }
 }
 
@@ -43,8 +44,8 @@ async function fetchCases(jwt: string, folderId: number) {
 
     const data = await response.json();
     return data;
-  } catch (error: any) {
-    console.error('Error fetching data:', error.message);
+  } catch (error: unknown) {
+    logError('Error fetching data', error);
   }
 }
 
@@ -79,9 +80,8 @@ async function createCase(jwt: string, folderId: string, title: string, descript
     }
     const data = await response.json();
     return data;
-  } catch (error: any) {
-    console.error('Error creating case:', error);
-    throw error;
+  } catch (error: unknown) {
+    logError('Error creating case', error);
   }
 }
 
@@ -103,9 +103,8 @@ async function updateCase(jwt: string, updateCaseData: CaseType) {
     }
     const data = await response.json();
     return data;
-  } catch (error: any) {
-    console.error('Error updating project:', error);
-    throw error;
+  } catch (error: unknown) {
+    logError('Error updating project', error);
   }
 }
 
@@ -126,9 +125,8 @@ async function deleteCases(jwt: string, deleteCaseIds: number[], projectId: numb
     if (!response.ok) {
       throw new Error(`HTTP error! Status: ${response.status}`);
     }
-  } catch (error: any) {
-    console.error('Error deleting cases:', error);
-    throw error;
+  } catch (error: unknown) {
+    logError('Error deleting cases', error);
   }
 }
 
@@ -160,8 +158,8 @@ async function exportCases(jwt: string, folderId: number, type: string) {
     a.click();
     a.remove();
     window.URL.revokeObjectURL(objectUrl);
-  } catch (error: any) {
-    console.error('Error fetching data:', error.message);
+  } catch (error: unknown) {
+    logError('Error fetching data', error);
   }
 }
 

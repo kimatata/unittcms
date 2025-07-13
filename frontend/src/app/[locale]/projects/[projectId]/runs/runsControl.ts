@@ -1,3 +1,4 @@
+import { logError } from '@/utils/errorHandler';
 import { CaseType } from '@/types/case';
 import { RunType, RunCaseType } from '@/types/run';
 import Config from '@/config/config';
@@ -22,8 +23,8 @@ async function fetchRun(jwt: string, runId: number) {
 
     const data = await response.json();
     return data;
-  } catch (error: any) {
-    console.error('Error fetching data:', error.message);
+  } catch (error: unknown) {
+    logError('Error fetching data:', error);
   }
 }
 
@@ -45,8 +46,8 @@ async function fetchRuns(jwt: string, projectId: number) {
 
     const data = await response.json();
     return data;
-  } catch (error: any) {
-    console.error('Error fetching data:', error.message);
+  } catch (error: unknown) {
+    logError('Error fetching data:', error);
   }
 }
 
@@ -76,8 +77,8 @@ async function createRun(jwt: string, projectId: number, name: string, descripti
     }
     const data = await response.json();
     return data;
-  } catch (error: any) {
-    console.error('Error creating new test run:', error);
+  } catch (error: unknown) {
+    logError('Error creating new test run:', error);
     throw error;
   }
 }
@@ -101,8 +102,8 @@ async function updateRun(jwt: string, updateTestRun: RunType) {
     }
     const data = await response.json();
     return data;
-  } catch (error: any) {
-    console.error('Error updating run:', error);
+  } catch (error: unknown) {
+    logError('Error updating run:', error);
     throw error;
   }
 }
@@ -123,8 +124,8 @@ async function deleteRun(jwt: string, runId: number) {
     if (!response.ok) {
       throw new Error(`HTTP error! Status: ${response.status}`);
     }
-  } catch (error: any) {
-    console.error('Error deleting run:', error);
+  } catch (error: unknown) {
+    logError('Error deleting run:', error);
     throw error;
   }
 }
@@ -157,8 +158,8 @@ async function exportRun(jwt: string, runId: number, type: string) {
     a.click();
     a.remove();
     window.URL.revokeObjectURL(objectUrl);
-  } catch (error: any) {
-    console.error('Error fetching data:', error.message);
+  } catch (error: unknown) {
+    logError('Error fetching data:', error);
   }
 }
 
@@ -180,8 +181,8 @@ async function fetchRunCases(jwt: string, runId: number) {
 
     const data = await response.json();
     return data;
-  } catch (error: any) {
-    console.error('Error fetching data:', error.message);
+  } catch (error: unknown) {
+    logError('Error fetching data:', error);
   }
 }
 
@@ -332,8 +333,8 @@ async function fetchProjectCases(jwt: string, projectId: number) {
 
     const data = await response.json();
     return data;
-  } catch (error: any) {
-    console.error('Error fetching data:', error.message);
+  } catch (error: unknown) {
+    logError('Error fetching data:', error);
   }
 }
 
