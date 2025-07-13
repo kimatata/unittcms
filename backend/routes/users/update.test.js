@@ -1,8 +1,8 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import request from 'supertest';
 import express from 'express';
-import updateRoute from './update';
 import { Sequelize } from 'sequelize';
+import updateRoute from './update';
 import { roles } from './authSettings';
 
 const adminRoleIndex = roles.findIndex((entry) => entry.uid === 'administrator');

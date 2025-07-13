@@ -1,14 +1,13 @@
 'use client';
-import React from 'react';
 import { useState, useEffect, useContext } from 'react';
+import { Button, addToast } from '@heroui/react';
+import UsersTable from './UsersTable';
 import { UserType, AdminMessages } from '@/types/user';
 import { TokenContext } from '@/utils/TokenProvider';
 import { useRouter } from '@/src/i18n/routing';
-import UsersTable from './UsersTable';
 import Config from '@/config/config';
 import { LocaleCodeType } from '@/types/locale';
 import { updateUserRole } from '@/utils/usersControl';
-import { Button, addToast } from '@heroui/react';
 import { roles } from '@/config/selection';
 import DeleteConfirmDialog from '@/components/DeleteConfirmDialog';
 const apiServer = Config.apiServer;

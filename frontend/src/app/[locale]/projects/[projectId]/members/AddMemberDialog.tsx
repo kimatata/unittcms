@@ -1,11 +1,10 @@
 'use client';
-import React from 'react';
 import { useState, useEffect, useContext } from 'react';
 import { Button, Input, Modal, ModalContent, ModalHeader, ModalBody, ModalFooter } from '@heroui/react';
+import CandidatesTable from './CandidatesTable';
 import { TokenContext } from '@/utils/TokenProvider';
 import { UserType } from '@/types/user';
 import { searchUsers } from '@/utils/usersControl';
-import CandidatesTable from './CandidatesTable';
 import { MembersMessages } from '@/types/member';
 
 type Props = {

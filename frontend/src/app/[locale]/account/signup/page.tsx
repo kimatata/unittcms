@@ -1,7 +1,7 @@
-import { PageType } from '@/types/base';
-import AuthPage from '../authPage';
 import { getTranslations } from 'next-intl/server';
 import { useTranslations } from 'next-intl';
+import AuthPage from '../authPage';
+import { PageType } from '@/types/base';
 import { LocaleCodeType } from '@/types/locale';
 
 export async function generateMetadata({ params: { locale } }: { params: { locale: LocaleCodeType } }) {

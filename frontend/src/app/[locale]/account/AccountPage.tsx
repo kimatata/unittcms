@@ -1,14 +1,14 @@
 'use client';
 import { useState, useEffect, useContext } from 'react';
-import { Link, NextUiLinkClasses } from '@/src/i18n/routing';
 import { Button, Card, CardHeader, CardFooter } from '@heroui/react';
-import { TokenContext } from '@/utils/TokenProvider';
 import Avatar from 'boring-avatars';
+import { ArrowRight } from 'lucide-react';
+import { Link, NextUiLinkClasses } from '@/src/i18n/routing';
+import { TokenContext } from '@/utils/TokenProvider';
 import { fetchMyProjects } from '@/utils/projectsControl';
 import { ProjectType } from '@/types/project';
 import PublicityChip from '@/components/PublicityChip';
 import { LocaleCodeType } from '@/types/locale';
-import { ArrowRight } from 'lucide-react';
 
 type AccountPageMessages = {
   yourProjects: string;

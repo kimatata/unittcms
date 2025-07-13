@@ -1,15 +1,15 @@
 'use client';
-import { FolderType, FoldersMessages } from '@/types/folder';
 import { useState, useEffect, useContext } from 'react';
 import { Button, Listbox, ListboxItem } from '@heroui/react';
 import { Folder, Plus } from 'lucide-react';
+import FolderDialog from './FolderDialog';
+import FolderEditMenu from './FolderEditMenu';
+import { fetchFolders, createFolder, updateFolder, deleteFolder } from './foldersControl';
 import { usePathname, useRouter } from '@/src/i18n/routing';
 import { TokenContext } from '@/utils/TokenProvider';
 import useGetCurrentIds from '@/utils/useGetCurrentIds';
-import FolderDialog from './FolderDialog';
-import FolderEditMenu from './FolderEditMenu';
 import DeleteConfirmDialog from '@/components/DeleteConfirmDialog';
-import { fetchFolders, createFolder, updateFolder, deleteFolder } from './foldersControl';
+import { FolderType, FoldersMessages } from '@/types/folder';
 
 type Props = {
   projectId: string;

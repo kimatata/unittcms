@@ -1,8 +1,8 @@
 import { useState, useMemo, useCallback, ReactNode } from 'react';
 import { Table, TableHeader, TableColumn, TableBody, TableRow, TableCell, SortDescriptor } from '@heroui/react';
+import dayjs from 'dayjs';
 import { Link, NextUiLinkClasses } from '@/src/i18n/routing';
 import { ProjectType, ProjectsMessages } from '@/types/project';
-import dayjs from 'dayjs';
 import PublicityChip from '@/components/PublicityChip';
 import { LocaleCodeType } from '@/types/locale';
 

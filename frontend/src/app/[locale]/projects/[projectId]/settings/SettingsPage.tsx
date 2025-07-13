@@ -1,5 +1,4 @@
 'use client';
-import React from 'react';
 import { useState, useEffect, useContext } from 'react';
 import { Button, Table, TableHeader, TableColumn, TableBody, TableRow, TableCell } from '@heroui/react';
 import Avatar from 'boring-avatars';

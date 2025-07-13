@@ -13,10 +13,10 @@ import {
   DropdownItem,
   SortDescriptor,
 } from '@heroui/react';
-import { Link, NextUiLinkClasses } from '@/src/i18n/routing';
 import { MoreVertical } from 'lucide-react';
-import { RunsMessages, RunType } from '@/types/run';
 import dayjs from 'dayjs';
+import { Link, NextUiLinkClasses } from '@/src/i18n/routing';
+import { RunsMessages, RunType } from '@/types/run';
 import { LocaleCodeType } from '@/types/locale';
 
 type Props = {

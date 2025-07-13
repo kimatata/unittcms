@@ -1,5 +1,4 @@
 'use client';
-import React from 'react';
 import { useState, useEffect } from 'react';
 import { Button, Input, Textarea, Modal, ModalContent, ModalHeader, ModalBody, ModalFooter } from '@heroui/react';
 import { FolderType, FoldersMessages } from '@/types/folder';

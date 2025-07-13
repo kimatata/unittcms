@@ -26,10 +26,10 @@ import {
   CircleX,
   CircleSlash2,
 } from 'lucide-react';
+import TestCaseDetailDialog from './TestCaseDetailDialog';
 import { testRunCaseStatus } from '@/config/selection';
 import { CaseType } from '@/types/case';
 import { RunMessages } from '@/types/run';
-import TestCaseDetailDialog from './TestCaseDetailDialog';
 import { PriorityMessages } from '@/types/priority';
 import TestCasePriority from '@/components/TestCasePriority';
 import { TestTypeMessages } from '@/types/testType';

@@ -1,6 +1,6 @@
-import { PriorityMessages } from '@/types/priority';
-import CaseEditor from './CaseEditor';
 import { useTranslations } from 'next-intl';
+import CaseEditor from './CaseEditor';
+import { PriorityMessages } from '@/types/priority';
 import { TestTypeMessages } from '@/types/testType';
 
 export default function Page({

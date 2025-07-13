@@ -1,7 +1,5 @@
 'use client';
 import { useState, useContext } from 'react';
-import { TokenContext } from '@/utils/TokenProvider';
-import { Link, useRouter } from '@/src/i18n/routing';
 import { usePathname } from 'next/navigation';
 import Image from 'next/image';
 import {
@@ -12,16 +10,17 @@ import {
   NavbarBrand,
   NavbarItem,
   Link as NextUiLink,
-  Chip,
   ListboxItem,
   Listbox,
 } from '@heroui/react';
 import { ArrowRightFromLine, ArrowRightToLine, File, Globe, MoveUpRight, PenTool } from 'lucide-react';
+import DropdownAccount from './DropdownAccount';
+import DropdownLanguage from './DropdownLanguage';
 import { ThemeSwitch } from '@/components/ThemeSwitch';
 import { GithubIcon } from '@/components/icons';
 import { locales } from '@/config/selection';
-import DropdownAccount from './DropdownAccount';
-import DropdownLanguage from './DropdownLanguage';
+import { Link, useRouter } from '@/src/i18n/routing';
+import { TokenContext } from '@/utils/TokenProvider';
 import UserAvatar from '@/components/UserAvatar';
 import { LocaleCodeType } from '@/types/locale';
 import Config from '@/config/config';

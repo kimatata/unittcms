@@ -1,8 +1,6 @@
 'use client';
-import { createContext, useState, useEffect, useContext } from 'react';
-import { ProjectRoleType, TokenContextType, TokenType } from '@/types/user';
-import { TokenProps } from '@/types/user';
-import { useRouter, usePathname } from '@/src/i18n/routing';
+import { createContext, useState, useEffect } from 'react';
+import { addToast } from '@heroui/react';
 import {
   isSignedIn as tokenIsSinedIn,
   isAdmin as tokenIsAdmin,
@@ -13,7 +11,9 @@ import {
   checkSignInPage as tokenCheckSignInPage,
   fetchMyRoles,
 } from './token';
-import { addToast } from '@heroui/react';
+import { ProjectRoleType, TokenContextType, TokenType } from '@/types/user';
+import { TokenProps } from '@/types/user';
+import { useRouter, usePathname } from '@/src/i18n/routing';
 const LOCAL_STORAGE_KEY = 'unittcms-auth-token';
 
 function storeTokenToLocalStorage(token: TokenType) {

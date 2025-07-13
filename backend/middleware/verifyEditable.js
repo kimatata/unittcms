@@ -1,5 +1,5 @@
-const { memberRoles } = require('../routes/users/authSettings');
 const { DataTypes } = require('sequelize');
+const { memberRoles } = require('../routes/users/authSettings');
 const defineMember = require('../models/members');
 const defineProject = require('../models/projects');
 const defineFolder = require('../models/folders');

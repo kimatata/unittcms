@@ -1,7 +1,7 @@
 import { useMemo, useCallback } from 'react';
 import { Button, Table, TableHeader, TableColumn, TableBody, TableRow, TableCell } from '@heroui/react';
-import { UserType } from '@/types/user';
 import Avatar from 'boring-avatars';
+import { UserType } from '@/types/user';
 import { MembersMessages } from '@/types/member';
 
 type Props = {

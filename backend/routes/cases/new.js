@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const defineCase = require('../../models/cases');
 const { DataTypes } = require('sequelize');
+const defineCase = require('../../models/cases');
 
 const requiredFields = ['title', 'state', 'priority', 'type', 'automationStatus', 'template'];
 

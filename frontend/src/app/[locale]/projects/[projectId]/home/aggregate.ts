@@ -58,10 +58,10 @@ function aggregateTestPriority(project: ProjectType) {
 
 function aggregateProgress(project: ProjectType, testRunCaseStatusMessages: TestRunCaseStatusMessages) {
   type ChartSeries = { name: string; data: number[] };
-  let series: ChartSeries[] = testRunCaseStatus.map((status) => {
+  const series: ChartSeries[] = testRunCaseStatus.map((status) => {
     return { name: testRunCaseStatusMessages[status.uid], data: [] };
   });
-  let categories: string[] = [];
+  const categories: string[] = [];
 
   project.Runs.forEach((run) => {
     if (!run.RunCases) {

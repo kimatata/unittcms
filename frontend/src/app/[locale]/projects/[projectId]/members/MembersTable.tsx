@@ -14,9 +14,9 @@ import {
   DropdownItem,
 } from '@heroui/react';
 import { ChevronDown } from 'lucide-react';
+import Avatar from 'boring-avatars';
 import { MemberType, UserType } from '@/types/user';
 import { memberRoles } from '@/config/selection';
-import Avatar from 'boring-avatars';
 import { MembersMessages } from '@/types/member';
 
 type Props = {

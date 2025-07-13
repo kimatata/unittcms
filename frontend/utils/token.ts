@@ -165,7 +165,7 @@ const isPrivatePath = (pathname: string) => {
 };
 
 function checkSignInPage(token: TokenType, pathname: string) {
-  let ret = {
+  const ret = {
     ok: true,
     reason: '',
     redirectPath: '',

@@ -15,7 +15,7 @@ import {
   SortDescriptor,
   ButtonGroup,
 } from '@heroui/react';
-import { Plus, MoreVertical, Trash, Download, FileDown, ChevronDown, FileJson, FileSpreadsheet } from 'lucide-react';
+import { Plus, MoreVertical, Trash, FileDown, ChevronDown, FileJson, FileSpreadsheet } from 'lucide-react';
 import { Link } from '@/src/i18n/routing';
 import { CaseType, CasesMessages } from '@/types/case';
 import { PriorityMessages } from '@/types/priority';

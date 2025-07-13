@@ -1,8 +1,8 @@
-import { LocaleCodeType } from '@/types/locale';
-import { ProjectDialogMessages } from '@/types/project';
-import SettingsPage from './SettingsPage';
 import { getTranslations } from 'next-intl/server';
 import { useTranslations } from 'next-intl';
+import SettingsPage from './SettingsPage';
+import { LocaleCodeType } from '@/types/locale';
+import { ProjectDialogMessages } from '@/types/project';
 import { SettingsMessages } from '@/types/settings';
 
 export async function generateMetadata({ params: { locale } }: { params: { locale: LocaleCodeType } }) {

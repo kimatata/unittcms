@@ -1,14 +1,13 @@
 'use client';
-import React from 'react';
 import { useState, useEffect, useContext } from 'react';
 import { Button } from '@heroui/react';
 import { Plus } from 'lucide-react';
-import { MemberType, UserType } from '@/types/user';
-import { MembersMessages } from '@/types/member';
-import { TokenContext } from '@/utils/TokenProvider';
 import MembersTable from './MembersTable';
 import AddMemberDialog from './AddMemberDialog';
 import { fetchProjectMembers, addMember, deleteMember, updateMember } from './membersControl';
+import { MemberType, UserType } from '@/types/user';
+import { MembersMessages } from '@/types/member';
+import { TokenContext } from '@/utils/TokenProvider';
 import DeleteConfirmDialog from '@/components/DeleteConfirmDialog';
 
 type Props = {

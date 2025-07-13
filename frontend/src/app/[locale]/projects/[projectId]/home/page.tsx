@@ -1,7 +1,7 @@
-import { LocaleCodeType } from '@/types/locale';
-import { ProjectHome } from './ProjectHome';
 import { getTranslations } from 'next-intl/server';
 import { useTranslations } from 'next-intl';
+import { ProjectHome } from './ProjectHome';
+import { LocaleCodeType } from '@/types/locale';
 import { PriorityMessages } from '@/types/priority';
 import { TestTypeMessages } from '@/types/testType';
 import { TestRunCaseStatusMessages } from '@/types/status';

@@ -1,6 +1,6 @@
 const jwt = require('jsonwebtoken');
-const { roles, defaultDangerKey } = require('../routes/users/authSettings');
 const { DataTypes } = require('sequelize');
+const { roles, defaultDangerKey } = require('../routes/users/authSettings');
 const defineUser = require('../models/users');
 
 function authMiddleware(sequelize) {
