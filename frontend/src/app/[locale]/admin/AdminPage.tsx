@@ -10,6 +10,7 @@ import { LocaleCodeType } from '@/types/locale';
 import { updateUserRole } from '@/utils/usersControl';
 import { roles } from '@/config/selection';
 import DeleteConfirmDialog from '@/components/DeleteConfirmDialog';
+import { logError } from '@/utils/errorHandler';
 const apiServer = Config.apiServer;
 
 type Props = {
@@ -35,8 +36,8 @@ async function fetchUsers(jwt: string) {
     }
     const data = await response.json();
     return data;
-  } catch (error: any) {
-    console.error('Error fetching data:', error.message);
+  } catch (error: unknown) {
+    logError('Error fetching data:', error);
   }
 }
 
@@ -65,8 +66,8 @@ export default function AdminPage({ messages, locale }: Props) {
         if (tokenContext.token.user) {
           setMyself(tokenContext.token.user);
         }
-      } catch (error: any) {
-        console.error('Error in effect:', error.message);
+      } catch (error: unknown) {
+        logError('Error fetching users:', error);
       }
     }
 

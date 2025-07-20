@@ -28,7 +28,7 @@ const mockUser = {
   update: vi.fn(),
 };
 vi.mock('../../models/users', () => ({
-  default: (sequelize, DataTypes) => mockUser,
+  default: () => mockUser,
 }));
 
 // test

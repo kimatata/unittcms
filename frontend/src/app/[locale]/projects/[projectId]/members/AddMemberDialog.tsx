@@ -6,6 +6,7 @@ import { TokenContext } from '@/utils/TokenProvider';
 import { UserType } from '@/types/user';
 import { searchUsers } from '@/utils/usersControl';
 import { MembersMessages } from '@/types/member';
+import { logError } from '@/utils/errorHandler';
 
 type Props = {
   isOpen: boolean;
@@ -33,13 +34,13 @@ export default function AddMemberDialog({ isOpen, projectId, onCancel, onAddMemb
       try {
         const data = await searchUsers(context.token.access_token, Number(projectId), searchText);
         setCandidates(data);
-      } catch (error: any) {
-        console.error('Error in effect:', error.message);
+      } catch (error: unknown) {
+        logError('Error fetching data:', error);
       }
     }
 
     fetchDataEffect();
-  }, [searchText]);
+  }, [context, projectId, searchText]);
 
   const handleExit = () => {
     setSearchText('');

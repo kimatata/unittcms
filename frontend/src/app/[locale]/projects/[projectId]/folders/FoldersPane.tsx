@@ -10,6 +10,7 @@ import { TokenContext } from '@/utils/TokenProvider';
 import useGetCurrentIds from '@/utils/useGetCurrentIds';
 import DeleteConfirmDialog from '@/components/DeleteConfirmDialog';
 import { FolderType, FoldersMessages } from '@/types/folder';
+import { logError } from '@/utils/errorHandler';
 
 type Props = {
   projectId: string;
@@ -49,13 +50,13 @@ export default function FoldersPane({ projectId, messages, locale }: Props) {
           const smallestFolderId = Math.min(...folders.map((folder) => folder.id));
           router.push(`/projects/${projectId}/folders/${smallestFolderId}/cases`, { locale: locale });
         }
-      } catch (error: any) {
-        console.error('Error in effect:', error.message);
+      } catch (error: unknown) {
+        logError('Error fetching folders:', error);
       }
     }
 
     fetchDataEffect();
-  }, [context, folderId]);
+  }, [context, folderId, locale, pathname, projectId, router]);
 
   const openDialogForCreate = () => {
     setIsFolderDialogOpen(true);

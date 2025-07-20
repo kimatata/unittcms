@@ -70,7 +70,7 @@ export default function RunsTable({ projectId, isDisabled, runs, onDeleteRun, me
     switch (columnKey) {
       case 'id':
         return <span>{cellValue as number}</span>;
-      case 'name':
+      case 'name': {
         const maxLength = 30;
         const truncatedDescription = truncateText(run.description, maxLength);
         return (
@@ -83,6 +83,7 @@ export default function RunsTable({ projectId, isDisabled, runs, onDeleteRun, me
             </div>
           </div>
         );
+      }
       case 'updatedAt':
         return <span>{dayjs(cellValue as string).format('YYYY/MM/DD HH:mm')}</span>;
       case 'actions':

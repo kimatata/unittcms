@@ -46,7 +46,7 @@ export default function FolderDialog({ isOpen, editingFolder, onCancel, onSubmit
         text: '',
       });
     }
-  }, [editingFolder]);
+  }, [editingFolder, folderDetail, folderName]);
 
   const clear = () => {
     setFolderName({

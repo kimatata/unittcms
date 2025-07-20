@@ -9,14 +9,14 @@ import { MemberType, UserType } from '@/types/user';
 import { MembersMessages } from '@/types/member';
 import { TokenContext } from '@/utils/TokenProvider';
 import DeleteConfirmDialog from '@/components/DeleteConfirmDialog';
+import { logError } from '@/utils/errorHandler';
 
 type Props = {
   projectId: string;
   messages: MembersMessages;
-  locale: string;
 };
 
-export default function MembersPage({ projectId, messages, locale }: Props) {
+export default function MembersPage({ projectId, messages }: Props) {
   const context = useContext(TokenContext);
   const [members, setMembers] = useState<MemberType[]>([]);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -30,13 +30,13 @@ export default function MembersPage({ projectId, messages, locale }: Props) {
       try {
         const data = await fetchProjectMembers(context.token.access_token, projectId);
         setMembers(data);
-      } catch (error: any) {
-        console.error('Error in effect:', error.message);
+      } catch (error: unknown) {
+        logError('Error fetching members:', error);
       }
     }
 
     fetchDataEffect();
-  }, [context]);
+  }, [context, projectId]);
 
   const handleAddMember = async (userAdded: UserType) => {
     if (userAdded.id) {

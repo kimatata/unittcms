@@ -17,6 +17,7 @@ import { TestTypeMessages } from '@/types/testType';
 import { PriorityMessages } from '@/types/priority';
 import { ProjectType } from '@/types/project';
 import { CasePriorityCountType, CaseTypeCountType } from '@/types/chart';
+import { logError } from '@/utils/errorHandler';
 
 const apiServer = Config.apiServer;
 
@@ -38,8 +39,8 @@ async function fetchProject(jwt: string, projectId: number) {
     }
     const data = await response.json();
     return data;
-  } catch (error: any) {
-    console.error('Error fetching data:', error.message);
+  } catch (error: unknown) {
+    logError('Error fetching data:', error);
   }
 }
 
@@ -59,7 +60,7 @@ export function ProjectHome({
   priorityMessages,
 }: Props) {
   const context = useContext(TokenContext);
-  const { theme, setTheme } = useTheme();
+  const { theme } = useTheme();
   const [project, setProject] = useState<ProjectType>({
     id: 0,
     name: '',
@@ -88,13 +89,13 @@ export function ProjectHome({
       try {
         const data = await fetchProject(context.token.access_token, Number(projectId));
         setProject(data);
-      } catch (error: any) {
-        console.error('Error in effect:', error.message);
+      } catch (error: unknown) {
+        logError('Error in effect:', error);
       }
     }
 
     fetchDataEffect();
-  }, [context]);
+  }, [context, projectId]);
 
   useEffect(() => {
     async function aggregate() {
@@ -118,7 +119,7 @@ export function ProjectHome({
     }
 
     aggregate();
-  }, [project]);
+  }, [project, testRunCaseStatusMessages]);
 
   return (
     <div className="container mx-auto max-w-5xl pt-6 px-6 flex-grow">

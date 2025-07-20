@@ -26,6 +26,7 @@ module.exports = function (sequelize) {
 
       res.json(newRun);
     } catch (error) {
+      console.error('Error creating new run:', error);
       res.status(500).json({ error: 'Internal server error' });
     }
   });

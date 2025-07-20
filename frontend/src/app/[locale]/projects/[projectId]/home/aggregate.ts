@@ -18,7 +18,7 @@ function aggregateBasicInfo(project: ProjectType) {
 
 function aggregateTestType(project: ProjectType): CaseTypeCountType[] {
   // count how many test cases are for each type
-  const typesCounts: number[] = testTypes.map((entry) => {
+  const typesCounts: number[] = testTypes.map(() => {
     return 0;
   });
   project.Folders.forEach((folder) => {
@@ -38,7 +38,7 @@ function aggregateTestType(project: ProjectType): CaseTypeCountType[] {
 
 function aggregateTestPriority(project: ProjectType) {
   // count how many test cases are for each priority
-  const priorityCounts: number[] = priorities.map((entry) => {
+  const priorityCounts: number[] = priorities.map(() => {
     return 0;
   });
   project.Folders.forEach((folder) => {

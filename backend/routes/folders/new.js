@@ -25,6 +25,7 @@ module.exports = function (sequelize) {
 
       res.json(newFolder);
     } catch (error) {
+      console.error('Error creating new folder:', error);
       res.status(500).json({ error: 'Internal server error' });
     }
   });

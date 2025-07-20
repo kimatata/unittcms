@@ -14,6 +14,7 @@ import { useFormGuard } from '@/utils/formGuard';
 import { CaseType, AttachmentType, CaseMessages, StepType } from '@/types/case';
 import { PriorityMessages } from '@/types/priority';
 import { TestTypeMessages } from '@/types/testType';
+import { logError } from '@/utils/errorHandler';
 
 const defaultTestCase = {
   id: 0,
@@ -220,13 +221,13 @@ export default function CaseEditor({
           step.editState = 'notChanged';
         });
         setTestCase(data);
-      } catch (error: any) {
-        console.error('Error in effect:', error.message);
+      } catch (error: unknown) {
+        logError('Error fetching case data', error);
       }
     }
 
     fetchDataEffect();
-  }, [tokenContext]);
+  }, [caseId, tokenContext]);
 
   return (
     <>

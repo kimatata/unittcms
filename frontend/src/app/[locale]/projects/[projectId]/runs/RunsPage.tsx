@@ -9,6 +9,7 @@ import { RunType, RunsMessages } from '@/types/run';
 import DeleteConfirmDialog from '@/components/DeleteConfirmDialog';
 import { TokenContext } from '@/utils/TokenProvider';
 import { LocaleCodeType } from '@/types/locale';
+import { logError } from '@/utils/errorHandler';
 
 type Props = {
   projectId: string;
@@ -61,13 +62,13 @@ export default function RunsPage({ projectId, locale, messages }: Props) {
       try {
         const data = await fetchRuns(context.token.access_token, Number(projectId));
         setRuns(data);
-      } catch (error: any) {
-        console.error('Error in effect:', error.message);
+      } catch (error: unknown) {
+        logError('Error fetching runs', error);
       }
     }
 
     fetchDataEffect();
-  }, [context]);
+  }, [context, projectId]);
 
   const onSubmit = async (name: string, description: string) => {
     if (editingRun && editingRun.createdAt) {

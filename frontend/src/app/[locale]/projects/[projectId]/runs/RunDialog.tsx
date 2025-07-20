@@ -46,7 +46,7 @@ export default function RunDialog({ isOpen, editingRun, onCancel, onSubmit, mess
         text: '',
       });
     }
-  }, [editingRun]);
+  }, [editingRun, runDescription, runName]);
 
   const clear = () => {
     setRunName({

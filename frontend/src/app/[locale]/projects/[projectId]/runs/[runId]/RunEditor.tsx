@@ -55,6 +55,7 @@ import { useFormGuard } from '@/utils/formGuard';
 import { PriorityMessages } from '@/types/priority';
 import { RunStatusMessages, TestRunCaseStatusMessages } from '@/types/status';
 import { TestTypeMessages } from '@/types/testType';
+import { logError } from '@/utils/errorHandler';
 
 const defaultTestRun = {
   id: 0,
@@ -132,12 +133,13 @@ export default function RunEditor({
         setFolders(foldersData);
         setSelectedFolder(foldersData[0]);
         initTestCases();
-      } catch (error: any) {
-        console.error('Error in effect:', error.message);
+      } catch (error: unknown) {
+        logError('Error fetching run data', error);
       }
     }
 
     fetchDataEffect();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tokenContext]);
 
   useEffect(() => {
@@ -146,8 +148,8 @@ export default function RunEditor({
         try {
           const filteredData = testCases.filter((testCase) => testCase.folderId === selectedFolder.id);
           setFilteredTestCases(filteredData);
-        } catch (error: any) {
-          console.error('Error fetching cases data:', error.message);
+        } catch (error: unknown) {
+          logError('Error filtering test cases', error);
         }
       }
     }

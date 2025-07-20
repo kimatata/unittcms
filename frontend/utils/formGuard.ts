@@ -25,5 +25,5 @@ export const useFormGuard = (isDirty: boolean, confirmText: string) => {
       window.removeEventListener('beforeunload', handleBeforeUnload);
       window.removeEventListener('click', handleClick, true);
     };
-  }, [isDirty]);
+  }, [confirmText, isDirty]);
 };

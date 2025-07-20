@@ -33,7 +33,7 @@ export default function RunProgressDounut({ statusCounts, testRunCaseStatusMessa
         const colors = testRunCaseStatus.map((entry) => entry.chartColor);
         const legend = {
           labels: {
-            colors: testRunCaseStatus.map((entry) => {
+            colors: testRunCaseStatus.map(() => {
               if (theme === 'light') {
                 return 'black';
               } else {
@@ -51,7 +51,7 @@ export default function RunProgressDounut({ statusCounts, testRunCaseStatusMessa
     };
 
     updateChartDate();
-  }, [statusCounts, theme]);
+  }, [statusCounts, testRunCaseStatusMessages, theme]);
 
   return <Chart options={chartData.options} series={chartData.series} type="donut" width={'100%'} height={'100%'} />;
 }

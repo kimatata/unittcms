@@ -39,35 +39,43 @@ export default function ProjectsTable({ projects, messages, locale }: Props) {
     return text.length > maxLength ? text.slice(0, maxLength) + '...' : text;
   };
 
-  const renderCell = useCallback((project: ProjectType, columnKey: string): ReactNode => {
-    const cellValue = project[columnKey as keyof ProjectType];
+  const renderCell = useCallback(
+    (project: ProjectType, columnKey: string): ReactNode => {
+      const cellValue = project[columnKey as keyof ProjectType];
 
-    switch (columnKey) {
-      case 'id':
-        return <span>{cellValue as number}</span>;
-      case 'isPublic':
-        return (
-          <PublicityChip isPublic={cellValue as boolean} publicText={messages.public} privateText={messages.private} />
-        );
-      case 'name':
-        const maxLength = 30;
-        const truncatedDetail = truncateText(project.detail, maxLength);
-        return (
-          <div>
-            <Link href={`/projects/${project.id}/home`} locale={locale} className={NextUiLinkClasses}>
-              {cellValue as string}
-            </Link>
-            <div className="text-xs text-default-500">
-              <div>{truncatedDetail}</div>
+      switch (columnKey) {
+        case 'id':
+          return <span>{cellValue as number}</span>;
+        case 'isPublic':
+          return (
+            <PublicityChip
+              isPublic={cellValue as boolean}
+              publicText={messages.public}
+              privateText={messages.private}
+            />
+          );
+        case 'name': {
+          const maxLength = 30;
+          const truncatedDetail = truncateText(project.detail, maxLength);
+          return (
+            <div>
+              <Link href={`/projects/${project.id}/home`} locale={locale} className={NextUiLinkClasses}>
+                {cellValue as string}
+              </Link>
+              <div className="text-xs text-default-500">
+                <div>{truncatedDetail}</div>
+              </div>
             </div>
-          </div>
-        );
-      case 'updatedAt':
-        return <span>{dayjs(cellValue as number).format('YYYY/MM/DD HH:mm')}</span>;
-      default:
-        return cellValue as string;
-    }
-  }, []);
+          );
+        }
+        case 'updatedAt':
+          return <span>{dayjs(cellValue as number).format('YYYY/MM/DD HH:mm')}</span>;
+        default:
+          return cellValue as string;
+      }
+    },
+    [locale, messages.private, messages.public]
+  );
 
   const classNames = useMemo(
     () => ({

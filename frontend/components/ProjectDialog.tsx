@@ -62,7 +62,7 @@ export default function ProjectDialog({ isOpen, editingProject, onCancel, onSubm
 
       setIsProjectPublic(true);
     }
-  }, [editingProject]);
+  }, [editingProject, projectDetail, projectName]);
 
   const clear = () => {
     setProjectName({

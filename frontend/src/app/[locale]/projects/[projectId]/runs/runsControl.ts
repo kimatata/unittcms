@@ -309,8 +309,8 @@ async function updateRunCases(jwt: string, runId: number, testCases: CaseType[])
       throw new Error(`HTTP error! Status: ${response.status}`);
     }
     return await response.json();
-  } catch (error: any) {
-    console.error('Error deleting project:', error);
+  } catch (error: unknown) {
+    logError('Error updating run cases:', error);
     throw error;
   }
 }

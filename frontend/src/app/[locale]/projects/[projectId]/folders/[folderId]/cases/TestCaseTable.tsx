@@ -122,6 +122,7 @@ export default function TestCaseTable({
       default:
         return cellValue as string;
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleDeleteCases = () => {

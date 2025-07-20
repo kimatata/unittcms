@@ -33,7 +33,7 @@ export default function TestPriorityDonutChart({ priorityCounts, priorityMessage
         const colors = priorities.map((entry) => entry.chartColor);
         const legend = {
           labels: {
-            colors: priorities.map((entry) => {
+            colors: priorities.map(() => {
               if (theme === 'light') {
                 return 'black';
               } else {
@@ -51,7 +51,7 @@ export default function TestPriorityDonutChart({ priorityCounts, priorityMessage
     };
 
     updateChartDate();
-  }, [priorityCounts, theme]);
+  }, [priorityCounts, priorityMessages, theme]);
 
   return <Chart options={chartData.options} series={chartData.series} type="donut" width={'100%'} height={'100%'} />;
 }

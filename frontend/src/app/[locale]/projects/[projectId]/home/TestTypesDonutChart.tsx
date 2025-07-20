@@ -32,7 +32,7 @@ export default function TestTypesDonutChart({ typesCounts, testTypeMessages, the
         const colors = testTypes.map((entry) => entry.chartColor);
         const legend = {
           labels: {
-            colors: testTypes.map((entry) => {
+            colors: testTypes.map(() => {
               if (theme === 'light') {
                 return 'black';
               } else {
@@ -50,7 +50,7 @@ export default function TestTypesDonutChart({ typesCounts, testTypeMessages, the
     };
 
     updateChartDate();
-  }, [typesCounts, theme]);
+  }, [typesCounts, theme, testTypeMessages]);
 
   return <Chart options={chartData.options} series={chartData.series} type="donut" width={'100%'} height={'100%'} />;
 }

@@ -8,6 +8,7 @@ import { ProjectDialogMessages, ProjectType, ProjectsMessages } from '@/types/pr
 import ProjectDialog from '@/components/ProjectDialog';
 import { fetchProjects, createProject } from '@/utils/projectsControl';
 import { LocaleCodeType } from '@/types/locale';
+import { logError } from '@/utils/errorHandler';
 
 export type Props = {
   messages: ProjectsMessages;
@@ -27,8 +28,8 @@ export default function ProjectsPage({ messages, projectDialogMessages, locale }
       try {
         const data = await fetchProjects(context.token.access_token);
         setProjects(data);
-      } catch (error: any) {
-        console.error('Error in effect:', error.message);
+      } catch (error: unknown) {
+        logError('Error fetching data:', error);
       }
     }
 

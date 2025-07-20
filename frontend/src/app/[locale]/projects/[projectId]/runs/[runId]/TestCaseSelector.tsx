@@ -40,9 +40,9 @@ type Props = {
   isDisabled: boolean;
   selectedKeys: Selection;
   onSelectionChange: React.Dispatch<React.SetStateAction<Selection>>;
-  onChangeStatus: (changeCaseId: number, status: number) => {};
-  onIncludeCase: (includeCaseId: number) => {};
-  onExcludeCase: (excludeCaseId: number) => {};
+  onChangeStatus: (changeCaseId: number, status: number) => void;
+  onIncludeCase: (includeCaseId: number) => void;
+  onExcludeCase: (excludeCaseId: number) => void;
   messages: RunMessages;
   testRunCaseStatusMessages: TestRunCaseStatusMessages;
   priorityMessages: PriorityMessages;
@@ -296,7 +296,6 @@ export default function TestCaseSelector({
         isOpen={isTestCaseDetailDialogOpen}
         caseId={showingTestCaseId}
         onCancel={hideTestCaseDetailDialog}
-        onChangeStatus={(showingCaseId, newStatus) => onChangeStatus(showingCaseId, newStatus)}
         messages={messages}
         priorityMessages={priorityMessages}
         testTypeMessages={testTypeMessages}

@@ -23,7 +23,7 @@ export default function TestProgressBarChart({ progressSeries, progressCategorie
   useEffect(() => {
     const updateChartDate = () => {
       if (progressSeries) {
-        const legendsLabelColors = testRunCaseStatus.map((itr) => {
+        const legendsLabelColors = testRunCaseStatus.map(() => {
           if (theme === 'light') {
             return 'black';
           } else {
