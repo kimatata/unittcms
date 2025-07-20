@@ -19,7 +19,11 @@ export const ThemeSwitch: FC<ThemeSwitchProps> = ({ className, classNames }) => 
   const isSSR = useIsSSR();
 
   const onChange = () => {
-    theme === 'light' ? setTheme('dark') : setTheme('light');
+    if (theme === 'light') {
+      setTheme('dark');
+    } else {
+      setTheme('light');
+    }
   };
 
   const { Component, slots, isSelected, getBaseProps, getInputProps, getWrapperProps } = useSwitch({

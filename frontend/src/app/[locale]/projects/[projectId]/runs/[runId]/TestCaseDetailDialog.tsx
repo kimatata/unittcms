@@ -8,12 +8,12 @@ import TestCasePriority from '@/components/TestCasePriority';
 import { TokenContext } from '@/utils/TokenProvider';
 import { fetchCase } from '@/utils/caseControl';
 import { TestTypeMessages } from '@/types/testType';
+import { logError } from '@/utils/errorHandler';
 
 type Props = {
   isOpen: boolean;
   caseId: number;
   onCancel: () => void;
-  onChangeStatus: (changeCaseId: number, status: number) => {};
   messages: RunMessages;
   testTypeMessages: TestTypeMessages;
   priorityMessages: PriorityMessages;
@@ -37,7 +37,6 @@ export default function TestCaseDetailDialog({
   isOpen,
   caseId,
   onCancel,
-  onChangeStatus,
   messages,
   testTypeMessages,
   priorityMessages,
@@ -66,8 +65,8 @@ export default function TestCaseDetailDialog({
         }
 
         setTestCase(data);
-      } catch (error: any) {
-        console.error('Error in effect:', error.message);
+      } catch (error: unknown) {
+        logError('Error fetching case data', error);
       }
     }
 

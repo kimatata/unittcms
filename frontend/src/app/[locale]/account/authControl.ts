@@ -1,6 +1,7 @@
 import { UserType } from '@/types/user';
 import Config from '@/config/config';
 import { roles } from '@/config/selection';
+import { logError } from '@/utils/errorHandler';
 const apiServer = Config.apiServer;
 
 async function signUp(newUser: UserType) {
@@ -21,8 +22,8 @@ async function signUp(newUser: UserType) {
     }
     const token = await response.json();
     return token;
-  } catch (error: any) {
-    console.error('Error sign up:', error);
+  } catch (error: unknown) {
+    logError('Error sign up:', error);
     throw error;
   }
 }
@@ -45,8 +46,8 @@ async function signIn(signInUser: UserType) {
     }
     const token = await response.json();
     return token;
-  } catch (error: any) {
-    console.error('Error sign in:', error);
+  } catch (error: unknown) {
+    logError('Error sign in:', error);
     throw error;
   }
 }

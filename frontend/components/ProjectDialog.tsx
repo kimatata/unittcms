@@ -1,5 +1,4 @@
 'use client';
-import React from 'react';
 import { useState, useEffect } from 'react';
 import {
   Button,
@@ -63,7 +62,7 @@ export default function ProjectDialog({ isOpen, editingProject, onCancel, onSubm
 
       setIsProjectPublic(true);
     }
-  }, [editingProject]);
+  }, [editingProject, projectDetail, projectName]);
 
   const clear = () => {
     setProjectName({

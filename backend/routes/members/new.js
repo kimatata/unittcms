@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const defineMember = require('../../models/members');
 const { DataTypes } = require('sequelize');
+const defineMember = require('../../models/members');
 const { memberRoles } = require('../../routes/users/authSettings');
 
 module.exports = function (sequelize) {

@@ -1,7 +1,7 @@
 import { useMemo, useCallback } from 'react';
 import { Button, Table, TableHeader, TableColumn, TableBody, TableRow, TableCell } from '@heroui/react';
-import { UserType } from '@/types/user';
 import Avatar from 'boring-avatars';
+import { UserType } from '@/types/user';
 import { MembersMessages } from '@/types/member';
 
 type Props = {
@@ -18,33 +18,36 @@ export default function MembersTable({ candidates, onAddPress, messages }: Props
     { name: messages.add, uid: 'add', sortable: false },
   ];
 
-  const renderCell = useCallback((candidate: UserType, columnKey: string) => {
-    const cellValue = candidate[columnKey as keyof UserType];
+  const renderCell = useCallback(
+    (candidate: UserType, columnKey: string) => {
+      const cellValue = candidate[columnKey as keyof UserType];
 
-    switch (columnKey) {
-      case 'avatar':
-        return (
-          <Avatar
-            size={16}
-            name={candidate.username}
-            variant="beam"
-            colors={['#0A0310', '#49007E', '#FF005B', '#FF7D10', '#FFB238']}
-          />
-        );
-      case 'email':
-        return cellValue;
-      case 'username':
-        return cellValue;
-      case 'add':
-        return (
-          <Button color="primary" variant="faded" size="sm" onPress={() => onAddPress(candidate)}>
-            {messages.add}
-          </Button>
-        );
-      default:
-        return cellValue;
-    }
-  }, []);
+      switch (columnKey) {
+        case 'avatar':
+          return (
+            <Avatar
+              size={16}
+              name={candidate.username}
+              variant="beam"
+              colors={['#0A0310', '#49007E', '#FF005B', '#FF7D10', '#FFB238']}
+            />
+          );
+        case 'email':
+          return cellValue;
+        case 'username':
+          return cellValue;
+        case 'add':
+          return (
+            <Button color="primary" variant="faded" size="sm" onPress={() => onAddPress(candidate)}>
+              {messages.add}
+            </Button>
+          );
+        default:
+          return cellValue;
+      }
+    },
+    [messages.add, onAddPress]
+  );
 
   const classNames = useMemo(
     () => ({

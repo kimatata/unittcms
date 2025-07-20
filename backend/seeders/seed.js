@@ -3,7 +3,7 @@ const fs = require('fs');
 const bcrypt = require('bcrypt');
 
 module.exports = {
-  up: async (queryInterface, Sequelize) => {
+  up: async (queryInterface) => {
     const hashedPassword = await bcrypt.hash('password', 10);
 
     // Add projects table records
@@ -696,7 +696,7 @@ module.exports = {
     ]);
   },
 
-  down: async (queryInterface, Sequelize) => {
-    // do nothingg
+  down: async () => {
+    // do nothing
   },
 };

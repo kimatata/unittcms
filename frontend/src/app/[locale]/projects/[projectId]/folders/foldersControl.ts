@@ -1,4 +1,5 @@
 import Config from '@/config/config';
+import { logError } from '@/utils/errorHandler';
 const apiServer = Config.apiServer;
 
 /**
@@ -21,8 +22,8 @@ async function fetchFolders(jwt: string, projectId: number) {
 
     const data = await response.json();
     return data;
-  } catch (error: any) {
-    console.error('Error fetching data:', error.message);
+  } catch (error: unknown) {
+    logError('Error fetching data:', error);
   }
 }
 
@@ -60,8 +61,8 @@ async function createFolder(
     }
     const data = await response.json();
     return data;
-  } catch (error: any) {
-    console.error('Error creating new project:', error);
+  } catch (error: unknown) {
+    logError('Error creating new folder:', error);
     throw error;
   }
 }
@@ -102,8 +103,8 @@ async function updateFolder(
     }
     const data = await response.json();
     return data;
-  } catch (error: any) {
-    console.error('Error updating project:', error);
+  } catch (error: unknown) {
+    logError('Error updating folder:', error);
     throw error;
   }
 }
@@ -127,8 +128,8 @@ async function deleteFolder(jwt: string, folderId: number) {
     if (!response.ok) {
       throw new Error(`HTTP error! Status: ${response.status}`);
     }
-  } catch (error: any) {
-    console.error('Error deleting project:', error);
+  } catch (error: unknown) {
+    logError('Error deleting folder:', error);
     throw error;
   }
 }

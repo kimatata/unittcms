@@ -1,5 +1,6 @@
 import Config from '@/config/config';
 import { StepType } from '@/types/case';
+import { logError } from '@/utils/errorHandler';
 const apiServer = Config.apiServer;
 
 async function updateSteps(jwt: string, caseId: number, steps: StepType[]) {
@@ -20,8 +21,8 @@ async function updateSteps(jwt: string, caseId: number, steps: StepType[]) {
       throw new Error(`HTTP error! Status: ${response.status}`);
     }
     return await response.json();
-  } catch (error: any) {
-    console.error('Error deleting project:', error);
+  } catch (error: unknown) {
+    logError('Error updating steps', error);
     throw error;
   }
 }

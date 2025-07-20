@@ -1,7 +1,7 @@
-import { LocaleCodeType } from '@/types/locale';
-import MembersPage from './MembersPage';
 import { getTranslations } from 'next-intl/server';
 import { useTranslations } from 'next-intl';
+import MembersPage from './MembersPage';
+import { LocaleCodeType } from '@/types/locale';
 
 export async function generateMetadata({ params: { locale } }: { params: { locale: LocaleCodeType } }) {
   const t = await getTranslations({ locale, namespace: 'Members' });
@@ -34,7 +34,7 @@ export default function Page({ params }: { params: { projectId: string; locale: 
 
   return (
     <>
-      <MembersPage projectId={params.projectId} messages={messages} locale={params.locale} />
+      <MembersPage projectId={params.projectId} messages={messages} />
     </>
   );
 }

@@ -1,5 +1,4 @@
 const path = require('path');
-
 const databasePath = path.resolve(__dirname, '../database/database.sqlite');
 
 module.exports = {

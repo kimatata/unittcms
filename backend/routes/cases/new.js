@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const defineCase = require('../../models/cases');
 const { DataTypes } = require('sequelize');
+const defineCase = require('../../models/cases');
 
 const requiredFields = ['title', 'state', 'priority', 'type', 'automationStatus', 'template'];
 
@@ -50,6 +50,7 @@ module.exports = function (sequelize) {
 
       res.json(newCase);
     } catch (error) {
+      console.error('Error creating new case:', error);
       res.status(500).json({ error: 'Internal server error' });
     }
   });

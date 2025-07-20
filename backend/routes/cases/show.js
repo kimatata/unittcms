@@ -1,9 +1,9 @@
 const express = require('express');
 const router = express.Router();
+const { DataTypes } = require('sequelize');
 const defineCase = require('../../models/cases');
 const defineStep = require('../../models/steps');
 const defineAttachment = require('../../models/attachments');
-const { DataTypes } = require('sequelize');
 
 module.exports = function (sequelize) {
   const Case = defineCase(sequelize, DataTypes);

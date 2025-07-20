@@ -1,16 +1,16 @@
 'use client';
-import React from 'react';
 import { useState, useEffect, useContext } from 'react';
+import { Button, addToast } from '@heroui/react';
+import UsersTable from './UsersTable';
 import { UserType, AdminMessages } from '@/types/user';
 import { TokenContext } from '@/utils/TokenProvider';
 import { useRouter } from '@/src/i18n/routing';
-import UsersTable from './UsersTable';
 import Config from '@/config/config';
 import { LocaleCodeType } from '@/types/locale';
 import { updateUserRole } from '@/utils/usersControl';
-import { Button, addToast } from '@heroui/react';
 import { roles } from '@/config/selection';
 import DeleteConfirmDialog from '@/components/DeleteConfirmDialog';
+import { logError } from '@/utils/errorHandler';
 const apiServer = Config.apiServer;
 
 type Props = {
@@ -36,8 +36,8 @@ async function fetchUsers(jwt: string) {
     }
     const data = await response.json();
     return data;
-  } catch (error: any) {
-    console.error('Error fetching data:', error.message);
+  } catch (error: unknown) {
+    logError('Error fetching data:', error);
   }
 }
 
@@ -66,8 +66,8 @@ export default function AdminPage({ messages, locale }: Props) {
         if (tokenContext.token.user) {
           setMyself(tokenContext.token.user);
         }
-      } catch (error: any) {
-        console.error('Error in effect:', error.message);
+      } catch (error: unknown) {
+        logError('Error fetching users:', error);
       }
     }
 

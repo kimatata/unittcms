@@ -1,5 +1,4 @@
 'use client';
-import React from 'react';
 import { useState, useEffect, useContext } from 'react';
 import { Button, Table, TableHeader, TableColumn, TableBody, TableRow, TableCell } from '@heroui/react';
 import Avatar from 'boring-avatars';
@@ -13,6 +12,7 @@ import { useRouter } from '@/src/i18n/routing';
 import ProjectDialog from '@/components/ProjectDialog';
 import { UserType } from '@/types/user';
 import { findUser } from '@/utils/usersControl';
+import { logError } from '@/utils/errorHandler';
 
 type Props = {
   projectId: string;
@@ -60,13 +60,13 @@ export default function SettingsPage({ projectId, messages, projectDialogMessage
         } else {
           console.error('failed to get project owner id');
         }
-      } catch (error: any) {
-        console.error('Error in effect:', error.message);
+      } catch (error: unknown) {
+        logError('Error fetching project data:', error);
       }
     }
 
     fetchDataEffect();
-  }, [context]);
+  }, [context, projectId]);
 
   // project dialog
   const [isProjectDialogOpen, setIsProjectDialogOpen] = useState(false);

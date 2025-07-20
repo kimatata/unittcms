@@ -1,5 +1,4 @@
 'use client';
-import React from 'react';
 import { useState, useEffect } from 'react';
 import { Button, Input, Textarea, Modal, ModalContent, ModalHeader, ModalBody, ModalFooter } from '@heroui/react';
 import { RunType, RunsMessages } from '@/types/run';
@@ -47,7 +46,7 @@ export default function RunDialog({ isOpen, editingRun, onCancel, onSubmit, mess
         text: '',
       });
     }
-  }, [editingRun]);
+  }, [editingRun, runDescription, runName]);
 
   const clear = () => {
     setRunName({

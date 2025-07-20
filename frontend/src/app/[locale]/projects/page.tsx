@@ -1,6 +1,6 @@
-import { PageType } from '@/types/base';
-import ProjectsPage from './ProjectsPage';
 import { useTranslations } from 'next-intl';
+import ProjectsPage from './ProjectsPage';
+import { PageType } from '@/types/base';
 import { LocaleCodeType } from '@/types/locale';
 import { ProjectDialogMessages, ProjectsMessages } from '@/types/project';
 

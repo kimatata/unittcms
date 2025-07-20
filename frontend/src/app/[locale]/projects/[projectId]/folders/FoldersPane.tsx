@@ -1,15 +1,16 @@
 'use client';
-import { FolderType, FoldersMessages } from '@/types/folder';
 import { useState, useEffect, useContext } from 'react';
 import { Button, Listbox, ListboxItem } from '@heroui/react';
 import { Folder, Plus } from 'lucide-react';
+import FolderDialog from './FolderDialog';
+import FolderEditMenu from './FolderEditMenu';
+import { fetchFolders, createFolder, updateFolder, deleteFolder } from './foldersControl';
 import { usePathname, useRouter } from '@/src/i18n/routing';
 import { TokenContext } from '@/utils/TokenProvider';
 import useGetCurrentIds from '@/utils/useGetCurrentIds';
-import FolderDialog from './FolderDialog';
-import FolderEditMenu from './FolderEditMenu';
 import DeleteConfirmDialog from '@/components/DeleteConfirmDialog';
-import { fetchFolders, createFolder, updateFolder, deleteFolder } from './foldersControl';
+import { FolderType, FoldersMessages } from '@/types/folder';
+import { logError } from '@/utils/errorHandler';
 
 type Props = {
   projectId: string;
@@ -49,13 +50,13 @@ export default function FoldersPane({ projectId, messages, locale }: Props) {
           const smallestFolderId = Math.min(...folders.map((folder) => folder.id));
           router.push(`/projects/${projectId}/folders/${smallestFolderId}/cases`, { locale: locale });
         }
-      } catch (error: any) {
-        console.error('Error in effect:', error.message);
+      } catch (error: unknown) {
+        logError('Error fetching folders:', error);
       }
     }
 
     fetchDataEffect();
-  }, [context, folderId]);
+  }, [context, folderId, locale, pathname, projectId, router]);
 
   const openDialogForCreate = () => {
     setIsFolderDialogOpen(true);

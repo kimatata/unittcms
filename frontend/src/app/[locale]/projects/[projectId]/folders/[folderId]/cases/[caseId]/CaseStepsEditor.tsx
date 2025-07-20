@@ -1,6 +1,6 @@
 import { Textarea, Button, Tooltip, Avatar } from '@heroui/react';
-import { CaseMessages, StepType } from '@/types/case';
 import { Plus, Trash } from 'lucide-react';
+import { CaseMessages, StepType } from '@/types/case';
 
 type Props = {
   isDisabled: boolean;

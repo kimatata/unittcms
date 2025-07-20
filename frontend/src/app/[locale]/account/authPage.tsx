@@ -1,13 +1,12 @@
 'use client';
-import React from 'react';
 import { useState, useContext } from 'react';
 import { Input, Button, Card, CardHeader, CardBody } from '@heroui/react';
-import { Link } from '@/src/i18n/routing';
 import { ChevronRight, Eye, EyeOff } from 'lucide-react';
-import { UserType, AuthMessages } from '@/types/user';
-import { roles } from '@/config/selection';
 import { signUp, signIn, signInAsGuest } from './authControl';
 import { isValidEmail, isValidPassword } from './validate';
+import { Link } from '@/src/i18n/routing';
+import { UserType, AuthMessages } from '@/types/user';
+import { roles } from '@/config/selection';
 import { TokenContext } from '@/utils/TokenProvider';
 import { useRouter } from '@/src/i18n/routing';
 import Config from '@/config/config';

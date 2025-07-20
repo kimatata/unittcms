@@ -1,9 +1,9 @@
 // Use express from backend node_modules
-const express = require('./backend/node_modules/express');
 const { createServer: createHttpServer } = require('http');
 const path = require('path');
 const fs = require('fs');
 const { execSync } = require('child_process');
+const express = require('./backend/node_modules/express');
 
 async function runMigrations() {
   try {

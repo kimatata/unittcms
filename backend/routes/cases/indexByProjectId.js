@@ -1,10 +1,10 @@
 const express = require('express');
 const router = express.Router();
+const { DataTypes } = require('sequelize');
 const defineProject = require('../../models/projects');
 const defineFolder = require('../../models/folders');
 const defineCase = require('../../models/cases');
 const defineRunCase = require('../../models/runCases');
-const { DataTypes } = require('sequelize');
 
 module.exports = function (sequelize) {
   const Project = defineProject(sequelize, DataTypes);

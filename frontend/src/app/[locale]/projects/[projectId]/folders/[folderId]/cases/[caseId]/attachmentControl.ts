@@ -1,4 +1,5 @@
 import Config from '@/config/config';
+import { logError } from '@/utils/errorHandler';
 const apiServer = Config.apiServer;
 
 async function fetchDownloadAttachment(attachmentId: number, downloadFileName: string) {
@@ -26,8 +27,8 @@ async function fetchDownloadAttachment(attachmentId: number, downloadFileName: s
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
-  } catch (error: any) {
-    console.error('Error downloading file:', error);
+  } catch (error: unknown) {
+    logError('Error downloading attachment', error);
     throw error;
   }
 }
@@ -51,8 +52,8 @@ async function fetchCreateAttachments(caseId: number, files: File[]) {
 
     const responseData = await response.json();
     return responseData;
-  } catch (error: any) {
-    console.error('Error uploading files:', error);
+  } catch (error: unknown) {
+    logError('Error uploading files', error);
   }
 }
 
@@ -71,8 +72,8 @@ async function fetchDeleteAttachment(attachmentId: number) {
     if (!response.ok) {
       throw new Error(`HTTP error! Status: ${response.status}`);
     }
-  } catch (error: any) {
-    console.error('Error deleting file:', error);
+  } catch (error: unknown) {
+    logError('Error deleting file:', error);
     throw error;
   }
 }

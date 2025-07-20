@@ -4,6 +4,7 @@ import { Table, TableBody, TableRow, TableHeader, TableCell, Chip, TableColumn }
 import { LocaleCodeType } from '@/types/locale';
 import { HealthMessages } from '@/types/health';
 import Config from '@/config/config';
+import { logError } from '@/utils/errorHandler';
 const apiServer = Config.apiServer;
 
 type Props = {
@@ -21,8 +22,8 @@ async function fetchHealth() {
     }
     const data = await response.json();
     return data;
-  } catch (error: any) {
-    console.log('Error fetching health data:', error);
+  } catch (error: unknown) {
+    logError('Error fetching health data:', error);
   }
 }
 
@@ -38,8 +39,8 @@ export default function HealthPage({ messages, locale }: Props) {
         const data = await fetchHealth();
         setStatus(data.status);
         setIsFetching(false);
-      } catch (error: any) {
-        console.error('Error in effect:', error.message);
+      } catch (error: unknown) {
+        logError('Error in effect:', error);
       }
     }
 

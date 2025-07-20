@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const defineProject = require('../../models/projects');
 const { DataTypes } = require('sequelize');
+const defineProject = require('../../models/projects');
 
 module.exports = function (sequelize) {
   const { verifySignedIn } = require('../../middleware/auth')(sequelize);
