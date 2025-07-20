@@ -34,7 +34,7 @@ export default function Page({ params }: { params: { projectId: string; locale: 
 
   return (
     <>
-      <MembersPage projectId={params.projectId} messages={messages} locale={params.locale} />
+      <MembersPage projectId={params.projectId} messages={messages} />
     </>
   );
 }
