@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
+    "format:check": "prettier --check frontend/**/*.{js,ts,jsx,tsx,json} backend/**/*.{js,ts,json}",
     "format": "prettier --write frontend/**/*.{js,ts,jsx,tsx,json} backend/**/*.{js,ts,json}",
     "test": "vitest",
     "coverage": "vitest run --coverage",
