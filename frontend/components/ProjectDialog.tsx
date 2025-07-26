@@ -62,7 +62,8 @@ export default function ProjectDialog({ isOpen, editingProject, onCancel, onSubm
 
       setIsProjectPublic(true);
     }
-  }, [editingProject, projectDetail, projectName]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [editingProject]);
 
   const clear = () => {
     setProjectName({

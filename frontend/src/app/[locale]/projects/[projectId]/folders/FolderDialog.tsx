@@ -46,7 +46,8 @@ export default function FolderDialog({ isOpen, editingFolder, onCancel, onSubmit
         text: '',
       });
     }
-  }, [editingFolder, folderDetail, folderName]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [editingFolder]);
 
   const clear = () => {
     setFolderName({
