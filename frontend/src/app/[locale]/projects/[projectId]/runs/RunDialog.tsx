@@ -46,7 +46,8 @@ export default function RunDialog({ isOpen, editingRun, onCancel, onSubmit, mess
         text: '',
       });
     }
-  }, [editingRun, runDescription, runName]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [editingRun]);
 
   const clear = () => {
     setRunName({
