@@ -4,7 +4,7 @@ sidebar_position: 1
 
 # Technologies
 
-UnitTCMS is powered by following technologies. For more detailed package and version information, please see package.json.
+UnitTCMS is powered by following technologies. For more detailed info, please check package.json.
 
 ## Frontend
 
@@ -12,7 +12,7 @@ UnitTCMS is powered by following technologies. For more detailed package and ver
 | ----------------------------------------------- | -------------------- |
 | [React](https://react.dev/)                     | Rendering            |
 | [Next.js](https://nextjs.org/)                  | Routing, etc.        |
-| [NextUI](https://nextui.org/)                   | UI library           |
+| [HeroUI](https://www.heroui.com/)               | UI library           |
 | [next-intl](https://next-intl-docs.vercel.app/) | Internationalization |
 | [ApexCharts](https://apexcharts.com/)           | Charts               |
 
@@ -24,3 +24,12 @@ UnitTCMS is powered by following technologies. For more detailed package and ver
 | [Express](https://expressjs.com/)   | API Server         |
 | [Sequelize](https://sequelize.org/) | ORM                |
 | [SQLite](https://www.sqlite.org/)   | database           |
+
+## Other
+
+| Technology                            | Use                    |
+| ------------------------------------- | ---------------------- |
+| [Prettier](https://prettier.io/)      | Format                 |
+| [ESLint](https://eslint.org/)         | ESLint                 |
+| [Vitest](https://vitest.dev/)         | Unit Testing Framework |
+| [Playwright](https://playwright.dev/) | E2E Testing Framework  |
