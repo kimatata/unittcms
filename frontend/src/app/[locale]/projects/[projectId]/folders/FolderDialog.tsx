@@ -1,5 +1,4 @@
 'use client';
-import React from 'react';
 import { useState, useEffect } from 'react';
 import { Button, Input, Textarea, Modal, ModalContent, ModalHeader, ModalBody, ModalFooter } from '@heroui/react';
 import { FolderType, FoldersMessages } from '@/types/folder';
@@ -47,6 +46,7 @@ export default function FolderDialog({ isOpen, editingFolder, onCancel, onSubmit
         text: '',
       });
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [editingFolder]);
 
   const clear = () => {

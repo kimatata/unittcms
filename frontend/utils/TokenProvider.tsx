@@ -1,8 +1,6 @@
 'use client';
-import { createContext, useState, useEffect, useContext } from 'react';
-import { ProjectRoleType, TokenContextType, TokenType } from '@/types/user';
-import { TokenProps } from '@/types/user';
-import { useRouter, usePathname } from '@/src/i18n/routing';
+import { createContext, useState, useEffect } from 'react';
+import { addToast } from '@heroui/react';
 import {
   isSignedIn as tokenIsSinedIn,
   isAdmin as tokenIsAdmin,
@@ -13,7 +11,10 @@ import {
   checkSignInPage as tokenCheckSignInPage,
   fetchMyRoles,
 } from './token';
-import { addToast } from '@heroui/react';
+import { logError } from './errorHandler';
+import { ProjectRoleType, TokenContextType, TokenType } from '@/types/user';
+import { TokenProps } from '@/types/user';
+import { useRouter, usePathname } from '@/src/i18n/routing';
 const LOCAL_STORAGE_KEY = 'unittcms-auth-token';
 
 function storeTokenToLocalStorage(token: TokenType) {
@@ -31,20 +32,20 @@ const defaultContext = {
   },
   isSignedIn: () => false,
   isAdmin: () => false,
-  isProjectOwner: (projectId: number) => {
+  isProjectOwner: () => {
     return false;
   },
-  isProjectManager: (projectId: number) => {
+  isProjectManager: () => {
     return false;
   },
-  isProjectDeveloper: (projectId: number) => {
+  isProjectDeveloper: () => {
     return false;
   },
-  isProjectReporter: (projectId: number) => {
+  isProjectReporter: () => {
     return false;
   },
   refreshProjectRoles: () => {},
-  setToken: (token: TokenType) => {},
+  setToken: () => {},
   storeTokenToLocalStorage,
   removeTokenFromLocalStorage,
 };
@@ -94,8 +95,8 @@ const TokenProvider = ({ toastMessages, locale, children }: TokenProps) => {
     try {
       const data = await fetchMyRoles(token.access_token);
       setProjectRoles(data);
-    } catch (error: any) {
-      console.error('Error in effect:', error.message);
+    } catch (error: unknown) {
+      logError('Error fetching project roles', error);
     }
   }
 
@@ -154,10 +155,12 @@ const TokenProvider = ({ toastMessages, locale, children }: TokenProps) => {
 
       router.push(ret.redirectPath, { locale: locale });
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pathname, hasRestoreFinished]);
 
   useEffect(() => {
     refreshProjectRoles();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [hasRestoreFinished, token]);
 
   return <TokenContext.Provider value={tokenContext}>{children}</TokenContext.Provider>;

@@ -1,4 +1,3 @@
-import React from 'react';
 import { useState, useEffect } from 'react';
 import dynamic from 'next/dynamic';
 import { ProgressSeriesType } from '@/types/run';
@@ -24,7 +23,7 @@ export default function TestProgressBarChart({ progressSeries, progressCategorie
   useEffect(() => {
     const updateChartDate = () => {
       if (progressSeries) {
-        const legendsLabelColors = testRunCaseStatus.map((itr) => {
+        const legendsLabelColors = testRunCaseStatus.map(() => {
           if (theme === 'light') {
             return 'black';
           } else {

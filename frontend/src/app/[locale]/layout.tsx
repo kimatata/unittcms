@@ -1,12 +1,12 @@
 import '@/styles/globals.css';
-import { fontSans } from '@/config/fonts';
-import { Providers } from './providers';
-import Header from './Header';
 import clsx from 'clsx';
 import { getTranslations } from 'next-intl/server';
 import { useTranslations } from 'next-intl';
-import { LocaleCodeType } from '@/types/locale';
 import { headers } from 'next/headers';
+import Header from './Header';
+import { Providers } from './providers';
+import { LocaleCodeType } from '@/types/locale';
+import { fontSans } from '@/config/fonts';
 
 export async function generateMetadata({ params: { locale } }: { params: { locale: LocaleCodeType } }) {
   const headersList = headers();

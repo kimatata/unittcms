@@ -18,7 +18,7 @@ function aggregateBasicInfo(project: ProjectType) {
 
 function aggregateTestType(project: ProjectType): CaseTypeCountType[] {
   // count how many test cases are for each type
-  const typesCounts: number[] = testTypes.map((entry) => {
+  const typesCounts: number[] = testTypes.map(() => {
     return 0;
   });
   project.Folders.forEach((folder) => {
@@ -38,7 +38,7 @@ function aggregateTestType(project: ProjectType): CaseTypeCountType[] {
 
 function aggregateTestPriority(project: ProjectType) {
   // count how many test cases are for each priority
-  const priorityCounts: number[] = priorities.map((entry) => {
+  const priorityCounts: number[] = priorities.map(() => {
     return 0;
   });
   project.Folders.forEach((folder) => {
@@ -58,10 +58,10 @@ function aggregateTestPriority(project: ProjectType) {
 
 function aggregateProgress(project: ProjectType, testRunCaseStatusMessages: TestRunCaseStatusMessages) {
   type ChartSeries = { name: string; data: number[] };
-  let series: ChartSeries[] = testRunCaseStatus.map((status) => {
+  const series: ChartSeries[] = testRunCaseStatus.map((status) => {
     return { name: testRunCaseStatusMessages[status.uid], data: [] };
   });
-  let categories: string[] = [];
+  const categories: string[] = [];
 
   project.Runs.forEach((run) => {
     if (!run.RunCases) {

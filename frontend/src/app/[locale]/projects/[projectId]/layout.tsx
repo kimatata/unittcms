@@ -1,6 +1,6 @@
-import { ProjectMessages } from '@/types/project';
-import Sidebar from './Sidebar';
 import { useTranslations } from 'next-intl';
+import Sidebar from './Sidebar';
+import { ProjectMessages } from '@/types/project';
 
 export default function SidebarLayout({
   children,

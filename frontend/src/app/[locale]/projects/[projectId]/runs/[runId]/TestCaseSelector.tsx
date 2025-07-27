@@ -26,10 +26,10 @@ import {
   CircleX,
   CircleSlash2,
 } from 'lucide-react';
+import TestCaseDetailDialog from './TestCaseDetailDialog';
 import { testRunCaseStatus } from '@/config/selection';
 import { CaseType } from '@/types/case';
 import { RunMessages } from '@/types/run';
-import TestCaseDetailDialog from './TestCaseDetailDialog';
 import { PriorityMessages } from '@/types/priority';
 import TestCasePriority from '@/components/TestCasePriority';
 import { TestTypeMessages } from '@/types/testType';
@@ -40,9 +40,9 @@ type Props = {
   isDisabled: boolean;
   selectedKeys: Selection;
   onSelectionChange: React.Dispatch<React.SetStateAction<Selection>>;
-  onChangeStatus: (changeCaseId: number, status: number) => {};
-  onIncludeCase: (includeCaseId: number) => {};
-  onExcludeCase: (excludeCaseId: number) => {};
+  onChangeStatus: (changeCaseId: number, status: number) => void;
+  onIncludeCase: (includeCaseId: number) => void;
+  onExcludeCase: (excludeCaseId: number) => void;
   messages: RunMessages;
   testRunCaseStatusMessages: TestRunCaseStatusMessages;
   priorityMessages: PriorityMessages;
@@ -296,7 +296,6 @@ export default function TestCaseSelector({
         isOpen={isTestCaseDetailDialogOpen}
         caseId={showingTestCaseId}
         onCancel={hideTestCaseDetailDialog}
-        onChangeStatus={(showingCaseId, newStatus) => onChangeStatus(showingCaseId, newStatus)}
         messages={messages}
         priorityMessages={priorityMessages}
         testTypeMessages={testTypeMessages}

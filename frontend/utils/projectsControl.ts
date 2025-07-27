@@ -1,31 +1,6 @@
+import { logError } from '@/utils/errorHandler';
 import Config from '@/config/config';
 const apiServer = Config.apiServer;
-
-/**
- * fetch project
- */
-async function fetchProject(jwt: string, projectId: number) {
-  const url = `${apiServer}/projects/${projectId}`;
-
-  try {
-    const response = await fetch(url, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${jwt}`,
-      },
-    });
-
-    if (!response.ok) {
-      throw new Error(`HTTP error! Status: ${response.status}`);
-    }
-
-    const data = await response.json();
-    return data;
-  } catch (error: any) {
-    console.error('Error fetching data:', error.message);
-  }
-}
 
 /**
  * fetch projects (public and user own projects)
@@ -48,8 +23,34 @@ async function fetchProjects(jwt: string) {
 
     const data = await response.json();
     return data;
-  } catch (error: any) {
-    console.error('Error fetching data:', error.message);
+  } catch (error: unknown) {
+    logError('Error fetching data:', error);
+  }
+}
+
+/**
+ * fetch project
+ */
+async function fetchProject(jwt: string, projectId: number) {
+  const url = `${apiServer}/projects/${projectId}`;
+
+  try {
+    const response = await fetch(url, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${jwt}`,
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (error: unknown) {
+    logError('Error fetching data:', error);
   }
 }
 
@@ -74,8 +75,8 @@ async function fetchMyProjects(jwt: string) {
 
     const data = await response.json();
     return data;
-  } catch (error: any) {
-    console.error('Error fetching data:', error.message);
+  } catch (error: unknown) {
+    logError('Error fetching data:', error);
   }
 }
 
@@ -107,8 +108,8 @@ async function createProject(jwt: string, name: string, detail: string, isPublic
     }
     const data = await response.json();
     return data;
-  } catch (error: any) {
-    console.error('Error creating new project:', error);
+  } catch (error: unknown) {
+    logError('Error creating new project:', error);
     throw error;
   }
 }
@@ -141,8 +142,8 @@ async function updateProject(jwt: string, projectId: number, name: string, detai
     }
     const data = await response.json();
     return data;
-  } catch (error: any) {
-    console.error('Error updating project:', error);
+  } catch (error: unknown) {
+    logError('Error updating project:', error);
     throw error;
   }
 }
@@ -166,8 +167,8 @@ async function deleteProject(jwt: string, projectId: number) {
     if (!response.ok) {
       throw new Error(`HTTP error! Status: ${response.status}`);
     }
-  } catch (error: any) {
-    console.error('Error deleting project:', error);
+  } catch (error: unknown) {
+    logError('Error deleting project:', error);
     throw error;
   }
 }

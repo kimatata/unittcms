@@ -15,7 +15,7 @@ import {
   SortDescriptor,
   ButtonGroup,
 } from '@heroui/react';
-import { Plus, MoreVertical, Trash, Download, FileDown, ChevronDown, FileJson, FileSpreadsheet } from 'lucide-react';
+import { Plus, MoreVertical, Trash, FileDown, ChevronDown, FileJson, FileSpreadsheet } from 'lucide-react';
 import { Link } from '@/src/i18n/routing';
 import { CaseType, CasesMessages } from '@/types/case';
 import { PriorityMessages } from '@/types/priority';
@@ -122,6 +122,7 @@ export default function TestCaseTable({
       default:
         return cellValue as string;
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleDeleteCases = () => {
@@ -180,7 +181,6 @@ export default function TestCaseTable({
             <Button
               startContent={<FileDown size={16} />}
               size="sm"
-              isDisabled={isDisabled}
               onPress={() => onExportCases(Array.from(exportType)[0])}
             >
               {messages.export} {exportType}

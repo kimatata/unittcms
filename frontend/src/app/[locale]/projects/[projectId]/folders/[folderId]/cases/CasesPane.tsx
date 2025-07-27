@@ -8,6 +8,7 @@ import { CaseType, CasesMessages } from '@/types/case';
 import DeleteConfirmDialog from '@/components/DeleteConfirmDialog';
 import { PriorityMessages } from '@/types/priority';
 import { LocaleCodeType } from '@/types/locale';
+import { logError } from '@/utils/errorHandler';
 
 type Props = {
   projectId: string;
@@ -30,8 +31,8 @@ export default function CasesPane({ projectId, folderId, messages, priorityMessa
       try {
         const data = await fetchCases(context.token.access_token, Number(folderId));
         setCases(data);
-      } catch (error: any) {
-        console.error('Error in effect:', error.message);
+      } catch (error: unknown) {
+        logError('Error fetching cases:', error);
       }
     }
 

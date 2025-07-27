@@ -1,14 +1,15 @@
 'use client';
 import { useState, useEffect, useContext } from 'react';
-import { Link, NextUiLinkClasses } from '@/src/i18n/routing';
 import { Button, Card, CardHeader, CardFooter } from '@heroui/react';
-import { TokenContext } from '@/utils/TokenProvider';
 import Avatar from 'boring-avatars';
+import { ArrowRight } from 'lucide-react';
+import { Link, NextUiLinkClasses } from '@/src/i18n/routing';
+import { TokenContext } from '@/utils/TokenProvider';
 import { fetchMyProjects } from '@/utils/projectsControl';
 import { ProjectType } from '@/types/project';
 import PublicityChip from '@/components/PublicityChip';
 import { LocaleCodeType } from '@/types/locale';
-import { ArrowRight } from 'lucide-react';
+import { logError } from '@/utils/errorHandler';
 
 type AccountPageMessages = {
   yourProjects: string;
@@ -36,8 +37,8 @@ export default function AccountPage({ messages, locale }: Props) {
       try {
         const data = await fetchMyProjects(context.token.access_token);
         setMyProjects(data);
-      } catch (error: any) {
-        console.error('Error in effect:', error.message);
+      } catch (error: unknown) {
+        logError('Error fetching data:', error);
       }
     }
 
@@ -53,13 +54,13 @@ export default function AccountPage({ messages, locale }: Props) {
               <CardHeader className="flex gap-6">
                 <Avatar
                   size={48}
-                  name={context.token!.user!.username}
+                  name={context.token?.user?.username}
                   variant="beam"
                   colors={['#0A0310', '#49007E', '#FF005B', '#FF7D10', '#FFB238']}
                 />
                 <div className="flex flex-col">
-                  <p className="text-xl font-bold">{context.token!.user!.username}</p>
-                  <p className="text-lg text-default-500">{context.token!.user!.email}</p>
+                  <p className="text-xl font-bold">{context.token?.user?.username}</p>
+                  <p className="text-lg text-default-500">{context.token?.user?.email}</p>
                 </div>
               </CardHeader>
             </Card>

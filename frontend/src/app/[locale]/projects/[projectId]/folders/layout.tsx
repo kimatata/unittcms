@@ -1,5 +1,5 @@
-import FoldersPane from './FoldersPane';
 import { useTranslations } from 'next-intl';
+import FoldersPane from './FoldersPane';
 
 export default function FoldersLayout({
   children,

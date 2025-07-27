@@ -1,6 +1,6 @@
 const jwt = require('jsonwebtoken');
-const { roles, defaultDangerKey } = require('../routes/users/authSettings');
 const { DataTypes } = require('sequelize');
+const { roles, defaultDangerKey } = require('../routes/users/authSettings');
 const defineUser = require('../models/users');
 
 function authMiddleware(sequelize) {
@@ -23,6 +23,7 @@ function authMiddleware(sequelize) {
       req.userId = decoded.userId;
       next();
     } catch (error) {
+      console.error('Token verification failed:', error);
       res.status(401).json({ error: 'Invalid token' });
     }
   }

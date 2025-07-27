@@ -1,17 +1,17 @@
 'use client';
-import React from 'react';
 import { useState, useContext } from 'react';
 import { Input, Button, Card, CardHeader, CardBody } from '@heroui/react';
-import { Link } from '@/src/i18n/routing';
 import { ChevronRight, Eye, EyeOff } from 'lucide-react';
-import { UserType, AuthMessages } from '@/types/user';
-import { roles } from '@/config/selection';
 import { signUp, signIn, signInAsGuest } from './authControl';
 import { isValidEmail, isValidPassword } from './validate';
+import { Link } from '@/src/i18n/routing';
+import { UserType, AuthMessages } from '@/types/user';
+import { roles } from '@/config/selection';
 import { TokenContext } from '@/utils/TokenProvider';
 import { useRouter } from '@/src/i18n/routing';
 import Config from '@/config/config';
 import { LocaleCodeType } from '@/types/locale';
+import Footer from '@/components/Footer';
 const isDemoSite = Config.isDemoSite;
 
 type Props = {
@@ -94,74 +94,56 @@ export default function AuthPage({ isSignup, messages, locale }: Props) {
   };
 
   return (
-    <Card className="w-[480px] mt-16">
-      <CardHeader className="px-4 pt-4 pb-0 flex justify-between">
-        <h4 className="font-bold text-large">{messages.title}</h4>
-        <Button
-          as={Link}
-          href={isSignup ? '/account/signin' : '/account/signup'}
-          locale={locale}
-          color="primary"
-          variant="light"
-          endContent={<ChevronRight size={16} />}
-        >
-          {messages.linkTitle}
-        </Button>
-      </CardHeader>
-      <CardBody className="overflow-visible px-4 pt-0 pb-4">
-        <form>
-          {errorMessage && <div className="my-3 text-danger">{errorMessage}</div>}
-          <Input
-            isRequired
-            type="email"
-            label={messages.email}
-            autoComplete="email"
-            className="mt-3"
-            onChange={(e) => {
-              setUser({
-                ...user,
-                email: e.target.value,
-              });
-            }}
-          />
-          {isSignup && (
+    <div className="h-[calc(100vh-64px)] flex flex-col justify-around">
+      <Card className="w-[380px] md:w-[480px]">
+        <CardHeader className="px-4 pt-4 pb-0 flex justify-between">
+          <h4 className="font-bold text-large">{messages.title}</h4>
+          <Button
+            as={Link}
+            href={isSignup ? '/account/signin' : '/account/signup'}
+            locale={locale}
+            color="primary"
+            variant="light"
+            endContent={<ChevronRight size={16} />}
+          >
+            {messages.linkTitle}
+          </Button>
+        </CardHeader>
+        <CardBody className="overflow-visible px-4 pt-0 pb-4">
+          <form>
+            {errorMessage && <div className="my-3 text-danger">{errorMessage}</div>}
             <Input
               isRequired
-              type="username"
-              label={messages.username}
-              autoComplete="username"
+              type="email"
+              label={messages.email}
+              autoComplete="email"
               className="mt-3"
               onChange={(e) => {
                 setUser({
                   ...user,
-                  username: e.target.value,
+                  email: e.target.value,
                 });
               }}
             />
-          )}
-          <Input
-            label={messages.password}
-            variant="bordered"
-            autoComplete={isSignup ? 'new-password' : 'current-password'}
-            className="mt-3"
-            type={isPasswordVisible ? 'text' : 'password'}
-            endContent={
-              <button className="focus:outline-none" type="button" onClick={togglePasswordVisibility}>
-                {isPasswordVisible ? <Eye size={20} /> : <EyeOff size={20} />}
-              </button>
-            }
-            onChange={(e) => {
-              setUser({
-                ...user,
-                password: e.target.value,
-              });
-            }}
-          />
-          {isSignup && (
+            {isSignup && (
+              <Input
+                isRequired
+                type="username"
+                label={messages.username}
+                autoComplete="username"
+                className="mt-3"
+                onChange={(e) => {
+                  setUser({
+                    ...user,
+                    username: e.target.value,
+                  });
+                }}
+              />
+            )}
             <Input
-              label={messages.confirmPassword}
+              label={messages.password}
               variant="bordered"
-              autoComplete="new-password"
+              autoComplete={isSignup ? 'new-password' : 'current-password'}
               className="mt-3"
               type={isPasswordVisible ? 'text' : 'password'}
               endContent={
@@ -170,28 +152,49 @@ export default function AuthPage({ isSignup, messages, locale }: Props) {
                 </button>
               }
               onChange={(e) => {
-                setConfirmPassword(e.target.value);
+                setUser({
+                  ...user,
+                  password: e.target.value,
+                });
               }}
             />
-          )}
-
-          {isDemoSite && <div className="my-3 text-default-600">{messages.demoPageWarning}</div>}
-
-          <div className="flex justify-end items-center mt-3">
-            <Button color="primary" onPress={validate}>
-              {messages.submitTitle}
-            </Button>
-            {!isSignup && isDemoSite && (
-              <Button
-                className="ms-3 bg-gradient-to-tr from-pink-500 to-yellow-500 text-white shadow-lg"
-                onPress={handleSignInAsGuest}
-              >
-                {messages.signInAsGuest}
-              </Button>
+            {isSignup && (
+              <Input
+                label={messages.confirmPassword}
+                variant="bordered"
+                autoComplete="new-password"
+                className="mt-3"
+                type={isPasswordVisible ? 'text' : 'password'}
+                endContent={
+                  <button className="focus:outline-none" type="button" onClick={togglePasswordVisibility}>
+                    {isPasswordVisible ? <Eye size={20} /> : <EyeOff size={20} />}
+                  </button>
+                }
+                onChange={(e) => {
+                  setConfirmPassword(e.target.value);
+                }}
+              />
             )}
-          </div>
-        </form>
-      </CardBody>
-    </Card>
+
+            {isDemoSite && <div className="my-3 text-default-600">{messages.demoPageWarning}</div>}
+
+            <div className="flex justify-end items-center mt-3">
+              <Button color="primary" onPress={validate}>
+                {messages.submitTitle}
+              </Button>
+              {!isSignup && isDemoSite && (
+                <Button
+                  className="ms-3 bg-gradient-to-tr from-pink-500 to-yellow-500 text-white shadow-lg"
+                  onPress={handleSignInAsGuest}
+                >
+                  {messages.signInAsGuest}
+                </Button>
+              )}
+            </div>
+          </form>
+        </CardBody>
+      </Card>
+      <Footer locale={locale} />
+    </div>
   );
 }

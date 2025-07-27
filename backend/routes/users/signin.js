@@ -1,9 +1,9 @@
 const express = require('express');
 const router = express.Router();
-const defineUser = require('../../models/users');
 const { DataTypes } = require('sequelize');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const defineUser = require('../../models/users');
 const { defaultDangerKey } = require('./authSettings');
 
 module.exports = function (sequelize) {

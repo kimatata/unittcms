@@ -78,7 +78,7 @@ export default function DropdownAccount({ messages, locale, onItemPress }: Props
           startContent={<UserAvatar context={context} />}
           endContent={<ChevronDown size={16} />}
         >
-          {context.isSignedIn() ? context.token!.user!.username : messages.signIn}
+          {context.isSignedIn() ? context.token?.user?.username : messages.signIn}
         </Button>
       </DropdownTrigger>
       {context.isSignedIn() ? (
