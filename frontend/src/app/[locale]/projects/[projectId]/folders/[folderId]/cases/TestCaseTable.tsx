@@ -181,7 +181,6 @@ export default function TestCaseTable({
             <Button
               startContent={<FileDown size={16} />}
               size="sm"
-              isDisabled={isDisabled}
               onPress={() => onExportCases(Array.from(exportType)[0])}
             >
               {messages.export} {exportType}
