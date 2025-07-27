@@ -226,7 +226,6 @@ export default function RunEditor({
             <Button
               startContent={<FileDown size={16} />}
               size="sm"
-              isDisabled={!tokenContext.isProjectReporter(Number(projectId))}
               onPress={() => exportRun(tokenContext.token.access_token, Number(testRun.id), Array.from(exportType)[0])}
             >
               {messages.export} {exportType}
