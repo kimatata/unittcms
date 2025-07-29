@@ -12,6 +12,7 @@ const categoricalPalette = ['#fba91e', '#6ea56c', '#3ac6e1', '#feda2f', '#f15f47
 const locales: LocaleType[] = [
   { code: 'en', name: 'English' },
   { code: 'ja', name: '日本語' },
+  { code: 'pt-BR', name: 'Português' },
 ];
 
 // The status of each test run
