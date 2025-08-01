@@ -78,3 +78,13 @@ Defined test cases can be reused multiple times in test runs, enabling efficient
 Support team development by adding or removing members from projects. You can assign roles and set permissions for each member in detail. We provide three main roles: 'Manager' who manages the entire project, 'Developer' who designs the tests, and 'Reporter' who executes the tests.
 
 ![Member Management](./frontend/public/top/light/member.png)
+
+## Supported Languages
+
+UnitTCMS currently supports the following languages:
+
+- English (en)
+- Japanese (ja)
+- Portuguese (pt-BR)
+
+If you would like to add support for another language, feel free to submit a pull request. For reference, you can see how Portuguese was added in [PR #260](https://github.com/kimatata/unittcms/pull/260).
