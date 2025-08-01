@@ -118,8 +118,7 @@ export default function FoldersPane({ projectId, messages, locale }: Props) {
 
   const onSubmit = async (name: string, detail: string) => {
     if (editingFolder) {
-      await updateFolder(context.token.access_token,
-        editingFolder.id, name, detail, projectId, parentFolderId);
+      await updateFolder(context.token.access_token, editingFolder.id, name, detail, projectId, parentFolderId);
     } else {
       await createFolder(context.token.access_token, name, detail, projectId, parentFolderId);
     }
