@@ -30,6 +30,6 @@ UnitTCMS is powered by following technologies. For more detailed info, please ch
 | Technology                            | Use                    |
 | ------------------------------------- | ---------------------- |
 | [Prettier](https://prettier.io/)      | Format                 |
-| [ESLint](https://eslint.org/)         | ESLint                 |
+| [ESLint](https://eslint.org/)         | Lint                   |
 | [Vitest](https://vitest.dev/)         | Unit Testing Framework |
 | [Playwright](https://playwright.dev/) | E2E Testing Framework  |
