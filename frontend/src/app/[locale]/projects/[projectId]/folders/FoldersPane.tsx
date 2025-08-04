@@ -132,7 +132,7 @@ export default function FoldersPane({ projectId, messages, locale }: Props) {
           <Tree
             data={treeData}
             className="w-full"
-            indent={32}
+            indent={16}
             rowHeight={42}
             overscanCount={5}
             paddingTop={20}

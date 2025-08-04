@@ -389,7 +389,7 @@ export default function RunEditor({
             <Tree
               data={treeData}
               className="w-full"
-              indent={32}
+              indent={16}
               rowHeight={42}
               overscanCount={5}
               paddingTop={20}
@@ -412,7 +412,7 @@ export default function RunEditor({
                     node.data.children && node.data.children.length > 0 ? (
                       <Button
                         size="sm"
-                        className="bg-transparent rounded-full"
+                        className="bg-transparent rounded-full h-6 w-6 min-w-4"
                         isIconOnly
                         onPress={() => node.toggle()}
                       >

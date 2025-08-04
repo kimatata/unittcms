@@ -38,7 +38,12 @@ export default function FolderItem({
 
   const toggleButton =
     node.data.children && node.data.children.length > 0 ? (
-      <Button size="sm" className="bg-transparent rounded-full" isIconOnly onPress={() => node.toggle()}>
+      <Button
+        size="sm"
+        className="bg-transparent rounded-full h-6 w-6 min-w-4"
+        isIconOnly
+        onPress={() => node.toggle()}
+      >
         {node.isOpen ? <ChevronDown size={20} color="#F7C24E" /> : <ChevronRight size={20} color="#F7C24E" />}
       </Button>
     ) : null;
@@ -70,7 +75,7 @@ export default function FolderItem({
       isSelected={isSelected}
       onClick={() => router.push(`/projects/${projectId}/folders/${node.data.folderData.id}/cases`, { locale })}
       toggleButton={toggleButton}
-      icon={<Folder size={20} color="#F7C24E" fill="#F7C24E" />}
+      icon={<Folder size={20} color="#F7C24E" fill="#F7C24E" className="flex-shrink-0" />}
       label={node.data.name}
       actions={actions}
     />
