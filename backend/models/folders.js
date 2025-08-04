@@ -11,11 +11,11 @@ function defineFolder(sequelize, DataTypes) {
     parentFolderId: {
       type: DataTypes.INTEGER,
       allowNull: true,
-        references: {
+      references: {
         model: 'folder',
         key: 'id',
-        },
-        onDelete: 'CASCADE',
+      },
+      onDelete: 'CASCADE',
     },
     projectId: {
       type: DataTypes.INTEGER,

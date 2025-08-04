@@ -36,11 +36,12 @@ export default function FolderItem({
   const context = useContext(TokenContext);
   const isSelected = selectedFolder && node.data.folderData.id === selectedFolder.id;
 
-  const toggleButton = node.data.children && node.data.children.length > 0 ? (
-    <Button size="sm" className="bg-transparent rounded-full" isIconOnly onPress={() => node.toggle()}>
-      {node.isOpen ? <ChevronDown size={20} color="#F7C24E" /> : <ChevronRight size={20} color="#F7C24E" />}
-    </Button>
-  ) : null;
+  const toggleButton =
+    node.data.children && node.data.children.length > 0 ? (
+      <Button size="sm" className="bg-transparent rounded-full" isIconOnly onPress={() => node.toggle()}>
+        {node.isOpen ? <ChevronDown size={20} color="#F7C24E" /> : <ChevronRight size={20} color="#F7C24E" />}
+      </Button>
+    ) : null;
 
   const actions = (
     <>

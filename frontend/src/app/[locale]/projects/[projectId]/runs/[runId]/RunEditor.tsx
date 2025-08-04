@@ -132,8 +132,8 @@ export default function RunEditor({
       try {
         await fetchRunAndStatusCount();
         const foldersData = await fetchFolders(tokenContext.token.access_token, Number(projectId));
-             const tree = buildFolderTree(foldersData);
-               setTreeData(tree);
+        const tree = buildFolderTree(foldersData);
+        setTreeData(tree);
         setSelectedFolder(foldersData[0]);
         initTestCases();
       } catch (error: unknown) {
@@ -386,49 +386,49 @@ export default function RunEditor({
 
         <div className="mt-3 flex rounded-small border-2 dark:border-neutral-700 mb-12">
           <div className="w-3/12 border-r-1 dark:border-neutral-700">
-          <Tree
-            data={treeData}
-            className="w-full"
-            indent={32}
-            rowHeight={42}
-            overscanCount={5}
-            paddingTop={20}
-            paddingBottom={20}
-            padding={20}
-            width="100%"
-            openByDefault={false}
-            disableDrop={true}
-            disableDrag={true}
-          >
-            {({ node, style }: { node: NodeApi<TreeNodeData>; style: React.CSSProperties }) => (
-              <TreeItem
-                style={style}
-                isSelected={selectedFolder ? node.data.id === selectedFolder.id : false}
-                onClick={() => {
-                  setSelectedKeys(new Set([])); 
-                  setSelectedFolder(node.data);
-                }}
-                toggleButton={
-                  node.data.children && node.data.children.length > 0 ? (
-                    <Button
-                      size="sm"
-                      className="bg-transparent rounded-full"
-                      isIconOnly
-                      onPress={() => node.toggle()}
-                    >
-                      {node.isOpen ? (
-                        <ChevronDown size={20} color="#F7C24E" />
-                      ) : (
-                        <ChevronRight size={20} color="#F7C24E" />
-                      )}
-                    </Button>
-                  ) : null
-                }
-                icon={<Folder size={20} color="#F7C24E" fill="#F7C24E" />}
-                label={node.data.name}
-              />
-            )}
-          </Tree>
+            <Tree
+              data={treeData}
+              className="w-full"
+              indent={32}
+              rowHeight={42}
+              overscanCount={5}
+              paddingTop={20}
+              paddingBottom={20}
+              padding={20}
+              width="100%"
+              openByDefault={false}
+              disableDrop={true}
+              disableDrag={true}
+            >
+              {({ node, style }: { node: NodeApi<TreeNodeData>; style: React.CSSProperties }) => (
+                <TreeItem
+                  style={style}
+                  isSelected={selectedFolder ? node.data.id === selectedFolder.id : false}
+                  onClick={() => {
+                    setSelectedKeys(new Set([]));
+                    setSelectedFolder(node.data);
+                  }}
+                  toggleButton={
+                    node.data.children && node.data.children.length > 0 ? (
+                      <Button
+                        size="sm"
+                        className="bg-transparent rounded-full"
+                        isIconOnly
+                        onPress={() => node.toggle()}
+                      >
+                        {node.isOpen ? (
+                          <ChevronDown size={20} color="#F7C24E" />
+                        ) : (
+                          <ChevronRight size={20} color="#F7C24E" />
+                        )}
+                      </Button>
+                    ) : null
+                  }
+                  icon={<Folder size={20} color="#F7C24E" fill="#F7C24E" />}
+                  label={node.data.name}
+                />
+              )}
+            </Tree>
           </div>
           <div className="w-9/12">
             <TestCaseSelector
