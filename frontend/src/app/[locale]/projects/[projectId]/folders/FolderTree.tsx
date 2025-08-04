@@ -1,21 +1,13 @@
-import { Button, cn } from '@heroui/react';
+import { Button } from '@heroui/react';
 import { ChevronDown, ChevronRight, Folder, Plus } from 'lucide-react';
 import { NodeApi } from 'react-arborist';
 import { useContext } from 'react';
 import FolderEditMenu from './FolderEditMenu';
-import { FolderType, FoldersMessages } from '@/types/folder';
+
+import { FolderType, FoldersMessages, TreeNodeData } from '@/types/folder';
 import { useRouter } from '@/src/i18n/routing';
 import { TokenContext } from '@/utils/TokenProvider';
-
-interface TreeNodeData {
-  id: string;
-  name: string;
-  detail?: string;
-  parentFolderId: number | null;
-  projectId: number;
-  folderData: FolderType;
-  children?: TreeNodeData[];
-}
+import TreeItem from '@/components/TreeItem';
 
 interface FolderItemProps {
   node: NodeApi<TreeNodeData>;
@@ -44,53 +36,42 @@ export default function FolderItem({
   const context = useContext(TokenContext);
   const isSelected = selectedFolder && node.data.folderData.id === selectedFolder.id;
 
-  const baseClass = '';
-  const selectedClass = `${baseClass} bg-neutral-200 dark:bg-neutral-700 dark:hover:bg-neutral-600 hover:bg-neutral-300`;
+  const toggleButton = node.data.children && node.data.children.length > 0 ? (
+    <Button size="sm" className="bg-transparent rounded-full" isIconOnly onPress={() => node.toggle()}>
+      {node.isOpen ? <ChevronDown size={20} color="#F7C24E" /> : <ChevronRight size={20} color="#F7C24E" />}
+    </Button>
+  ) : null;
+
+  const actions = (
+    <>
+      <Button
+        size="sm"
+        isIconOnly
+        className="bg-transparent rounded-full"
+        isDisabled={!context.isProjectDeveloper(Number(projectId))}
+        onPress={() => openDialogForCreate(node.data.folderData.id)}
+      >
+        <Plus size={16} />
+      </Button>
+      <FolderEditMenu
+        folder={node.data.folderData}
+        isDisabled={!context.isProjectDeveloper(Number(projectId))}
+        onEditClick={onEditClick}
+        onDeleteClick={onDeleteClick}
+        messages={messages}
+      />
+    </>
+  );
 
   return (
-    <div className="mx-2">
-      <div
-        style={style}
-        className={cn(
-          'w-full py-2 pr-2 flex items-center justify-center rounded-md cursor-pointer transition-colors hover:bg-neutral-100 dark:hover:bg-neutral-600',
-          isSelected ? selectedClass : baseClass
-        )}
-        onClick={() => {
-          router.push(`/projects/${projectId}/folders/${node.data.folderData.id}/cases`, { locale });
-        }}
-      >
-        {node.data.children && node.data.children.length > 0 ? (
-          <Button size="sm" className="bg-transparent rounded-full" isIconOnly onPress={() => node.toggle()}>
-            {node.isOpen ? <ChevronDown size={20} color="#F7C24E" /> : <ChevronRight size={20} color="#F7C24E" />}
-          </Button>
-        ) : (
-          <div className="ml-2" />
-        )}
-
-        <Folder size={20} color="#F7C24E" fill="#F7C24E" />
-
-        <span className="truncate ml-1.5">{node.data.name}</span>
-        <div className="ml-auto flex items-center">
-          <Button
-            size="sm"
-            isIconOnly
-            className="bg-transparent rounded-full"
-            isDisabled={!context.isProjectDeveloper(Number(projectId))}
-            onPress={() => {
-              openDialogForCreate(node.data.folderData.id);
-            }}
-          >
-            <Plus size={16} />
-          </Button>
-          <FolderEditMenu
-            folder={node.data.folderData}
-            isDisabled={!context.isProjectDeveloper(Number(projectId))}
-            onEditClick={onEditClick}
-            onDeleteClick={onDeleteClick}
-            messages={messages}
-          />
-        </div>
-      </div>
-    </div>
+    <TreeItem
+      style={style}
+      isSelected={isSelected}
+      onClick={() => router.push(`/projects/${projectId}/folders/${node.data.folderData.id}/cases`, { locale })}
+      toggleButton={toggleButton}
+      icon={<Folder size={20} color="#F7C24E" fill="#F7C24E" />}
+      label={node.data.name}
+      actions={actions}
+    />
   );
 }

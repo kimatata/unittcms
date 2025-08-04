@@ -10,59 +10,15 @@ import { usePathname, useRouter } from '@/src/i18n/routing';
 import { TokenContext } from '@/utils/TokenProvider';
 import useGetCurrentIds from '@/utils/useGetCurrentIds';
 import DeleteConfirmDialog from '@/components/DeleteConfirmDialog';
-import { FolderType, FoldersMessages } from '@/types/folder';
+import { FolderType, FoldersMessages, TreeNodeData } from '@/types/folder';
 import { logError } from '@/utils/errorHandler';
+import { buildFolderTree } from '@/utils/buildFolderTree';
 
 type Props = {
   projectId: string;
   messages: FoldersMessages;
   locale: string;
 };
-
-interface TreeNodeData {
-  id: string;
-  name: string;
-  detail?: string;
-  parentFolderId: number | null;
-  projectId: number;
-  folderData: FolderType;
-  children?: TreeNodeData[];
-}
-
-function buildTree(folders: FolderType[]): TreeNodeData[] {
-  const folderMap = new Map<number, TreeNodeData>();
-
-  folders.forEach((folder) => {
-    folderMap.set(folder.id, {
-      id: folder.id.toString(),
-      name: folder.name,
-      detail: folder.detail,
-      parentFolderId: folder.parentFolderId,
-      projectId: folder.projectId,
-      folderData: folder,
-      children: [],
-    });
-  });
-
-  const tree: TreeNodeData[] = [];
-
-  folders.forEach((folder) => {
-    const currentNode = folderMap.get(folder.id);
-
-    if (!currentNode) return;
-
-    if (folder.parentFolderId === null) {
-      tree.push(currentNode);
-    } else {
-      const parent = folderMap.get(folder.parentFolderId);
-      if (parent && parent.children) {
-        parent.children.push(currentNode);
-      }
-    }
-  });
-
-  return tree;
-}
 
 export default function FoldersPane({ projectId, messages, locale }: Props) {
   const router = useRouter();
@@ -82,7 +38,7 @@ export default function FoldersPane({ projectId, messages, locale }: Props) {
       }
       try {
         const fetchedFolders: FolderType[] = await fetchFolders(context.token.access_token, Number(projectId));
-        const tree = buildTree(fetchedFolders);
+        const tree = buildFolderTree(fetchedFolders);
         setTreeData(tree);
 
         if (tree.length === 0) {
@@ -123,7 +79,7 @@ export default function FoldersPane({ projectId, messages, locale }: Props) {
       await createFolder(context.token.access_token, name, detail, projectId, parentFolderId);
     }
     const fetchedFolders: FolderType[] = await fetchFolders(context.token.access_token, Number(projectId));
-    const tree = buildTree(fetchedFolders);
+    const tree = buildFolderTree(fetchedFolders);
     setTreeData(tree);
     closeDialog();
   };
@@ -151,7 +107,7 @@ export default function FoldersPane({ projectId, messages, locale }: Props) {
     if (deleteFolderId) {
       await deleteFolder(context.token.access_token, deleteFolderId);
       const fetchedFolders: FolderType[] = await fetchFolders(context.token.access_token, Number(projectId));
-      const tree = buildTree(fetchedFolders);
+      const tree = buildFolderTree(fetchedFolders);
       setTreeData(tree);
       router.push(`/projects/${projectId}/folders`, { locale });
       closeDeleteConfirmDialog();
@@ -177,7 +133,7 @@ export default function FoldersPane({ projectId, messages, locale }: Props) {
             data={treeData}
             className="w-full"
             indent={32}
-            rowHeight={52}
+            rowHeight={42}
             overscanCount={5}
             paddingTop={20}
             paddingBottom={20}

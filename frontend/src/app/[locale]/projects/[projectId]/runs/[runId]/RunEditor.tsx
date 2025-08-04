@@ -7,8 +7,6 @@ import {
   Select,
   SelectItem,
   Tooltip,
-  Listbox,
-  ListboxItem,
   Divider,
   Selection,
   DropdownTrigger,
@@ -22,7 +20,6 @@ import {
 import {
   Save,
   ArrowLeft,
-  Folder,
   ChevronDown,
   CopyPlus,
   CopyMinus,
@@ -31,8 +28,11 @@ import {
   FileSpreadsheet,
   FileCode,
   FileJson,
+  ChevronRight,
+  Folder,
 } from 'lucide-react';
 import { useTheme } from 'next-themes';
+import { NodeApi, Tree } from 'react-arborist';
 import {
   fetchRun,
   updateRun,
@@ -49,13 +49,15 @@ import { useRouter } from '@/src/i18n/routing';
 import { testRunStatus } from '@/config/selection';
 import { RunType, RunStatusCountType, RunMessages } from '@/types/run';
 import { CaseType } from '@/types/case';
-import { FolderType } from '@/types/folder';
+import { TreeNodeData } from '@/types/folder';
 import { TokenContext } from '@/utils/TokenProvider';
 import { useFormGuard } from '@/utils/formGuard';
 import { PriorityMessages } from '@/types/priority';
 import { RunStatusMessages, TestRunCaseStatusMessages } from '@/types/status';
 import { TestTypeMessages } from '@/types/testType';
 import { logError } from '@/utils/errorHandler';
+import TreeItem from '@/components/TreeItem';
+import { buildFolderTree } from '@/utils/buildFolderTree';
 
 const defaultTestRun = {
   id: 0,
@@ -92,10 +94,10 @@ export default function RunEditor({
   const tokenContext = useContext(TokenContext);
   const { theme } = useTheme();
   const [testRun, setTestRun] = useState<RunType>(defaultTestRun);
-  const [folders, setFolders] = useState<FolderType[]>([]);
+  const [treeData, setTreeData] = useState<TreeNodeData[]>([]);
   const [runStatusCounts, setRunStatusCounts] = useState<RunStatusCountType[]>([]);
   const [selectedKeys, setSelectedKeys] = useState<Selection>(new Set([]));
-  const [selectedFolder, setSelectedFolder] = useState<FolderType | null>(null);
+  const [selectedFolder, setSelectedFolder] = useState<TreeNodeData | null>(null);
   const [testCases, setTestCases] = useState<CaseType[]>([]);
   const [filteredTestCases, setFilteredTestCases] = useState<CaseType[]>([]);
   const [isNameInvalid] = useState<boolean>(false);
@@ -130,7 +132,8 @@ export default function RunEditor({
       try {
         await fetchRunAndStatusCount();
         const foldersData = await fetchFolders(tokenContext.token.access_token, Number(projectId));
-        setFolders(foldersData);
+             const tree = buildFolderTree(foldersData);
+               setTreeData(tree);
         setSelectedFolder(foldersData[0]);
         initTestCases();
       } catch (error: unknown) {
@@ -146,7 +149,7 @@ export default function RunEditor({
     function onFilter() {
       if (selectedFolder && selectedFolder.id) {
         try {
-          const filteredData = testCases.filter((testCase) => testCase.folderId === selectedFolder.id);
+          const filteredData = testCases.filter((testCase) => testCase.folderId.toString() === selectedFolder.id);
           setFilteredTestCases(filteredData);
         } catch (error: unknown) {
           logError('Error filtering test cases', error);
@@ -197,9 +200,6 @@ export default function RunEditor({
     setIsUpdating(false);
     setIsDirty(false);
   };
-
-  const baseClass = '';
-  const selectedClass = `${baseClass} bg-neutral-200 dark:bg-neutral-700`;
 
   const handleExportTypeChange = (keys: Selection) => {
     setExportType(new Set(Array.from(keys as Set<string>)));
@@ -386,21 +386,49 @@ export default function RunEditor({
 
         <div className="mt-3 flex rounded-small border-2 dark:border-neutral-700 mb-12">
           <div className="w-3/12 border-r-1 dark:border-neutral-700">
-            <Listbox aria-label="Listbox Variants" variant="light">
-              {folders.map((folder, index) => (
-                <ListboxItem
-                  key={index}
-                  onPress={() => {
-                    setSelectedKeys(new Set([])); // reset selection
-                    setSelectedFolder(folder);
-                  }}
-                  startContent={<Folder size={20} color="#F7C24E" fill="#F7C24E" />}
-                  className={selectedFolder && folder.id === selectedFolder.id ? selectedClass : baseClass}
-                >
-                  {folder.name}
-                </ListboxItem>
-              ))}
-            </Listbox>
+          <Tree
+            data={treeData}
+            className="w-full"
+            indent={32}
+            rowHeight={42}
+            overscanCount={5}
+            paddingTop={20}
+            paddingBottom={20}
+            padding={20}
+            width="100%"
+            openByDefault={false}
+            disableDrop={true}
+            disableDrag={true}
+          >
+            {({ node, style }: { node: NodeApi<TreeNodeData>; style: React.CSSProperties }) => (
+              <TreeItem
+                style={style}
+                isSelected={selectedFolder ? node.data.id === selectedFolder.id : false}
+                onClick={() => {
+                  setSelectedKeys(new Set([])); 
+                  setSelectedFolder(node.data);
+                }}
+                toggleButton={
+                  node.data.children && node.data.children.length > 0 ? (
+                    <Button
+                      size="sm"
+                      className="bg-transparent rounded-full"
+                      isIconOnly
+                      onPress={() => node.toggle()}
+                    >
+                      {node.isOpen ? (
+                        <ChevronDown size={20} color="#F7C24E" />
+                      ) : (
+                        <ChevronRight size={20} color="#F7C24E" />
+                      )}
+                    </Button>
+                  ) : null
+                }
+                icon={<Folder size={20} color="#F7C24E" fill="#F7C24E" />}
+                label={node.data.name}
+              />
+            )}
+          </Tree>
           </div>
           <div className="w-9/12">
             <TestCaseSelector
