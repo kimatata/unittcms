@@ -11,6 +11,11 @@ function defineFolder(sequelize, DataTypes) {
     parentFolderId: {
       type: DataTypes.INTEGER,
       allowNull: true,
+      references: {
+        model: 'folder',
+        key: 'id',
+      },
+      onDelete: 'CASCADE',
     },
     projectId: {
       type: DataTypes.INTEGER,
@@ -25,6 +30,7 @@ function defineFolder(sequelize, DataTypes) {
 
   Folder.associate = (models) => {
     Folder.belongsTo(models.Project, { foreignKey: 'projectId', onDelete: 'CASCADE' });
+    Folder.belongsTo(models.folder, { foreignKey: 'parentFolderId', onDelete: 'CASCADE' });
     Folder.hasMany(models.Case, { foreignKey: 'folderId' });
   };
 

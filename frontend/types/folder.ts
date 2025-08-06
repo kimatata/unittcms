@@ -25,3 +25,13 @@ export type FoldersMessages = {
   delete: string;
   areYouSure: string;
 };
+
+export type TreeNodeData = {
+  id: string;
+  name: string;
+  detail: string;
+  parentFolderId: number | null;
+  projectId: number;
+  folderData: FolderType;
+  children?: TreeNodeData[];
+};
