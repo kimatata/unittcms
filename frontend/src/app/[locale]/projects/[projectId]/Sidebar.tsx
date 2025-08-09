@@ -17,8 +17,11 @@ export default function Sidebar({ messages, locale }: Props) {
   const pathname = usePathname();
 
   const [currentKey, setCurrentTab] = useState('home');
-  const baseClass = 'p-3';
-  const selectedClass = `${baseClass} bg-neutral-200 dark:bg-neutral-700`;
+
+  const ICON_STROKE_WIDTH = 2;
+  const ICON_SIZE = 16;
+  const baseClass = 'h-18 flex flex-col p-3 text-gray-500 border-l-2 rounded-none border-transparent';
+  const selectedClass = `${baseClass} bg-neutral-200 dark:bg-neutral-700 !text-primary border-primary`;
 
   const handleTabClick = (key: string) => {
     if (key === 'home') {
@@ -56,33 +59,33 @@ export default function Sidebar({ messages, locale }: Props) {
     {
       key: 'home',
       text: messages.home,
-      startContent: <Home strokeWidth={1} size={20} />,
+      startContent: <Home strokeWidth={ICON_STROKE_WIDTH} size={ICON_SIZE} />,
     },
     {
       key: 'cases',
       text: messages.testCases,
-      startContent: <Files strokeWidth={1} size={20} />,
+      startContent: <Files strokeWidth={ICON_STROKE_WIDTH} size={ICON_SIZE} />,
     },
     {
       key: 'runs',
       text: messages.testRuns,
-      startContent: <FlaskConical strokeWidth={1} size={20} />,
+      startContent: <FlaskConical strokeWidth={ICON_STROKE_WIDTH} size={ICON_SIZE} />,
     },
     {
       key: 'members',
       text: messages.members,
-      startContent: <Users strokeWidth={1} size={20} />,
+      startContent: <Users strokeWidth={ICON_STROKE_WIDTH} size={ICON_SIZE} />,
     },
     {
       key: 'settings',
       text: messages.settings,
-      startContent: <Settings strokeWidth={1} size={20} />,
+      startContent: <Settings strokeWidth={ICON_STROKE_WIDTH} size={ICON_SIZE} />,
     },
   ];
 
   return (
-    <div className="w-48 border-r-1 dark:border-neutral-700">
-      <Listbox aria-label="Listbox Variants" variant="light">
+    <div className="w-18 border-r-1 dark:border-neutral-700">
+      <Listbox aria-label="Listbox Variants" variant="light" className="p-0">
         {tabItems.map((itr) => (
           <ListboxItem
             key={itr.key}
