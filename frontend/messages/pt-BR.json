@@ -154,6 +154,7 @@
   },
   "Project": {
     "project": "Projeto",
+    "toggle_sidebar": "Alternar barra lateral",
     "home": "Início",
     "test_cases": "Casos de Teste",
     "test_runs": "Execuções de Teste",

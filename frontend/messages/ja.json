@@ -155,6 +155,7 @@
   },
   "Project": {
     "project": "プロジェクト",
+    "toggle_sidebar": "サイドバーの切り替え",
     "home": "ホーム",
     "test_cases": "テストケース",
     "test_runs": "テストラン",
