@@ -11,6 +11,7 @@ export default function SidebarLayout({
 }) {
   const t = useTranslations('Project');
   const messages: ProjectMessages = {
+    toggleSidebar: t('toggle_sidebar'),
     home: t('home'),
     testCases: t('test_cases'),
     testRuns: t('test_runs'),

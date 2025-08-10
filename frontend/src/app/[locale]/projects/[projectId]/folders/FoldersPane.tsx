@@ -1,16 +1,18 @@
 'use client';
 import { useState, useEffect, useContext } from 'react';
-import { Button, Listbox, ListboxItem } from '@heroui/react';
-import { Folder, Plus } from 'lucide-react';
+import { Button } from '@heroui/react';
+import { Plus } from 'lucide-react';
+import { Tree } from 'react-arborist';
 import FolderDialog from './FolderDialog';
-import FolderEditMenu from './FolderEditMenu';
+import FolderItem from './FolderItem';
 import { fetchFolders, createFolder, updateFolder, deleteFolder } from './foldersControl';
 import { usePathname, useRouter } from '@/src/i18n/routing';
 import { TokenContext } from '@/utils/TokenProvider';
 import useGetCurrentIds from '@/utils/useGetCurrentIds';
 import DeleteConfirmDialog from '@/components/DeleteConfirmDialog';
-import { FolderType, FoldersMessages } from '@/types/folder';
+import { FolderType, FoldersMessages, TreeNodeData } from '@/types/folder';
 import { logError } from '@/utils/errorHandler';
+import { buildFolderTree } from '@/utils/buildFolderTree';
 
 type Props = {
   projectId: string;
@@ -22,11 +24,12 @@ export default function FoldersPane({ projectId, messages, locale }: Props) {
   const router = useRouter();
   const pathname = usePathname();
   const context = useContext(TokenContext);
-  const [folders, setFolders] = useState<FolderType[]>([]);
+  const [treeData, setTreeData] = useState<TreeNodeData[]>([]);
   const [selectedFolder, setSelectedFolder] = useState<FolderType | null>(null);
   const { folderId } = useGetCurrentIds();
   const [isFolderDialogOpen, setIsFolderDialogOpen] = useState(false);
   const [editingFolder, setEditingFolder] = useState<FolderType | null>(null);
+  const [parentFolderId, setParentFolderId] = useState<number | null>(null);
 
   useEffect(() => {
     async function fetchDataEffect() {
@@ -34,21 +37,20 @@ export default function FoldersPane({ projectId, messages, locale }: Props) {
         return;
       }
       try {
-        const folders: FolderType[] = await fetchFolders(context.token.access_token, Number(projectId));
-        setFolders(folders);
+        const fetchedFolders: FolderType[] = await fetchFolders(context.token.access_token, Number(projectId));
+        const tree = buildFolderTree(fetchedFolders);
+        setTreeData(tree);
 
-        // no folder on project
-        if (folders.length === 0) {
+        if (tree.length === 0) {
           return;
         }
 
-        const selectedFolderFromUrl = folders.find((folder) => folder.id === folderId);
+        const selectedFolderFromUrl = fetchedFolders.find((folder) => folder.id === folderId);
         setSelectedFolder(selectedFolderFromUrl ? selectedFolderFromUrl : null);
 
-        // Redirect to the smallest folder ID page if the path is "projects/[projectId]/folders
         if (pathname === `/projects/${projectId}/folders`) {
-          const smallestFolderId = Math.min(...folders.map((folder) => folder.id));
-          router.push(`/projects/${projectId}/folders/${smallestFolderId}/cases`, { locale: locale });
+          const smallestFolderId = Math.min(...fetchedFolders.map((folder) => folder.id));
+          router.push(`/projects/${projectId}/folders/${smallestFolderId}/cases`, { locale });
         }
       } catch (error: unknown) {
         logError('Error fetching folders:', error);
@@ -58,7 +60,8 @@ export default function FoldersPane({ projectId, messages, locale }: Props) {
     fetchDataEffect();
   }, [context, folderId, locale, pathname, projectId, router]);
 
-  const openDialogForCreate = () => {
+  const openDialogForCreate = (folderId: number | null = null) => {
+    setParentFolderId(folderId);
     setIsFolderDialogOpen(true);
     setEditingFolder(null);
   };
@@ -66,35 +69,30 @@ export default function FoldersPane({ projectId, messages, locale }: Props) {
   const closeDialog = () => {
     setIsFolderDialogOpen(false);
     setEditingFolder(null);
+    setParentFolderId(null);
   };
 
   const onSubmit = async (name: string, detail: string) => {
     if (editingFolder) {
-      const updatedProject = await updateFolder(
-        context.token.access_token,
-        editingFolder.id,
-        name,
-        detail,
-        projectId,
-        null
-      );
-      const updatedProjects = folders.map((project) => (project.id === updatedProject.id ? updatedProject : project));
-      setFolders(updatedProjects);
+      await updateFolder(context.token.access_token, editingFolder.id, name, detail, projectId, parentFolderId);
     } else {
-      const newProject = await createFolder(context.token.access_token, name, detail, projectId, null);
-      setFolders([...folders, newProject]);
+      await createFolder(context.token.access_token, name, detail, projectId, parentFolderId);
     }
+    const fetchedFolders: FolderType[] = await fetchFolders(context.token.access_token, Number(projectId));
+    const tree = buildFolderTree(fetchedFolders);
+    setTreeData(tree);
     closeDialog();
   };
 
   const onEditClick = (folder: FolderType) => {
     setEditingFolder(folder);
+    setParentFolderId(folder.parentFolderId);
     setIsFolderDialogOpen(true);
   };
 
-  // Delete confirm dialog
   const [isDeleteConfirmDialogOpen, setIsDeleteConfirmDialogOpen] = useState(false);
   const [deleteFolderId, setDeleteFolderId] = useState<number | null>(null);
+
   const closeDeleteConfirmDialog = () => {
     setIsDeleteConfirmDialogOpen(false);
     setDeleteFolderId(null);
@@ -108,48 +106,57 @@ export default function FoldersPane({ projectId, messages, locale }: Props) {
   const onConfirm = async () => {
     if (deleteFolderId) {
       await deleteFolder(context.token.access_token, deleteFolderId);
-      router.push(`/projects/${projectId}/folders`, { locale: locale });
+      const fetchedFolders: FolderType[] = await fetchFolders(context.token.access_token, Number(projectId));
+      const tree = buildFolderTree(fetchedFolders);
+      setTreeData(tree);
+      router.push(`/projects/${projectId}/folders`, { locale });
       closeDeleteConfirmDialog();
     }
   };
 
-  const baseClass = '';
-  const selectedClass = `${baseClass} bg-neutral-200 dark:bg-neutral-700`;
-
   return (
     <>
-      <div className="w-64 min-h-[calc(100vh-64px)] border-r-1 dark:border-neutral-700">
+      <div className="w-80 min-h-[calc(100vh-64px)] border-r-1 dark:border-neutral-700">
         <Button
           startContent={<Plus size={16} />}
           size="sm"
           variant="bordered"
           className="m-2"
           isDisabled={!context.isProjectDeveloper(Number(projectId))}
-          onPress={openDialogForCreate}
+          onPress={() => openDialogForCreate()}
         >
           {messages.newFolder}
         </Button>
-        <Listbox aria-label="Listbox Variants" variant="light">
-          {folders.map((folder, index) => (
-            <ListboxItem
-              key={index}
-              onPress={() => router.push(`/projects/${projectId}/folders/${folder.id}/cases`, { locale: locale })}
-              startContent={<Folder size={20} color="#F7C24E" fill="#F7C24E" />}
-              className={selectedFolder && folder.id === selectedFolder.id ? selectedClass : baseClass}
-              endContent={
-                <FolderEditMenu
-                  folder={folder}
-                  isDisabled={!context.isProjectDeveloper(Number(projectId))}
-                  onEditClick={onEditClick}
-                  onDeleteClick={onDeleteClick}
-                  messages={messages}
-                />
-              }
-            >
-              {folder.name}
-            </ListboxItem>
-          ))}
-        </Listbox>
+
+        {treeData.length > 0 && (
+          <Tree
+            data={treeData}
+            className="w-full"
+            indent={16}
+            rowHeight={42}
+            overscanCount={5}
+            paddingTop={20}
+            paddingBottom={20}
+            padding={20}
+            width="100%"
+            openByDefault={false}
+            disableDrop={true}
+            disableDrag={true}
+          >
+            {(props) => (
+              <FolderItem
+                {...props}
+                projectId={projectId}
+                selectedFolder={selectedFolder}
+                locale={locale}
+                messages={messages}
+                openDialogForCreate={openDialogForCreate}
+                onEditClick={onEditClick}
+                onDeleteClick={onDeleteClick}
+              />
+            )}
+          </Tree>
+        )}
       </div>
 
       <FolderDialog

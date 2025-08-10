@@ -1,7 +1,15 @@
 'use client';
 import { useState, useEffect } from 'react';
-import { Listbox, ListboxItem } from '@heroui/react';
-import { Home, Files, FlaskConical, Users, Settings } from 'lucide-react';
+import { Button, Tooltip } from '@heroui/react';
+import {
+  PanelLeftClose,
+  PanelLeftOpen,
+  ChartColumnStacked,
+  ClipboardList,
+  FlaskConical,
+  UserRound,
+  Settings,
+} from 'lucide-react';
 import { usePathname, useRouter } from '@/src/i18n/routing';
 import useGetCurrentIds from '@/utils/useGetCurrentIds';
 import { ProjectMessages } from '@/types/project';
@@ -16,11 +24,15 @@ export default function Sidebar({ messages, locale }: Props) {
   const router = useRouter();
   const pathname = usePathname();
 
-  const [currentKey, setCurrentTab] = useState('home');
-  const baseClass = 'p-3';
-  const selectedClass = `${baseClass} bg-neutral-200 dark:bg-neutral-700`;
+  const [currentKey, setCurrentKey] = useState('home');
+  const [isSideBarOpen, setIsSideBarOpen] = useState(true);
 
-  const handleTabClick = (key: string) => {
+  const TOGGLE_ICON_STROKE_WIDTH = 1;
+  const TOGGLE_ICON_SIZE = 18;
+  const ICON_STROKE_WIDTH = 1;
+  const ICON_SIZE = 26;
+
+  const handleClick = (key: string) => {
     if (key === 'home') {
       router.push(`/projects/${projectId}/home`, { locale: locale });
     } else if (key === 'cases') {
@@ -37,15 +49,15 @@ export default function Sidebar({ messages, locale }: Props) {
   useEffect(() => {
     const handleRouteChange = (currentPath: string) => {
       if (currentPath.includes('home')) {
-        setCurrentTab('home');
+        setCurrentKey('home');
       } else if (currentPath.includes('folders')) {
-        setCurrentTab('cases');
+        setCurrentKey('cases');
       } else if (currentPath.includes('runs')) {
-        setCurrentTab('runs');
+        setCurrentKey('runs');
       } else if (currentPath.includes('members')) {
-        setCurrentTab('members');
+        setCurrentKey('members');
       } else if (currentPath.includes('settings')) {
-        setCurrentTab('settings');
+        setCurrentKey('settings');
       }
     };
 
@@ -56,44 +68,63 @@ export default function Sidebar({ messages, locale }: Props) {
     {
       key: 'home',
       text: messages.home,
-      startContent: <Home strokeWidth={1} size={20} />,
+      startContent: <ChartColumnStacked strokeWidth={ICON_STROKE_WIDTH} size={ICON_SIZE} />,
     },
     {
       key: 'cases',
       text: messages.testCases,
-      startContent: <Files strokeWidth={1} size={20} />,
+      startContent: <ClipboardList strokeWidth={ICON_STROKE_WIDTH} size={ICON_SIZE} />,
     },
     {
       key: 'runs',
       text: messages.testRuns,
-      startContent: <FlaskConical strokeWidth={1} size={20} />,
+      startContent: <FlaskConical strokeWidth={ICON_STROKE_WIDTH} size={ICON_SIZE} />,
     },
     {
       key: 'members',
       text: messages.members,
-      startContent: <Users strokeWidth={1} size={20} />,
+      startContent: <UserRound strokeWidth={ICON_STROKE_WIDTH} size={ICON_SIZE} />,
     },
     {
       key: 'settings',
       text: messages.settings,
-      startContent: <Settings strokeWidth={1} size={20} />,
+      startContent: <Settings strokeWidth={ICON_STROKE_WIDTH} size={ICON_SIZE} />,
     },
   ];
 
   return (
-    <div className="w-48 border-r-1 dark:border-neutral-700">
-      <Listbox aria-label="Listbox Variants" variant="light">
+    <div className="border-r-1 dark:border-neutral-700">
+      <div className="w-full flex justify-end">
+        <Tooltip content={messages.toggleSidebar} placement="right">
+          <Button size="lg" isIconOnly variant="light" onPress={() => setIsSideBarOpen(!isSideBarOpen)}>
+            {isSideBarOpen ? (
+              <PanelLeftClose strokeWidth={TOGGLE_ICON_STROKE_WIDTH} size={TOGGLE_ICON_SIZE} />
+            ) : (
+              <PanelLeftOpen strokeWidth={TOGGLE_ICON_STROKE_WIDTH} size={TOGGLE_ICON_SIZE} />
+            )}
+          </Button>
+        </Tooltip>
+      </div>
+
+      <div className="border-t-1 dark:border-neutral-700">
         {tabItems.map((itr) => (
-          <ListboxItem
-            key={itr.key}
-            startContent={itr.startContent}
-            onPress={() => handleTabClick(itr.key)}
-            className={currentKey === itr.key ? selectedClass : baseClass}
-          >
-            {itr.text}
-          </ListboxItem>
+          <div key={itr.key}>
+            <Tooltip hidden={isSideBarOpen} content={itr.text} placement="right">
+              <Button
+                size="lg"
+                isIconOnly={!isSideBarOpen}
+                startContent={itr.startContent}
+                isDisabled={itr.key === currentKey}
+                variant="light"
+                className={isSideBarOpen ? 'w-full justify-start' : ''}
+                onPress={() => handleClick(itr.key)}
+              >
+                {isSideBarOpen ? itr.text : ''}
+              </Button>
+            </Tooltip>
+          </div>
         ))}
-      </Listbox>
+      </div>
     </div>
   );
 }
