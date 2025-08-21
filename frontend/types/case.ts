@@ -77,6 +77,10 @@ type CasesMessages = {
   caseDescription: string;
   create: string;
   pleaseEnter: string;
+  clearAll: string;
+  apply: string;
+  selectPriorities: string;
+  selected: string;
 };
 
 type CaseMessages = {

@@ -32,6 +32,10 @@ export default function Page({ params }: { params: { projectId: string; folderId
     caseDescription: t('case_description'),
     create: t('create'),
     pleaseEnter: t('please_enter'),
+    apply: t('apply'),
+    clearAll: t('clear_all'),
+    selectPriorities: t('select_priorities'),
+    selected: t('selected'),
   };
 
   const priorityTranslation = useTranslations('Priority');
