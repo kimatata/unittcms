@@ -14,11 +14,15 @@ import {
   Selection,
   SortDescriptor,
   ButtonGroup,
+  cn,
+  Badge,
 } from '@heroui/react';
-import { Plus, MoreVertical, Trash, FileDown, ChevronDown, FileJson, FileSpreadsheet } from 'lucide-react';
+import { Plus, MoreVertical, Trash, FileDown, ChevronDown, Filter, FileJson, FileSpreadsheet } from 'lucide-react';
+import TestCaseFilter from './TestCaseFilter';
 import { Link } from '@/src/i18n/routing';
 import { CaseType, CasesMessages } from '@/types/case';
 import { PriorityMessages } from '@/types/priority';
+import { TestTypeMessages } from '@/types/testType';
 import TestCasePriority from '@/components/TestCasePriority';
 import { LocaleCodeType } from '@/types/locale';
 
@@ -30,8 +34,12 @@ type Props = {
   onDeleteCase: (caseId: number) => void;
   onDeleteCases: (caseIds: number[]) => void;
   onExportCases: (type: string) => void;
+  onFilterChange: (priorities: number[], types: number[]) => void;
+  activePriorityFilters: number[];
+  activeTypeFilters: number[];
   messages: CasesMessages;
   priorityMessages: PriorityMessages;
+  testTypeMessages: TestTypeMessages;
   locale: LocaleCodeType;
 };
 
@@ -43,8 +51,12 @@ export default function TestCaseTable({
   onDeleteCase,
   onDeleteCases,
   onExportCases,
+  onFilterChange,
+  activePriorityFilters,
+  activeTypeFilters,
   messages,
   priorityMessages,
+  testTypeMessages,
   locale,
 }: Props) {
   const headerColumns = [
@@ -60,6 +72,7 @@ export default function TestCaseTable({
     direction: 'ascending',
   });
   const [exportType, setExportType] = useState(new Set(['json']));
+  const [showFilter, setShowFilter] = useState(false);
 
   const sortedItems = useMemo(() => {
     if (cases.length === 0) {
@@ -76,6 +89,10 @@ export default function TestCaseTable({
 
   const handleDeleteCase = (deleteCaseId: number) => {
     onDeleteCase(deleteCaseId);
+  };
+
+  const handleFilterChange = () => {
+    setShowFilter(!showFilter);
   };
 
   const renderCell = useCallback((testCase: CaseType, columnKey: string): ReactNode => {
@@ -140,6 +157,8 @@ export default function TestCaseTable({
     setExportType(new Set(Array.from(keys as Set<string>)));
   };
 
+  const hasActiveFilters = activePriorityFilters.length > 0 || activeTypeFilters.length > 0;
+
   const classNames = useMemo(
     () => ({
       wrapper: ['max-w-3xl'],
@@ -161,69 +180,90 @@ export default function TestCaseTable({
 
   return (
     <>
-      <div className="border-b-1 dark:border-neutral-700 w-full p-3 flex items-center justify-between">
-        <h3 className="font-bold">{messages.testCaseList}</h3>
-
-        <div>
-          {((selectedKeys !== 'all' && selectedKeys.size > 0) || selectedKeys === 'all') && (
+      <div className="border-b-1 dark:border-neutral-700 w-full p-3">
+        <div className="flex items-center justify-between">
+          <h3 className="font-bold">{messages.testCaseList}</h3>
+          <div>
+            <Badge color="warning" content="" isInvisible={!hasActiveFilters} shape="circle" size="sm" placement="bottom-left">
+              <Button
+                size="sm"
+                isIconOnly
+                onPress={handleFilterChange}
+                className={cn('me-2', showFilter && 'bg-primary')}
+              >
+                <Filter size={16} className={cn('text-default-500', showFilter && 'text-white')} />
+              </Button>
+            </Badge>
+            {((selectedKeys !== 'all' && selectedKeys.size > 0) || selectedKeys === 'all') && (
+              <Button
+                startContent={<Trash size={16} />}
+                size="sm"
+                isDisabled={isDisabled}
+                color="danger"
+                className="me-2"
+                onPress={handleDeleteCases}
+              >
+                {messages.delete}
+              </Button>
+            )}
+            <ButtonGroup className="me-2">
+              <Button
+                startContent={<FileDown size={16} />}
+                size="sm"
+                onPress={() => onExportCases(Array.from(exportType)[0])}
+              >
+                {messages.export} {exportType}
+              </Button>
+              <Dropdown placement="bottom-end">
+                <DropdownTrigger>
+                  <Button isIconOnly size="sm">
+                    <ChevronDown size={16} />
+                  </Button>
+                </DropdownTrigger>
+                <DropdownMenu
+                  disallowEmptySelection
+                  aria-label="Export options"
+                  className="max-w-[300px]"
+                  selectedKeys={exportType}
+                  selectionMode="single"
+                  onSelectionChange={handleExportTypeChange}
+                >
+                  <DropdownItem key="json" startContent={<FileJson size={16} />}>
+                    json
+                  </DropdownItem>
+                  <DropdownItem key="csv" startContent={<FileSpreadsheet size={16} />}>
+                    csv
+                  </DropdownItem>
+                </DropdownMenu>
+              </Dropdown>
+            </ButtonGroup>
             <Button
-              startContent={<Trash size={16} />}
+              startContent={<Plus size={16} />}
               size="sm"
               isDisabled={isDisabled}
-              color="danger"
-              className="me-2"
-              onPress={handleDeleteCases}
+              color="primary"
+              onPress={onCreateCase}
             >
-              {messages.delete}
+              {messages.newTestCase}
             </Button>
-          )}
-          <ButtonGroup className="me-2">
-            <Button
-              startContent={<FileDown size={16} />}
-              size="sm"
-              onPress={() => onExportCases(Array.from(exportType)[0])}
-            >
-              {messages.export} {exportType}
-            </Button>
-            <Dropdown placement="bottom-end">
-              <DropdownTrigger>
-                <Button isIconOnly size="sm">
-                  <ChevronDown size={16} />
-                </Button>
-              </DropdownTrigger>
-              <DropdownMenu
-                disallowEmptySelection
-                aria-label="Export options"
-                className="max-w-[300px]"
-                selectedKeys={exportType}
-                selectionMode="single"
-                onSelectionChange={handleExportTypeChange}
-              >
-                <DropdownItem key="json" startContent={<FileJson size={16} />}>
-                  json
-                </DropdownItem>
-                <DropdownItem key="csv" startContent={<FileSpreadsheet size={16} />}>
-                  csv
-                </DropdownItem>
-              </DropdownMenu>
-            </Dropdown>
-          </ButtonGroup>
-          <Button
-            startContent={<Plus size={16} />}
-            size="sm"
-            isDisabled={isDisabled}
-            color="primary"
-            onPress={onCreateCase}
-          >
-            {messages.newTestCase}
-          </Button>
+          </div>
         </div>
+        {showFilter && (
+          <TestCaseFilter
+            messages={messages}
+            priorityMessages={priorityMessages}
+            testTypeMessages={testTypeMessages}
+            activePriorityFilters={activePriorityFilters}
+            activeTypeFilters={activeTypeFilters}
+            onFilterChange={onFilterChange}
+          />
+        )}
       </div>
 
       <Table
         isCompact
         removeWrapper
-        aria-label="Tese cases table"
+        aria-label="Test cases table"
         classNames={classNames}
         selectedKeys={selectedKeys}
         selectionMode="multiple"

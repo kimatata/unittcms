@@ -81,6 +81,8 @@ type CasesMessages = {
   apply: string;
   selectPriorities: string;
   selected: string;
+  type: string;
+  selectTypes: string;
 };
 
 type CaseMessages = {

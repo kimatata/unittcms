@@ -2,6 +2,7 @@ import { getTranslations } from 'next-intl/server';
 import { useTranslations } from 'next-intl';
 import CasesPane from './CasesPane';
 import { PriorityMessages } from '@/types/priority';
+import { TestTypeMessages } from '@/types/testType';
 import { LocaleCodeType } from '@/types/locale';
 
 export async function generateMetadata({ params: { locale } }: { params: { locale: LocaleCodeType } }) {
@@ -36,6 +37,8 @@ export default function Page({ params }: { params: { projectId: string; folderId
     clearAll: t('clear_all'),
     selectPriorities: t('select_priorities'),
     selected: t('selected'),
+    type: t('type'),
+    selectTypes: t('select_types'),
   };
 
   const priorityTranslation = useTranslations('Priority');
@@ -46,6 +49,23 @@ export default function Page({ params }: { params: { projectId: string; folderId
     low: priorityTranslation('low'),
   };
 
+  const testTypeTranslation = useTranslations('Type');
+  const testTypeMessages: TestTypeMessages = {
+    other: testTypeTranslation('other'),
+    security: testTypeTranslation('security'),
+    performance: testTypeTranslation('performance'),
+    accessibility: testTypeTranslation('accessibility'),
+    functional: testTypeTranslation('functional'),
+    acceptance: testTypeTranslation('acceptance'),
+    usability: testTypeTranslation('usability'),
+    smokeSanity: testTypeTranslation('smoke_sanity'),
+    compatibility: testTypeTranslation('compatibility'),
+    destructive: testTypeTranslation('destructive'),
+    regression: testTypeTranslation('regression'),
+    automated: testTypeTranslation('automated'),
+    manual: testTypeTranslation('manual'),
+  };
+
   return (
     <>
       <CasesPane
@@ -54,6 +74,7 @@ export default function Page({ params }: { params: { projectId: string; folderId
         locale={params.locale as LocaleCodeType}
         messages={messages}
         priorityMessages={priorityMessages}
+        testTypeMessages={testTypeMessages}
       />
     </>
   );
