@@ -207,7 +207,9 @@
     "clear_all": "Limpar tudo",
     "apply": "Aplicar",
     "select_priorities": "Selecionar prioridades",
-    "selected": "Selecionado"
+    "selected": "Selecionado",
+    "type": "Tipo",
+    "select_types": "Selecionar tipos"
   },
   "Case": {
     "back_to_cases": "Voltar para os casos de teste",

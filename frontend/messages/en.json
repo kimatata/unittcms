@@ -207,7 +207,9 @@
     "clear_all": "Clear all",
     "apply": "Apply",
     "select_priorities": "Select priorities",
-    "selected": "Selected"
+    "selected": "Selected",
+    "type": "Type",
+    "select_types": "Select types"
   },
   "Case": {
     "back_to_cases": "Back to test cases",
