@@ -196,15 +196,19 @@
     "delete_case": "テストケースを削除",
     "delete": "削除",
     "close": "閉じる",
-    "are_you_sure": "テストケースを削除してもよろしいですか?",
-    "new_test_case": "新規テストケース",
+    "are_you_sure": "テストケースを削除してもよろしいですか？",
+    "new_test_case": "新しいテストケース",
     "export": "エクスポート",
     "status": "ステータス",
     "no_cases_found": "テストケースがありません",
     "case_title": "テストケースタイトル",
-    "case_description": "テストケース詳細",
+    "case_description": "テストケース説明",
     "create": "作成",
-    "please_enter": "テストケースタイトルを入力してください"
+    "please_enter": "テストケースタイトルを入力してください",
+    "clear_all": "すべてクリア",
+    "apply": "適用",
+    "select_priorities": "優先度を選択",
+    "selected": "選択済み"
   },
   "Case": {
     "back_to_cases": "テストケース一覧に戻る",

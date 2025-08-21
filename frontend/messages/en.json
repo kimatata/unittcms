@@ -203,7 +203,11 @@
     "case_title": "Test Case Title",
     "case_description": "Test Case Description",
     "create": "Create",
-    "please_enter": "Please enter test case title"
+    "please_enter": "Please enter test case title",
+    "clear_all": "Clear all",
+    "apply": "Apply",
+    "select_priorities": "Select priorities",
+    "selected": "Selected"
   },
   "Case": {
     "back_to_cases": "Back to test cases",
