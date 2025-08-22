@@ -36,21 +36,6 @@
     "automated": "自動",
     "manual": "手動"
   },
-  "TestType": {
-    "other": "その他",
-    "security": "セキュリティ",
-    "performance": "パフォーマンス",
-    "accessibility": "アクセシビリティ",
-    "functional": "機能",
-    "acceptance": "受け入れ",
-    "usability": "ユーザビリティ",
-    "smoke": "スモーク/サニティ",
-    "compatibility": "互換性",
-    "destructive": "破壊",
-    "regression": "回帰",
-    "automated": "自動",
-    "manual": "手動"
-  },
   "ProjectDialog": {
     "project": "プロジェクト",
     "project_name": "プロジェクト名",
