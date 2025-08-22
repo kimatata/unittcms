@@ -20,6 +20,8 @@ type TestCaseFilterProps = {
     activePriorityFilters: number[];
     activeTypeFilters: number[];
     onFilterChange: (priorities: number[], types: number[]) => void;
+    handleFilterChange: () => void;
+
 };
 
 export default function TestCaseFilter({
@@ -29,6 +31,7 @@ export default function TestCaseFilter({
     activePriorityFilters,
     activeTypeFilters,
     onFilterChange,
+    handleFilterChange,
 }: TestCaseFilterProps) {
     const [selectedPriorities, setSelectedPriorities] = useState<Selection>(new Set([]));
     const [selectedTypes, setSelectedTypes] = useState<Selection>(new Set([]));
@@ -75,16 +78,23 @@ export default function TestCaseFilter({
         }
 
         onFilterChange(priorityIndices, typeIndices);
+        handleFilterChange();
     };
 
     const handleClearFilter = () => {
         setSelectedPriorities(new Set([]));
         setSelectedTypes(new Set([]));
         onFilterChange([], []);
+        handleFilterChange();
     };
 
+    const isFilterEmpty = (selectedPriorities === 'all' || (selectedPriorities instanceof Set && selectedPriorities.size === 0)) &&
+        (selectedTypes === 'all' || (selectedTypes instanceof Set && selectedTypes.size === 0));
+
+
     return (
-        <div className="mt-2 flex items-end">
+        <div className="flex items-end border-t border-default-200 p-3">
+
             <div className="flex-col space-y-2 mr-2">
                 <h3 className="text-default-500 text-small">{messages.priority}</h3>
                 <Dropdown>
@@ -151,10 +161,12 @@ export default function TestCaseFilter({
             </div>
 
             <div className="ml-auto">
-                <Button className="me-2" size="sm" variant="light" onPress={handleClearFilter}>
+                <Button className="me-2" size="sm" variant="light" onPress={handleClearFilter} isDisabled={isFilterEmpty}>
+
                     {messages.clearAll}
                 </Button>
-                <Button size="sm" variant="solid" color="primary" onPress={handleApplyFilter}>
+                <Button size="sm" variant="solid" color="primary" onPress={handleApplyFilter} isDisabled={isFilterEmpty}>
+
                     {messages.apply}
                 </Button>
             </div>

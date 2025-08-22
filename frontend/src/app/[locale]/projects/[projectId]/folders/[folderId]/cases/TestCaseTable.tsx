@@ -180,8 +180,8 @@ export default function TestCaseTable({
 
   return (
     <>
-      <div className="border-b-1 dark:border-neutral-700 w-full p-3">
-        <div className="flex items-center justify-between">
+      <div className="border-b-1 dark:border-neutral-700 w-full ">
+        <div className="flex items-center justify-between p-3 ">
           <h3 className="font-bold">{messages.testCaseList}</h3>
           <div>
             <Badge color="warning" content="" isInvisible={!hasActiveFilters} shape="circle" size="sm" placement="bottom-left">
@@ -256,6 +256,7 @@ export default function TestCaseTable({
             activePriorityFilters={activePriorityFilters}
             activeTypeFilters={activeTypeFilters}
             onFilterChange={onFilterChange}
+            handleFilterChange={handleFilterChange}
           />
         )}
       </div>
