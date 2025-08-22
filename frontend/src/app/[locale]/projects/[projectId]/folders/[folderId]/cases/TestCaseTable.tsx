@@ -184,7 +184,14 @@ export default function TestCaseTable({
         <div className="flex items-center justify-between p-3 ">
           <h3 className="font-bold">{messages.testCaseList}</h3>
           <div>
-            <Badge color="warning" content="" isInvisible={!hasActiveFilters} shape="circle" size="sm" placement="bottom-left">
+            <Badge
+              color="warning"
+              content=""
+              isInvisible={!hasActiveFilters}
+              shape="circle"
+              size="sm"
+              placement="bottom-left"
+            >
               <Button
                 size="sm"
                 isIconOnly

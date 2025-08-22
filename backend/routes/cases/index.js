@@ -20,19 +20,21 @@ module.exports = function (sequelize) {
         folderId: folderId,
       };
 
-       if (priority) {
-        const priorityValues = priority.split(',')
-          .map(p => parseInt(p.trim(), 10))
-          .filter(p => !isNaN(p));
+      if (priority) {
+        const priorityValues = priority
+          .split(',')
+          .map((p) => parseInt(p.trim(), 10))
+          .filter((p) => !isNaN(p));
         if (priorityValues.length > 0) {
           whereClause.priority = { [Op.in]: priorityValues };
         }
       }
 
       if (type) {
-        const typeValues = type.split(',')
-          .map(t => parseInt(t.trim(), 10))
-          .filter(t => !isNaN(t));
+        const typeValues = type
+          .split(',')
+          .map((t) => parseInt(t.trim(), 10))
+          .filter((t) => !isNaN(t));
         if (typeValues.length > 0) {
           whereClause.type = { [Op.in]: typeValues };
         }

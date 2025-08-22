@@ -21,7 +21,14 @@ type Props = {
   locale: LocaleCodeType;
 };
 
-export default function CasesPane({ projectId, folderId, messages, priorityMessages, testTypeMessages, locale }: Props) {
+export default function CasesPane({
+  projectId,
+  folderId,
+  messages,
+  priorityMessages,
+  testTypeMessages,
+  locale,
+}: Props) {
   const [cases, setCases] = useState<CaseType[]>([]);
   const context = useContext(TokenContext);
   const [isCaseDialogOpen, setIsCaseDialogOpen] = useState(false);
@@ -39,7 +46,10 @@ export default function CasesPane({ projectId, folderId, messages, priorityMessa
       const priorityParam = searchParams.get('priority');
       let currentPriorityFilter: number[] = [];
       if (priorityParam) {
-        currentPriorityFilter = priorityParam.split(',').map(p => parseInt(p.trim())).filter(p => !isNaN(p));
+        currentPriorityFilter = priorityParam
+          .split(',')
+          .map((p) => parseInt(p.trim()))
+          .filter((p) => !isNaN(p));
         setPriorityFilter(currentPriorityFilter);
       } else {
         setPriorityFilter([]);
@@ -48,7 +58,10 @@ export default function CasesPane({ projectId, folderId, messages, priorityMessa
       const typeParam = searchParams.get('type');
       let currentTypeFilter: number[] = [];
       if (typeParam) {
-        currentTypeFilter = typeParam.split(',').map(t => parseInt(t.trim())).filter(t => !isNaN(t));
+        currentTypeFilter = typeParam
+          .split(',')
+          .map((t) => parseInt(t.trim()))
+          .filter((t) => !isNaN(t));
         setTypeFilter(currentTypeFilter);
       } else {
         setTypeFilter([]);
