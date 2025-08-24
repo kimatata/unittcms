@@ -204,7 +204,13 @@
     "case_title": "テストケースタイトル",
     "case_description": "テストケース詳細",
     "create": "作成",
-    "please_enter": "テストケースタイトルを入力してください"
+    "please_enter": "テストケースタイトルを入力してください",
+    "clear_all": "すべてクリア",
+    "apply": "適用",
+    "select_priorities": "優先度を選択",
+    "selected": "選択済み",
+    "type": "タイプ",
+    "select_types": "タイプを選択"
   },
   "Case": {
     "back_to_cases": "テストケース一覧に戻る",
