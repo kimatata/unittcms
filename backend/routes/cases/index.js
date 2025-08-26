@@ -9,7 +9,7 @@ module.exports = function (sequelize) {
   const { verifyProjectVisibleFromFolderId } = require('../../middleware/verifyVisible')(sequelize);
 
   router.get('/', verifySignedIn, verifyProjectVisibleFromFolderId, async (req, res) => {
-    const { folderId, priority, type } = req.query;
+    const { folderId, priority, type, search } = req.query;
 
     if (!folderId) {
       return res.status(400).json({ error: 'folderId is required' });
@@ -19,6 +19,12 @@ module.exports = function (sequelize) {
       const whereClause = {
         folderId: folderId,
       };
+
+      if (search) {
+        whereClause[Op.or] = [
+          { title: { [Op.like]: `%${search}%` } }
+        ];
+      }
 
       if (priority) {
         const priorityValues = priority
