@@ -1,4 +1,4 @@
-import { useState, useMemo, useCallback, ReactNode } from 'react';
+import { useState, useMemo, useCallback, ReactNode, useEffect } from 'react';
 import {
   Table,
   TableHeader,
@@ -26,6 +26,7 @@ import { PriorityMessages } from '@/types/priority';
 import { TestTypeMessages } from '@/types/testType';
 import TestCasePriority from '@/components/TestCasePriority';
 import { LocaleCodeType } from '@/types/locale';
+import useDebounce from '@/utils/useDebounce';
 
 type Props = {
   projectId: string;
@@ -79,7 +80,15 @@ export default function TestCaseTable({
   });
   const [exportType, setExportType] = useState(new Set(['json']));
   const [showFilter, setShowFilter] = useState(false);
-  const [, setSearch] = useState('');
+  const [localSearchTerm, setLocalSearchTerm] = useState(searchTerm);
+
+  const debouncedSearch = useDebounce((value: string) => {
+    onSearchChange(value);
+  }, 500);
+
+  useEffect(() => {
+    setLocalSearchTerm(searchTerm);
+  }, [searchTerm]);
 
   const sortedItems = useMemo(() => {
     if (cases.length === 0) {
@@ -103,8 +112,8 @@ export default function TestCaseTable({
   };
 
   const handleSearchChange = (value: string) => {
-    setSearch(value);
-    onSearchChange(value);
+    setLocalSearchTerm(value);
+    debouncedSearch(value);
   };
 
   const renderCell = useCallback((testCase: CaseType, columnKey: string): ReactNode => {
@@ -208,7 +217,7 @@ export default function TestCaseTable({
               size="sm"
               startContent={<SearchIcon size={18} />}
               type="search"
-              value={searchTerm}
+              value={localSearchTerm}
               onValueChange={handleSearchChange}
             />
             <Badge
