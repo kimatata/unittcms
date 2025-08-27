@@ -16,8 +16,9 @@ import {
   ButtonGroup,
   cn,
   Badge,
+  Input,
 } from '@heroui/react';
-import { Plus, MoreVertical, Trash, FileDown, ChevronDown, Filter, FileJson, FileSpreadsheet } from 'lucide-react';
+import { Plus, MoreVertical, Trash, FileDown, ChevronDown, Filter, FileJson, FileSpreadsheet, SearchIcon } from 'lucide-react';
 import TestCaseFilter from './TestCaseFilter';
 import { Link } from '@/src/i18n/routing';
 import { CaseType, CasesMessages } from '@/types/case';
@@ -35,6 +36,8 @@ type Props = {
   onDeleteCases: (caseIds: number[]) => void;
   onExportCases: (type: string) => void;
   onFilterChange: (priorities: number[], types: number[]) => void;
+  onSearchChange: (searchTerm: string) => void;
+  searchTerm: string;
   activePriorityFilters: number[];
   activeTypeFilters: number[];
   messages: CasesMessages;
@@ -52,12 +55,15 @@ export default function TestCaseTable({
   onDeleteCases,
   onExportCases,
   onFilterChange,
+  onSearchChange,
   activePriorityFilters,
   activeTypeFilters,
   messages,
   priorityMessages,
   testTypeMessages,
   locale,
+  searchTerm,
+
 }: Props) {
   const headerColumns = [
     { name: messages.id, uid: 'id', sortable: true },
@@ -73,6 +79,7 @@ export default function TestCaseTable({
   });
   const [exportType, setExportType] = useState(new Set(['json']));
   const [showFilter, setShowFilter] = useState(false);
+  const [, setSearch] = useState('');
 
   const sortedItems = useMemo(() => {
     if (cases.length === 0) {
@@ -93,6 +100,11 @@ export default function TestCaseTable({
 
   const handleFilterChange = () => {
     setShowFilter(!showFilter);
+  };
+
+  const handleSearchChange = (value: string) => {
+    setSearch(value);
+    onSearchChange(value);
   };
 
   const renderCell = useCallback((testCase: CaseType, columnKey: string): ReactNode => {
@@ -183,7 +195,22 @@ export default function TestCaseTable({
       <div className="border-b-1 dark:border-neutral-700 w-full ">
         <div className="flex items-center justify-between p-3 ">
           <h3 className="font-bold">{messages.testCaseList}</h3>
-          <div>
+          <div className='flex items-center'>
+            <Input
+              className="me-2"
+              variant='bordered'
+              classNames={{
+                base: "max-w-full sm:max-w-[12rem] h-8",
+                mainWrapper: "h-full",
+                input: "text-small",
+              }}
+              placeholder={messages.searchPlaceholder}
+              size="sm"
+              startContent={<SearchIcon size={18} />}
+              type="search"
+              value={searchTerm}
+              onValueChange={handleSearchChange}
+            />
             <Badge
               color="warning"
               content=""

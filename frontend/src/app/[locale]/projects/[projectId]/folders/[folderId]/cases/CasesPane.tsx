@@ -11,6 +11,7 @@ import { PriorityMessages } from '@/types/priority';
 import { TestTypeMessages } from '@/types/testType';
 import { LocaleCodeType } from '@/types/locale';
 import { logError } from '@/utils/errorHandler';
+import { parseQueryParam } from '@/utils/parseQueryParam';
 
 type Props = {
   projectId: string;
@@ -30,49 +31,65 @@ export default function CasesPane({
   locale,
 }: Props) {
   const [cases, setCases] = useState<CaseType[]>([]);
-  const context = useContext(TokenContext);
   const [isCaseDialogOpen, setIsCaseDialogOpen] = useState(false);
   const [priorityFilter, setPriorityFilter] = useState<number[]>([]);
   const [typeFilter, setTypeFilter] = useState<number[]>([]);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [isDeleteConfirmDialogOpen, setIsDeleteConfirmDialogOpen] = useState(false);
+  const [deleteCaseIds, setDeleteCaseIds] = useState<number[]>([]);
+
+  const context = useContext(TokenContext);
   const router = useRouter();
   const searchParams = useSearchParams();
 
+  const updateUrlParams = (updates: {
+    priority?: number[];
+    type?: number[];
+    search?: string;
+  }) => {
+    const currentParams = new URLSearchParams(searchParams.toString());
+
+    if (updates.priority && updates.priority.length > 0) {
+      currentParams.set('priority', updates.priority.join(','));
+    } else {
+      currentParams.delete('priority');
+    }
+
+    if (updates.type && updates.type.length > 0) {
+      currentParams.set('type', updates.type.join(','));
+    } else {
+      currentParams.delete('type');
+    }
+
+    if (updates.search) {
+      currentParams.set('search', updates.search);
+    } else {
+      currentParams.delete('search');
+    }
+
+    const newUrl = `${window.location.pathname}?${currentParams.toString()}`;
+    router.push(newUrl, { scroll: false });
+  };
+
   useEffect(() => {
     async function fetchDataEffect() {
-      if (!context.isSignedIn()) {
-        return;
-      }
+      if (!context.isSignedIn()) return;
 
-      const priorityParam = searchParams.get('priority');
-      let currentPriorityFilter: number[] = [];
-      if (priorityParam) {
-        currentPriorityFilter = priorityParam
-          .split(',')
-          .map((p) => parseInt(p.trim()))
-          .filter((p) => !isNaN(p));
-        setPriorityFilter(currentPriorityFilter);
-      } else {
-        setPriorityFilter([]);
-      }
+      const priorityParam = parseQueryParam(searchParams.get('priority'));
+      const typeParam = parseQueryParam(searchParams.get('type'));
+      const searchParam = searchParams.get('search') || '';
 
-      const typeParam = searchParams.get('type');
-      let currentTypeFilter: number[] = [];
-      if (typeParam) {
-        currentTypeFilter = typeParam
-          .split(',')
-          .map((t) => parseInt(t.trim()))
-          .filter((t) => !isNaN(t));
-        setTypeFilter(currentTypeFilter);
-      } else {
-        setTypeFilter([]);
-      }
+      setPriorityFilter(priorityParam);
+      setTypeFilter(typeParam);
+      setSearchTerm(searchParam);
 
       try {
         const data = await fetchCases(
           context.token.access_token,
           Number(folderId),
-          currentPriorityFilter.length > 0 ? currentPriorityFilter : undefined,
-          currentTypeFilter.length > 0 ? currentTypeFilter : undefined
+          priorityParam.length > 0 ? priorityParam : undefined,
+          typeParam.length > 0 ? typeParam : undefined,
+          searchParam || undefined
         );
         setCases(data);
       } catch (error: unknown) {
@@ -83,9 +100,7 @@ export default function CasesPane({
     fetchDataEffect();
   }, [context, folderId, searchParams]);
 
-  const closeDialog = () => {
-    setIsCaseDialogOpen(false);
-  };
+  const closeDialog = () => setIsCaseDialogOpen(false);
 
   const onSubmit = async (title: string, description: string) => {
     const newCase = await createCase(context.token.access_token, folderId, title, description);
@@ -93,14 +108,12 @@ export default function CasesPane({
     closeDialog();
   };
 
-  const [isDeleteConfirmDialogOpen, setIsDeleteConfirmDialogOpen] = useState(false);
-  const [deleteCaseIds, setDeleteCaseIds] = useState<number[]>([]);
   const closeDeleteConfirmDialog = () => {
     setIsDeleteConfirmDialogOpen(false);
     setDeleteCaseIds([]);
   };
 
-  const onDeleteCase = async (deleteCaseId: number) => {
+  const onDeleteCase = (deleteCaseId: number) => {
     setDeleteCaseIds([deleteCaseId]);
     setIsDeleteConfirmDialogOpen(true);
   };
@@ -125,23 +138,12 @@ export default function CasesPane({
   const handleFilterChange = (priorities: number[], types: number[]) => {
     setPriorityFilter(priorities);
     setTypeFilter(types);
+    updateUrlParams({ priority: priorities, type: types, search: searchTerm });
+  };
 
-    const currentParams = new URLSearchParams(searchParams.toString());
-
-    if (priorities.length > 0) {
-      currentParams.set('priority', priorities.join(','));
-    } else {
-      currentParams.delete('priority');
-    }
-
-    if (types.length > 0) {
-      currentParams.set('type', types.join(','));
-    } else {
-      currentParams.delete('type');
-    }
-
-    const newUrl = `${window.location.pathname}?${currentParams.toString()}`;
-    router.push(newUrl, { scroll: false });
+  const handleSearchChange = (search: string) => {
+    setSearchTerm(search);
+    updateUrlParams({ priority: priorityFilter, type: typeFilter, search });
   };
 
   return (
@@ -155,12 +157,14 @@ export default function CasesPane({
         onDeleteCases={onDeleteCases}
         onExportCases={onExportCases}
         onFilterChange={handleFilterChange}
+        onSearchChange={handleSearchChange}
         activePriorityFilters={priorityFilter}
         activeTypeFilters={typeFilter}
         messages={messages}
         priorityMessages={priorityMessages}
         testTypeMessages={testTypeMessages}
         locale={locale}
+        searchTerm={searchTerm}
       />
 
       <CaseDialog isOpen={isCaseDialogOpen} onCancel={closeDialog} onSubmit={onSubmit} messages={messages} />
