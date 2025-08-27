@@ -34,7 +34,7 @@ export default function CasesPane({
   const [isCaseDialogOpen, setIsCaseDialogOpen] = useState(false);
   const [priorityFilter, setPriorityFilter] = useState<number[]>([]);
   const [typeFilter, setTypeFilter] = useState<number[]>([]);
-  const [searchTerm, setSearchTerm] = useState('');
+  const [queryTerm, setQueryTerm] = useState('');
   const [isDeleteConfirmDialogOpen, setIsDeleteConfirmDialogOpen] = useState(false);
   const [deleteCaseIds, setDeleteCaseIds] = useState<number[]>([]);
 
@@ -45,7 +45,7 @@ export default function CasesPane({
   const updateUrlParams = (updates: {
     priority?: number[];
     type?: number[];
-    search?: string;
+    q?: string;
   }) => {
     const currentParams = new URLSearchParams(searchParams.toString());
 
@@ -61,10 +61,10 @@ export default function CasesPane({
       currentParams.delete('type');
     }
 
-    if (updates.search) {
-      currentParams.set('search', updates.search);
+    if (updates.q) {
+      currentParams.set('q', updates.q);
     } else {
-      currentParams.delete('search');
+      currentParams.delete('q');
     }
 
     const newUrl = `${window.location.pathname}?${currentParams.toString()}`;
@@ -77,11 +77,11 @@ export default function CasesPane({
 
       const priorityParam = parseQueryParam(searchParams.get('priority'));
       const typeParam = parseQueryParam(searchParams.get('type'));
-      const searchParam = searchParams.get('search') || '';
+      const queryParam = searchParams.get('q') || '';
 
       setPriorityFilter(priorityParam);
       setTypeFilter(typeParam);
-      setSearchTerm(searchParam);
+      setQueryTerm(queryParam);
 
       try {
         const data = await fetchCases(
@@ -89,7 +89,7 @@ export default function CasesPane({
           Number(folderId),
           priorityParam.length > 0 ? priorityParam : undefined,
           typeParam.length > 0 ? typeParam : undefined,
-          searchParam || undefined
+          queryParam || undefined
         );
         setCases(data);
       } catch (error: unknown) {
@@ -138,12 +138,12 @@ export default function CasesPane({
   const handleFilterChange = (priorities: number[], types: number[]) => {
     setPriorityFilter(priorities);
     setTypeFilter(types);
-    updateUrlParams({ priority: priorities, type: types, search: searchTerm });
+    updateUrlParams({ priority: priorities, type: types, q: queryTerm });
   };
 
-  const handleSearchChange = (search: string) => {
-    setSearchTerm(search);
-    updateUrlParams({ priority: priorityFilter, type: typeFilter, search });
+  const handleQueryChange = (q: string) => {
+    setQueryTerm(q);
+    updateUrlParams({ priority: priorityFilter, type: typeFilter, q });
   };
 
   return (
@@ -157,14 +157,14 @@ export default function CasesPane({
         onDeleteCases={onDeleteCases}
         onExportCases={onExportCases}
         onFilterChange={handleFilterChange}
-        onSearchChange={handleSearchChange}
+        onQueryChange={handleQueryChange}
         activePriorityFilters={priorityFilter}
         activeTypeFilters={typeFilter}
         messages={messages}
         priorityMessages={priorityMessages}
         testTypeMessages={testTypeMessages}
         locale={locale}
-        searchTerm={searchTerm}
+        queryTerm={queryTerm}
       />
 
       <CaseDialog isOpen={isCaseDialogOpen} onCancel={closeDialog} onSubmit={onSubmit} messages={messages} />

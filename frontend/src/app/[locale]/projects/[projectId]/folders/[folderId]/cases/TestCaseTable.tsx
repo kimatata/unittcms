@@ -37,8 +37,8 @@ type Props = {
   onDeleteCases: (caseIds: number[]) => void;
   onExportCases: (type: string) => void;
   onFilterChange: (priorities: number[], types: number[]) => void;
-  onSearchChange: (searchTerm: string) => void;
-  searchTerm: string;
+  onQueryChange: (q: string) => void;
+  queryTerm: string;
   activePriorityFilters: number[];
   activeTypeFilters: number[];
   messages: CasesMessages;
@@ -56,14 +56,14 @@ export default function TestCaseTable({
   onDeleteCases,
   onExportCases,
   onFilterChange,
-  onSearchChange,
+  onQueryChange,
   activePriorityFilters,
   activeTypeFilters,
   messages,
   priorityMessages,
   testTypeMessages,
   locale,
-  searchTerm,
+  queryTerm,
 
 }: Props) {
   const headerColumns = [
@@ -80,15 +80,15 @@ export default function TestCaseTable({
   });
   const [exportType, setExportType] = useState(new Set(['json']));
   const [showFilter, setShowFilter] = useState(false);
-  const [localSearchTerm, setLocalSearchTerm] = useState(searchTerm);
+  const [localQueryTerm, setLocalQueryTerm] = useState(queryTerm);
 
-  const debouncedSearch = useDebounce((value: string) => {
-    onSearchChange(value);
+  const debouncedQuery = useDebounce((value: string) => {
+    onQueryChange(value);
   }, 500);
 
   useEffect(() => {
-    setLocalSearchTerm(searchTerm);
-  }, [searchTerm]);
+    setLocalQueryTerm(queryTerm);
+  }, [queryTerm]);
 
   const sortedItems = useMemo(() => {
     if (cases.length === 0) {
@@ -111,9 +111,9 @@ export default function TestCaseTable({
     setShowFilter(!showFilter);
   };
 
-  const handleSearchChange = (value: string) => {
-    setLocalSearchTerm(value);
-    debouncedSearch(value);
+  const handleQueryChange = (value: string) => {
+    setLocalQueryTerm(value);
+    debouncedQuery(value);
   };
 
   const renderCell = useCallback((testCase: CaseType, columnKey: string): ReactNode => {
@@ -217,8 +217,8 @@ export default function TestCaseTable({
               size="sm"
               startContent={<SearchIcon size={18} />}
               type="search"
-              value={localSearchTerm}
-              onValueChange={handleSearchChange}
+              value={localQueryTerm}
+              onValueChange={handleQueryChange}
             />
             <Badge
               color="warning"

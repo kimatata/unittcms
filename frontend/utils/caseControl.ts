@@ -26,7 +26,7 @@ async function fetchCase(jwt: string, caseId: number) {
   }
 }
 
-async function fetchCases(jwt: string, folderId: number, priority?: number[], type?: number[], search?: string) {
+async function fetchCases(jwt: string, folderId: number, priority?: number[], type?: number[], q?: string) {
   const queryParams = [`folderId=${folderId}`];
 
   if (priority && priority.length > 0) {
@@ -37,8 +37,8 @@ async function fetchCases(jwt: string, folderId: number, priority?: number[], ty
     queryParams.push(`type=${type.join(',')}`);
   }
 
-  if (search) {
-    queryParams.push(`search=${search}`);
+  if (q) {
+    queryParams.push(`q=${q}`);
   }
 
   const query = queryParams.length > 0 ? `?${queryParams.join('&')}` : '';
