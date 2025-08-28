@@ -17,6 +17,7 @@ import {
   cn,
   Badge,
   Input,
+  Spinner,
 } from '@heroui/react';
 import { Plus, MoreVertical, Trash, FileDown, ChevronDown, Filter, FileJson, FileSpreadsheet, SearchIcon } from 'lucide-react';
 import TestCaseFilter from './TestCaseFilter';
@@ -45,6 +46,7 @@ type Props = {
   priorityMessages: PriorityMessages;
   testTypeMessages: TestTypeMessages;
   locale: LocaleCodeType;
+  isSearching: boolean;
 };
 
 export default function TestCaseTable({
@@ -64,6 +66,7 @@ export default function TestCaseTable({
   testTypeMessages,
   locale,
   queryTerm,
+  isSearching,
 
 }: Props) {
   const headerColumns = [
@@ -213,12 +216,16 @@ export default function TestCaseTable({
                 mainWrapper: "h-full",
                 input: "text-small",
               }}
+
               placeholder={messages.searchPlaceholder}
               size="sm"
               startContent={<SearchIcon size={18} />}
+              endContent={isSearching && <Spinner size="sm" />}
               type="search"
               value={localQueryTerm}
               onValueChange={handleQueryChange}
+              aria-label={messages.searchPlaceholder}
+              maxLength={100}
             />
             <Badge
               color="warning"

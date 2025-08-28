@@ -37,6 +37,8 @@ export default function CasesPane({
   const [queryTerm, setQueryTerm] = useState('');
   const [isDeleteConfirmDialogOpen, setIsDeleteConfirmDialogOpen] = useState(false);
   const [deleteCaseIds, setDeleteCaseIds] = useState<number[]>([]);
+  const [isSearching, setIsSearching] = useState(false);
+
 
   const context = useContext(TokenContext);
   const router = useRouter();
@@ -94,6 +96,8 @@ export default function CasesPane({
         setCases(data);
       } catch (error: unknown) {
         logError('Error fetching cases:', error);
+      } finally {
+        setIsSearching(false);
       }
     }
 
@@ -143,6 +147,9 @@ export default function CasesPane({
 
   const handleQueryChange = (q: string) => {
     setQueryTerm(q);
+    if (q.trim()) {
+      setIsSearching(true);
+    }
     updateUrlParams({ priority: priorityFilter, type: typeFilter, q });
   };
 
@@ -165,6 +172,7 @@ export default function CasesPane({
         testTypeMessages={testTypeMessages}
         locale={locale}
         queryTerm={queryTerm}
+        isSearching={isSearching}
       />
 
       <CaseDialog isOpen={isCaseDialogOpen} onCancel={closeDialog} onSubmit={onSubmit} messages={messages} />
