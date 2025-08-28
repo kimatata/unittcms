@@ -116,7 +116,10 @@ export default function TestCaseTable({
 
   const handleQueryChange = (value: string) => {
     setLocalQueryTerm(value);
-    debouncedQuery(value);
+    if (value.length >= 2 || value.length === 0) {
+      debouncedQuery(value);
+    }
+
   };
 
   const renderCell = useCallback((testCase: CaseType, columnKey: string): ReactNode => {

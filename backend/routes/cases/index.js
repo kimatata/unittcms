@@ -21,9 +21,15 @@ module.exports = function (sequelize) {
       };
 
       if (q) {
-        whereClause[Op.or] = [
-          { title: { [Op.like]: `%${q}%` } }
-        ];
+        const searchTerm = q.trim();
+
+        if (searchTerm.length > 100) {
+          return res.status(400).json({ error: 'Search term too long' });
+        }
+
+        if (searchTerm.length >= 2) {
+          whereClause[Op.or] = [{ title: { [Op.like]: `%${q}%` } }];
+        }
       }
 
       if (priority) {
