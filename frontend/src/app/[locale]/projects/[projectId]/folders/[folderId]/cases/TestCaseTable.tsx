@@ -28,6 +28,7 @@ import { TestTypeMessages } from '@/types/testType';
 import TestCasePriority from '@/components/TestCasePriority';
 import { LocaleCodeType } from '@/types/locale';
 import useDebounce from '@/utils/useDebounce';
+import { highlightSearchTerm } from '@/utils/highlightSearchTerm';
 
 type Props = {
   projectId: string;
@@ -136,9 +137,12 @@ export default function TestCaseTable({
             href={`/projects/${projectId}/folders/${testCase.folderId}/cases/${testCase.id}`}
             locale={locale}
             variant="light"
-            className="data-[hover=true]:bg-transparent"
+            className="data-[hover=true]:bg-transparent gap-0"
           >
-            {cellValue as string}
+            {highlightSearchTerm({
+              text: cellValue as string,
+              searchTerm: localQueryTerm,
+            })}
           </Button>
         );
       case 'priority':
@@ -167,7 +171,7 @@ export default function TestCaseTable({
         return cellValue as string;
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [localQueryTerm]);
 
   const handleDeleteCases = () => {
     let deleteCaseIds: number[];
@@ -204,6 +208,9 @@ export default function TestCaseTable({
     }),
     []
   );
+
+
+
 
   return (
     <>
