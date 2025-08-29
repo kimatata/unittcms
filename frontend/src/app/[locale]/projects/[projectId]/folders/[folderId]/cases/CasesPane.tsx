@@ -39,16 +39,11 @@ export default function CasesPane({
   const [deleteCaseIds, setDeleteCaseIds] = useState<number[]>([]);
   const [isSearching, setIsSearching] = useState(false);
 
-
   const context = useContext(TokenContext);
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  const updateUrlParams = (updates: {
-    priority?: number[];
-    type?: number[];
-    q?: string;
-  }) => {
+  const updateUrlParams = (updates: { priority?: number[]; type?: number[]; q?: string }) => {
     const currentParams = new URLSearchParams(searchParams.toString());
 
     if (updates.priority && updates.priority.length > 0) {

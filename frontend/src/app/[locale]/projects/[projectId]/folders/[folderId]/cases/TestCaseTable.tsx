@@ -19,7 +19,17 @@ import {
   Input,
   Spinner,
 } from '@heroui/react';
-import { Plus, MoreVertical, Trash, FileDown, ChevronDown, Filter, FileJson, FileSpreadsheet, SearchIcon } from 'lucide-react';
+import {
+  Plus,
+  MoreVertical,
+  Trash,
+  FileDown,
+  ChevronDown,
+  Filter,
+  FileJson,
+  FileSpreadsheet,
+  SearchIcon,
+} from 'lucide-react';
 import TestCaseFilter from './TestCaseFilter';
 import { Link } from '@/src/i18n/routing';
 import { CaseType, CasesMessages } from '@/types/case';
@@ -68,7 +78,6 @@ export default function TestCaseTable({
   locale,
   queryTerm,
   isSearching,
-
 }: Props) {
   const headerColumns = [
     { name: messages.id, uid: 'id', sortable: true },
@@ -120,58 +129,60 @@ export default function TestCaseTable({
     if (value.length >= 2 || value.length === 0) {
       debouncedQuery(value);
     }
-
   };
 
-  const renderCell = useCallback((testCase: CaseType, columnKey: string): ReactNode => {
-    const cellValue = testCase[columnKey as keyof CaseType];
+  const renderCell = useCallback(
+    (testCase: CaseType, columnKey: string): ReactNode => {
+      const cellValue = testCase[columnKey as keyof CaseType];
 
-    switch (columnKey) {
-      case 'id':
-        return <span>{cellValue as number}</span>;
-      case 'title':
-        return (
-          <Button
-            size="sm"
-            as={Link}
-            href={`/projects/${projectId}/folders/${testCase.folderId}/cases/${testCase.id}`}
-            locale={locale}
-            variant="light"
-            className="data-[hover=true]:bg-transparent gap-0"
-          >
-            {highlightSearchTerm({
-              text: cellValue as string,
-              searchTerm: localQueryTerm,
-            })}
-          </Button>
-        );
-      case 'priority':
-        return <TestCasePriority priorityValue={cellValue as number} priorityMessages={priorityMessages} />;
-      case 'actions':
-        return (
-          <Dropdown>
-            <DropdownTrigger>
-              <Button isIconOnly radius="full" size="sm" variant="light">
-                <MoreVertical size={16} />
-              </Button>
-            </DropdownTrigger>
-            <DropdownMenu aria-label="test case actions">
-              <DropdownItem
-                key="delete-case"
-                className="text-danger"
-                isDisabled={isDisabled}
-                onPress={() => handleDeleteCase(testCase.id)}
-              >
-                {messages.deleteCase}
-              </DropdownItem>
-            </DropdownMenu>
-          </Dropdown>
-        );
-      default:
-        return cellValue as string;
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [localQueryTerm]);
+      switch (columnKey) {
+        case 'id':
+          return <span>{cellValue as number}</span>;
+        case 'title':
+          return (
+            <Button
+              size="sm"
+              as={Link}
+              href={`/projects/${projectId}/folders/${testCase.folderId}/cases/${testCase.id}`}
+              locale={locale}
+              variant="light"
+              className="data-[hover=true]:bg-transparent gap-0"
+            >
+              {highlightSearchTerm({
+                text: cellValue as string,
+                searchTerm: localQueryTerm,
+              })}
+            </Button>
+          );
+        case 'priority':
+          return <TestCasePriority priorityValue={cellValue as number} priorityMessages={priorityMessages} />;
+        case 'actions':
+          return (
+            <Dropdown>
+              <DropdownTrigger>
+                <Button isIconOnly radius="full" size="sm" variant="light">
+                  <MoreVertical size={16} />
+                </Button>
+              </DropdownTrigger>
+              <DropdownMenu aria-label="test case actions">
+                <DropdownItem
+                  key="delete-case"
+                  className="text-danger"
+                  isDisabled={isDisabled}
+                  onPress={() => handleDeleteCase(testCase.id)}
+                >
+                  {messages.deleteCase}
+                </DropdownItem>
+              </DropdownMenu>
+            </Dropdown>
+          );
+        default:
+          return cellValue as string;
+      }
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    },
+    [localQueryTerm]
+  );
 
   const handleDeleteCases = () => {
     let deleteCaseIds: number[];
@@ -209,24 +220,20 @@ export default function TestCaseTable({
     []
   );
 
-
-
-
   return (
     <>
       <div className="border-b-1 dark:border-neutral-700 w-full ">
         <div className="flex items-center justify-between p-3 ">
           <h3 className="font-bold">{messages.testCaseList}</h3>
-          <div className='flex items-center'>
+          <div className="flex items-center">
             <Input
               className="me-2"
-              variant='bordered'
+              variant="bordered"
               classNames={{
-                base: "max-w-full sm:max-w-[12rem] h-8",
-                mainWrapper: "h-full",
-                input: "text-small",
+                base: 'max-w-full sm:max-w-[12rem] h-8',
+                mainWrapper: 'h-full',
+                input: 'text-small',
               }}
-
               placeholder={messages.searchPlaceholder}
               size="sm"
               startContent={<SearchIcon size={18} />}
