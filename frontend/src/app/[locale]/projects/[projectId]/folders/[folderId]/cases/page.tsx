@@ -39,6 +39,7 @@ export default function Page({ params }: { params: { projectId: string; folderId
     selected: t('selected'),
     type: t('type'),
     selectTypes: t('select_types'),
+    searchPlaceholder: t('search_placeholder'),
   };
 
   const priorityTranslation = useTranslations('Priority');

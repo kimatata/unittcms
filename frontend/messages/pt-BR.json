@@ -209,7 +209,8 @@
     "select_priorities": "Selecionar prioridades",
     "selected": "Selecionado",
     "type": "Tipo",
-    "select_types": "Selecionar tipos"
+    "select_types": "Selecionar tipos",
+    "search_placeholder": "Digite para buscar..."
   },
   "Case": {
     "back_to_cases": "Voltar para os casos de teste",

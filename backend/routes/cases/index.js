@@ -9,7 +9,7 @@ module.exports = function (sequelize) {
   const { verifyProjectVisibleFromFolderId } = require('../../middleware/verifyVisible')(sequelize);
 
   router.get('/', verifySignedIn, verifyProjectVisibleFromFolderId, async (req, res) => {
-    const { folderId, priority, type } = req.query;
+    const { folderId, priority, type, q } = req.query;
 
     if (!folderId) {
       return res.status(400).json({ error: 'folderId is required' });
@@ -19,6 +19,18 @@ module.exports = function (sequelize) {
       const whereClause = {
         folderId: folderId,
       };
+
+      if (q) {
+        const searchTerm = q.trim();
+
+        if (searchTerm.length > 100) {
+          return res.status(400).json({ error: 'Search term too long' });
+        }
+
+        if (searchTerm.length >= 2) {
+          whereClause[Op.or] = [{ title: { [Op.like]: `%${q}%` } }];
+        }
+      }
 
       if (priority) {
         const priorityValues = priority

@@ -210,7 +210,8 @@
     "select_priorities": "優先度を選択",
     "selected": "選択済み",
     "type": "タイプ",
-    "select_types": "タイプを選択"
+    "select_types": "タイプを選択",
+    "search_placeholder": "入力して検索..."
   },
   "Case": {
     "back_to_cases": "テストケース一覧に戻る",

@@ -1,4 +1,4 @@
-import { useState, useMemo, useCallback, ReactNode } from 'react';
+import { useState, useMemo, useCallback, ReactNode, useEffect } from 'react';
 import {
   Table,
   TableHeader,
@@ -16,8 +16,20 @@ import {
   ButtonGroup,
   cn,
   Badge,
+  Input,
+  Spinner,
 } from '@heroui/react';
-import { Plus, MoreVertical, Trash, FileDown, ChevronDown, Filter, FileJson, FileSpreadsheet } from 'lucide-react';
+import {
+  Plus,
+  MoreVertical,
+  Trash,
+  FileDown,
+  ChevronDown,
+  Filter,
+  FileJson,
+  FileSpreadsheet,
+  SearchIcon,
+} from 'lucide-react';
 import TestCaseFilter from './TestCaseFilter';
 import { Link } from '@/src/i18n/routing';
 import { CaseType, CasesMessages } from '@/types/case';
@@ -25,6 +37,8 @@ import { PriorityMessages } from '@/types/priority';
 import { TestTypeMessages } from '@/types/testType';
 import TestCasePriority from '@/components/TestCasePriority';
 import { LocaleCodeType } from '@/types/locale';
+import useDebounce from '@/utils/useDebounce';
+import { highlightSearchTerm } from '@/utils/highlightSearchTerm';
 
 type Props = {
   projectId: string;
@@ -35,12 +49,15 @@ type Props = {
   onDeleteCases: (caseIds: number[]) => void;
   onExportCases: (type: string) => void;
   onFilterChange: (priorities: number[], types: number[]) => void;
+  onQueryChange: (q: string) => void;
+  queryTerm: string;
   activePriorityFilters: number[];
   activeTypeFilters: number[];
   messages: CasesMessages;
   priorityMessages: PriorityMessages;
   testTypeMessages: TestTypeMessages;
   locale: LocaleCodeType;
+  isSearching: boolean;
 };
 
 export default function TestCaseTable({
@@ -52,12 +69,15 @@ export default function TestCaseTable({
   onDeleteCases,
   onExportCases,
   onFilterChange,
+  onQueryChange,
   activePriorityFilters,
   activeTypeFilters,
   messages,
   priorityMessages,
   testTypeMessages,
   locale,
+  queryTerm,
+  isSearching,
 }: Props) {
   const headerColumns = [
     { name: messages.id, uid: 'id', sortable: true },
@@ -73,6 +93,15 @@ export default function TestCaseTable({
   });
   const [exportType, setExportType] = useState(new Set(['json']));
   const [showFilter, setShowFilter] = useState(false);
+  const [localQueryTerm, setLocalQueryTerm] = useState(queryTerm);
+
+  const debouncedQuery = useDebounce((value: string) => {
+    onQueryChange(value);
+  }, 500);
+
+  useEffect(() => {
+    setLocalQueryTerm(queryTerm);
+  }, [queryTerm]);
 
   const sortedItems = useMemo(() => {
     if (cases.length === 0) {
@@ -95,52 +124,65 @@ export default function TestCaseTable({
     setShowFilter(!showFilter);
   };
 
-  const renderCell = useCallback((testCase: CaseType, columnKey: string): ReactNode => {
-    const cellValue = testCase[columnKey as keyof CaseType];
-
-    switch (columnKey) {
-      case 'id':
-        return <span>{cellValue as number}</span>;
-      case 'title':
-        return (
-          <Button
-            size="sm"
-            as={Link}
-            href={`/projects/${projectId}/folders/${testCase.folderId}/cases/${testCase.id}`}
-            locale={locale}
-            variant="light"
-            className="data-[hover=true]:bg-transparent"
-          >
-            {cellValue as string}
-          </Button>
-        );
-      case 'priority':
-        return <TestCasePriority priorityValue={cellValue as number} priorityMessages={priorityMessages} />;
-      case 'actions':
-        return (
-          <Dropdown>
-            <DropdownTrigger>
-              <Button isIconOnly radius="full" size="sm" variant="light">
-                <MoreVertical size={16} />
-              </Button>
-            </DropdownTrigger>
-            <DropdownMenu aria-label="test case actions">
-              <DropdownItem
-                key="delete-case"
-                className="text-danger"
-                isDisabled={isDisabled}
-                onPress={() => handleDeleteCase(testCase.id)}
-              >
-                {messages.deleteCase}
-              </DropdownItem>
-            </DropdownMenu>
-          </Dropdown>
-        );
-      default:
-        return cellValue as string;
+  const handleQueryChange = (value: string) => {
+    setLocalQueryTerm(value);
+    if (value.length >= 2 || value.length === 0) {
+      debouncedQuery(value);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  };
+
+  const renderCell = useCallback(
+    (testCase: CaseType, columnKey: string): ReactNode => {
+      const cellValue = testCase[columnKey as keyof CaseType];
+
+      switch (columnKey) {
+        case 'id':
+          return <span>{cellValue as number}</span>;
+        case 'title':
+          return (
+            <Button
+              size="sm"
+              as={Link}
+              href={`/projects/${projectId}/folders/${testCase.folderId}/cases/${testCase.id}`}
+              locale={locale}
+              variant="light"
+              className="data-[hover=true]:bg-transparent gap-0"
+            >
+              {highlightSearchTerm({
+                text: cellValue as string,
+                searchTerm: localQueryTerm,
+              })}
+            </Button>
+          );
+        case 'priority':
+          return <TestCasePriority priorityValue={cellValue as number} priorityMessages={priorityMessages} />;
+        case 'actions':
+          return (
+            <Dropdown>
+              <DropdownTrigger>
+                <Button isIconOnly radius="full" size="sm" variant="light">
+                  <MoreVertical size={16} />
+                </Button>
+              </DropdownTrigger>
+              <DropdownMenu aria-label="test case actions">
+                <DropdownItem
+                  key="delete-case"
+                  className="text-danger"
+                  isDisabled={isDisabled}
+                  onPress={() => handleDeleteCase(testCase.id)}
+                >
+                  {messages.deleteCase}
+                </DropdownItem>
+              </DropdownMenu>
+            </Dropdown>
+          );
+        default:
+          return cellValue as string;
+      }
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    },
+    [localQueryTerm]
+  );
 
   const handleDeleteCases = () => {
     let deleteCaseIds: number[];
@@ -183,7 +225,25 @@ export default function TestCaseTable({
       <div className="border-b-1 dark:border-neutral-700 w-full ">
         <div className="flex items-center justify-between p-3 ">
           <h3 className="font-bold">{messages.testCaseList}</h3>
-          <div>
+          <div className="flex items-center">
+            <Input
+              className="me-2"
+              variant="bordered"
+              classNames={{
+                base: 'max-w-full sm:max-w-[12rem] h-8',
+                mainWrapper: 'h-full',
+                input: 'text-small',
+              }}
+              placeholder={messages.searchPlaceholder}
+              size="sm"
+              startContent={<SearchIcon size={18} />}
+              endContent={isSearching && <Spinner size="sm" />}
+              type="search"
+              value={localQueryTerm}
+              onValueChange={handleQueryChange}
+              aria-label={messages.searchPlaceholder}
+              maxLength={100}
+            />
             <Badge
               color="warning"
               content=""
