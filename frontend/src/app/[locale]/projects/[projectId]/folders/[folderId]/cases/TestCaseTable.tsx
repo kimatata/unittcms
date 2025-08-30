@@ -95,8 +95,8 @@ export default function TestCaseTable({
   const [showFilter, setShowFilter] = useState(false);
   const [localQueryTerm, setLocalQueryTerm] = useState(queryTerm);
 
-  const debouncedQuery = useDebounce((value: string) => {
-    onQueryChange(value);
+  const debouncedQuery = useDebounce((value: unknown) => {
+    onQueryChange(value as string);
   }, 500);
 
   useEffect(() => {
@@ -179,8 +179,8 @@ export default function TestCaseTable({
         default:
           return cellValue as string;
       }
-      // eslint-disable-next-line react-hooks/exhaustive-deps
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [localQueryTerm]
   );
 

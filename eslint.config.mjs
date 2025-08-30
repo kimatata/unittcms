@@ -12,7 +12,7 @@ import eslintPluginNext from '@next/eslint-plugin-next';
 export default tseslint.config(
   {
     name: 'unittcms/ignore-globally',
-    ignores: ['**/node_modules/', '**/.next/', '**/docs/'],
+    ignores: ['**/node_modules/', '**/.next/', '**/docs/', '**/coverage/'],
   },
   {
     name: 'unittcms/load-plugins',
