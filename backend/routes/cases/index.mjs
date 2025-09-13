@@ -1,12 +1,14 @@
-const express = require('express');
+import express from 'express';
 const router = express.Router();
-const { DataTypes, Op } = require('sequelize');
-const defineCase = require('../../models/cases');
+import { DataTypes, Op } from 'sequelize';
+import defineCase from '../../models/cases';
+import authMiddleware from '../../middleware/auth.js';
+import visibilityMiddleware from '../../middleware/verifyVisible';
 
-module.exports = function (sequelize) {
+export default function (sequelize) {
+  const { verifySignedIn } = authMiddleware(sequelize);
   const Case = defineCase(sequelize, DataTypes);
-  const { verifySignedIn } = require('../../middleware/auth')(sequelize);
-  const { verifyProjectVisibleFromFolderId } = require('../../middleware/verifyVisible')(sequelize);
+  const { verifyProjectVisibleFromFolderId } = visibilityMiddleware(sequelize);
 
   router.get('/', verifySignedIn, verifyProjectVisibleFromFolderId, async (req, res) => {
     const { folderId, priority, type, q } = req.query;
@@ -63,4 +65,4 @@ module.exports = function (sequelize) {
   });
 
   return router;
-};
+}
