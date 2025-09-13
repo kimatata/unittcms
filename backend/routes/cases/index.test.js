@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import request from 'supertest';
 import express from 'express';
-import { Sequelize } from 'sequelize';
+import { Sequelize, Op } from 'sequelize';
 import casesIndexRoute from './index';
 
 // mock of authentication middleware
@@ -58,17 +58,17 @@ describe('GET /cases', () => {
     expect(res.body).toEqual([{ id: 1 }]);
   });
 
-  it('should handle priority and type params', async () => {
+  it('should build a where clause based on query parameters.', async () => {
     mockCase.findAll.mockResolvedValue([{ id: 1 }]);
     const res = await request(app).get('/cases?folderId=1&priority=1,2&type=3');
     expect(res.status).toBe(200);
 
-    // check where clause
-    const where = mockCase.findAll.mock.calls[0][0].where;
-    expect(where).toMatchObject({
-      folderId: '1',
-      priority: ['1', '2'],
-      type: '3',
+    expect(mockCase.findAll).toHaveBeenCalledWith({
+      where: {
+        folderId: '1',
+        priority: { [Op.in]: [1, 2] },
+        type: { [Op.in]: [3] },
+      },
     });
   });
 });
