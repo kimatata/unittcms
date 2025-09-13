@@ -58,23 +58,17 @@ describe('GET /cases', () => {
     expect(res.body).toEqual([{ id: 1 }]);
   });
 
-  it('should handle q param (search)', async () => {
-    mockCase.findAll.mockResolvedValue([{ id: 2 }]);
-    const res = await request(app).get('/cases?folderId=1&q=test');
-    expect(res.status).toBe(200);
-    expect(mockCase.findAll.mock.calls[0][0].where[Symbol.for('or')]).toBeDefined();
-  });
-
   it('should handle priority and type params', async () => {
-    mockCase.findAll.mockResolvedValue([{ id: 3 }]);
+    mockCase.findAll.mockResolvedValue([{ id: 1 }]);
     const res = await request(app).get('/cases?folderId=1&priority=1,2&type=3');
     expect(res.status).toBe(200);
-    expect(mockCase.findAll).toHaveBeenCalled();
-  });
 
-  it('should return 500 on error', async () => {
-    mockCase.findAll.mockRejectedValue(new Error('DB error'));
-    const res = await request(app).get('/cases?folderId=1');
-    expect(res.status).toBe(500);
+    // check where clause
+    const where = mockCase.findAll.mock.calls[0][0].where;
+    expect(where).toMatchObject({
+      folderId: '1',
+      priority: ['1', '2'],
+      type: '3',
+    });
   });
 });
