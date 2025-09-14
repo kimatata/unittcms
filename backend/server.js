@@ -1,7 +1,8 @@
-const path = require('path');
-const express = require('express');
-const RateLimit = require('express-rate-limit');
-const { Sequelize } = require('sequelize');
+import path from 'path';
+import express from 'express';
+import RateLimit from 'express-rate-limit';
+import { Sequelize } from 'sequelize';
+const __dirname = path.dirname(new URL(import.meta.url).pathname);
 const app = express();
 
 // enable frontend access
@@ -154,4 +155,4 @@ if (!process.env.SECRET_KEY) {
 }
 
 // Export the app instead of starting the server
-module.exports = app;
+export default app;

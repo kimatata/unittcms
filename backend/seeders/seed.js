@@ -1,8 +1,8 @@
 'use strict';
-const fs = require('fs');
-const bcrypt = require('bcrypt');
+import fs from 'fs';
+import bcrypt from 'bcrypt';
 
-module.exports = {
+export const seed = {
   up: async (queryInterface) => {
     const hashedPassword = await bcrypt.hash('password', 10);
 
