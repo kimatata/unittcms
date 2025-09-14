@@ -1,12 +1,14 @@
-const fs = require('fs');
-const path = require('path');
-const express = require('express');
+import fs from 'fs';
+import path from 'path';
+import express from 'express';
 const router = express.Router();
-const { DataTypes } = require('sequelize');
-const defineAttachment = require('../../models/attachments');
+import { DataTypes } from 'sequelize';
+import defineAttachment from '../../models/attachments';
 
-module.exports = function (sequelize) {
+export default function (sequelize) {
   const Attachment = defineAttachment(sequelize, DataTypes);
+
+  // TODO middleware to verify user permission to get attachment
   router.get('/download/:attachmentId', async (req, res) => {
     const attachmentId = req.params.attachmentId;
 
@@ -30,4 +32,4 @@ module.exports = function (sequelize) {
   });
 
   return router;
-};
+}

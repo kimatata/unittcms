@@ -24,4 +24,4 @@ function defineCaseAttachment(sequelize, DataTypes) {
   return CaseAttachment;
 }
 
-module.exports = defineCaseAttachment;
+export default defineCaseAttachment;

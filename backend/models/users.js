@@ -39,4 +39,4 @@ function defineUser(sequelize, DataTypes) {
   return User;
 }
 
-module.exports = defineUser;
+export default defineUser;

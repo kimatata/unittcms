@@ -28,4 +28,4 @@ function defineCaseStep(sequelize, DataTypes) {
   return CaseStep;
 }
 
-module.exports = defineCaseStep;
+export default defineCaseStep;

@@ -28,4 +28,4 @@ function defineMember(sequelize, DataTypes) {
   return Member;
 }
 
-module.exports = defineMember;
+export default defineMember;

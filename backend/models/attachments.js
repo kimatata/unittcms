@@ -23,4 +23,4 @@ function defineAttachment(sequelize, DataTypes) {
   return Attachment;
 }
 
-module.exports = defineAttachment;
+export default defineAttachment;
