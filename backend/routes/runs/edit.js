@@ -2,11 +2,13 @@ import express from 'express';
 const router = express.Router();
 import { DataTypes } from 'sequelize';
 import defineRun from '../../models/runs';
+import authMiddleware from '../../middleware/auth';
+import editableMiddleware from '../../middleware/verifyEditable';
 
 export default function (sequelize) {
   const Run = defineRun(sequelize, DataTypes);
-  const { verifySignedIn } = require('../../middleware/auth')(sequelize);
-  const { verifyProjectReporterFromRunId } = require('../../middleware/verifyEditable')(sequelize);
+  const { verifySignedIn } = authMiddleware(sequelize);
+  const { verifyProjectReporterFromRunId } = editableMiddleware(sequelize);
 
   router.put('/:runId', verifySignedIn, verifyProjectReporterFromRunId, async (req, res) => {
     const runId = req.params.runId;

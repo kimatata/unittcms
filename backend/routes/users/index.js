@@ -2,9 +2,10 @@ import express from 'express';
 const router = express.Router();
 import { DataTypes } from 'sequelize';
 import defineUser from '../../models/users';
+import authMiddleware from '../../middleware/auth';
 
 export default function (sequelize) {
-  const { verifySignedIn, verifyAdmin } = require('../../middleware/auth')(sequelize);
+  const { verifySignedIn, verifyAdmin } = authMiddleware(sequelize);
   const User = defineUser(sequelize, DataTypes);
 
   router.get('/', verifySignedIn, verifyAdmin, async (req, res) => {

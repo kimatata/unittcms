@@ -3,10 +3,12 @@ const router = express.Router();
 import { DataTypes, literal } from 'sequelize';
 import defineRun from '../../models/runs';
 import defineRunCase from '../../models/runCases';
+import authMiddleware from '../../middleware/auth';
+import visibilityMiddleware from '../../middleware/verifyVisible';
 
 export default function (sequelize) {
-  const { verifySignedIn } = require('../../middleware/auth')(sequelize);
-  const { verifyProjectVisibleFromRunId } = require('../../middleware/verifyVisible')(sequelize);
+  const { verifySignedIn } = authMiddleware(sequelize);
+  const { verifyProjectVisibleFromRunId } = visibilityMiddleware(sequelize);
   const Run = defineRun(sequelize, DataTypes);
   const RunCase = defineRunCase(sequelize, DataTypes);
 
