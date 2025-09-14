@@ -3,9 +3,10 @@ const router = express.Router();
 import { DataTypes, Op } from 'sequelize';
 import defineUser from '../../models/users';
 import defineMember from '../../models/members';
+import authMiddleware from '../../middleware/auth';
 
 export default function (sequelize) {
-  const { verifySignedIn } = require('../../middleware/auth')(sequelize);
+  const { verifySignedIn } = authMiddleware(sequelize);
   const User = defineUser(sequelize, DataTypes);
   const Member = defineMember(sequelize, DataTypes);
 

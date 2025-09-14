@@ -1,10 +1,10 @@
-const express = require('express');
+import express from 'express';
 const router = express.Router();
-const { DataTypes } = require('sequelize');
-const defineStep = require('../../models/steps');
-const defineCaseStep = require('../../models/caseSteps');
+import { DataTypes } from 'sequelize';
+import defineStep from '../../models/steps';
+import defineCaseStep from '../../models/caseSteps';
 
-module.exports = function (sequelize) {
+export default function (sequelize) {
   const Step = defineStep(sequelize, DataTypes);
   const CaseStep = defineCaseStep(sequelize, DataTypes);
   const { verifySignedIn } = require('../../middleware/auth')(sequelize);
@@ -87,4 +87,4 @@ module.exports = function (sequelize) {
   });
 
   return router;
-};
+}

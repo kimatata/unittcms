@@ -1,10 +1,10 @@
-const express = require('express');
+import express from 'express';
 const router = express.Router();
-const { DataTypes, literal } = require('sequelize');
-const defineRun = require('../../models/runs');
-const defineRunCase = require('../../models/runCases');
+import { DataTypes, literal } from 'sequelize';
+import defineRun from '../../models/runs';
+import defineRunCase from '../../models/runCases';
 
-module.exports = function (sequelize) {
+export default function (sequelize) {
   const { verifySignedIn } = require('../../middleware/auth')(sequelize);
   const { verifyProjectVisibleFromRunId } = require('../../middleware/verifyVisible')(sequelize);
   const Run = defineRun(sequelize, DataTypes);
@@ -40,4 +40,4 @@ module.exports = function (sequelize) {
   });
 
   return router;
-};
+}

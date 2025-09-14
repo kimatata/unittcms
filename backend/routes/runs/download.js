@@ -1,14 +1,14 @@
-const express = require('express');
+import express from 'express';
 const router = express.Router();
-const Papa = require('papaparse');
-const { create } = require('xmlbuilder2');
+import Papa from 'papaparse';
+import { create } from 'xmlbuilder2';
 
-const defineRun = require('../../models/runs');
-const defineRunCase = require('../../models/runCases');
-const defineCase = require('../../models/cases');
-const defineFolder = require('../../models/folders');
+import defineRun from '../../models/runs';
+import defineRunCase from '../../models/runCases';
+import defineCase from '../../models/runs';
+import defineFolder from '../../models/folders';
 
-module.exports = function (sequelize) {
+export default function (sequelize) {
   const { DataTypes } = require('sequelize');
   const { verifySignedIn } = require('../../middleware/auth')(sequelize);
   const { verifyProjectVisibleFromRunId } = require('../../middleware/verifyVisible')(sequelize);
@@ -123,4 +123,4 @@ module.exports = function (sequelize) {
   });
 
   return router;
-};
+}

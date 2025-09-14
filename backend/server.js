@@ -1,12 +1,12 @@
 import path from 'path';
 import express from 'express';
+import cors from 'cors';
 import RateLimit from 'express-rate-limit';
 import { Sequelize } from 'sequelize';
 const __dirname = path.dirname(new URL(import.meta.url).pathname);
 const app = express();
 
 // enable frontend access
-const cors = require('cors');
 const frontendOrigin = process.env.FRONTEND_ORIGIN || 'http://localhost:8000';
 const corsOptions = {
   origin: frontendOrigin,
@@ -37,116 +37,113 @@ const sequelize = new Sequelize({
 });
 
 // "/"
-const indexRoute = require('./routes/index');
-app.use('/', indexRoute);
+import indexRoute from './routes/index.js';
+app.use('/', indexRoute.default(sequelize));
 
 // "/health"
-const healthIndexRoute = require('./routes/health/index')();
-app.use('/health', healthIndexRoute);
+import healthIndexRoute from './routes/health/index.js';
+app.use('/health', healthIndexRoute.default(sequelize));
 
 // "users"
-const usersIndexRoute = require('./routes/users/index')(sequelize);
-const usersFindRoute = require('./routes/users/find')(sequelize);
-const usersSearchRoute = require('./routes/users/search')(sequelize);
-const signUpRoute = require('./routes/users/signup')(sequelize);
-const signInRoute = require('./routes/users/signin')(sequelize);
-app.use('/users', usersIndexRoute);
-app.use('/users', usersFindRoute);
-app.use('/users', usersSearchRoute);
-app.use('/users', signUpRoute);
-app.use('/users', signInRoute);
-// ESM import
-(async () => {
-  const updateRoute = await import('./routes/users/update.mjs');
-  app.use('/users', updateRoute.default(sequelize));
-})();
+import usersIndexRoute from './routes/users/index.js';
+import usersFindRoute from './routes/users/find.js';
+import usersSearchRoute from './routes/users/search.js';
+import usersUpdateRoute from './routes/users/update.js';
+import signUpRoute from './routes/users/signup.js';
+import signInRoute from './routes/users/signin.js';
+app.use('/users', usersIndexRoute.default(sequelize));
+app.use('/users', usersFindRoute.default(sequelize));
+app.use('/users', usersSearchRoute.default(sequelize));
+app.use('/users', usersUpdateRoute.default(sequelize));
+app.use('/users', signUpRoute.default(sequelize));
+app.use('/users', signInRoute.default(sequelize));
 
 // "/projects"
-const projectsIndexRoute = require('./routes/projects/index')(sequelize);
-const projectsShowRoute = require('./routes/projects/show')(sequelize);
-const projectsNewRoute = require('./routes/projects/new')(sequelize);
-const projectsEditRoute = require('./routes/projects/edit')(sequelize);
-const projectsDeleteRoute = require('./routes/projects/delete')(sequelize);
-app.use('/projects', projectsIndexRoute);
-app.use('/projects', projectsShowRoute);
-app.use('/projects', projectsNewRoute);
-app.use('/projects', projectsEditRoute);
-app.use('/projects', projectsDeleteRoute);
+import projectsIndexRoute from './routes/projects/index.js';
+import projectsShowRoute from './routes/projects/show.js';
+import projectsNewRoute from './routes/projects/new.js';
+import projectsEditRoute from './routes/projects/edit.js';
+import projectsDeleteRoute from './routes/projects/delete.js';
+app.use('/projects', projectsIndexRoute.default(sequelize));
+app.use('/projects', projectsShowRoute.default(sequelize));
+app.use('/projects', projectsNewRoute.default(sequelize));
+app.use('/projects', projectsEditRoute.default(sequelize));
+app.use('/projects', projectsDeleteRoute.default(sequelize));
 
 // "/folders"
-const foldersIndexRoute = require('./routes/folders/index')(sequelize);
-const foldersNewRoute = require('./routes/folders/new')(sequelize);
-const foldersEditRoute = require('./routes/folders/edit')(sequelize);
-const foldersDeleteRoute = require('./routes/folders/delete')(sequelize);
-app.use('/folders', foldersIndexRoute);
-app.use('/folders', foldersNewRoute);
-app.use('/folders', foldersEditRoute);
-app.use('/folders', foldersDeleteRoute);
+import foldersIndexRoute from './routes/folders/index.js';
+import foldersNewRoute from './routes/folders/new.js';
+import foldersEditRoute from './routes/folders/edit.js';
+import foldersDeleteRoute from './routes/folders/delete.js';
+app.use('/folders', foldersIndexRoute.default(sequelize));
+app.use('/folders', foldersNewRoute.default(sequelize));
+app.use('/folders', foldersEditRoute.default(sequelize));
+app.use('/folders', foldersDeleteRoute.default(sequelize));
 
 // "/cases"
-// "/cases"
-const casesDownloadRoute = require('./routes/cases/download')(sequelize);
-const casesIndexRoute = require('./routes/cases/index')(sequelize);
-const casesIndexByProjectIdRoute = require('./routes/cases/indexByProjectId')(sequelize);
-const casesShowRoute = require('./routes/cases/show')(sequelize);
-const casesNewRoute = require('./routes/cases/new')(sequelize);
-const casesEditRoute = require('./routes/cases/edit')(sequelize);
-const casesDeleteRoute = require('./routes/cases/delete')(sequelize);
-app.use('/cases', casesDownloadRoute);
-app.use('/cases', casesIndexRoute);
+import casesDownloadRoute from './routes/cases/download.js';
+import casesIndexRoute from './routes/cases/index.js';
+import casesIndexByProjectIdRoute from './routes/cases/indexByProjectId.js';
+import casesShowRoute from './routes/cases/show.js';
+import casesNewRoute from './routes/cases/new.js';
+import casesEditRoute from './routes/cases/edit.js';
+import casesDeleteRoute from './routes/cases/delete.js';
+app.use('/cases', casesDownloadRoute.default(sequelize));
+app.use('/cases', casesIndexRoute.default(sequelize));
 app.use('/cases', casesIndexByProjectIdRoute);
-app.use('/cases', casesShowRoute);
-app.use('/cases', casesNewRoute);
-app.use('/cases', casesEditRoute);
-app.use('/cases', casesDeleteRoute);
+app.use('/cases', casesShowRoute.default(sequelize));
+app.use('/cases', casesNewRoute.default(sequelize));
+app.use('/cases', casesEditRoute.default(sequelize));
+app.use('/cases', casesDeleteRoute.default(sequelize));
 
 // "/steps"
-const stepsEditRoute = require('./routes/steps/edit')(sequelize);
-app.use('/steps', stepsEditRoute);
+import stepsEditRoute from './routes/steps/edit.js';
+app.use('/steps', stepsEditRoute.default(sequelize));
 
 // "/attachments"
-const attachmentsNewRoute = require('./routes/attachments/new')(sequelize);
-const attachmentsDeleteRoute = require('./routes/attachments/delete')(sequelize);
-const attachmentsDownloadRoute = require('./routes/attachments/download')(sequelize);
-app.use('/attachments', attachmentsNewRoute);
-app.use('/attachments', attachmentsDeleteRoute);
-app.use('/attachments', attachmentsDownloadRoute);
+import attachmentsNewRoute from './routes/attachments/new.js';
+import attachmentsDeleteRoute from './routes/attachments/delete.js';
+import attachmentsDownloadRoute from './routes/attachments/download.js';
+app.use('/attachments', attachmentsNewRoute.default(sequelize));
+app.use('/attachments', attachmentsDeleteRoute.default(sequelize));
+app.use('/attachments', attachmentsDownloadRoute.default(sequelize));
 
 // "/runs"
-const runsDownloadRoute = require('./routes/runs/download')(sequelize);
-const runsIndexRoute = require('./routes/runs/index')(sequelize);
-const runsShowRoute = require('./routes/runs/show')(sequelize);
-const runsNewRoute = require('./routes/runs/new')(sequelize);
-const runsEditRoute = require('./routes/runs/edit')(sequelize);
-const runDeleteRoute = require('./routes/runs/delete')(sequelize);
-app.use('/runs', runsDownloadRoute);
-app.use('/runs', runsIndexRoute);
-app.use('/runs', runsShowRoute);
-app.use('/runs', runsNewRoute);
-app.use('/runs', runsEditRoute);
-app.use('/runs', runDeleteRoute);
+import runsDownloadRoute from './routes/runs/download.js';
+import runsIndexRoute from './routes/runs/index.js';
+import runsShowRoute from './routes/runs/show.js';
+import runsNewRoute from './routes/runs/new.js';
+import runsEditRoute from './routes/runs/edit.js';
+import runDeleteRoute from './routes/runs/delete.js';
+
+app.use('/runs', runsDownloadRoute.default(sequelize));
+app.use('/runs', runsIndexRoute.default(sequelize));
+app.use('/runs', runsShowRoute.default(sequelize));
+app.use('/runs', runsNewRoute.default(sequelize));
+app.use('/runs', runsEditRoute.default(sequelize));
+app.use('/runs', runDeleteRoute.default(sequelize));
 
 // "/runcases"
-const runCaseIndexRoute = require('./routes/runcases/index')(sequelize);
-const runCaseEditRoute = require('./routes/runcases/edit')(sequelize);
-app.use('/runcases', runCaseIndexRoute);
-app.use('/runcases', runCaseEditRoute);
+import runCaseIndexRoute from './routes/runcases/index.js';
+import runCaseEditRoute from './routes/runcases/edit.js';
+app.use('/runcases', runCaseIndexRoute.default(sequelize));
+app.use('/runcases', runCaseEditRoute.default(sequelize));
 
 // "/members"
-const membersIndexRoute = require('./routes/members/index')(sequelize);
-const membersNewRoute = require('./routes/members/new')(sequelize);
-const membersEditRoute = require('./routes/members/edit')(sequelize);
-const membersDeleteRoute = require('./routes/members/delete')(sequelize);
-const membersCheckRoute = require('./routes/members/check')(sequelize);
-app.use('/members', membersIndexRoute);
-app.use('/members', membersNewRoute);
-app.use('/members', membersEditRoute);
-app.use('/members', membersDeleteRoute);
-app.use('/members', membersCheckRoute);
+import membersIndexRoute from './routes/members/index.js';
+import membersNewRoute from './routes/members/new.js';
+import membersEditRoute from './routes/members/edit.js';
+import membersDeleteRoute from './routes/members/delete.js';
+import membersCheckRoute from './routes/members/check.js';
+app.use('/members', membersIndexRoute.default(sequelize));
+app.use('/members', membersNewRoute.default(sequelize));
+app.use('/members', membersEditRoute.default(sequelize));
+app.use('/members', membersDeleteRoute.default(sequelize));
+app.use('/members', membersCheckRoute.default(sequelize));
 
 // "/home"
-const homeIndexRoute = require('./routes/home/index')(sequelize);
-app.use('/home', homeIndexRoute);
+import homeIndexRoute from './routes/home/index.js';
+app.use('/home', homeIndexRoute.default(sequelize));
 
 if (!process.env.SECRET_KEY) {
   console.log(

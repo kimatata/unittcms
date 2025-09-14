@@ -1,8 +1,8 @@
 import express from 'express';
 import { DataTypes } from 'sequelize';
-import defineUser from '../../models/users.js';
-import authMiddleware from '../../middleware/auth.js';
-import { roles } from './authSettings.js';
+import defineUser from '../../models/users';
+import authMiddleware from '../../middleware/auth';
+import { roles } from './authSettings';
 const router = express.Router();
 
 export default function (sequelize) {
