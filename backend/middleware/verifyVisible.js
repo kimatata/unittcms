@@ -1,11 +1,11 @@
-const { DataTypes } = require('sequelize');
-const defineMember = require('../models/members');
-const defineProject = require('../models/projects');
-const defineFolder = require('../models/folders');
-const defineCase = require('../models/cases');
-const defineRun = require('../models/runs');
+import { DataTypes } from 'sequelize';
+import defineMember from '../models/members';
+import defineProject from '../models/projects';
+import defineFolder from '../models/folders';
+import defineCase from '../models/cases';
+import defineRun from '../models/runs';
 
-function verifyVisibleMiddleware(sequelize) {
+export default function verifyVisibleMiddleware(sequelize) {
   /**
    * Verify user can read project by projectId
    * (have to be called after verifySignedIn() middleware)
@@ -160,5 +160,3 @@ function verifyVisibleMiddleware(sequelize) {
     verifyProjectVisibleFromRunId,
   };
 }
-
-module.exports = verifyVisibleMiddleware;

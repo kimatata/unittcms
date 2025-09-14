@@ -1,12 +1,12 @@
-const { DataTypes } = require('sequelize');
-const { memberRoles } = require('../routes/users/authSettings');
-const defineMember = require('../models/members');
-const defineProject = require('../models/projects');
-const defineFolder = require('../models/folders');
-const defineCase = require('../models/cases');
-const defineRun = require('../models/runs');
+import { DataTypes } from 'sequelize';
+import { memberRoles } from '../routes/users/authSettings';
+import defineMember from '../models/members';
+import defineProject from '../models/projects';
+import defineFolder from '../models/folders';
+import defineCase from '../models/cases';
+import defineRun from '../models/runs';
 
-function verifyEditableMiddleware(sequelize) {
+export default function verifyEditableMiddleware(sequelize) {
   /**
    * Verify user has project
    * (have to be called after verifySignedIn() middleware)
@@ -291,5 +291,3 @@ function verifyEditableMiddleware(sequelize) {
     verifyProjectReporterFromRunId,
   };
 }
-
-module.exports = verifyEditableMiddleware;
