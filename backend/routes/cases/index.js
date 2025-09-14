@@ -2,13 +2,13 @@ import express from 'express';
 const router = express.Router();
 import { DataTypes, Op } from 'sequelize';
 import defineCase from '../../models/cases';
-import authMiddleware from '../../middleware/auth.js';
-import visibilityMiddleware from '../../middleware/verifyVisible';
+import authMiddleware from '../../middleware/auth';
+import visibilityMiddleware from '../../middleware/verifyVisble';
 
 export default function (sequelize) {
   const { verifySignedIn } = authMiddleware(sequelize);
-  const Case = defineCase(sequelize, DataTypes);
   const { verifyProjectVisibleFromFolderId } = visibilityMiddleware(sequelize);
+  const Case = defineCase(sequelize, DataTypes);
 
   router.get('/', verifySignedIn, verifyProjectVisibleFromFolderId, async (req, res) => {
     const { folderId, priority, type, q } = req.query;

@@ -1,11 +1,13 @@
-const express = require('express');
+import express from 'express';
 const router = express.Router();
-const { DataTypes } = require('sequelize');
-const defineCase = require('../../models/cases');
-const defineStep = require('../../models/steps');
-const defineAttachment = require('../../models/attachments');
+import { DataTypes } from 'sequelize';
+import defineCase from '../../models/cases';
+import defineStep from '../../models/steps';
+import defineAttachment from '../../models/attachments';
+import authMiddleware from '../../middleware/auth';
+import visibilityMiddleware from '../../middleware/verifyVisble';
 
-module.exports = function (sequelize) {
+export default function (sequelize) {
   const Case = defineCase(sequelize, DataTypes);
   const Step = defineStep(sequelize, DataTypes);
   const Attachment = defineAttachment(sequelize, DataTypes);
@@ -13,8 +15,8 @@ module.exports = function (sequelize) {
   Step.belongsToMany(Case, { through: 'caseSteps' });
   Case.belongsToMany(Attachment, { through: 'caseAttachments' });
   Attachment.belongsToMany(Case, { through: 'caseAttachments' });
-  const { verifySignedIn } = require('../../middleware/auth')(sequelize);
-  const { verifyProjectVisibleFromCaseId } = require('../../middleware/verifyVisible')(sequelize);
+  const { verifySignedIn } = authMiddleware(sequelize);
+  const { verifyProjectVisibleFromCaseId } = visibilityMiddleware(sequelize);
 
   router.get('/:caseId', verifySignedIn, verifyProjectVisibleFromCaseId, async (req, res) => {
     const caseId = req.params.caseId;
@@ -43,4 +45,4 @@ module.exports = function (sequelize) {
   });
 
   return router;
-};
+}

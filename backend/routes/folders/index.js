@@ -1,11 +1,13 @@
-const express = require('express');
+import express from 'express';
 const router = express.Router();
-const { DataTypes } = require('sequelize');
-const defineFolder = require('../../models/folders');
+import { DataTypes } from 'sequelize';
+import defineFolder from '../../models/folders';
+import authMiddleware from '../../middleware/auth';
+import visibilityMiddleware from '../../middleware/verifyVisible';
 
-module.exports = function (sequelize) {
-  const { verifySignedIn } = require('../../middleware/auth')(sequelize);
-  const { verifyProjectVisibleFromProjectId } = require('../../middleware/verifyVisible')(sequelize);
+export default function (sequelize) {
+  const { verifySignedIn } = authMiddleware(sequelize);
+  const { verifyProjectVisibleFromProjectId } = visibilityMiddleware(sequelize);
   const Folder = defineFolder(sequelize, DataTypes);
 
   router.get('/', verifySignedIn, verifyProjectVisibleFromProjectId, async (req, res) => {
@@ -29,4 +31,4 @@ module.exports = function (sequelize) {
   });
 
   return router;
-};
+}

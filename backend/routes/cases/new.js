@@ -1,7 +1,9 @@
-const express = require('express');
+import express from 'express';
 const router = express.Router();
-const { DataTypes } = require('sequelize');
-const defineCase = require('../../models/cases');
+import { DataTypes } from 'sequelize';
+import defineCase from '../../models/cases';
+import authMiddleware from '../../middleware/auth';
+import editableMiddleware from '../../middleware/verifyEditable';
 
 const requiredFields = ['title', 'state', 'priority', 'type', 'automationStatus', 'template'];
 
@@ -13,9 +15,9 @@ function isEmpty(value) {
   }
 }
 
-module.exports = function (sequelize) {
-  const { verifySignedIn } = require('../../middleware/auth')(sequelize);
-  const { verifyProjectDeveloperFromFolderId } = require('../../middleware/verifyEditable')(sequelize);
+export default function (sequelize) {
+  const { verifySignedIn } = authMiddleware(sequelize);
+  const { verifyProjectDeveloperFromFolderId } = editableMiddleware(sequelize);
   const Case = defineCase(sequelize, DataTypes);
 
   router.post('/', verifySignedIn, verifyProjectDeveloperFromFolderId, async (req, res) => {
@@ -56,4 +58,4 @@ module.exports = function (sequelize) {
   });
 
   return router;
-};
+}

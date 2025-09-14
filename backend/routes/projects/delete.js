@@ -1,13 +1,15 @@
-const express = require('express');
+import express from 'express';
 const router = express.Router();
-const { DataTypes } = require('sequelize');
-const defineProject = require('../../models/projects');
-const defineFolder = require('../../models/folders');
-const defineRun = require('../../models/runs');
+import { DataTypes } from 'sequelize';
+import defineProject from '../../models/projects';
+import defineFolder from '../../models/folders';
+import defineRun from '../../models/runs';
+import authMiddleware from '../../middleware/auth';
+import editableMiddleware from '../../middleware/verifyEditable';
 
-module.exports = function (sequelize) {
-  const { verifySignedIn } = require('../../middleware/auth')(sequelize);
-  const { verifyProjectOwner } = require('../../middleware/verifyEditable')(sequelize);
+export default function (sequelize) {
+  const { verifySignedIn } = authMiddleware(sequelize);
+  const { verifyProjectOwner } = editableMiddleware(sequelize);
   const Project = defineProject(sequelize, DataTypes);
   const Folder = defineFolder(sequelize, DataTypes);
   const Run = defineRun(sequelize, DataTypes);
@@ -38,4 +40,4 @@ module.exports = function (sequelize) {
   });
 
   return router;
-};
+}

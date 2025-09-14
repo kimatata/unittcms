@@ -1,15 +1,17 @@
-const express = require('express');
+import express from 'express';
 const router = express.Router();
-const { DataTypes } = require('sequelize');
-const defineProject = require('../../models/projects');
-const defineFolder = require('../../models/folders');
-const defineCase = require('../../models/cases');
-const defineRun = require('../../models/runs');
-const defineRunCase = require('../../models/runCases');
+import { DataTypes } from 'sequelize';
+import defineProject from '../../models/projects';
+import defineFolder from '../../models/folders';
+import defineCase from '../../models/cases';
+import defineRun from '../../models/runs';
+import defineRunCase from '../../models/runCases';
+import authMiddleware from '../../middleware/auth';
+import visibilityMiddleware from '../../middleware/verifyVisible';
 
-module.exports = function (sequelize) {
-  const { verifySignedIn } = require('../../middleware/auth')(sequelize);
-  const { verifyProjectVisibleFromProjectId } = require('../../middleware/verifyVisible')(sequelize);
+export default function (sequelize) {
+  const { verifySignedIn } = authMiddleware(sequelize);
+  const { verifyProjectVisibleFromProjectId } = visibilityMiddleware(sequelize);
 
   const Project = defineProject(sequelize, DataTypes);
   const Folder = defineFolder(sequelize, DataTypes);
@@ -49,4 +51,4 @@ module.exports = function (sequelize) {
   });
 
   return router;
-};
+}

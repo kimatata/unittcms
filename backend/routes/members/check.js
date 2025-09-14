@@ -1,11 +1,12 @@
-const express = require('express');
+import express from 'express';
 const router = express.Router();
-const { DataTypes } = require('sequelize');
-const defineMember = require('../../models/members');
-const defineProject = require('../../models/projects');
+import { DataTypes } from 'sequelize';
+import defineMember from '../../models/members';
+import defineProject from '../../models/projects';
+import authMiddleware from '../../middleware/auth';
 
-module.exports = function (sequelize) {
-  const { verifySignedIn } = require('../../middleware/auth')(sequelize);
+export default function (sequelize) {
+  const { verifySignedIn } = authMiddleware(sequelize);
   const Member = defineMember(sequelize, DataTypes);
   const Project = defineProject(sequelize, DataTypes);
 
@@ -45,4 +46,4 @@ module.exports = function (sequelize) {
   });
 
   return router;
-};
+}
