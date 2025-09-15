@@ -5,7 +5,7 @@ import { Sequelize, Op } from 'sequelize';
 import casesIndexRoute from './index';
 
 // mock of authentication middleware
-vi.mock('../../middleware/auth', () => ({
+vi.mock('../../middleware/auth.js', () => ({
   default: () => ({
     verifySignedIn: vi.fn((req, res, next) => {
       req.userId = 1;
@@ -13,7 +13,7 @@ vi.mock('../../middleware/auth', () => ({
     }),
   }),
 }));
-vi.mock('../../middleware/verifyVisible', () => ({
+vi.mock('../../middleware/verifyVisible.js', () => ({
   default: () => ({
     verifyProjectVisibleFromFolderId: vi.fn((req, res, next) => {
       next();
@@ -25,7 +25,7 @@ vi.mock('../../middleware/verifyVisible', () => ({
 const mockCase = {
   findAll: vi.fn(),
 };
-vi.mock('../../models/cases', () => ({
+vi.mock('../../models/cases.js', () => ({
   default: () => mockCase,
 }));
 

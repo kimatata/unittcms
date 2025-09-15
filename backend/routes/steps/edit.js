@@ -1,10 +1,10 @@
 import express from 'express';
 const router = express.Router();
 import { DataTypes } from 'sequelize';
-import defineStep from '../../models/steps';
-import defineCaseStep from '../../models/caseSteps';
-import authMiddleware from '../../middleware/auth';
-import visibilityMiddleware from '../../middleware/verifyVisible';
+import defineStep from '../../models/steps.js';
+import defineCaseStep from '../../models/caseSteps.js';
+import authMiddleware from '../../middleware/auth.js';
+import visibilityMiddleware from '../../middleware/verifyVisible.js';
 
 export default function (sequelize) {
   const Step = defineStep(sequelize, DataTypes);

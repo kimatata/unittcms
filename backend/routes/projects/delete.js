@@ -1,11 +1,11 @@
 import express from 'express';
 const router = express.Router();
 import { DataTypes } from 'sequelize';
-import defineProject from '../../models/projects';
-import defineFolder from '../../models/folders';
-import defineRun from '../../models/runs';
-import authMiddleware from '../../middleware/auth';
-import editableMiddleware from '../../middleware/verifyEditable';
+import defineProject from '../../models/projects.js';
+import defineFolder from '../../models/folders.js';
+import defineRun from '../../models/runs.js';
+import authMiddleware from '../../middleware/auth.js';
+import editableMiddleware from '../../middleware/verifyEditable.js';
 
 export default function (sequelize) {
   const { verifySignedIn } = authMiddleware(sequelize);

@@ -1,7 +1,7 @@
 import jwt from 'jsonwebtoken';
 import { DataTypes } from 'sequelize';
-import { roles, defaultDangerKey } from '../routes/users/authSettings';
-import defineUser from '../models/users';
+import { roles, defaultDangerKey } from '../routes/users/authSettings.js';
+import defineUser from '../models/users.js';
 
 export default function authMiddleware(sequelize) {
   /**

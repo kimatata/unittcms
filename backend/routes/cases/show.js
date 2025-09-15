@@ -1,11 +1,11 @@
 import express from 'express';
 const router = express.Router();
 import { DataTypes } from 'sequelize';
-import defineCase from '../../models/cases';
-import defineStep from '../../models/steps';
-import defineAttachment from '../../models/attachments';
-import authMiddleware from '../../middleware/auth';
-import visibilityMiddleware from '../../middleware/verifyVisble';
+import defineCase from '../../models/cases.js';
+import defineStep from '../../models/steps.js';
+import defineAttachment from '../../models/attachments.js';
+import authMiddleware from '../../middleware/auth.js';
+import visibilityMiddleware from '../../middleware/verifyVisible.js';
 
 export default function (sequelize) {
   const Case = defineCase(sequelize, DataTypes);

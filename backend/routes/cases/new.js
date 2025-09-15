@@ -1,9 +1,9 @@
 import express from 'express';
 const router = express.Router();
 import { DataTypes } from 'sequelize';
-import defineCase from '../../models/cases';
-import authMiddleware from '../../middleware/auth';
-import editableMiddleware from '../../middleware/verifyEditable';
+import defineCase from '../../models/cases.js';
+import authMiddleware from '../../middleware/auth.js';
+import editableMiddleware from '../../middleware/verifyEditable.js';
 
 const requiredFields = ['title', 'state', 'priority', 'type', 'automationStatus', 'template'];
 

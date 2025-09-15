@@ -4,8 +4,8 @@ import multer from 'multer';
 import express from 'express';
 const router = express.Router();
 import { DataTypes } from 'sequelize';
-import defineAttachment from '../../models/attachments';
-import defineCaseAttachment from '../../models/caseAttachments';
+import defineAttachment from '../../models/attachments.js';
+import defineCaseAttachment from '../../models/caseAttachments.js';
 
 export default function (sequelize) {
   const Attachment = defineAttachment(sequelize, DataTypes);

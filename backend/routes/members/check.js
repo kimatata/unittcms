@@ -1,9 +1,9 @@
 import express from 'express';
 const router = express.Router();
 import { DataTypes } from 'sequelize';
-import defineMember from '../../models/members';
-import defineProject from '../../models/projects';
-import authMiddleware from '../../middleware/auth';
+import defineMember from '../../models/members.js';
+import defineProject from '../../models/projects.js';
+import authMiddleware from '../../middleware/auth.js';
 
 export default function (sequelize) {
   const { verifySignedIn } = authMiddleware(sequelize);

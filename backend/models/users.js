@@ -1,9 +1,3 @@
-/**
- *
- * @param {import('sequelize').Sequelize} sequelize
- * @param {*} DataTypes
- * @returns
- */
 function defineUser(sequelize, DataTypes) {
   const User = sequelize.define(
     'User',

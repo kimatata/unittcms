@@ -1,9 +1,9 @@
 import express from 'express';
 const router = express.Router();
 import { DataTypes } from 'sequelize';
-import defineRunCase from '../../models/runCases';
-import authMiddleware from '../../middleware/auth';
-import editableMiddleware from '../../middleware/verifyEditable';
+import defineRunCase from '../../models/runCases.js';
+import authMiddleware from '../../middleware/auth.js';
+import editableMiddleware from '../../middleware/verifyEditable.js';
 
 export default function (sequelize) {
   const { verifySignedIn } = authMiddleware(sequelize);

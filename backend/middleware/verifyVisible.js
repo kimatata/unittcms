@@ -1,9 +1,9 @@
 import { DataTypes } from 'sequelize';
-import defineMember from '../models/members';
-import defineProject from '../models/projects';
-import defineFolder from '../models/folders';
-import defineCase from '../models/cases';
-import defineRun from '../models/runs';
+import defineMember from '../models/members.js';
+import defineProject from '../models/projects.js';
+import defineFolder from '../models/folders.js';
+import defineCase from '../models/cases.js';
+import defineRun from '../models/runs.js';
 
 export default function verifyVisibleMiddleware(sequelize) {
   /**

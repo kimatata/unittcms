@@ -1,9 +1,9 @@
 import express from 'express';
 const router = express.Router();
 import { DataTypes } from 'sequelize';
-import defineFolder from '../../models/folders';
-import authMiddleware from '../../middleware/auth';
-import visibilityMiddleware from '../../middleware/verifyVisible';
+import defineFolder from '../../models/folders.js';
+import authMiddleware from '../../middleware/auth.js';
+import visibilityMiddleware from '../../middleware/verifyVisible.js';
 
 export default function (sequelize) {
   const { verifySignedIn } = authMiddleware(sequelize);

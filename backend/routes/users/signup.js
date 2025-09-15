@@ -3,8 +3,8 @@ const router = express.Router();
 import { DataTypes } from 'sequelize';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
-import defineUser from '../../models/users';
-import { roles, defaultDangerKey } from './authSettings';
+import defineUser from '../../models/users.js';
+import { roles, defaultDangerKey } from './authSettings.js';
 
 export default function (sequelize) {
   const User = defineUser(sequelize, DataTypes);

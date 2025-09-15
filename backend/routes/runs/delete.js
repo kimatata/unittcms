@@ -1,11 +1,11 @@
 import express from 'express';
 const router = express.Router();
 import { DataTypes } from 'sequelize';
-import defineRun from '../../models/runs';
-import authMiddleware from '../../middleware/auth';
-import editableMiddleware from '../../middleware/verifyEditable';
+import defineRun from '../../models/runs.js';
+import authMiddleware from '../../middleware/auth.js';
+import editableMiddleware from '../../middleware/verifyEditable.js';
 
-module.exports = function (sequelize) {
+export default function (sequelize) {
   const { verifySignedIn } = authMiddleware(sequelize);
   const { verifyProjectReporterFromRunId } = editableMiddleware(sequelize);
   const Run = defineRun(sequelize, DataTypes);
@@ -26,4 +26,4 @@ module.exports = function (sequelize) {
   });
 
   return router;
-};
+}

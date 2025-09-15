@@ -3,12 +3,12 @@ const router = express.Router();
 import { DataTypes } from 'sequelize';
 import Papa from 'papaparse';
 import { create } from 'xmlbuilder2';
-import defineRun from '../../models/runs';
-import defineRunCase from '../../models/runCases';
-import defineCase from '../../models/runs';
-import defineFolder from '../../models/folders';
-import authMiddleware from '../../middleware/auth';
-import visibilityMiddleware from '../../middleware/verifyVisible';
+import defineRun from '../../models/runs.js';
+import defineRunCase from '../../models/runCases.js';
+import defineCase from '../../models/runs.js';
+import defineFolder from '../../models/folders.js';
+import authMiddleware from '../../middleware/auth.js';
+import visibilityMiddleware from '../../middleware/verifyVisible.js';
 
 export default function (sequelize) {
   const { verifySignedIn } = authMiddleware(sequelize);

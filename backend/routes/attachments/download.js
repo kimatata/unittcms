@@ -3,7 +3,7 @@ import path from 'path';
 import express from 'express';
 const router = express.Router();
 import { DataTypes } from 'sequelize';
-import defineAttachment from '../../models/attachments';
+import defineAttachment from '../../models/attachments.js';
 
 export default function (sequelize) {
   const Attachment = defineAttachment(sequelize, DataTypes);

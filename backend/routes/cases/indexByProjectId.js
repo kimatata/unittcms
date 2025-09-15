@@ -1,12 +1,12 @@
 import express from 'express';
 const router = express.Router();
 import { DataTypes } from 'sequelize';
-import defineProject from '../../models/projects';
-import defineFolder from '../../models/folders';
-import defineCase from '../../models/cases';
-import defineRunCase from '../../models/runCases';
-import authMiddleware from '../../middleware/auth';
-import visibilityMiddleware from '../../middleware/verifyVisble';
+import defineProject from '../../models/projects.js';
+import defineFolder from '../../models/folders.js';
+import defineCase from '../../models/cases.js';
+import defineRunCase from '../../models/runCases.js';
+import authMiddleware from '../../middleware/auth.js';
+import visibilityMiddleware from '../../middleware/verifyVisible.js';
 
 export default function (sequelize) {
   const Project = defineProject(sequelize, DataTypes);

@@ -1,11 +1,11 @@
 import express from 'express';
 const router = express.Router();
 import { DataTypes } from 'sequelize';
-import defineRunCase from '../../models/runCases';
-import authMiddleware from '../../middleware/auth';
-import visibilityMiddleware from '../../middleware/verifyVisible';
+import defineRunCase from '../../models/runCases.js';
+import authMiddleware from '../../middleware/auth.js';
+import visibilityMiddleware from '../../middleware/verifyVisible.js';
 
-module.exports = function (sequelize) {
+export default function (sequelize) {
   const { verifySignedIn } = authMiddleware(sequelize);
   const { verifyProjectVisibleFromRunId } = visibilityMiddleware(sequelize);
   const RunCase = defineRunCase(sequelize, DataTypes);
@@ -31,4 +31,4 @@ module.exports = function (sequelize) {
   });
 
   return router;
-};
+}
