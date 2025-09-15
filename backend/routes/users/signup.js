@@ -1,12 +1,12 @@
-const express = require('express');
+import express from 'express';
 const router = express.Router();
-const { DataTypes } = require('sequelize');
-const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
-const defineUser = require('../../models/users');
-const { roles, defaultDangerKey } = require('./authSettings');
+import { DataTypes } from 'sequelize';
+import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
+import defineUser from '../../models/users.js';
+import { roles, defaultDangerKey } from './authSettings.js';
 
-module.exports = function (sequelize) {
+export default function (sequelize) {
   const User = defineUser(sequelize, DataTypes);
   const secretKey = process.env.SECRET_KEY || defaultDangerKey;
 
@@ -42,4 +42,4 @@ module.exports = function (sequelize) {
   });
 
   return router;
-};
+}

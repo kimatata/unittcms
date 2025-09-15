@@ -1,9 +1,15 @@
+import { createServer as createHttpServer } from 'http';
+import path from 'path';
+import fs from 'fs';
+import { execSync } from 'child_process';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
 // Use express from backend node_modules
-const { createServer: createHttpServer } = require('http');
-const path = require('path');
-const fs = require('fs');
-const { execSync } = require('child_process');
-const express = require('./backend/node_modules/express');
+import expressModule from './backend/node_modules/express/index.js';
+const express = expressModule.default || expressModule;
 
 async function runMigrations() {
   try {
@@ -13,9 +19,7 @@ async function runMigrations() {
       cwd: path.join(__dirname, 'backend'),
       stdio: 'inherit',
     });
-
     console.log('Database migrations completed successfully.');
-
     if (process.env.IS_DEMO === 'true' || process.env.IS_DEMO === '1') {
       console.log('Demo mode detected. Seeding the database...');
       execSync('npx sequelize-cli db:seed:all', {
@@ -30,15 +34,14 @@ async function runMigrations() {
   }
 }
 
-function startServer() {
+async function startServer() {
   try {
     const server = express();
     const httpServer = createHttpServer(server);
 
     // Import the backend app
-    const backendApp = require('./backend/server');
-
-    // Use the backend app for /api routes
+    const backendAppModule = await import('./backend/server.js');
+    const backendApp = backendAppModule.default || backendAppModule;
     server.use('/api', backendApp);
 
     // For Next.js standalone build
@@ -46,21 +49,18 @@ function startServer() {
     const nextServerPath = './node_modules/next/dist/server/next.js';
     if (fs.existsSync(nextServerPath)) {
       // Import Next.js
-      const next = require(nextServerPath);
+      const nextModule = await import(nextServerPath);
+      const next = nextModule.default || nextModule;
 
       // Initialize Next.js app
       const dev = process.env.NODE_ENV !== 'production';
       const nextApp = next({ dev, dir: path.join(__dirname, '.') });
       const handle = nextApp.getRequestHandler();
+      await nextApp.prepare();
+      console.log('nextjs prepared');
 
-      // Prepare Next.js
-      nextApp.prepare().then(() => {
-        console.log('nextjs prepared');
-        // Use Next.js to handle all other routes
-        server.all('*', (req, res) => {
-          return handle(req, res);
-        });
-      });
+      // Use Next.js to handle all other routes
+      server.all('*', (req, res) => handle(req, res));
     } else {
       console.error('Next.js module not found at:', nextServerPath);
       server.all('*', (req, res) => {
@@ -79,9 +79,11 @@ function startServer() {
   }
 }
 
-runMigrations().then(() => {
-  startServer();
-}).catch(error => {
-  console.error('Failed to start application:', error);
-  process.exit(1);
-});
+runMigrations()
+  .then(() => {
+    startServer();
+  })
+  .catch((error) => {
+    console.error('Failed to start application:', error);
+    process.exit(1);
+  });

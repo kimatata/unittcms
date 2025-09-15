@@ -60,4 +60,4 @@ function defineCase(sequelize, DataTypes) {
   return Case;
 }
 
-module.exports = defineCase;
+export default defineCase;

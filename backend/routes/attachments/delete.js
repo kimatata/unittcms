@@ -1,13 +1,17 @@
-const fs = require('fs');
-const path = require('path');
-const express = require('express');
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import express from 'express';
 const router = express.Router();
-const { DataTypes } = require('sequelize');
-const defineAttachment = require('../../models/attachments');
+import { DataTypes } from 'sequelize';
+import defineAttachment from '../../models/attachments.js';
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
-module.exports = function (sequelize) {
+export default function (sequelize) {
   const Attachment = defineAttachment(sequelize, DataTypes);
 
+  // TODO middleware to verify user permission to delete attachment
   router.delete('/:attachmentId', async (req, res) => {
     const attachmentId = req.params.attachmentId;
     const t = await sequelize.transaction();
@@ -41,4 +45,4 @@ module.exports = function (sequelize) {
   });
 
   return router;
-};
+}

@@ -28,4 +28,4 @@ function defineRunCase(sequelize, DataTypes) {
   return RunCase;
 }
 
-module.exports = defineRunCase;
+export default defineRunCase;

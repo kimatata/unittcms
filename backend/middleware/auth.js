@@ -1,9 +1,9 @@
-const jwt = require('jsonwebtoken');
-const { DataTypes } = require('sequelize');
-const { roles, defaultDangerKey } = require('../routes/users/authSettings');
-const defineUser = require('../models/users');
+import jwt from 'jsonwebtoken';
+import { DataTypes } from 'sequelize';
+import { roles, defaultDangerKey } from '../routes/users/authSettings.js';
+import defineUser from '../models/users.js';
 
-function authMiddleware(sequelize) {
+export default function authMiddleware(sequelize) {
   /**
    * Verify user sined in
    *
@@ -53,5 +53,3 @@ function authMiddleware(sequelize) {
     verifyAdmin,
   };
 }
-
-module.exports = authMiddleware;

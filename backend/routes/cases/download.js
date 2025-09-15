@@ -1,13 +1,15 @@
-const express = require('express');
+import express from 'express';
 const router = express.Router();
-const { DataTypes } = require('sequelize');
-const Papa = require('papaparse');
-const defineCase = require('../../models/cases');
+import { DataTypes } from 'sequelize';
+import Papa from 'papaparse';
+import defineCase from '../../models/cases.js';
+import authMiddleware from '../../middleware/auth.js';
+import visibilityMiddleware from '../../middleware/verifyVisible.js';
 
-module.exports = function (sequelize) {
+export default function (sequelize) {
   const Case = defineCase(sequelize, DataTypes);
-  const { verifySignedIn } = require('../../middleware/auth')(sequelize);
-  const { verifyProjectVisibleFromFolderId } = require('../../middleware/verifyVisible')(sequelize);
+  const { verifySignedIn } = authMiddleware(sequelize);
+  const { verifyProjectVisibleFromFolderId } = visibilityMiddleware(sequelize);
 
   router.get('/download', verifySignedIn, verifyProjectVisibleFromFolderId, async (req, res) => {
     const { folderId, type } = req.query;
@@ -51,4 +53,4 @@ module.exports = function (sequelize) {
   });
 
   return router;
-};
+}

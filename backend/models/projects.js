@@ -32,4 +32,4 @@ function defineProject(sequelize, DataTypes) {
   return Project;
 }
 
-module.exports = defineProject;
+export default defineProject;

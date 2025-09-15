@@ -1,14 +1,16 @@
-const express = require('express');
+import express from 'express';
 const router = express.Router();
-const { DataTypes } = require('sequelize');
-const defineStep = require('../../models/steps');
-const defineCaseStep = require('../../models/caseSteps');
+import { DataTypes } from 'sequelize';
+import defineStep from '../../models/steps.js';
+import defineCaseStep from '../../models/caseSteps.js';
+import authMiddleware from '../../middleware/auth.js';
+import editableMiddleware from '../../middleware/verifyEditable.js';
 
-module.exports = function (sequelize) {
+export default function (sequelize) {
   const Step = defineStep(sequelize, DataTypes);
   const CaseStep = defineCaseStep(sequelize, DataTypes);
-  const { verifySignedIn } = require('../../middleware/auth')(sequelize);
-  const { verifyProjectDeveloperFromCaseId } = require('../../middleware/verifyEditable')(sequelize);
+  const { verifySignedIn } = authMiddleware(sequelize);
+  const { verifyProjectDeveloperFromCaseId } = editableMiddleware(sequelize);
 
   router.post('/update', verifySignedIn, verifyProjectDeveloperFromCaseId, async (req, res) => {
     const caseId = req.query.caseId;
@@ -87,4 +89,4 @@ module.exports = function (sequelize) {
   });
 
   return router;
-};
+}

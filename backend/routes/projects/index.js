@@ -1,11 +1,12 @@
-const express = require('express');
+import express from 'express';
 const router = express.Router();
-const { DataTypes, Op } = require('sequelize');
-const defineProject = require('../../models/projects');
-const defineMember = require('../../models/members');
+import { DataTypes, Op } from 'sequelize';
+import defineProject from '../../models/projects.js';
+import defineMember from '../../models/members.js';
+import authMiddleware from '../../middleware/auth.js';
 
-module.exports = function (sequelize) {
-  const { verifySignedIn } = require('../../middleware/auth')(sequelize);
+export default function (sequelize) {
+  const { verifySignedIn } = authMiddleware(sequelize);
   const Project = defineProject(sequelize, DataTypes);
   const Member = defineMember(sequelize, DataTypes);
   Project.hasMany(Member, { foreignKey: 'projectId' });
@@ -49,4 +50,4 @@ module.exports = function (sequelize) {
   });
 
   return router;
-};
+}

@@ -1,12 +1,14 @@
-const express = require('express');
+import express from 'express';
 const router = express.Router();
-const { DataTypes } = require('sequelize');
-const defineMember = require('../../models/members');
-const { memberRoles } = require('../../routes/users/authSettings');
+import { DataTypes } from 'sequelize';
+import defineMember from '../../models/members.js';
+import { memberRoles } from '../../routes/users/authSettings.js';
+import authMiddleware from '../../middleware/auth.js';
+import editableMiddleware from '../../middleware/verifyEditable.js';
 
-module.exports = function (sequelize) {
-  const { verifySignedIn } = require('../../middleware/auth')(sequelize);
-  const { verifyProjectManagerFromProjectId } = require('../../middleware/verifyEditable')(sequelize);
+export default function (sequelize) {
+  const { verifySignedIn } = authMiddleware(sequelize);
+  const { verifyProjectManagerFromProjectId } = editableMiddleware(sequelize);
   const Member = defineMember(sequelize, DataTypes);
 
   router.post('/', verifySignedIn, verifyProjectManagerFromProjectId, async (req, res) => {
@@ -41,4 +43,4 @@ module.exports = function (sequelize) {
   });
 
   return router;
-};
+}
