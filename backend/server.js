@@ -38,11 +38,11 @@ const sequelize = new Sequelize({
 
 // "/"
 import indexRoute from './routes/index.js';
-app.use('/', indexRoute);
+app.use('/', indexRoute());
 
 // "/health"
 import healthIndexRoute from './routes/health/index.js';
-app.use('/health', healthIndexRoute);
+app.use('/health', healthIndexRoute());
 
 // "users"
 import usersIndexRoute from './routes/users/index.js';

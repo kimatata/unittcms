@@ -5,7 +5,7 @@ import Papa from 'papaparse';
 import { create } from 'xmlbuilder2';
 import defineRun from '../../models/runs.js';
 import defineRunCase from '../../models/runCases.js';
-import defineCase from '../../models/runs.js';
+import defineCase from '../../models/cases.js';
 import defineFolder from '../../models/folders.js';
 import authMiddleware from '../../middleware/auth.js';
 import visibilityMiddleware from '../../middleware/verifyVisible.js';
