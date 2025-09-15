@@ -1,5 +1,6 @@
 import express from 'express';
 const router = express.Router();
+import { DataTypes } from 'sequelize';
 import Papa from 'papaparse';
 import { create } from 'xmlbuilder2';
 import defineRun from '../../models/runs';
@@ -10,7 +11,6 @@ import authMiddleware from '../../middleware/auth';
 import visibilityMiddleware from '../../middleware/verifyVisible';
 
 export default function (sequelize) {
-  const { DataTypes } = require('sequelize');
   const { verifySignedIn } = authMiddleware(sequelize);
   const { verifyProjectVisibleFromRunId } = visibilityMiddleware(sequelize);
 
