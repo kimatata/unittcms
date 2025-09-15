@@ -4,13 +4,13 @@ import { DataTypes } from 'sequelize';
 import defineStep from '../../models/steps.js';
 import defineCaseStep from '../../models/caseSteps.js';
 import authMiddleware from '../../middleware/auth.js';
-import visibilityMiddleware from '../../middleware/verifyVisible.js';
+import editableMiddleware from '../../middleware/verifyEditable.js';
 
 export default function (sequelize) {
   const Step = defineStep(sequelize, DataTypes);
   const CaseStep = defineCaseStep(sequelize, DataTypes);
   const { verifySignedIn } = authMiddleware(sequelize);
-  const { verifyProjectDeveloperFromCaseId } = visibilityMiddleware(sequelize);
+  const { verifyProjectDeveloperFromCaseId } = editableMiddleware(sequelize);
 
   router.post('/update', verifySignedIn, verifyProjectDeveloperFromCaseId, async (req, res) => {
     const caseId = req.query.caseId;

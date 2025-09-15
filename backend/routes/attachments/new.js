@@ -1,11 +1,14 @@
 import fs from 'fs';
 import path from 'path';
+import { fileURLToPath } from 'url';
 import multer from 'multer';
 import express from 'express';
 const router = express.Router();
 import { DataTypes } from 'sequelize';
 import defineAttachment from '../../models/attachments.js';
 import defineCaseAttachment from '../../models/caseAttachments.js';
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 export default function (sequelize) {
   const Attachment = defineAttachment(sequelize, DataTypes);
