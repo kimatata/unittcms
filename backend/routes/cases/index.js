@@ -3,7 +3,7 @@ const router = express.Router();
 import { DataTypes, Op } from 'sequelize';
 import defineCase from '../../models/cases';
 import authMiddleware from '../../middleware/auth';
-import visibilityMiddleware from '../../middleware/verifyVisble';
+import visibilityMiddleware from '../../middleware/verifyVisible';
 
 export default function (sequelize) {
   const { verifySignedIn } = authMiddleware(sequelize);
