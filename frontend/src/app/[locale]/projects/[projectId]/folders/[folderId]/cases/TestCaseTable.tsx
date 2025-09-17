@@ -13,7 +13,6 @@ import {
   DropdownItem,
   Selection,
   SortDescriptor,
-  ButtonGroup,
   cn,
   Badge,
   Input,
@@ -91,7 +90,6 @@ export default function TestCaseTable({
     column: 'id',
     direction: 'ascending',
   });
-  const [exportType, setExportType] = useState(new Set(['json']));
   const [showFilter, setShowFilter] = useState(false);
   const [localQueryTerm, setLocalQueryTerm] = useState(queryTerm);
 
@@ -195,10 +193,6 @@ export default function TestCaseTable({
     setSelectedKeys(new Set([]));
   };
 
-  const handleExportTypeChange = (keys: Selection) => {
-    setExportType(new Set(Array.from(keys as Set<string>)));
-  };
-
   const hasActiveFilters = activePriorityFilters.length > 0 || activeTypeFilters.length > 0;
 
   const classNames = useMemo(
@@ -226,6 +220,19 @@ export default function TestCaseTable({
         <div className="flex items-center justify-between p-3 ">
           <h3 className="font-bold">{messages.testCaseList}</h3>
           <div className="flex items-center">
+            {((selectedKeys !== 'all' && selectedKeys.size > 0) || selectedKeys === 'all') && (
+              <Button
+                startContent={<Trash size={16} />}
+                size="sm"
+                variant="bordered"
+                isDisabled={isDisabled}
+                color="danger"
+                className="me-2"
+                onPress={handleDeleteCases}
+              >
+                {messages.delete}
+              </Button>
+            )}
             <Input
               className="me-2"
               variant="bordered"
@@ -254,6 +261,7 @@ export default function TestCaseTable({
             >
               <Button
                 size="sm"
+                variant="bordered"
                 isIconOnly
                 onPress={handleFilterChange}
                 className={cn('me-2', showFilter && 'bg-primary')}
@@ -261,49 +269,31 @@ export default function TestCaseTable({
                 <Filter size={16} className={cn('text-default-500', showFilter && 'text-white')} />
               </Button>
             </Badge>
-            {((selectedKeys !== 'all' && selectedKeys.size > 0) || selectedKeys === 'all') && (
-              <Button
-                startContent={<Trash size={16} />}
-                size="sm"
-                isDisabled={isDisabled}
-                color="danger"
-                className="me-2"
-                onPress={handleDeleteCases}
-              >
-                {messages.delete}
-              </Button>
-            )}
-            <ButtonGroup className="me-2">
-              <Button
-                startContent={<FileDown size={16} />}
-                size="sm"
-                onPress={() => onExportCases(Array.from(exportType)[0])}
-              >
-                {messages.export} {exportType}
-              </Button>
-              <Dropdown placement="bottom-end">
-                <DropdownTrigger>
-                  <Button isIconOnly size="sm">
-                    <ChevronDown size={16} />
-                  </Button>
-                </DropdownTrigger>
-                <DropdownMenu
-                  disallowEmptySelection
-                  aria-label="Export options"
-                  className="max-w-[300px]"
-                  selectedKeys={exportType}
-                  selectionMode="single"
-                  onSelectionChange={handleExportTypeChange}
+            <Dropdown>
+              <DropdownTrigger>
+                <Button
+                  size="sm"
+                  variant="bordered"
+                  className="me-2"
+                  startContent={<FileDown size={16} />}
+                  endContent={<ChevronDown size={16} />}
                 >
-                  <DropdownItem key="json" startContent={<FileJson size={16} />}>
-                    json
-                  </DropdownItem>
-                  <DropdownItem key="csv" startContent={<FileSpreadsheet size={16} />}>
-                    csv
-                  </DropdownItem>
-                </DropdownMenu>
-              </Dropdown>
-            </ButtonGroup>
+                  {messages.export}
+                </Button>
+              </DropdownTrigger>
+              <DropdownMenu aria-label="Export options">
+                <DropdownItem key="json" startContent={<FileJson size={16} />} onPress={() => onExportCases('json')}>
+                  json
+                </DropdownItem>
+                <DropdownItem
+                  key="csv"
+                  startContent={<FileSpreadsheet size={16} />}
+                  onPress={() => onExportCases('csv')}
+                >
+                  csv
+                </DropdownItem>
+              </DropdownMenu>
+            </Dropdown>
             <Button
               startContent={<Plus size={16} />}
               size="sm"

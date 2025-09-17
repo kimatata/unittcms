@@ -90,7 +90,7 @@ export default function TestCaseFilter({
         <h3 className="text-default-500 text-small">{messages.priority}</h3>
         <Dropdown>
           <DropdownTrigger>
-            <Button variant="bordered" endContent={<ChevronDown size={16} />}>
+            <Button size="sm" variant="bordered" endContent={<ChevronDown size={16} />}>
               {selectedPriorities === 'all' || selectedPriorities.size === 0
                 ? messages.selectPriorities
                 : `${selectedPriorities.size} ${messages.selected || 'selected'}`}
@@ -118,7 +118,7 @@ export default function TestCaseFilter({
         <h3 className="text-default-500 text-small">{messages.type}</h3>
         <Dropdown>
           <DropdownTrigger>
-            <Button variant="bordered" endContent={<ChevronDown size={16} />}>
+            <Button size="sm" variant="bordered" endContent={<ChevronDown size={16} />}>
               {selectedTypes === 'all' || selectedTypes.size === 0
                 ? messages.selectTypes || 'Select Types'
                 : `${selectedTypes.size} ${messages.selected || 'selected'}`}
