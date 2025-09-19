@@ -211,7 +211,7 @@
     "selected": "選択済み",
     "type": "タイプ",
     "select_types": "タイプを選択",
-    "search_placeholder": "入力して検索..."
+    "filter_text": "フィルター文字列"
   },
   "Case": {
     "back_to_cases": "テストケース一覧に戻る",

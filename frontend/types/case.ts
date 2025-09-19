@@ -83,7 +83,7 @@ type CasesMessages = {
   selected: string;
   type: string;
   selectTypes: string;
-  searchPlaceholder: string;
+  filterText: string;
 };
 
 type CaseMessages = {

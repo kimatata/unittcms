@@ -13,22 +13,12 @@ import {
   DropdownItem,
   Selection,
   SortDescriptor,
-  cn,
   Badge,
-  Input,
-  Spinner,
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
 } from '@heroui/react';
-import {
-  Plus,
-  MoreVertical,
-  Trash,
-  FileDown,
-  ChevronDown,
-  Filter,
-  FileJson,
-  FileSpreadsheet,
-  SearchIcon,
-} from 'lucide-react';
+import { Plus, MoreVertical, Trash, FileDown, ChevronDown, Filter, FileJson, FileSpreadsheet } from 'lucide-react';
 import TestCaseFilter from './TestCaseFilter';
 import { Link } from '@/src/i18n/routing';
 import { CaseType, CasesMessages } from '@/types/case';
@@ -116,10 +106,6 @@ export default function TestCaseTable({
 
   const handleDeleteCase = (deleteCaseId: number) => {
     onDeleteCase(deleteCaseId);
-  };
-
-  const handleFilterChange = () => {
-    setShowFilter(!showFilter);
   };
 
   const handleQueryChange = (value: string) => {
@@ -233,7 +219,7 @@ export default function TestCaseTable({
                 {messages.delete}
               </Button>
             )}
-            <Input
+            {/* <Input
               className="me-2"
               variant="bordered"
               classNames={{
@@ -250,25 +236,36 @@ export default function TestCaseTable({
               onValueChange={handleQueryChange}
               aria-label={messages.searchPlaceholder}
               maxLength={100}
-            />
-            <Badge
-              color="warning"
-              content=""
-              isInvisible={!hasActiveFilters}
-              shape="circle"
-              size="sm"
-              placement="bottom-left"
-            >
-              <Button
+            /> */}
+            <Popover placement="bottom" isOpen={showFilter} onOpenChange={(open) => setShowFilter(open)}>
+              <Badge
+                color="warning"
+                content=""
+                isInvisible={!hasActiveFilters}
+                shape="circle"
                 size="sm"
-                variant="bordered"
-                isIconOnly
-                onPress={handleFilterChange}
-                className={cn('me-2', showFilter && 'bg-primary')}
+                placement="bottom-left"
               >
-                <Filter size={16} className={cn('text-default-500', showFilter && 'text-white')} />
-              </Button>
-            </Badge>
+                <PopoverTrigger>
+                  <Button size="sm" variant="bordered" isIconOnly className="me-2">
+                    <Filter size={16} />
+                  </Button>
+                </PopoverTrigger>
+              </Badge>
+              <PopoverContent>
+                <TestCaseFilter
+                  messages={messages}
+                  priorityMessages={priorityMessages}
+                  testTypeMessages={testTypeMessages}
+                  isSearching={isSearching}
+                  localQueryTerm={localQueryTerm}
+                  activePriorityFilters={activePriorityFilters}
+                  activeTypeFilters={activeTypeFilters}
+                  onQueryChange={handleQueryChange}
+                  onFilterChange={onFilterChange}
+                />
+              </PopoverContent>
+            </Popover>
             <Dropdown>
               <DropdownTrigger>
                 <Button
@@ -305,17 +302,6 @@ export default function TestCaseTable({
             </Button>
           </div>
         </div>
-        {showFilter && (
-          <TestCaseFilter
-            messages={messages}
-            priorityMessages={priorityMessages}
-            testTypeMessages={testTypeMessages}
-            activePriorityFilters={activePriorityFilters}
-            activeTypeFilters={activeTypeFilters}
-            onFilterChange={onFilterChange}
-            handleFilterChange={handleFilterChange}
-          />
-        )}
       </div>
 
       <Table
