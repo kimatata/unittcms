@@ -222,40 +222,42 @@ export default function RunEditor({
           <h3 className="font-bold ms-2">{testRun.name}</h3>
         </div>
         <div className="flex items-center">
-          <ButtonGroup className="me-2">
-            <Button
-              startContent={<FileDown size={16} />}
-              size="sm"
-              onPress={() => exportRun(tokenContext.token.access_token, Number(testRun.id), Array.from(exportType)[0])}
-            >
-              {messages.export} {exportType}
-            </Button>
-            <Dropdown placement="bottom-end">
-              <DropdownTrigger>
-                <Button isIconOnly size="sm">
-                  <ChevronDown size={16} />
-                </Button>
-              </DropdownTrigger>
-              <DropdownMenu
-                disallowEmptySelection
-                aria-label="Export options"
-                className="max-w-[300px]"
-                selectedKeys={exportType}
-                selectionMode="single"
-                onSelectionChange={handleExportTypeChange}
+          <Dropdown placement="bottom-end">
+            <DropdownTrigger>
+              <Button
+                variant="bordered"
+                size="sm"
+                className="me-2"
+                startContent={<FileDown size={16} />}
+                endContent={<ChevronDown size={16} />}
               >
-                <DropdownItem key="xml" startContent={<FileCode size={16} />}>
-                  xml
-                </DropdownItem>
-                <DropdownItem key="json" startContent={<FileJson size={16} />}>
-                  json
-                </DropdownItem>
-                <DropdownItem key="csv" startContent={<FileSpreadsheet size={16} />}>
-                  csv
-                </DropdownItem>
-              </DropdownMenu>
-            </Dropdown>
-          </ButtonGroup>
+                {messages.export}
+              </Button>
+            </DropdownTrigger>
+            <DropdownMenu disallowEmptySelection aria-label="Export options">
+              <DropdownItem
+                key="xml"
+                startContent={<FileCode size={16} />}
+                onPress={() => exportRun(tokenContext.token.access_token, Number(testRun.id), 'xml')}
+              >
+                xml
+              </DropdownItem>
+              <DropdownItem
+                key="json"
+                startContent={<FileJson size={16} />}
+                onPress={() => exportRun(tokenContext.token.access_token, Number(testRun.id), 'json')}
+              >
+                json
+              </DropdownItem>
+              <DropdownItem
+                key="csv"
+                startContent={<FileSpreadsheet size={16} />}
+                onPress={() => exportRun(tokenContext.token.access_token, Number(testRun.id), 'csv')}
+              >
+                csv
+              </DropdownItem>
+            </DropdownMenu>
+          </Dropdown>
           <Button
             startContent={
               <Badge isInvisible={!isDirty} color="danger" size="sm" content="" shape="circle">
