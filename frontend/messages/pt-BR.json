@@ -204,13 +204,13 @@
     "case_description": "Descrição do Caso de Teste",
     "create": "Criar",
     "please_enter": "Por favor, insira o título do caso de teste",
+    "filter": "Filtrar",
     "clear_all": "Limpar tudo",
     "apply": "Aplicar",
     "select_priorities": "Selecionar prioridades",
     "selected": "Selecionado",
     "type": "Tipo",
-    "select_types": "Selecionar tipos",
-    "search_placeholder": "Digite para buscar..."
+    "select_types": "Selecionar tipos"
   },
   "Case": {
     "back_to_cases": "Voltar para os casos de teste",

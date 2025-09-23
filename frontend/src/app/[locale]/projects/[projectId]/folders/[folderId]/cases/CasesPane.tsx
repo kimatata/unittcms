@@ -32,19 +32,24 @@ export default function CasesPane({
 }: Props) {
   const [cases, setCases] = useState<CaseType[]>([]);
   const [isCaseDialogOpen, setIsCaseDialogOpen] = useState(false);
+  const [titleFilter, setTitleFilter] = useState('');
   const [priorityFilter, setPriorityFilter] = useState<number[]>([]);
   const [typeFilter, setTypeFilter] = useState<number[]>([]);
-  const [queryTerm, setQueryTerm] = useState('');
   const [isDeleteConfirmDialogOpen, setIsDeleteConfirmDialogOpen] = useState(false);
   const [deleteCaseIds, setDeleteCaseIds] = useState<number[]>([]);
-  const [isSearching, setIsSearching] = useState(false);
 
   const context = useContext(TokenContext);
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  const updateUrlParams = (updates: { priority?: number[]; type?: number[]; q?: string }) => {
+  const updateUrlParams = (updates: { title?: string; priority?: number[]; type?: number[] }) => {
     const currentParams = new URLSearchParams(searchParams.toString());
+
+    if (updates.title) {
+      currentParams.set('title', updates.title);
+    } else {
+      currentParams.delete('title');
+    }
 
     if (updates.priority && updates.priority.length > 0) {
       currentParams.set('priority', updates.priority.join(','));
@@ -58,12 +63,6 @@ export default function CasesPane({
       currentParams.delete('type');
     }
 
-    if (updates.q) {
-      currentParams.set('q', updates.q);
-    } else {
-      currentParams.delete('q');
-    }
-
     const newUrl = `${window.location.pathname}?${currentParams.toString()}`;
     router.push(newUrl, { scroll: false });
   };
@@ -72,27 +71,25 @@ export default function CasesPane({
     async function fetchDataEffect() {
       if (!context.isSignedIn()) return;
 
+      const titleParam = searchParams.get('title') || '';
       const priorityParam = parseQueryParam(searchParams.get('priority'));
       const typeParam = parseQueryParam(searchParams.get('type'));
-      const queryParam = searchParams.get('q') || '';
 
+      setTitleFilter(titleParam);
       setPriorityFilter(priorityParam);
       setTypeFilter(typeParam);
-      setQueryTerm(queryParam);
 
       try {
         const data = await fetchCases(
           context.token.access_token,
           Number(folderId),
+          titleParam || undefined,
           priorityParam.length > 0 ? priorityParam : undefined,
-          typeParam.length > 0 ? typeParam : undefined,
-          queryParam || undefined
+          typeParam.length > 0 ? typeParam : undefined
         );
         setCases(data);
       } catch (error: unknown) {
         logError('Error fetching cases:', error);
-      } finally {
-        setIsSearching(false);
       }
     }
 
@@ -134,18 +131,11 @@ export default function CasesPane({
     await exportCases(context.token.access_token, Number(folderId), type);
   };
 
-  const handleFilterChange = (priorities: number[], types: number[]) => {
+  const handleFilterChange = (title: string, priorities: number[], types: number[]) => {
+    setTitleFilter(title);
     setPriorityFilter(priorities);
     setTypeFilter(types);
-    updateUrlParams({ priority: priorities, type: types, q: queryTerm });
-  };
-
-  const handleQueryChange = (q: string) => {
-    setQueryTerm(q);
-    if (q.trim()) {
-      setIsSearching(true);
-    }
-    updateUrlParams({ priority: priorityFilter, type: typeFilter, q });
+    updateUrlParams({ title: title, priority: priorities, type: types });
   };
 
   return (
@@ -159,15 +149,13 @@ export default function CasesPane({
         onDeleteCases={onDeleteCases}
         onExportCases={onExportCases}
         onFilterChange={handleFilterChange}
-        onQueryChange={handleQueryChange}
+        activeTitleFilter={titleFilter}
         activePriorityFilters={priorityFilter}
         activeTypeFilters={typeFilter}
         messages={messages}
         priorityMessages={priorityMessages}
         testTypeMessages={testTypeMessages}
         locale={locale}
-        queryTerm={queryTerm}
-        isSearching={isSearching}
       />
 
       <CaseDialog isOpen={isCaseDialogOpen} onCancel={closeDialog} onSubmit={onSubmit} messages={messages} />

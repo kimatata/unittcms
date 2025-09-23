@@ -1,4 +1,4 @@
-import { useState, useMemo, useCallback, ReactNode, useEffect } from 'react';
+import { useState, useMemo, useCallback, ReactNode } from 'react';
 import {
   Table,
   TableHeader,
@@ -13,22 +13,12 @@ import {
   DropdownItem,
   Selection,
   SortDescriptor,
-  cn,
   Badge,
-  Input,
-  Spinner,
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
 } from '@heroui/react';
-import {
-  Plus,
-  MoreVertical,
-  Trash,
-  FileDown,
-  ChevronDown,
-  Filter,
-  FileJson,
-  FileSpreadsheet,
-  SearchIcon,
-} from 'lucide-react';
+import { Plus, MoreVertical, Trash, FileDown, ChevronDown, Filter, FileJson, FileSpreadsheet } from 'lucide-react';
 import TestCaseFilter from './TestCaseFilter';
 import { Link } from '@/src/i18n/routing';
 import { CaseType, CasesMessages } from '@/types/case';
@@ -36,7 +26,6 @@ import { PriorityMessages } from '@/types/priority';
 import { TestTypeMessages } from '@/types/testType';
 import TestCasePriority from '@/components/TestCasePriority';
 import { LocaleCodeType } from '@/types/locale';
-import useDebounce from '@/utils/useDebounce';
 import { highlightSearchTerm } from '@/utils/highlightSearchTerm';
 
 type Props = {
@@ -47,16 +36,14 @@ type Props = {
   onDeleteCase: (caseId: number) => void;
   onDeleteCases: (caseIds: number[]) => void;
   onExportCases: (type: string) => void;
-  onFilterChange: (priorities: number[], types: number[]) => void;
-  onQueryChange: (q: string) => void;
-  queryTerm: string;
+  onFilterChange: (query: string, priorities: number[], types: number[]) => void;
+  activeTitleFilter: string;
   activePriorityFilters: number[];
   activeTypeFilters: number[];
   messages: CasesMessages;
   priorityMessages: PriorityMessages;
   testTypeMessages: TestTypeMessages;
   locale: LocaleCodeType;
-  isSearching: boolean;
 };
 
 export default function TestCaseTable({
@@ -68,15 +55,13 @@ export default function TestCaseTable({
   onDeleteCases,
   onExportCases,
   onFilterChange,
-  onQueryChange,
+  activeTitleFilter,
   activePriorityFilters,
   activeTypeFilters,
   messages,
   priorityMessages,
   testTypeMessages,
   locale,
-  queryTerm,
-  isSearching,
 }: Props) {
   const headerColumns = [
     { name: messages.id, uid: 'id', sortable: true },
@@ -91,15 +76,6 @@ export default function TestCaseTable({
     direction: 'ascending',
   });
   const [showFilter, setShowFilter] = useState(false);
-  const [localQueryTerm, setLocalQueryTerm] = useState(queryTerm);
-
-  const debouncedQuery = useDebounce((value: unknown) => {
-    onQueryChange(value as string);
-  }, 500);
-
-  useEffect(() => {
-    setLocalQueryTerm(queryTerm);
-  }, [queryTerm]);
 
   const sortedItems = useMemo(() => {
     if (cases.length === 0) {
@@ -116,17 +92,6 @@ export default function TestCaseTable({
 
   const handleDeleteCase = (deleteCaseId: number) => {
     onDeleteCase(deleteCaseId);
-  };
-
-  const handleFilterChange = () => {
-    setShowFilter(!showFilter);
-  };
-
-  const handleQueryChange = (value: string) => {
-    setLocalQueryTerm(value);
-    if (value.length >= 2 || value.length === 0) {
-      debouncedQuery(value);
-    }
   };
 
   const renderCell = useCallback(
@@ -148,7 +113,7 @@ export default function TestCaseTable({
             >
               {highlightSearchTerm({
                 text: cellValue as string,
-                searchTerm: localQueryTerm,
+                searchTerm: activeTitleFilter,
               })}
             </Button>
           );
@@ -179,7 +144,7 @@ export default function TestCaseTable({
       }
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [localQueryTerm]
+    [activeTitleFilter]
   );
 
   const handleDeleteCases = () => {
@@ -193,7 +158,7 @@ export default function TestCaseTable({
     setSelectedKeys(new Set([]));
   };
 
-  const hasActiveFilters = activePriorityFilters.length > 0 || activeTypeFilters.length > 0;
+  const activeFilterNum = (activeTitleFilter ? 1 : 0) + activePriorityFilters.length + activeTypeFilters.length;
 
   const classNames = useMemo(
     () => ({
@@ -233,42 +198,35 @@ export default function TestCaseTable({
                 {messages.delete}
               </Button>
             )}
-            <Input
-              className="me-2"
-              variant="bordered"
-              classNames={{
-                base: 'max-w-full sm:max-w-[12rem] h-8',
-                mainWrapper: 'h-full',
-                input: 'text-small',
-              }}
-              placeholder={messages.searchPlaceholder}
-              size="sm"
-              startContent={<SearchIcon size={18} />}
-              endContent={isSearching && <Spinner size="sm" />}
-              type="search"
-              value={localQueryTerm}
-              onValueChange={handleQueryChange}
-              aria-label={messages.searchPlaceholder}
-              maxLength={100}
-            />
-            <Badge
-              color="warning"
-              content=""
-              isInvisible={!hasActiveFilters}
-              shape="circle"
-              size="sm"
-              placement="bottom-left"
-            >
-              <Button
-                size="sm"
-                variant="bordered"
-                isIconOnly
-                onPress={handleFilterChange}
-                className={cn('me-2', showFilter && 'bg-primary')}
+            <Popover placement="bottom" isOpen={showFilter} onOpenChange={(open) => setShowFilter(open)}>
+              <Badge
+                color="danger"
+                content={activeFilterNum}
+                isInvisible={activeFilterNum === 0}
+                shape="circle"
+                placement="top-left"
               >
-                <Filter size={16} className={cn('text-default-500', showFilter && 'text-white')} />
-              </Button>
-            </Badge>
+                <PopoverTrigger>
+                  <Button startContent={<Filter size={16} />} size="sm" variant="bordered" className="me-2">
+                    {messages.filter}
+                  </Button>
+                </PopoverTrigger>
+              </Badge>
+              <PopoverContent>
+                <TestCaseFilter
+                  messages={messages}
+                  priorityMessages={priorityMessages}
+                  testTypeMessages={testTypeMessages}
+                  activeTitleFilter={activeTitleFilter}
+                  activePriorityFilters={activePriorityFilters}
+                  activeTypeFilters={activeTypeFilters}
+                  onFilterChange={(newTitleFilter, newPriorityFilters, newTypeFilters) => {
+                    setShowFilter(false);
+                    onFilterChange(newTitleFilter, newPriorityFilters, newTypeFilters);
+                  }}
+                />
+              </PopoverContent>
+            </Popover>
             <Dropdown>
               <DropdownTrigger>
                 <Button
@@ -305,17 +263,6 @@ export default function TestCaseTable({
             </Button>
           </div>
         </div>
-        {showFilter && (
-          <TestCaseFilter
-            messages={messages}
-            priorityMessages={priorityMessages}
-            testTypeMessages={testTypeMessages}
-            activePriorityFilters={activePriorityFilters}
-            activeTypeFilters={activeTypeFilters}
-            onFilterChange={onFilterChange}
-            handleFilterChange={handleFilterChange}
-          />
-        )}
       </div>
 
       <Table

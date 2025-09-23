@@ -77,13 +77,13 @@ type CasesMessages = {
   caseDescription: string;
   create: string;
   pleaseEnter: string;
+  filter: string;
   clearAll: string;
   apply: string;
   selectPriorities: string;
   selected: string;
   type: string;
   selectTypes: string;
-  searchPlaceholder: string;
 };
 
 type CaseMessages = {

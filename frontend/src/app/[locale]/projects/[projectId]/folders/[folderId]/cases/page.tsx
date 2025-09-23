@@ -34,12 +34,12 @@ export default function Page({ params }: { params: { projectId: string; folderId
     create: t('create'),
     pleaseEnter: t('please_enter'),
     apply: t('apply'),
+    filter: t('filter'),
     clearAll: t('clear_all'),
     selectPriorities: t('select_priorities'),
     selected: t('selected'),
     type: t('type'),
     selectTypes: t('select_types'),
-    searchPlaceholder: t('search_placeholder'),
   };
 
   const priorityTranslation = useTranslations('Priority');
