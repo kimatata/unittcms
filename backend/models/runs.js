@@ -34,4 +34,4 @@ function defineRun(sequelize, DataTypes) {
   return Run;
 }
 
-module.exports = defineRun;
+export default defineRun;

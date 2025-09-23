@@ -1,17 +1,18 @@
-const express = require('express');
+import express from 'express';
 const router = express.Router();
-const Papa = require('papaparse');
-const { create } = require('xmlbuilder2');
+import { DataTypes } from 'sequelize';
+import Papa from 'papaparse';
+import { create } from 'xmlbuilder2';
+import defineRun from '../../models/runs.js';
+import defineRunCase from '../../models/runCases.js';
+import defineCase from '../../models/cases.js';
+import defineFolder from '../../models/folders.js';
+import authMiddleware from '../../middleware/auth.js';
+import visibilityMiddleware from '../../middleware/verifyVisible.js';
 
-const defineRun = require('../../models/runs');
-const defineRunCase = require('../../models/runCases');
-const defineCase = require('../../models/cases');
-const defineFolder = require('../../models/folders');
-
-module.exports = function (sequelize) {
-  const { DataTypes } = require('sequelize');
-  const { verifySignedIn } = require('../../middleware/auth')(sequelize);
-  const { verifyProjectVisibleFromRunId } = require('../../middleware/verifyVisible')(sequelize);
+export default function (sequelize) {
+  const { verifySignedIn } = authMiddleware(sequelize);
+  const { verifyProjectVisibleFromRunId } = visibilityMiddleware(sequelize);
 
   const Run = defineRun(sequelize, DataTypes);
   const RunCase = defineRunCase(sequelize, DataTypes);
@@ -123,4 +124,4 @@ module.exports = function (sequelize) {
   });
 
   return router;
-};
+}

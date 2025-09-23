@@ -26,8 +26,24 @@ async function fetchCase(jwt: string, caseId: number) {
   }
 }
 
-async function fetchCases(jwt: string, folderId: number) {
-  const url = `${apiServer}/cases?folderId=${folderId}`;
+async function fetchCases(jwt: string, folderId: number, title?: string, priority?: number[], type?: number[]) {
+  const queryParams = [`folderId=${folderId}`];
+
+  if (title) {
+    queryParams.push(`title=${title}`);
+  }
+
+  if (priority && priority.length > 0) {
+    queryParams.push(`priority=${priority.join(',')}`);
+  }
+
+  if (type && type.length > 0) {
+    queryParams.push(`type=${type.join(',')}`);
+  }
+
+  const query = queryParams.length > 0 ? `?${queryParams.join('&')}` : '';
+
+  const url = `${apiServer}/cases${query}`;
 
   try {
     const response = await fetch(url, {
@@ -43,9 +59,10 @@ async function fetchCases(jwt: string, folderId: number) {
     }
 
     const data = await response.json();
-    return data;
+    return data || [];
   } catch (error: unknown) {
     logError('Error fetching data', error);
+    return [];
   }
 }
 

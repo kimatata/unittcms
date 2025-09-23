@@ -2,6 +2,7 @@
   "name": "unittcms",
   "version": "1.0.0",
   "private": true,
+  "type": "module",
   "scripts": {
     "format:check": "prettier --check frontend/**/*.{js,ts,jsx,tsx,json} backend/**/*.{js,ts,json}",
     "format": "prettier --write frontend/**/*.{js,ts,jsx,tsx,json} backend/**/*.{js,ts,json}",
@@ -29,7 +30,7 @@
     "prettier": "^3.3.3",
     "sequelize": "^6.37.4",
     "sqlite3": "^5.1.7",
-    "supertest": "^7.0.0",
+    "supertest": "^7.1.4",
     "typescript-eslint": "^8.24.1",
     "vitest": "^1.6.0"
   }

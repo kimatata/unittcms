@@ -19,4 +19,4 @@ function defineStep(sequelize, DataTypes) {
   return Step;
 }
 
-module.exports = defineStep;
+export default defineStep;

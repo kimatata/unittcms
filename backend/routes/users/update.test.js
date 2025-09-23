@@ -3,13 +3,13 @@ import request from 'supertest';
 import express from 'express';
 import { Sequelize } from 'sequelize';
 import updateRoute from './update';
-import { roles } from './authSettings';
+import { roles } from './authSettings.js';
 
 const adminRoleIndex = roles.findIndex((entry) => entry.uid === 'administrator');
 const userRoleIndex = roles.findIndex((entry) => entry.uid === 'user');
 
 // mock of authentication middleware
-vi.mock('../../middleware/auth', () => ({
+vi.mock('../../middleware/auth.js', () => ({
   default: () => ({
     verifySignedIn: vi.fn((req, res, next) => {
       req.userId = 1; // Mock user ID
@@ -27,7 +27,7 @@ const mockUser = {
   count: vi.fn(),
   update: vi.fn(),
 };
-vi.mock('../../models/users', () => ({
+vi.mock('../../models/users.js', () => ({
   default: () => mockUser,
 }));
 

@@ -2,6 +2,7 @@ import { Button } from '@heroui/react';
 import { ChevronDown, ChevronRight, Folder, Plus } from 'lucide-react';
 import { NodeApi } from 'react-arborist';
 import { useContext } from 'react';
+import { useSearchParams } from 'next/navigation';
 import FolderEditMenu from './FolderEditMenu';
 
 import { FolderType, FoldersMessages, TreeNodeData } from '@/types/folder';
@@ -33,6 +34,7 @@ export default function FolderItem({
   onDeleteClick,
 }: FolderItemProps) {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const context = useContext(TokenContext);
   const isSelected = selectedFolder && node.data.folderData.id === selectedFolder.id;
 
@@ -69,11 +71,18 @@ export default function FolderItem({
     </>
   );
 
+  const handleClick = () => {
+    const currentParams = new URLSearchParams(searchParams.toString());
+    const queryString = currentParams.toString();
+    const url = `/projects/${projectId}/folders/${node.data.folderData.id}/cases${queryString ? `?${queryString}` : ''}`;
+    router.push(url, { locale });
+  };
+
   return (
     <TreeItem
       style={style}
       isSelected={isSelected}
-      onClick={() => router.push(`/projects/${projectId}/folders/${node.data.folderData.id}/cases`, { locale })}
+      onClick={() => handleClick()}
       toggleButton={toggleButton}
       icon={<Folder size={20} color="#F7C24E" fill="#F7C24E" className="flex-shrink-0" />}
       label={node.data.name}

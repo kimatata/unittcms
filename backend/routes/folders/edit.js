@@ -1,11 +1,13 @@
-const express = require('express');
+import express from 'express';
 const router = express.Router();
-const { DataTypes } = require('sequelize');
-const defineFolder = require('../../models/folders');
+import { DataTypes } from 'sequelize';
+import defineFolder from '../../models/folders.js';
+import authMiddleware from '../../middleware/auth.js';
+import editableMiddleware from '../../middleware/verifyEditable.js';
 
-module.exports = function (sequelize) {
-  const { verifySignedIn } = require('../../middleware/auth')(sequelize);
-  const { verifyProjectDeveloperFromFolderId } = require('../../middleware/verifyEditable')(sequelize);
+export default function (sequelize) {
+  const { verifySignedIn } = authMiddleware(sequelize);
+  const { verifyProjectDeveloperFromFolderId } = editableMiddleware(sequelize);
   const Folder = defineFolder(sequelize, DataTypes);
 
   router.put('/:folderId', verifySignedIn, verifyProjectDeveloperFromFolderId, async (req, res) => {
@@ -30,4 +32,4 @@ module.exports = function (sequelize) {
   });
 
   return router;
-};
+}

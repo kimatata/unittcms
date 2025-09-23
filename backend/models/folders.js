@@ -37,4 +37,4 @@ function defineFolder(sequelize, DataTypes) {
   return Folder;
 }
 
-module.exports = defineFolder;
+export default defineFolder;

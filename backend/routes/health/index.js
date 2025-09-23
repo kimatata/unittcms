@@ -1,10 +1,10 @@
-const express = require('express');
+import express from 'express';
 const router = express.Router();
 
-module.exports = function () {
+export default function () {
   router.get('/', async (req, res) => {
     res.json({ status: 'ok' });
   });
 
   return router;
-};
+}

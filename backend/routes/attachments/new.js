@@ -1,13 +1,16 @@
-const fs = require('fs');
-const path = require('path');
-const express = require('express');
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import multer from 'multer';
+import express from 'express';
 const router = express.Router();
-const multer = require('multer');
-const { DataTypes } = require('sequelize');
-const defineAttachment = require('../../models/attachments');
-const defineCaseAttachment = require('../../models/caseAttachments');
+import { DataTypes } from 'sequelize';
+import defineAttachment from '../../models/attachments.js';
+import defineCaseAttachment from '../../models/caseAttachments.js';
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
-module.exports = function (sequelize) {
+export default function (sequelize) {
   const Attachment = defineAttachment(sequelize, DataTypes);
   const CaseAttachment = defineCaseAttachment(sequelize, DataTypes);
 
@@ -46,6 +49,7 @@ module.exports = function (sequelize) {
 
   const upload = multer({ storage });
 
+  // TODO middleware to verify user permission to upload files
   router.post('/', upload.array('files', 10), async (req, res) => {
     const t = await sequelize.transaction();
     try {
@@ -79,4 +83,4 @@ module.exports = function (sequelize) {
   });
 
   return router;
-};
+}

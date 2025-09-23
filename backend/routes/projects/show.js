@@ -1,12 +1,14 @@
-const express = require('express');
+import express from 'express';
 const router = express.Router();
-const { DataTypes } = require('sequelize');
-const defineProject = require('../../models/projects');
-const defineFolder = require('../../models/folders');
+import { DataTypes } from 'sequelize';
+import defineProject from '../../models/projects.js';
+import defineFolder from '../../models/folders.js';
+import authMiddleware from '../../middleware/auth.js';
+import visibilityMiddleware from '../../middleware/verifyVisible.js';
 
-module.exports = function (sequelize) {
-  const { verifySignedIn } = require('../../middleware/auth')(sequelize);
-  const { verifyProjectVisibleFromProjectId } = require('../../middleware/verifyVisible')(sequelize);
+export default function (sequelize) {
+  const { verifySignedIn } = authMiddleware(sequelize);
+  const { verifyProjectVisibleFromProjectId } = visibilityMiddleware(sequelize);
   const Project = defineProject(sequelize, DataTypes);
   const Folder = defineFolder(sequelize, DataTypes);
   Project.hasMany(Folder, { foreignKey: 'projectId' });
@@ -36,4 +38,4 @@ module.exports = function (sequelize) {
   });
 
   return router;
-};
+}

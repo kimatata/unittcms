@@ -61,11 +61,11 @@ COPY backend/package.json backend/package-lock.json* ./
 RUN npm ci
 WORKDIR /app
 
-# Copy custom combined_server.js that combines frontend and backend
-COPY combined_server.js ./
+# Copy custom entrypoint.js that combines frontend and backend
+COPY entrypoint.js ./
 
 # Expose the port
 EXPOSE 8000
 
 # Run database migrations and start the combined server
-CMD ["node", "combined_server.js"]
+CMD ["node", "entrypoint.js"]

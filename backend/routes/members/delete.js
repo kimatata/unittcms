@@ -1,11 +1,13 @@
-const express = require('express');
+import express from 'express';
 const router = express.Router();
-const { DataTypes } = require('sequelize');
-const defineMember = require('../../models/members');
+import { DataTypes } from 'sequelize';
+import defineMember from '../../models/members.js';
+import authMiddleware from '../../middleware/auth.js';
+import editableMiddleware from '../../middleware/verifyEditable.js';
 
-module.exports = function (sequelize) {
-  const { verifySignedIn } = require('../../middleware/auth')(sequelize);
-  const { verifyProjectManagerFromProjectId } = require('../../middleware/verifyEditable')(sequelize);
+export default function (sequelize) {
+  const { verifySignedIn } = authMiddleware(sequelize);
+  const { verifyProjectManagerFromProjectId } = editableMiddleware(sequelize);
   const Member = defineMember(sequelize, DataTypes);
 
   router.delete('/', verifySignedIn, verifyProjectManagerFromProjectId, async (req, res) => {
@@ -34,4 +36,4 @@ module.exports = function (sequelize) {
   });
 
   return router;
-};
+}

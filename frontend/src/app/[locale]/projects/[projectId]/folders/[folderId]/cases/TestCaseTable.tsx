@@ -13,14 +13,20 @@ import {
   DropdownItem,
   Selection,
   SortDescriptor,
-  ButtonGroup,
+  Badge,
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
 } from '@heroui/react';
-import { Plus, MoreVertical, Trash, FileDown, ChevronDown, FileJson, FileSpreadsheet } from 'lucide-react';
+import { Plus, MoreVertical, Trash, FileDown, ChevronDown, Filter, FileJson, FileSpreadsheet } from 'lucide-react';
+import TestCaseFilter from './TestCaseFilter';
 import { Link } from '@/src/i18n/routing';
 import { CaseType, CasesMessages } from '@/types/case';
 import { PriorityMessages } from '@/types/priority';
+import { TestTypeMessages } from '@/types/testType';
 import TestCasePriority from '@/components/TestCasePriority';
 import { LocaleCodeType } from '@/types/locale';
+import { highlightSearchTerm } from '@/utils/highlightSearchTerm';
 
 type Props = {
   projectId: string;
@@ -30,8 +36,13 @@ type Props = {
   onDeleteCase: (caseId: number) => void;
   onDeleteCases: (caseIds: number[]) => void;
   onExportCases: (type: string) => void;
+  onFilterChange: (query: string, priorities: number[], types: number[]) => void;
+  activeTitleFilter: string;
+  activePriorityFilters: number[];
+  activeTypeFilters: number[];
   messages: CasesMessages;
   priorityMessages: PriorityMessages;
+  testTypeMessages: TestTypeMessages;
   locale: LocaleCodeType;
 };
 
@@ -43,8 +54,13 @@ export default function TestCaseTable({
   onDeleteCase,
   onDeleteCases,
   onExportCases,
+  onFilterChange,
+  activeTitleFilter,
+  activePriorityFilters,
+  activeTypeFilters,
   messages,
   priorityMessages,
+  testTypeMessages,
   locale,
 }: Props) {
   const headerColumns = [
@@ -59,7 +75,7 @@ export default function TestCaseTable({
     column: 'id',
     direction: 'ascending',
   });
-  const [exportType, setExportType] = useState(new Set(['json']));
+  const [showFilter, setShowFilter] = useState(false);
 
   const sortedItems = useMemo(() => {
     if (cases.length === 0) {
@@ -78,52 +94,58 @@ export default function TestCaseTable({
     onDeleteCase(deleteCaseId);
   };
 
-  const renderCell = useCallback((testCase: CaseType, columnKey: string): ReactNode => {
-    const cellValue = testCase[columnKey as keyof CaseType];
+  const renderCell = useCallback(
+    (testCase: CaseType, columnKey: string): ReactNode => {
+      const cellValue = testCase[columnKey as keyof CaseType];
 
-    switch (columnKey) {
-      case 'id':
-        return <span>{cellValue as number}</span>;
-      case 'title':
-        return (
-          <Button
-            size="sm"
-            as={Link}
-            href={`/projects/${projectId}/folders/${testCase.folderId}/cases/${testCase.id}`}
-            locale={locale}
-            variant="light"
-            className="data-[hover=true]:bg-transparent"
-          >
-            {cellValue as string}
-          </Button>
-        );
-      case 'priority':
-        return <TestCasePriority priorityValue={cellValue as number} priorityMessages={priorityMessages} />;
-      case 'actions':
-        return (
-          <Dropdown>
-            <DropdownTrigger>
-              <Button isIconOnly radius="full" size="sm" variant="light">
-                <MoreVertical size={16} />
-              </Button>
-            </DropdownTrigger>
-            <DropdownMenu aria-label="test case actions">
-              <DropdownItem
-                key="delete-case"
-                className="text-danger"
-                isDisabled={isDisabled}
-                onPress={() => handleDeleteCase(testCase.id)}
-              >
-                {messages.deleteCase}
-              </DropdownItem>
-            </DropdownMenu>
-          </Dropdown>
-        );
-      default:
-        return cellValue as string;
-    }
+      switch (columnKey) {
+        case 'id':
+          return <span>{cellValue as number}</span>;
+        case 'title':
+          return (
+            <Button
+              size="sm"
+              as={Link}
+              href={`/projects/${projectId}/folders/${testCase.folderId}/cases/${testCase.id}`}
+              locale={locale}
+              variant="light"
+              className="data-[hover=true]:bg-transparent gap-0"
+            >
+              {highlightSearchTerm({
+                text: cellValue as string,
+                searchTerm: activeTitleFilter,
+              })}
+            </Button>
+          );
+        case 'priority':
+          return <TestCasePriority priorityValue={cellValue as number} priorityMessages={priorityMessages} />;
+        case 'actions':
+          return (
+            <Dropdown>
+              <DropdownTrigger>
+                <Button isIconOnly radius="full" size="sm" variant="light">
+                  <MoreVertical size={16} />
+                </Button>
+              </DropdownTrigger>
+              <DropdownMenu aria-label="test case actions">
+                <DropdownItem
+                  key="delete-case"
+                  className="text-danger"
+                  isDisabled={isDisabled}
+                  onPress={() => handleDeleteCase(testCase.id)}
+                >
+                  {messages.deleteCase}
+                </DropdownItem>
+              </DropdownMenu>
+            </Dropdown>
+          );
+        default:
+          return cellValue as string;
+      }
+    },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    [activeTitleFilter]
+  );
 
   const handleDeleteCases = () => {
     let deleteCaseIds: number[];
@@ -136,9 +158,7 @@ export default function TestCaseTable({
     setSelectedKeys(new Set([]));
   };
 
-  const handleExportTypeChange = (keys: Selection) => {
-    setExportType(new Set(Array.from(keys as Set<string>)));
-  };
+  const activeFilterNum = (activeTitleFilter ? 1 : 0) + activePriorityFilters.length + activeTypeFilters.length;
 
   const classNames = useMemo(
     () => ({
@@ -161,69 +181,94 @@ export default function TestCaseTable({
 
   return (
     <>
-      <div className="border-b-1 dark:border-neutral-700 w-full p-3 flex items-center justify-between">
-        <h3 className="font-bold">{messages.testCaseList}</h3>
-
-        <div>
-          {((selectedKeys !== 'all' && selectedKeys.size > 0) || selectedKeys === 'all') && (
-            <Button
-              startContent={<Trash size={16} />}
-              size="sm"
-              isDisabled={isDisabled}
-              color="danger"
-              className="me-2"
-              onPress={handleDeleteCases}
-            >
-              {messages.delete}
-            </Button>
-          )}
-          <ButtonGroup className="me-2">
-            <Button
-              startContent={<FileDown size={16} />}
-              size="sm"
-              onPress={() => onExportCases(Array.from(exportType)[0])}
-            >
-              {messages.export} {exportType}
-            </Button>
-            <Dropdown placement="bottom-end">
+      <div className="border-b-1 dark:border-neutral-700 w-full ">
+        <div className="flex items-center justify-between p-3 ">
+          <h3 className="font-bold">{messages.testCaseList}</h3>
+          <div className="flex items-center">
+            {((selectedKeys !== 'all' && selectedKeys.size > 0) || selectedKeys === 'all') && (
+              <Button
+                startContent={<Trash size={16} />}
+                size="sm"
+                variant="bordered"
+                isDisabled={isDisabled}
+                color="danger"
+                className="me-2"
+                onPress={handleDeleteCases}
+              >
+                {messages.delete}
+              </Button>
+            )}
+            <Popover placement="bottom" isOpen={showFilter} onOpenChange={(open) => setShowFilter(open)}>
+              <Badge
+                color="danger"
+                content={activeFilterNum}
+                isInvisible={activeFilterNum === 0}
+                shape="circle"
+                placement="top-left"
+              >
+                <PopoverTrigger>
+                  <Button startContent={<Filter size={16} />} size="sm" variant="bordered" className="me-2">
+                    {messages.filter}
+                  </Button>
+                </PopoverTrigger>
+              </Badge>
+              <PopoverContent>
+                <TestCaseFilter
+                  messages={messages}
+                  priorityMessages={priorityMessages}
+                  testTypeMessages={testTypeMessages}
+                  activeTitleFilter={activeTitleFilter}
+                  activePriorityFilters={activePriorityFilters}
+                  activeTypeFilters={activeTypeFilters}
+                  onFilterChange={(newTitleFilter, newPriorityFilters, newTypeFilters) => {
+                    setShowFilter(false);
+                    onFilterChange(newTitleFilter, newPriorityFilters, newTypeFilters);
+                  }}
+                />
+              </PopoverContent>
+            </Popover>
+            <Dropdown>
               <DropdownTrigger>
-                <Button isIconOnly size="sm">
-                  <ChevronDown size={16} />
+                <Button
+                  size="sm"
+                  variant="bordered"
+                  className="me-2"
+                  startContent={<FileDown size={16} />}
+                  endContent={<ChevronDown size={16} />}
+                >
+                  {messages.export}
                 </Button>
               </DropdownTrigger>
-              <DropdownMenu
-                disallowEmptySelection
-                aria-label="Export options"
-                className="max-w-[300px]"
-                selectedKeys={exportType}
-                selectionMode="single"
-                onSelectionChange={handleExportTypeChange}
-              >
-                <DropdownItem key="json" startContent={<FileJson size={16} />}>
+              <DropdownMenu aria-label="Export options">
+                <DropdownItem key="json" startContent={<FileJson size={16} />} onPress={() => onExportCases('json')}>
                   json
                 </DropdownItem>
-                <DropdownItem key="csv" startContent={<FileSpreadsheet size={16} />}>
+                <DropdownItem
+                  key="csv"
+                  startContent={<FileSpreadsheet size={16} />}
+                  onPress={() => onExportCases('csv')}
+                >
                   csv
                 </DropdownItem>
               </DropdownMenu>
             </Dropdown>
-          </ButtonGroup>
-          <Button
-            startContent={<Plus size={16} />}
-            size="sm"
-            isDisabled={isDisabled}
-            color="primary"
-            onPress={onCreateCase}
-          >
-            {messages.newTestCase}
-          </Button>
+            <Button
+              startContent={<Plus size={16} />}
+              size="sm"
+              isDisabled={isDisabled}
+              color="primary"
+              onPress={onCreateCase}
+            >
+              {messages.newTestCase}
+            </Button>
+          </div>
         </div>
       </div>
 
       <Table
         isCompact
         removeWrapper
-        aria-label="Tese cases table"
+        aria-label="Test cases table"
         classNames={classNames}
         selectedKeys={selectedKeys}
         selectionMode="multiple"

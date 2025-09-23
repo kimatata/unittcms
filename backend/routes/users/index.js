@@ -1,10 +1,11 @@
-const express = require('express');
+import express from 'express';
 const router = express.Router();
-const { DataTypes } = require('sequelize');
-const defineUser = require('../../models/users');
+import { DataTypes } from 'sequelize';
+import defineUser from '../../models/users.js';
+import authMiddleware from '../../middleware/auth.js';
 
-module.exports = function (sequelize) {
-  const { verifySignedIn, verifyAdmin } = require('../../middleware/auth')(sequelize);
+export default function (sequelize) {
+  const { verifySignedIn, verifyAdmin } = authMiddleware(sequelize);
   const User = defineUser(sequelize, DataTypes);
 
   router.get('/', verifySignedIn, verifyAdmin, async (req, res) => {
@@ -20,4 +21,4 @@ module.exports = function (sequelize) {
   });
 
   return router;
-};
+}
