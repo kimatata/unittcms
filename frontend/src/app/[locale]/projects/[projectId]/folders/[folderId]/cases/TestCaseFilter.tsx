@@ -1,14 +1,5 @@
 import { useState, useEffect } from 'react';
-import {
-  Button,
-  Dropdown,
-  DropdownTrigger,
-  DropdownMenu,
-  DropdownItem,
-  Selection,
-  Input,
-  Spinner,
-} from '@heroui/react';
+import { Button, Dropdown, DropdownTrigger, DropdownMenu, DropdownItem, Selection, Input } from '@heroui/react';
 import { SearchIcon, ChevronDown, Circle } from 'lucide-react';
 import { PriorityMessages } from '@/types/priority';
 import { TestTypeMessages } from '@/types/testType';
@@ -19,27 +10,28 @@ type TestCaseFilterProps = {
   messages: CasesMessages;
   priorityMessages: PriorityMessages;
   testTypeMessages: TestTypeMessages;
-  isSearching: boolean;
-  localQueryTerm: string;
+  activeTitleFilter: string;
   activePriorityFilters: number[];
   activeTypeFilters: number[];
-  onQueryChange: (query: string) => void;
-  onFilterChange: (priorities: number[], types: number[]) => void;
+  onFilterChange: (title: string, priorities: number[], types: number[]) => void;
 };
 
 export default function TestCaseFilter({
   messages,
   priorityMessages,
   testTypeMessages,
-  isSearching,
-  localQueryTerm,
+  activeTitleFilter,
   activePriorityFilters,
   activeTypeFilters,
-  onQueryChange,
   onFilterChange,
 }: TestCaseFilterProps) {
+  const [title, setTitle] = useState<string>('');
   const [selectedPriorities, setSelectedPriorities] = useState<Selection>(new Set([]));
   const [selectedTypes, setSelectedTypes] = useState<Selection>(new Set([]));
+
+  useEffect(() => {
+    setTitle(activeTitleFilter);
+  }, [activeTitleFilter]);
 
   useEffect(() => {
     if (activePriorityFilters.length > 0) {
@@ -82,18 +74,14 @@ export default function TestCaseFilter({
         .filter((index) => index !== -1);
     }
 
-    onFilterChange(priorityIndices, typeIndices);
+    onFilterChange(title, priorityIndices, typeIndices);
   };
 
   const handleClearFilter = () => {
     setSelectedPriorities(new Set([]));
     setSelectedTypes(new Set([]));
-    onFilterChange([], []);
+    onFilterChange('', [], []);
   };
-
-  const isFilterEmpty =
-    (selectedPriorities === 'all' || (selectedPriorities instanceof Set && selectedPriorities.size === 0)) &&
-    (selectedTypes === 'all' || (selectedTypes instanceof Set && selectedTypes.size === 0));
 
   return (
     <div className="p-3">
@@ -106,14 +94,11 @@ export default function TestCaseFilter({
             mainWrapper: 'h-full',
             input: 'text-small',
           }}
-          placeholder={messages.filterText}
           size="sm"
           startContent={<SearchIcon size={18} />}
-          endContent={isSearching && <Spinner size="sm" />}
           type="search"
-          value={localQueryTerm}
-          onValueChange={onQueryChange}
-          aria-label={messages.filterText}
+          value={title}
+          onValueChange={setTitle}
           maxLength={100}
         />
       </div>
@@ -176,10 +161,10 @@ export default function TestCaseFilter({
         </div>
       </div>
       <div className="flex justify-end">
-        <Button className="me-2" size="sm" variant="light" onPress={handleClearFilter} isDisabled={isFilterEmpty}>
+        <Button className="me-2" size="sm" variant="light" onPress={handleClearFilter}>
           {messages.clearAll}
         </Button>
-        <Button size="sm" variant="solid" color="primary" onPress={handleApplyFilter} isDisabled={isFilterEmpty}>
+        <Button size="sm" variant="solid" color="primary" onPress={handleApplyFilter}>
           {messages.apply}
         </Button>
       </div>

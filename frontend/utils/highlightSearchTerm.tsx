@@ -12,7 +12,7 @@ export function highlightSearchTerm({
   text,
   searchTerm,
   className,
-  minSearchLength = 2,
+  minSearchLength = 1,
 }: HighlightSearchTermProps): ReactNode {
   if (!text || !searchTerm || searchTerm.length < minSearchLength) {
     return text || null;

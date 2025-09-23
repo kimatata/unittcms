@@ -11,7 +11,7 @@ export default function (sequelize) {
   const Case = defineCase(sequelize, DataTypes);
 
   router.get('/', verifySignedIn, verifyProjectVisibleFromFolderId, async (req, res) => {
-    const { folderId, priority, type, q } = req.query;
+    const { folderId, title, priority, type } = req.query;
 
     if (!folderId) {
       return res.status(400).json({ error: 'folderId is required' });
@@ -22,15 +22,15 @@ export default function (sequelize) {
         folderId: folderId,
       };
 
-      if (q) {
-        const searchTerm = q.trim();
+      if (title) {
+        const searchTerm = title.trim();
 
         if (searchTerm.length > 100) {
-          return res.status(400).json({ error: 'Search term too long' });
+          return res.status(400).json({ error: 'too long title param' });
         }
 
-        if (searchTerm.length >= 2) {
-          whereClause[Op.or] = [{ title: { [Op.like]: `%${q}%` } }];
+        if (searchTerm.length >= 1) {
+          whereClause[Op.or] = [{ title: { [Op.like]: `%${searchTerm}%` } }];
         }
       }
 

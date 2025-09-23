@@ -204,13 +204,13 @@
     "case_description": "Test Case Description",
     "create": "Create",
     "please_enter": "Please enter test case title",
+    "filter": "Filter",
     "clear_all": "Clear all",
     "apply": "Apply",
     "select_priorities": "Select priorities",
     "selected": "Selected",
     "type": "Type",
-    "select_types": "Select types",
-    "filter_text": "Filter text"
+    "select_types": "Select types"
   },
   "Case": {
     "back_to_cases": "Back to test cases",

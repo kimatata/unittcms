@@ -14,7 +14,6 @@ import {
   DropdownMenu,
   DropdownItem,
   addToast,
-  ButtonGroup,
   Badge,
 } from '@heroui/react';
 import {
@@ -103,7 +102,6 @@ export default function RunEditor({
   const [isNameInvalid] = useState<boolean>(false);
   const [isUpdating, setIsUpdating] = useState<boolean>(false);
   const [isDirty, setIsDirty] = useState(false);
-  const [exportType, setExportType] = useState(new Set(['xml']));
   const router = useRouter();
   useFormGuard(isDirty, messages.areYouSureLeave);
 
@@ -199,10 +197,6 @@ export default function RunEditor({
     });
     setIsUpdating(false);
     setIsDirty(false);
-  };
-
-  const handleExportTypeChange = (keys: Selection) => {
-    setExportType(new Set(Array.from(keys as Set<string>)));
   };
 
   return (
