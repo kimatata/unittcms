@@ -1,4 +1,4 @@
-import { useState, useMemo, useCallback, ReactNode } from 'react';
+import { useState, useMemo, useCallback, ReactNode, Key } from 'react';
 import {
   Table,
   TableHeader,
@@ -20,7 +20,7 @@ import {
 } from '@heroui/react';
 import { Plus, MoreVertical, Trash, FileDown, ChevronDown, Filter, FileJson, FileSpreadsheet } from 'lucide-react';
 import TestCaseFilter from './TestCaseFilter';
-import { Link } from '@/src/i18n/routing';
+import { Link, NextUiLinkClasses } from '@/src/i18n/routing';
 import { CaseType, CasesMessages } from '@/types/case';
 import { PriorityMessages } from '@/types/priority';
 import { TestTypeMessages } from '@/types/testType';
@@ -103,19 +103,16 @@ export default function TestCaseTable({
           return <span>{cellValue as number}</span>;
         case 'title':
           return (
-            <Button
-              size="sm"
-              as={Link}
+            <Link
               href={`/projects/${projectId}/folders/${testCase.folderId}/cases/${testCase.id}`}
               locale={locale}
-              variant="light"
-              className="data-[hover=true]:bg-transparent gap-0"
+              className={NextUiLinkClasses}
             >
               {highlightSearchTerm({
                 text: cellValue as string,
                 searchTerm: activeTitleFilter,
               })}
-            </Button>
+            </Link>
           );
         case 'priority':
           return <TestCasePriority priorityValue={cellValue as number} priorityMessages={priorityMessages} />;
@@ -275,6 +272,25 @@ export default function TestCaseTable({
         sortDescriptor={sortDescriptor}
         onSelectionChange={setSelectedKeys}
         onSortChange={setSortDescriptor}
+        onRowAction={(key: Key) => {
+          console.log('onRowAction', key);
+          console.log('selectedKeys', selectedKeys);
+          if (selectedKeys === 'all') {
+            return;
+          } else if (selectedKeys.has(key as number)) {
+            setSelectedKeys((prev) => {
+              const newSet = new Set(prev);
+              newSet.delete(key as number);
+              return newSet;
+            });
+          } else if (!selectedKeys.has(key as number)) {
+            setSelectedKeys((prev) => {
+              const newSet = new Set(prev);
+              newSet.add(key as number);
+              return newSet;
+            });
+          }
+        }}
       >
         <TableHeader columns={headerColumns}>
           {(column) => (
