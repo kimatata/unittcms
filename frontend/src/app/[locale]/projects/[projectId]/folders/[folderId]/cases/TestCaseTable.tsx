@@ -17,8 +17,10 @@ import {
   Popover,
   PopoverContent,
   PopoverTrigger,
+  Checkbox,
 } from '@heroui/react';
 import { Plus, MoreVertical, Trash, FileDown, ChevronDown, Filter, FileJson, FileSpreadsheet } from 'lucide-react';
+import { table } from '@heroui/theme';
 import TestCaseFilter from './TestCaseFilter';
 import { Link, NextUiLinkClasses } from '@/src/i18n/routing';
 import { CaseType, CasesMessages } from '@/types/case';
@@ -63,6 +65,8 @@ export default function TestCaseTable({
   testTypeMessages,
   locale,
 }: Props) {
+  const heroUITableClasses = table();
+
   const headerColumns = [
     { name: messages.id, uid: 'id', sortable: true },
     { name: messages.title, uid: 'title', sortable: true },
@@ -261,6 +265,35 @@ export default function TestCaseTable({
           </div>
         </div>
       </div>
+
+      <table className={heroUITableClasses.table()}>
+        <thead className={heroUITableClasses.thead()}>
+          <tr className={heroUITableClasses.tr()}>
+            <th className={heroUITableClasses.th()}>
+              <Checkbox />
+            </th>
+            {headerColumns.map((column) => (
+              <th key={column.uid} className={heroUITableClasses.th()}>
+                {column.name}
+              </th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {sortedItems.map((item) => (
+            <tr className={heroUITableClasses.tr()} key={item.id}>
+              <td className={`${heroUITableClasses.td()} !py-1`}>
+                <Checkbox />
+              </td>
+              {headerColumns.map((column) => (
+                <td key={column.uid} className={`${heroUITableClasses.td()} !py-1`}>
+                  {renderCell(item, column.uid)}
+                </td>
+              ))}
+            </tr>
+          ))}
+        </tbody>
+      </table>
 
       <Table
         isCompact
