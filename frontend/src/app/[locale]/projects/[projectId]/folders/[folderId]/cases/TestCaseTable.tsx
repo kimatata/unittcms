@@ -76,6 +76,9 @@ export default function TestCaseTable({
   locale,
 }: Props) {
   const heroUITableClasses = table();
+  const thClassNames = 'bg-transparent text-default-500 border-b border-divider';
+  const tdClassNames =
+    '!py-1 group-data-[first=true]:first:before:rounded-none group-data-[first=true]:last:before:rounded-none group-data-[middle=true]:before:rounded-none group-data-[last=true]:first:before:rounded-none group-data-[last=true]:last:before:rounded-none';
 
   const headerColumns = [
     { name: messages.id, uid: 'id', sortable: true },
@@ -170,25 +173,6 @@ export default function TestCaseTable({
   };
 
   const activeFilterNum = (activeTitleFilter ? 1 : 0) + activePriorityFilters.length + activeTypeFilters.length;
-
-  const classNames = useMemo(
-    () => ({
-      wrapper: ['max-w-3xl'],
-      th: ['bg-transparent', 'text-default-500', 'border-b', 'border-divider'],
-      td: [
-        // changing the rows border radius
-        // first
-        'group-data-[first=true]:first:before:rounded-none',
-        'group-data-[first=true]:last:before:rounded-none',
-        // middle
-        'group-data-[middle=true]:before:rounded-none',
-        // last
-        'group-data-[last=true]:first:before:rounded-none',
-        'group-data-[last=true]:last:before:rounded-none',
-      ],
-    }),
-    []
-  );
 
   // 追加: ヘッダークリックでソート
   const handleSort = (columnUid: string) => {
@@ -333,13 +317,13 @@ export default function TestCaseTable({
         <table className={heroUITableClasses.table()}>
           <thead className={heroUITableClasses.thead()}>
             <tr className={heroUITableClasses.tr()}>
-              <th className={heroUITableClasses.th()}>
+              <th className={`${heroUITableClasses.th()} ${thClassNames}`}>
                 <Checkbox isSelected={isSelectedAll()} onChange={handleSelectAll} />
               </th>
               {headerColumns.map((column) => (
                 <th
                   key={column.uid}
-                  className={heroUITableClasses.th()}
+                  className={`${heroUITableClasses.th()} ${thClassNames}`}
                   onClick={() => column.sortable && handleSort(column.uid)}
                   style={{ cursor: column.sortable ? 'pointer' : 'default' }}
                 >
@@ -358,11 +342,11 @@ export default function TestCaseTable({
           <tbody className={heroUITableClasses.tbody()}>
             {sortedItems.map((item) => (
               <tr draggable className={heroUITableClasses.tr()} key={item.id} onDragStart={handleDragStart}>
-                <td className={`${heroUITableClasses.td()} !py-1`}>
+                <td className={`${heroUITableClasses.td()} ${tdClassNames}`}>
                   <Checkbox isSelected={isSelected(item.id)} onChange={() => handleSelectRow(item.id)} />
                 </td>
                 {headerColumns.map((column) => (
-                  <td key={column.uid} className={`${heroUITableClasses.td()} !py-1`}>
+                  <td key={column.uid} className={`${heroUITableClasses.td()} ${tdClassNames}`}>
                     {renderCell(item, column.uid)}
                   </td>
                 ))}
@@ -372,55 +356,11 @@ export default function TestCaseTable({
         </table>
       </div>
 
-      <Table
-        isCompact
-        removeWrapper
-        aria-label="Test cases table"
-        classNames={classNames}
-        selectedKeys={selectedKeys}
-        selectionMode="multiple"
-        sortDescriptor={sortDescriptor}
-        onSelectionChange={setSelectedKeys}
-        onSortChange={setSortDescriptor}
-        onRowAction={(key: Key) => {
-          console.log('onRowAction', key);
-          console.log('selectedKeys', selectedKeys);
-          if (selectedKeys === 'all') {
-            return;
-          } else if (selectedKeys.has(key as number)) {
-            setSelectedKeys((prev) => {
-              const newSet = new Set(prev);
-              newSet.delete(key as number);
-              return newSet;
-            });
-          } else if (!selectedKeys.has(key as number)) {
-            setSelectedKeys((prev) => {
-              const newSet = new Set(prev);
-              newSet.add(key as number);
-              return newSet;
-            });
-          }
-        }}
-      >
-        <TableHeader columns={headerColumns}>
-          {(column) => (
-            <TableColumn
-              key={column.uid}
-              align={column.uid === 'actions' ? 'center' : 'start'}
-              allowsSorting={column.sortable}
-            >
-              {column.name}
-            </TableColumn>
-          )}
-        </TableHeader>
-        <TableBody emptyContent={messages.noCasesFound} items={sortedItems}>
-          {(item) => (
-            <TableRow key={item.id}>
-              {(columnKey) => <TableCell>{renderCell(item, columnKey as string)}</TableCell>}
-            </TableRow>
-          )}
-        </TableBody>
-      </Table>
+      {sortedItems.length === 0 && (
+        <div className="flex justify-center items-center w-full h-48 text-neutral-500">
+          <div>No test case</div>
+        </div>
+      )}
     </>
   );
 }
