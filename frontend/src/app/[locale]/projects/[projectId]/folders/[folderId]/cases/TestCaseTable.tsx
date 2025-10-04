@@ -19,7 +19,17 @@ import {
   PopoverTrigger,
   Checkbox,
 } from '@heroui/react';
-import { Plus, MoreVertical, Trash, FileDown, ChevronDown, Filter, FileJson, FileSpreadsheet } from 'lucide-react';
+import {
+  Plus,
+  MoreVertical,
+  Trash,
+  FileDown,
+  ChevronUp,
+  ChevronDown,
+  Filter,
+  FileJson,
+  FileSpreadsheet,
+} from 'lucide-react';
 import { table } from '@heroui/theme';
 import TestCaseFilter from './TestCaseFilter';
 import { Link, NextUiLinkClasses } from '@/src/i18n/routing';
@@ -180,6 +190,59 @@ export default function TestCaseTable({
     []
   );
 
+  // 追加: ヘッダークリックでソート
+  const handleSort = (columnUid: string) => {
+    setSortDescriptor((prev) => {
+      if (prev.column === columnUid) {
+        return {
+          column: columnUid,
+          direction: prev.direction === 'ascending' ? 'descending' : 'ascending',
+        };
+      }
+      return { column: columnUid, direction: 'ascending' };
+    });
+  };
+
+  // 追加: 行選択
+  const handleSelectRow = (id: number) => {
+    setSelectedKeys((prev) => {
+      const newSet = new Set(prev);
+      if (newSet.has(id)) {
+        newSet.delete(id);
+      } else {
+        newSet.add(id);
+      }
+      return newSet;
+    });
+  };
+
+  const handleSelectAll = () => {
+    if (selectedKeys !== 'all' && selectedKeys instanceof Set && selectedKeys.size === sortedItems.length) {
+      setSelectedKeys(new Set());
+    } else {
+      setSelectedKeys(new Set(sortedItems.map((item) => item.id)));
+    }
+  };
+
+  const isSelected = (id: number) => {
+    return selectedKeys === 'all' || (selectedKeys instanceof Set && selectedKeys.has(id));
+  };
+
+  const isSelectedAll = () => {
+    return (
+      (selectedKeys === 'all' && sortedItems.length > 0) ||
+      (selectedKeys instanceof Set && selectedKeys.size === sortedItems.length && sortedItems.length > 0)
+    );
+  };
+
+  const handleDragStart = (e: React.DragEvent<HTMLTableRowElement>) => {
+    const target = e.currentTarget;
+    const dataTransfer = e.dataTransfer;
+    if (dataTransfer && target) {
+      dataTransfer.setData('text/plain', target.id);
+    }
+  };
+
   return (
     <>
       <div className="border-b-1 dark:border-neutral-700 w-full ">
@@ -266,34 +329,48 @@ export default function TestCaseTable({
         </div>
       </div>
 
-      <table className={heroUITableClasses.table()}>
-        <thead className={heroUITableClasses.thead()}>
-          <tr className={heroUITableClasses.tr()}>
-            <th className={heroUITableClasses.th()}>
-              <Checkbox />
-            </th>
-            {headerColumns.map((column) => (
-              <th key={column.uid} className={heroUITableClasses.th()}>
-                {column.name}
+      <div>
+        <table className={heroUITableClasses.table()}>
+          <thead className={heroUITableClasses.thead()}>
+            <tr className={heroUITableClasses.tr()}>
+              <th className={heroUITableClasses.th()}>
+                <Checkbox isSelected={isSelectedAll()} onChange={handleSelectAll} />
               </th>
-            ))}
-          </tr>
-        </thead>
-        <tbody>
-          {sortedItems.map((item) => (
-            <tr className={heroUITableClasses.tr()} key={item.id}>
-              <td className={`${heroUITableClasses.td()} !py-1`}>
-                <Checkbox />
-              </td>
               {headerColumns.map((column) => (
-                <td key={column.uid} className={`${heroUITableClasses.td()} !py-1`}>
-                  {renderCell(item, column.uid)}
-                </td>
+                <th
+                  key={column.uid}
+                  className={heroUITableClasses.th()}
+                  onClick={() => column.sortable && handleSort(column.uid)}
+                  style={{ cursor: column.sortable ? 'pointer' : 'default' }}
+                >
+                  <div className="flex items-center gap-1">
+                    {column.name}
+                    {column.sortable && sortDescriptor.column === column.uid && (
+                      <>
+                        {sortDescriptor.direction === 'ascending' ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
+                      </>
+                    )}
+                  </div>
+                </th>
               ))}
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody className={heroUITableClasses.tbody()}>
+            {sortedItems.map((item) => (
+              <tr draggable className={heroUITableClasses.tr()} key={item.id} onDragStart={handleDragStart}>
+                <td className={`${heroUITableClasses.td()} !py-1`}>
+                  <Checkbox isSelected={isSelected(item.id)} onChange={() => handleSelectRow(item.id)} />
+                </td>
+                {headerColumns.map((column) => (
+                  <td key={column.uid} className={`${heroUITableClasses.td()} !py-1`}>
+                    {renderCell(item, column.uid)}
+                  </td>
+                ))}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
 
       <Table
         isCompact
