@@ -13,6 +13,7 @@ import DeleteConfirmDialog from '@/components/DeleteConfirmDialog';
 import { FolderType, FoldersMessages, TreeNodeData } from '@/types/folder';
 import { logError } from '@/utils/errorHandler';
 import { buildFolderTree } from '@/utils/buildFolderTree';
+import { emitMoveEvent } from '@/utils/testCaseMoveEvent';
 
 type Props = {
   projectId: string;
@@ -126,7 +127,7 @@ export default function FoldersPane({ projectId, messages, locale }: Props) {
   const handleDrop = (e: React.DragEvent, dropFolderId: string) => {
     e.stopPropagation();
     const ids = JSON.parse(e.dataTransfer.getData('application/json'));
-    console.log(`Move testcases ${ids.join(', ')} to folder ${dropFolderId}`);
+    emitMoveEvent(ids, Number(dropFolderId));
   };
 
   return (

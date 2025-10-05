@@ -84,6 +84,7 @@ type CasesMessages = {
   selected: string;
   type: string;
   selectTypes: string;
+  casesMoved: string;
 };
 
 type CaseMessages = {

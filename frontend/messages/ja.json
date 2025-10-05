@@ -211,7 +211,8 @@
     "select_priorities": "優先度を選択",
     "selected": "選択済み",
     "type": "タイプ",
-    "select_types": "タイプを選択"
+    "select_types": "タイプを選択",
+    "cases_moved": "テストケースを移動しました"
   },
   "Case": {
     "back_to_cases": "テストケース一覧に戻る",

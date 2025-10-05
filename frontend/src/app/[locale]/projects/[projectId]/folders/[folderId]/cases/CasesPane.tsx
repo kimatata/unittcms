@@ -1,10 +1,11 @@
 'use client';
 import { useState, useEffect, useContext } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
+import { addToast } from '@heroui/react';
 import TestCaseTable from './TestCaseTable';
 import CaseDialog from './CaseDialog';
 import { TokenContext } from '@/utils/TokenProvider';
-import { fetchCases, createCase, deleteCases, exportCases } from '@/utils/caseControl';
+import { fetchCases, createCase, deleteCases, exportCases, moveCases } from '@/utils/caseControl';
 import { CaseType, CasesMessages } from '@/types/case';
 import DeleteConfirmDialog from '@/components/DeleteConfirmDialog';
 import { PriorityMessages } from '@/types/priority';
@@ -12,6 +13,7 @@ import { TestTypeMessages } from '@/types/testType';
 import { LocaleCodeType } from '@/types/locale';
 import { logError } from '@/utils/errorHandler';
 import { parseQueryParam } from '@/utils/parseQueryParam';
+import { onMoveEvent } from '@/utils/testCaseMoveEvent';
 
 type Props = {
   projectId: string;
@@ -95,6 +97,25 @@ export default function CasesPane({
 
     fetchDataEffect();
   }, [context, folderId, searchParams]);
+
+  useEffect(() => {
+    const unsubscribe = onMoveEvent(async (e) => {
+      const { testCaseIds, targetFolderId } = e.detail;
+      const moveRet = await moveCases(context.token.access_token, testCaseIds, targetFolderId, Number(projectId));
+      if (!moveRet) {
+        console.error('Error moving cases');
+        return;
+      }
+
+      setCases(cases.filter((entry) => !testCaseIds.includes(entry.id)));
+      addToast({
+        title: 'Success',
+        color: 'success',
+        description: messages.casesMoved,
+      });
+    });
+    return unsubscribe;
+  }, [cases, context.token.access_token, messages.casesMoved, projectId]);
 
   const closeDialog = () => setIsCaseDialogOpen(false);
 

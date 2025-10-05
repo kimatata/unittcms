@@ -210,7 +210,8 @@
     "select_priorities": "Select priorities",
     "selected": "Selected",
     "type": "Type",
-    "select_types": "Select types"
+    "select_types": "Select types",
+    "cases_moved": "Test cases moved"
   },
   "Case": {
     "back_to_cases": "Back to test cases",

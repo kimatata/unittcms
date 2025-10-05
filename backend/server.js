@@ -82,6 +82,7 @@ app.use('/folders', foldersDeleteRoute(sequelize));
 
 // "/cases"
 import casesDownloadRoute from './routes/cases/download.js';
+import casesMoveRoute from './routes/cases/move.js';
 import casesIndexRoute from './routes/cases/index.js';
 import casesIndexByProjectIdRoute from './routes/cases/indexByProjectId.js';
 import casesShowRoute from './routes/cases/show.js';
@@ -89,6 +90,7 @@ import casesNewRoute from './routes/cases/new.js';
 import casesEditRoute from './routes/cases/edit.js';
 import casesDeleteRoute from './routes/cases/delete.js';
 app.use('/cases', casesDownloadRoute(sequelize));
+app.use('/cases', casesMoveRoute(sequelize));
 app.use('/cases', casesIndexRoute(sequelize));
 app.use('/cases', casesIndexByProjectIdRoute(sequelize));
 app.use('/cases', casesShowRoute(sequelize));

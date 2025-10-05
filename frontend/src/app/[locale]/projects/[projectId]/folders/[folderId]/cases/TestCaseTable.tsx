@@ -35,6 +35,7 @@ import { TestTypeMessages } from '@/types/testType';
 import TestCasePriority from '@/components/TestCasePriority';
 import { LocaleCodeType } from '@/types/locale';
 import { highlightSearchTerm } from '@/utils/highlightSearchTerm';
+import { onMoveEvent } from '@/utils/testCaseMoveEvent';
 
 type Props = {
   projectId: string;
@@ -96,6 +97,7 @@ export default function TestCaseTable({
               href={`/projects/${projectId}/folders/${testCase.folderId}/cases/${testCase.id}`}
               locale={locale}
               className={NextUiLinkClasses}
+              draggable="false"
             >
               {highlightSearchTerm({
                 text: cellValue as string,
@@ -249,6 +251,12 @@ export default function TestCaseTable({
   const handleDragEnd = () => {
     setDragCount(null);
   };
+  useEffect(() => {
+    const unsubscribe = onMoveEvent(() => {
+      handleDragEnd();
+    });
+    return unsubscribe;
+  }, []);
 
   return (
     <>
