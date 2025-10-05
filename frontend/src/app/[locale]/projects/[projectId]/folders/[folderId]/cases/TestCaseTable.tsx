@@ -1,11 +1,5 @@
-import { useState, useMemo, useCallback, ReactNode, Key } from 'react';
+import { useState, useMemo, useCallback, ReactNode, useEffect } from 'react';
 import {
-  Table,
-  TableHeader,
-  TableColumn,
-  TableBody,
-  TableRow,
-  TableCell,
   Button,
   DropdownTrigger,
   Dropdown,
@@ -18,6 +12,8 @@ import {
   PopoverContent,
   PopoverTrigger,
   Checkbox,
+  Card,
+  CardBody,
 } from '@heroui/react';
 import {
   Plus,
@@ -87,30 +83,6 @@ export default function TestCaseTable({
     { name: messages.actions, uid: 'actions' },
   ];
 
-  const [selectedKeys, setSelectedKeys] = useState<Selection>(new Set([]));
-  const [sortDescriptor, setSortDescriptor] = useState<SortDescriptor>({
-    column: 'id',
-    direction: 'ascending',
-  });
-  const [showFilter, setShowFilter] = useState(false);
-
-  const sortedItems = useMemo(() => {
-    if (cases.length === 0) {
-      return [];
-    }
-    return [...cases].sort((a: CaseType, b: CaseType) => {
-      const first = a[sortDescriptor.column as keyof CaseType] as number;
-      const second = b[sortDescriptor.column as keyof CaseType] as number;
-      const cmp = first < second ? -1 : first > second ? 1 : 0;
-
-      return sortDescriptor.direction === 'descending' ? -cmp : cmp;
-    });
-  }, [sortDescriptor, cases]);
-
-  const handleDeleteCase = (deleteCaseId: number) => {
-    onDeleteCase(deleteCaseId);
-  };
-
   const renderCell = useCallback(
     (testCase: CaseType, columnKey: string): ReactNode => {
       const cellValue = testCase[columnKey as keyof CaseType];
@@ -161,33 +133,16 @@ export default function TestCaseTable({
     [activeTitleFilter]
   );
 
-  const handleDeleteCases = () => {
-    let deleteCaseIds: number[];
-    if (selectedKeys === 'all') {
-      deleteCaseIds = sortedItems.map((item) => item.id);
-    } else {
-      deleteCaseIds = Array.from(selectedKeys).map(Number);
-    }
-    onDeleteCases(deleteCaseIds);
-    setSelectedKeys(new Set([]));
-  };
-
+  // **************************************************************************
+  // filter test case
+  // **************************************************************************
+  const [showFilter, setShowFilter] = useState(false);
   const activeFilterNum = (activeTitleFilter ? 1 : 0) + activePriorityFilters.length + activeTypeFilters.length;
 
-  // 追加: ヘッダークリックでソート
-  const handleSort = (columnUid: string) => {
-    setSortDescriptor((prev) => {
-      if (prev.column === columnUid) {
-        return {
-          column: columnUid,
-          direction: prev.direction === 'ascending' ? 'descending' : 'ascending',
-        };
-      }
-      return { column: columnUid, direction: 'ascending' };
-    });
-  };
-
-  // 追加: 行選択
+  // **************************************************************************
+  // select test case
+  // **************************************************************************
+  const [selectedKeys, setSelectedKeys] = useState<Selection>(new Set([]));
   const handleSelectRow = (id: number) => {
     setSelectedKeys((prev) => {
       const newSet = new Set(prev);
@@ -219,12 +174,86 @@ export default function TestCaseTable({
     );
   };
 
-  const handleDragStart = (e: React.DragEvent<HTMLTableRowElement>) => {
-    const target = e.currentTarget;
-    const dataTransfer = e.dataTransfer;
-    if (dataTransfer && target) {
-      dataTransfer.setData('text/plain', target.id);
+  // **************************************************************************
+  // sort test case
+  // **************************************************************************
+  const [sortDescriptor, setSortDescriptor] = useState<SortDescriptor>({
+    column: 'id',
+    direction: 'ascending',
+  });
+  const sortedItems = useMemo(() => {
+    if (cases.length === 0) {
+      return [];
     }
+    return [...cases].sort((a: CaseType, b: CaseType) => {
+      const first = a[sortDescriptor.column as keyof CaseType] as number;
+      const second = b[sortDescriptor.column as keyof CaseType] as number;
+      const cmp = first < second ? -1 : first > second ? 1 : 0;
+
+      return sortDescriptor.direction === 'descending' ? -cmp : cmp;
+    });
+  }, [sortDescriptor, cases]);
+  const handleSort = (columnUid: string) => {
+    setSortDescriptor((prev) => {
+      if (prev.column === columnUid) {
+        return {
+          column: columnUid,
+          direction: prev.direction === 'ascending' ? 'descending' : 'ascending',
+        };
+      }
+      return { column: columnUid, direction: 'ascending' };
+    });
+  };
+
+  const handleDeleteCase = (deleteCaseId: number) => {
+    onDeleteCase(deleteCaseId);
+  };
+
+  const handleDeleteCases = () => {
+    let deleteCaseIds: number[];
+    if (selectedKeys === 'all') {
+      deleteCaseIds = sortedItems.map((item) => item.id);
+    } else {
+      deleteCaseIds = Array.from(selectedKeys).map(Number);
+    }
+    onDeleteCases(deleteCaseIds);
+    setSelectedKeys(new Set([]));
+  };
+
+  // **************************************************************************
+  // move test case
+  // **************************************************************************
+  const [dragCount, setDragCount] = useState<number | null>(null);
+  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
+  useEffect(() => {
+    const onMouseMove = (e: MouseEvent) => setMousePos({ x: e.clientX, y: e.clientY });
+    if (dragCount !== null) {
+      window.addEventListener('mousemove', onMouseMove);
+    }
+    return () => window.removeEventListener('mousemove', onMouseMove);
+  }, [dragCount]);
+  const handleDragStart = (e: React.DragEvent, id: number) => {
+    e.stopPropagation();
+
+    let selectedIds: number[];
+    if (selectedKeys === 'all' || (selectedKeys instanceof Set && selectedKeys.has(id) && selectedKeys.size > 1)) {
+      // when multiple row selected
+      selectedIds =
+        selectedKeys === 'all' ? sortedItems.map((item) => item.id) : (Array.from(selectedKeys) as number[]);
+    } else {
+      // when no row selected or only one row selected
+      selectedIds = [id];
+    }
+    setDragCount(selectedIds.length);
+    e.dataTransfer.setData('application/json', JSON.stringify(selectedIds));
+    const img = new window.Image();
+    img.src = 'data:image/svg+xml;base64,';
+    e.dataTransfer.setDragImage(img, 0, 0);
+  };
+
+  const handleDragEnd = (e: React.DragEvent) => {
+    console.log('dragend!!', e);
+    setDragCount(null);
   };
 
   return (
@@ -341,7 +370,14 @@ export default function TestCaseTable({
           </thead>
           <tbody className={heroUITableClasses.tbody()}>
             {sortedItems.map((item) => (
-              <tr draggable className={heroUITableClasses.tr()} key={item.id} onDragStart={handleDragStart}>
+              <tr
+                draggable
+                className={heroUITableClasses.tr()}
+                key={item.id}
+                onDragStart={(e) => handleDragStart(e, item.id)}
+                onDragEnd={handleDragEnd}
+                style={{ opacity: dragCount ? 0.5 : 1 }}
+              >
                 <td className={`${heroUITableClasses.td()} ${tdClassNames}`}>
                   <Checkbox isSelected={isSelected(item.id)} onChange={() => handleSelectRow(item.id)} />
                 </td>
@@ -360,6 +396,20 @@ export default function TestCaseTable({
         <div className="flex justify-center items-center w-full h-48 text-neutral-500">
           <div>No test case</div>
         </div>
+      )}
+
+      {dragCount !== null && (
+        <Card
+          className="fixed z-1000"
+          style={{
+            left: mousePos.x + 10,
+            top: mousePos.y + 10,
+          }}
+        >
+          <CardBody>
+            <p>{dragCount} cases selected</p>
+          </CardBody>
+        </Card>
       )}
     </>
   );

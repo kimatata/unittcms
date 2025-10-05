@@ -114,6 +114,20 @@ export default function FoldersPane({ projectId, messages, locale }: Props) {
     }
   };
 
+  // **************************************************************************
+  // move test case
+  // **************************************************************************
+  const handleDragOver = (e: React.DragEvent) => {
+    e.stopPropagation();
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'move';
+  };
+
+  const handleDrop = (e: React.DragEvent, folderId: number) => {
+    const ids = JSON.parse(e.dataTransfer.getData('application/json'));
+    alert(`Move testcases ${ids.join(', ')} to folder ${folderId}`);
+  };
+
   return (
     <>
       <div className="w-80 min-h-[calc(100vh-64px)] border-r-1 dark:border-neutral-700">
@@ -144,16 +158,22 @@ export default function FoldersPane({ projectId, messages, locale }: Props) {
             disableDrag={true}
           >
             {(props) => (
-              <FolderItem
-                {...props}
-                projectId={projectId}
-                selectedFolder={selectedFolder}
-                locale={locale}
-                messages={messages}
-                openDialogForCreate={openDialogForCreate}
-                onEditClick={onEditClick}
-                onDeleteClick={onDeleteClick}
-              />
+              <div
+                onDragOver={handleDragOver}
+                onDrop={(e) => handleDrop(e, props.node.id)}
+                style={{ background: props.isOver ? '#e0e0e0' : undefined }}
+              >
+                <FolderItem
+                  {...props}
+                  projectId={projectId}
+                  selectedFolder={selectedFolder}
+                  locale={locale}
+                  messages={messages}
+                  openDialogForCreate={openDialogForCreate}
+                  onEditClick={onEditClick}
+                  onDeleteClick={onDeleteClick}
+                />
+              </div>
             )}
           </Tree>
         )}
