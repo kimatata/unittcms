@@ -12,7 +12,6 @@ export default function (sequelize) {
 
   router.put('/move', verifySignedIn, verifyProjectDeveloperFromProjectId, async (req, res) => {
     const { caseIds, targetFolderId } = req.body;
-    console.log('Move Cases!!!', caseIds, targetFolderId);
 
     if (!Array.isArray(caseIds) || caseIds.length === 0 || !targetFolderId) {
       return res.status(400).json({ error: 'caseIds(array) and targetFolderId are required' });
