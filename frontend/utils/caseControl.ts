@@ -125,6 +125,28 @@ async function updateCase(jwt: string, updateCaseData: CaseType) {
   }
 }
 
+export async function moveCases(jwt: string, moveCaseIds: number[], targetFolderId: number, projectId: number) {
+  const fetchOptions = {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${jwt}`,
+    },
+    body: JSON.stringify({ caseIds: moveCaseIds, targetFolderId }),
+  };
+  const url = `${apiServer}/cases/move?projectId=${projectId}`;
+  try {
+    const response = await fetch(url, fetchOptions);
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+    const data = await response.json();
+    return data;
+  } catch (error: unknown) {
+    logError('Error updating project', error);
+  }
+}
+
 async function deleteCases(jwt: string, deleteCaseIds: number[], projectId: number) {
   const fetchOptions = {
     method: 'POST',

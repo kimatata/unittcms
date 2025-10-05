@@ -13,6 +13,7 @@ import DeleteConfirmDialog from '@/components/DeleteConfirmDialog';
 import { FolderType, FoldersMessages, TreeNodeData } from '@/types/folder';
 import { logError } from '@/utils/errorHandler';
 import { buildFolderTree } from '@/utils/buildFolderTree';
+import { emitMoveEvent } from '@/utils/testCaseMoveEvent';
 
 type Props = {
   projectId: string;
@@ -114,6 +115,21 @@ export default function FoldersPane({ projectId, messages, locale }: Props) {
     }
   };
 
+  // **************************************************************************
+  // move test case
+  // **************************************************************************
+  const handleDragOver = (e: React.DragEvent) => {
+    e.stopPropagation();
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'move';
+  };
+
+  const handleDrop = (e: React.DragEvent, dropFolderId: string) => {
+    e.stopPropagation();
+    const ids = JSON.parse(e.dataTransfer.getData('application/json'));
+    emitMoveEvent(ids, Number(dropFolderId));
+  };
+
   return (
     <>
       <div className="w-80 min-h-[calc(100vh-64px)] border-r-1 dark:border-neutral-700">
@@ -144,16 +160,18 @@ export default function FoldersPane({ projectId, messages, locale }: Props) {
             disableDrag={true}
           >
             {(props) => (
-              <FolderItem
-                {...props}
-                projectId={projectId}
-                selectedFolder={selectedFolder}
-                locale={locale}
-                messages={messages}
-                openDialogForCreate={openDialogForCreate}
-                onEditClick={onEditClick}
-                onDeleteClick={onDeleteClick}
-              />
+              <div onDragOver={handleDragOver} onDrop={(e) => handleDrop(e, props.node.id)}>
+                <FolderItem
+                  {...props}
+                  projectId={projectId}
+                  selectedFolder={selectedFolder}
+                  locale={locale}
+                  messages={messages}
+                  openDialogForCreate={openDialogForCreate}
+                  onEditClick={onEditClick}
+                  onDeleteClick={onDeleteClick}
+                />
+              </div>
             )}
           </Tree>
         )}

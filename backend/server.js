@@ -1,9 +1,11 @@
 import path from 'path';
+import { fileURLToPath } from 'url';
 import express from 'express';
 import cors from 'cors';
 import RateLimit from 'express-rate-limit';
 import { Sequelize } from 'sequelize';
-const __dirname = path.dirname(new URL(import.meta.url).pathname);
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 const app = express();
 
 // enable frontend access
@@ -82,6 +84,7 @@ app.use('/folders', foldersDeleteRoute(sequelize));
 
 // "/cases"
 import casesDownloadRoute from './routes/cases/download.js';
+import casesMoveRoute from './routes/cases/move.js';
 import casesIndexRoute from './routes/cases/index.js';
 import casesIndexByProjectIdRoute from './routes/cases/indexByProjectId.js';
 import casesShowRoute from './routes/cases/show.js';
@@ -89,6 +92,7 @@ import casesNewRoute from './routes/cases/new.js';
 import casesEditRoute from './routes/cases/edit.js';
 import casesDeleteRoute from './routes/cases/delete.js';
 app.use('/cases', casesDownloadRoute(sequelize));
+app.use('/cases', casesMoveRoute(sequelize));
 app.use('/cases', casesIndexRoute(sequelize));
 app.use('/cases', casesIndexByProjectIdRoute(sequelize));
 app.use('/cases', casesShowRoute(sequelize));
