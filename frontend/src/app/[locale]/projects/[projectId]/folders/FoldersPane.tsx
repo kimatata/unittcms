@@ -123,9 +123,10 @@ export default function FoldersPane({ projectId, messages, locale }: Props) {
     e.dataTransfer.dropEffect = 'move';
   };
 
-  const handleDrop = (e: React.DragEvent, folderId: number) => {
+  const handleDrop = (e: React.DragEvent, dropFolderId: string) => {
+    e.stopPropagation();
     const ids = JSON.parse(e.dataTransfer.getData('application/json'));
-    alert(`Move testcases ${ids.join(', ')} to folder ${folderId}`);
+    console.log(`Move testcases ${ids.join(', ')} to folder ${dropFolderId}`);
   };
 
   return (
@@ -158,11 +159,7 @@ export default function FoldersPane({ projectId, messages, locale }: Props) {
             disableDrag={true}
           >
             {(props) => (
-              <div
-                onDragOver={handleDragOver}
-                onDrop={(e) => handleDrop(e, props.node.id)}
-                style={{ background: props.isOver ? '#e0e0e0' : undefined }}
-              >
+              <div onDragOver={handleDragOver} onDrop={(e) => handleDrop(e, props.node.id)}>
                 <FolderItem
                   {...props}
                   projectId={projectId}

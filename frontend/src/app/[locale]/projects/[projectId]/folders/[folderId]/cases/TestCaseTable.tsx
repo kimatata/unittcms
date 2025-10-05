@@ -225,13 +225,6 @@ export default function TestCaseTable({
   // **************************************************************************
   const [dragCount, setDragCount] = useState<number | null>(null);
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
-  useEffect(() => {
-    const onMouseMove = (e: MouseEvent) => setMousePos({ x: e.clientX, y: e.clientY });
-    if (dragCount !== null) {
-      window.addEventListener('mousemove', onMouseMove);
-    }
-    return () => window.removeEventListener('mousemove', onMouseMove);
-  }, [dragCount]);
   const handleDragStart = (e: React.DragEvent, id: number) => {
     e.stopPropagation();
 
@@ -250,9 +243,10 @@ export default function TestCaseTable({
     img.src = 'data:image/svg+xml;base64,';
     e.dataTransfer.setDragImage(img, 0, 0);
   };
-
-  const handleDragEnd = (e: React.DragEvent) => {
-    console.log('dragend!!', e);
+  const handleDrag = (e: React.DragEvent) => {
+    setMousePos({ x: e.clientX, y: e.clientY });
+  };
+  const handleDragEnd = () => {
     setDragCount(null);
   };
 
@@ -372,9 +366,10 @@ export default function TestCaseTable({
             {sortedItems.map((item) => (
               <tr
                 draggable
-                className={heroUITableClasses.tr()}
+                className={`${heroUITableClasses.tr()} cursor-pointer`}
                 key={item.id}
                 onDragStart={(e) => handleDragStart(e, item.id)}
+                onDrag={handleDrag}
                 onDragEnd={handleDragEnd}
                 style={{ opacity: dragCount ? 0.5 : 1 }}
               >
@@ -400,10 +395,11 @@ export default function TestCaseTable({
 
       {dragCount !== null && (
         <Card
-          className="fixed z-1000"
+          className="absolute"
           style={{
-            left: mousePos.x + 10,
-            top: mousePos.y + 10,
+            left: mousePos.x,
+            top: mousePos.y,
+            pointerEvents: 'none',
           }}
         >
           <CardBody>
