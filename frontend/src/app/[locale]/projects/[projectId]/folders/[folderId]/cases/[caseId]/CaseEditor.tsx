@@ -1,5 +1,5 @@
 'use client';
-import { useState, useEffect, useContext, ChangeEvent, DragEvent } from 'react';
+import { useState, useEffect, useContext, useCallback, ChangeEvent, DragEvent } from 'react';
 import { Input, Textarea, Select, SelectItem, Button, Divider, Tooltip, addToast, Badge } from '@heroui/react';
 import { Save, Plus, ArrowLeft, Circle } from 'lucide-react';
 import CaseStepsEditor from './CaseStepsEditor';
@@ -210,24 +210,24 @@ export default function CaseEditor({
     }
   };
 
-  useEffect(() => {
-    async function fetchDataEffect() {
-      if (!tokenContext.isSignedIn()) {
-        return;
-      }
-      try {
-        const data = await fetchCase(tokenContext.token.access_token, Number(caseId));
-        data.Steps.forEach((step: StepType) => {
-          step.editState = 'notChanged';
-        });
-        setTestCase(data);
-      } catch (error: unknown) {
-        logError('Error fetching case data', error);
-      }
+  const fetchAndSetCase = useCallback(async () => {
+    if (!tokenContext.isSignedIn()) {
+      return;
     }
+    try {
+      const data = await fetchCase(tokenContext.token.access_token, Number(caseId));
+      data.Steps.forEach((step: StepType) => {
+        step.editState = 'notChanged';
+      });
+      setTestCase(data);
+    } catch (error: unknown) {
+      logError('Error fetching case data', error);
+    }
+  }, [tokenContext, caseId]);
 
-    fetchDataEffect();
-  }, [caseId, tokenContext]);
+  useEffect(() => {
+    fetchAndSetCase();
+  }, [caseId, tokenContext, fetchAndSetCase]);
 
   return (
     <>
@@ -262,6 +262,7 @@ export default function CaseEditor({
               if (testCase.Steps) {
                 await updateSteps(tokenContext.token.access_token, Number(caseId), testCase.Steps);
               }
+              await fetchAndSetCase();
 
               addToast({
                 title: 'Info',
