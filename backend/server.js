@@ -77,10 +77,12 @@ import foldersIndexRoute from './routes/folders/index.js';
 import foldersNewRoute from './routes/folders/new.js';
 import foldersEditRoute from './routes/folders/edit.js';
 import foldersDeleteRoute from './routes/folders/delete.js';
+import foldersCloneRoute from './routes/folders/clone.js'
 app.use('/folders', foldersIndexRoute(sequelize));
 app.use('/folders', foldersNewRoute(sequelize));
 app.use('/folders', foldersEditRoute(sequelize));
 app.use('/folders', foldersDeleteRoute(sequelize));
+app.use('/folders', foldersCloneRoute(sequelize));
 
 // "/cases"
 import casesDownloadRoute from './routes/cases/download.js';
@@ -91,6 +93,7 @@ import casesShowRoute from './routes/cases/show.js';
 import casesNewRoute from './routes/cases/new.js';
 import casesEditRoute from './routes/cases/edit.js';
 import casesDeleteRoute from './routes/cases/delete.js';
+import casesCloneRoute from './routes/cases/clone.js';
 app.use('/cases', casesDownloadRoute(sequelize));
 app.use('/cases', casesMoveRoute(sequelize));
 app.use('/cases', casesIndexRoute(sequelize));
@@ -99,6 +102,7 @@ app.use('/cases', casesShowRoute(sequelize));
 app.use('/cases', casesNewRoute(sequelize));
 app.use('/cases', casesEditRoute(sequelize));
 app.use('/cases', casesDeleteRoute(sequelize));
+app.use('/cases', casesCloneRoute(sequelize));
 
 // "/steps"
 import stepsEditRoute from './routes/steps/edit.js';
