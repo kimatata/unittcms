@@ -1,9 +1,7 @@
 import express from 'express';
 const router = express.Router();
 import { DataTypes } from 'sequelize';
-import { Op } from 'sequelize';
 import defineCase from '../../models/cases.js';
-import definecaseTags from '../../models/caseTags.js';
 import defineTag from '../../models/tags.js';
 import authMiddleware from '../../middleware/auth.js';
 import editableMiddleware from '../../middleware/verifyEditable.js';
@@ -22,7 +20,6 @@ export default function (sequelize) {
   const { verifySignedIn } = authMiddleware(sequelize);
   const { verifyProjectDeveloperFromFolderId } = editableMiddleware(sequelize);
   const Case = defineCase(sequelize, DataTypes);
-  const CaseTag = definecaseTags(sequelize, DataTypes);
   const Tags = defineTag(sequelize, DataTypes);
 
   Case.belongsToMany(Tags, { through: 'caseTags', foreignKey: 'caseId', otherKey: 'tagId' });
@@ -42,28 +39,8 @@ export default function (sequelize) {
         });
       }
 
-      const {
-        title,
-        state,
-        priority,
-        type,
-        automationStatus,
-        description,
-        template,
-        preConditions,
-        expectedResults,
-        tags,
-      } = req.body;
-
-      if (Array.isArray(tags) && tags.length > 0) {
-        const existingTags = await Tags.findAll({
-          where: { id: { [Op.in]: tags } },
-        });
-
-        if (existingTags.length !== tags.length) {
-          return res.status(400).json({ error: 'One or more tags do not exist' });
-        }
-      }
+      const { title, state, priority, type, automationStatus, description, template, preConditions, expectedResults } =
+        req.body;
 
       const newCase = await Case.create({
         title,
@@ -77,14 +54,6 @@ export default function (sequelize) {
         expectedResults,
         folderId,
       });
-
-      if (Array.isArray(tags) && tags.length > 0) {
-        const caseTagRecords = tags.map((tagId) => ({
-          caseId: newCase.id,
-          tagId,
-        }));
-        await CaseTag.bulkCreate(caseTagRecords);
-      }
 
       const createdCase = await Case.findByPk(newCase.id, {
         include: [

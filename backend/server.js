@@ -157,6 +157,14 @@ app.use('/tags', tagsShowRoute(sequelize));
 app.use('/tags', tagsDeleteRoute(sequelize));
 app.use('/tags', tagsEditRoute(sequelize));
 
+// "/casetags"
+import caseTagsNewRoute from './routes/casetags/new.js';
+import caseTagsIndexRoute from './routes/casetags/index.js';
+import caseTagsDeleteRoute from './routes/casetags/delete.js';
+app.use('/casetags', caseTagsNewRoute(sequelize));
+app.use('/casetags', caseTagsIndexRoute(sequelize));
+app.use('/casetags', caseTagsDeleteRoute(sequelize));
+
 // "/home"
 import homeIndexRoute from './routes/home/index.js';
 app.use('/home', homeIndexRoute(sequelize));
