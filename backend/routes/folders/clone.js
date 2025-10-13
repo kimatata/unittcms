@@ -6,11 +6,12 @@ import defineCase from '../../models/cases.js';
 import defineStep from '../../models/steps.js';
 import defineCaseStep from '../../models/caseSteps.js';
 import authMiddleware from '../../middleware/auth.js';
-
-
+import editableMiddleware from '../../middleware/verifyEditable.js';
 
 export default function (sequelize) {
   const { verifySignedIn } = authMiddleware(sequelize);
+  const { verifyProjectDeveloperFromProjectId } = editableMiddleware(sequelize);
+  
   const Folder = defineFolder(sequelize, DataTypes);
   const Case = defineCase(sequelize, DataTypes);
   const Step = defineStep(sequelize, DataTypes);
@@ -77,8 +78,8 @@ export default function (sequelize) {
       }
     }
   }
-  
-  router.post('/clone', verifySignedIn, async (req, res) => {
+
+  router.post('/clone', verifySignedIn, verifyProjectDeveloperFromProjectId, async (req, res) => {
       const { folderId, targetFolderId } = req.body;
 
       try {
