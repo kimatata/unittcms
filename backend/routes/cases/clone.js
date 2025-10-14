@@ -36,7 +36,7 @@ export default function (sequelize) {
       const cases = caseRecords.map((c) => c.get({ plain: true }));
 
       const clonedCases = cases.map((c) => {
-        const { id, createdAt, updatedAt, ...clonedCase } = c;
+        const { id: _id, createdAt: _createdAt, updatedAt: _updatedAt, ...clonedCase } = c;
         return { ...clonedCase, folderId: targetFolderId };
       });
 
@@ -46,7 +46,7 @@ export default function (sequelize) {
 
           if (c.Steps) {
             const clonedSteps = c.Steps.map((s) => {
-              const { id, createdAt, updatedAt, ...clonedStep } = s;
+              const { id: _id, createdAt: _createdAt, updatedAt: _updatedAt, ...clonedStep } = s;
               return clonedStep;
             });
 
