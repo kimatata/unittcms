@@ -10,9 +10,9 @@ import editableMiddleware from '../../middleware/verifyEditable.js';
 export default function (sequelize) {
   const { verifySignedIn } = authMiddleware(sequelize);
   const { verifyProjectDeveloperFromProjectId } = editableMiddleware(sequelize);
-	const Case = defineCase(sequelize, DataTypes);
+  const Case = defineCase(sequelize, DataTypes);
   const Step = defineStep(sequelize, DataTypes);
-	const CaseStep = defineCaseStep(sequelize, DataTypes);
+  const CaseStep = defineCaseStep(sequelize, DataTypes);
   Case.belongsToMany(Step, { through: 'caseSteps' });
   Step.belongsToMany(Case, { through: 'caseSteps' });
 
@@ -24,46 +24,44 @@ export default function (sequelize) {
     }
 
     try {
-			const caseRecords = await Case.findAll({
-				where: { id: caseIds },
-				include: [
-					{ model: Step, through: { attributes: ['stepNo'] } },
-				],
-			});
+      const caseRecords = await Case.findAll({
+        where: { id: caseIds },
+        include: [{ model: Step, through: { attributes: ['stepNo'] } }],
+      });
 
       if (caseRecords.length !== caseIds.length) {
-			  return res.status(404).json({ error: 'Some cases not found' });
-			}
-				
-			const cases = caseRecords.map(c => c.get({ plain: true }));
+        return res.status(404).json({ error: 'Some cases not found' });
+      }
 
-      const clonedCases = cases.map(c => {
-        const { id, createdAt, updatedAt, ...clonedCase } = c
-        return { ...clonedCase, folderId: targetFolderId }
-			});
+      const cases = caseRecords.map((c) => c.get({ plain: true }));
 
-			await sequelize.transaction(async t => {
-				for(const c of clonedCases) {
-					const newCase = await Case.create(c, { transaction: t });
+      const clonedCases = cases.map((c) => {
+        const { id, createdAt, updatedAt, ...clonedCase } = c;
+        return { ...clonedCase, folderId: targetFolderId };
+      });
 
-					if (c.Steps) {
-						const clonedSteps = c.Steps.map(s => {
-							const { id, createdAt, updatedAt, ...clonedStep } = s;
-							return clonedStep;
-						});
+      await sequelize.transaction(async (t) => {
+        for (const c of clonedCases) {
+          const newCase = await Case.create(c, { transaction: t });
 
-						const newStep = await Step.bulkCreate(clonedSteps, { transaction: t });
-						const newCaseSteps = newStep.map((step, index) => ({
-							caseId: newCase.id,
-							stepId: step.id,
-							stepNo: clonedSteps[index].caseSteps.stepNo
-						}));
-						
-						await CaseStep.bulkCreate(newCaseSteps, { transaction: t });
-					}
-				}
-			})
-			
+          if (c.Steps) {
+            const clonedSteps = c.Steps.map((s) => {
+              const { id, createdAt, updatedAt, ...clonedStep } = s;
+              return clonedStep;
+            });
+
+            const newStep = await Step.bulkCreate(clonedSteps, { transaction: t });
+            const newCaseSteps = newStep.map((step, index) => ({
+              caseId: newCase.id,
+              stepId: step.id,
+              stepNo: clonedSteps[index].caseSteps.stepNo,
+            }));
+
+            await CaseStep.bulkCreate(newCaseSteps, { transaction: t });
+          }
+        }
+      });
+
       res.status(200).json({ message: 'Cases cloned successfully' });
     } catch (error) {
       console.error('Error cloning cases:', error);

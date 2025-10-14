@@ -77,7 +77,7 @@ import foldersIndexRoute from './routes/folders/index.js';
 import foldersNewRoute from './routes/folders/new.js';
 import foldersEditRoute from './routes/folders/edit.js';
 import foldersDeleteRoute from './routes/folders/delete.js';
-import foldersCloneRoute from './routes/folders/clone.js'
+import foldersCloneRoute from './routes/folders/clone.js';
 app.use('/folders', foldersIndexRoute(sequelize));
 app.use('/folders', foldersNewRoute(sequelize));
 app.use('/folders', foldersEditRoute(sequelize));

@@ -11,12 +11,12 @@ import editableMiddleware from '../../middleware/verifyEditable.js';
 export default function (sequelize) {
   const { verifySignedIn } = authMiddleware(sequelize);
   const { verifyProjectDeveloperFromProjectId } = editableMiddleware(sequelize);
-  
+
   const Folder = defineFolder(sequelize, DataTypes);
   const Case = defineCase(sequelize, DataTypes);
   const Step = defineStep(sequelize, DataTypes);
   const CaseStep = defineCaseStep(sequelize, DataTypes);
-  Case.belongsTo(Folder)
+  Case.belongsTo(Folder);
   Case.belongsToMany(Step, { through: 'caseSteps' });
   Step.belongsToMany(Case, { through: 'caseSteps' });
 
@@ -49,13 +49,13 @@ export default function (sequelize) {
       include: [{ model: Step, through: { attributes: ['stepNo'] } }],
     });
 
-    if(folderCases.length === 0) return;
+    if (folderCases.length === 0) return;
 
-    const cases = folderCases.map(c => c.get({ plain: true }));
+    const cases = folderCases.map((c) => c.get({ plain: true }));
 
-    const clonedCases = cases.map(c => {
-      const { id, createdAt, updatedAt, ...clonedCase } = c
-      return { ...clonedCase, folderId: targetFolderId }
+    const clonedCases = cases.map((c) => {
+      const { id, createdAt, updatedAt, ...clonedCase } = c;
+      return { ...clonedCase, folderId: targetFolderId };
     });
 
     for (const c of clonedCases) {
@@ -80,27 +80,26 @@ export default function (sequelize) {
   }
 
   router.post('/clone', verifySignedIn, verifyProjectDeveloperFromProjectId, async (req, res) => {
-      const { folderId, targetFolderId } = req.body;
+    const { folderId, targetFolderId } = req.body;
 
-      try {
-        const sourceFolder = await Folder.findByPk(folderId);
-        const targetFolder = await Folder.findByPk(targetFolderId);
+    try {
+      const sourceFolder = await Folder.findByPk(folderId);
+      const targetFolder = await Folder.findByPk(targetFolderId);
 
-        if (!sourceFolder || !targetFolder) {
-          return res.status(404).send('Folder or target folder not found');
-        }
-
-        await sequelize.transaction(async (t) => {
-          await _cloneFolderRecursive(sourceFolder, targetFolder, t);
-        });
-
-        res.status(201).send({ message: 'Folder cloned successfully' });
-      } catch (err) {
-        console.error(err);
-        res.status(500).send('Internal Server Error');
+      if (!sourceFolder || !targetFolder) {
+        return res.status(404).send('Folder or target folder not found');
       }
+
+      await sequelize.transaction(async (t) => {
+        await _cloneFolderRecursive(sourceFolder, targetFolder, t);
+      });
+
+      res.status(201).send({ message: 'Folder cloned successfully' });
+    } catch (err) {
+      console.error(err);
+      res.status(500).send('Internal Server Error');
     }
-  );
+  });
 
   return router;
 }
