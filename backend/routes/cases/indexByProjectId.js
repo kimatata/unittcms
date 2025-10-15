@@ -4,6 +4,7 @@ import { DataTypes } from 'sequelize';
 import defineProject from '../../models/projects.js';
 import defineFolder from '../../models/folders.js';
 import defineCase from '../../models/cases.js';
+import defineTag from '../../models/tags.js';
 import defineRunCase from '../../models/runCases.js';
 import authMiddleware from '../../middleware/auth.js';
 import visibilityMiddleware from '../../middleware/verifyVisible.js';
@@ -13,11 +14,14 @@ export default function (sequelize) {
   const Folder = defineFolder(sequelize, DataTypes);
   const Case = defineCase(sequelize, DataTypes);
   const RunCase = defineRunCase(sequelize, DataTypes);
+  const Tags = defineTag(sequelize, DataTypes);
   Project.hasMany(Folder, { foreignKey: 'projectId' });
   Folder.hasMany(Case, { foreignKey: 'folderId' });
   Folder.belongsTo(Project, { foreignKey: 'projectId' });
   Case.belongsTo(Folder, { foreignKey: 'folderId' });
   Case.hasMany(RunCase, { foreignKey: 'caseId' });
+  Case.belongsToMany(Tags, { through: 'caseTags', foreignKey: 'caseId', otherKey: 'tagId' });
+  Tags.belongsToMany(Case, { through: 'caseTags', foreignKey: 'tagId', otherKey: 'caseId' });
   RunCase.belongsTo(Case, { foreignKey: 'caseId' });
   const { verifySignedIn } = authMiddleware(sequelize);
   const { verifyProjectVisibleFromProjectId } = visibilityMiddleware(sequelize);
@@ -42,6 +46,11 @@ export default function (sequelize) {
           {
             model: RunCase,
             attributes: ['id', 'runId', 'status'],
+          },
+          {
+            model: Tags,
+            attributes: ['id', 'name'],
+            through: { attributes: [] },
           },
         ],
       });

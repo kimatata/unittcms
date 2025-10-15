@@ -2,6 +2,8 @@ import express from 'express';
 const router = express.Router();
 import { DataTypes, Op } from 'sequelize';
 import defineCase from '../../models/cases.js';
+import defineTag from '../../models/tags.js';
+
 import authMiddleware from '../../middleware/auth.js';
 import visibilityMiddleware from '../../middleware/verifyVisible.js';
 
@@ -9,6 +11,10 @@ export default function (sequelize) {
   const { verifySignedIn } = authMiddleware(sequelize);
   const { verifyProjectVisibleFromFolderId } = visibilityMiddleware(sequelize);
   const Case = defineCase(sequelize, DataTypes);
+  const Tags = defineTag(sequelize, DataTypes);
+
+  Case.belongsToMany(Tags, { through: 'caseTags', foreignKey: 'caseId', otherKey: 'tagId' });
+  Tags.belongsToMany(Case, { through: 'caseTags', foreignKey: 'tagId', otherKey: 'caseId' });
 
   router.get('/', verifySignedIn, verifyProjectVisibleFromFolderId, async (req, res) => {
     const { folderId, title, priority, type } = req.query;
@@ -56,6 +62,13 @@ export default function (sequelize) {
 
       const cases = await Case.findAll({
         where: whereClause,
+        include: [
+          {
+            model: Tags,
+            attributes: ['id', 'name'],
+            through: { attributes: [] },
+          },
+        ],
       });
       res.json(cases);
     } catch (error) {

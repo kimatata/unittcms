@@ -55,6 +55,11 @@ function defineCase(sequelize, DataTypes) {
     Case.belongsToMany(models.Step, {
       through: 'caseSteps',
     });
+    Case.belongsToMany(models.Tags, {
+      through: 'caseTags',
+      foreignKey: 'caseId',
+      otherKey: 'tagId',
+    });
   };
 
   return Case;

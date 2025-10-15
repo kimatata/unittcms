@@ -24,9 +24,18 @@ vi.mock('../../middleware/verifyVisible.js', () => ({
 // mock defineCase
 const mockCase = {
   findAll: vi.fn(),
+  belongsToMany: vi.fn(),
 };
+
 vi.mock('../../models/cases.js', () => ({
   default: () => mockCase,
+}));
+
+const mockTags = {
+  belongsToMany: vi.fn(),
+};
+vi.mock('../../models/tags.js', () => ({
+  default: () => mockTags,
 }));
 
 describe('GET /cases', () => {
@@ -54,7 +63,16 @@ describe('GET /cases', () => {
     mockCase.findAll.mockResolvedValue([{ id: 1 }]);
     const res = await request(app).get('/cases?folderId=1');
     expect(res.status).toBe(200);
-    expect(mockCase.findAll).toHaveBeenCalledWith({ where: { folderId: '1' } });
+    expect(mockCase.findAll).toHaveBeenCalledWith({
+      where: { folderId: '1' },
+      include: [
+        {
+          model: mockTags,
+          attributes: ['id', 'name'],
+          through: { attributes: [] },
+        },
+      ],
+    });
     expect(res.body).toEqual([{ id: 1 }]);
   });
 
@@ -69,6 +87,13 @@ describe('GET /cases', () => {
         priority: { [Op.in]: [1, 2] },
         type: { [Op.in]: [3] },
       },
+      include: [
+        {
+          model: mockTags,
+          attributes: ['id', 'name'],
+          through: { attributes: [] },
+        },
+      ],
     });
   });
 });
