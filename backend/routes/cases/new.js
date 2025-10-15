@@ -2,7 +2,6 @@ import express from 'express';
 const router = express.Router();
 import { DataTypes } from 'sequelize';
 import defineCase from '../../models/cases.js';
-import defineTag from '../../models/tags.js';
 import authMiddleware from '../../middleware/auth.js';
 import editableMiddleware from '../../middleware/verifyEditable.js';
 
@@ -20,10 +19,6 @@ export default function (sequelize) {
   const { verifySignedIn } = authMiddleware(sequelize);
   const { verifyProjectDeveloperFromFolderId } = editableMiddleware(sequelize);
   const Case = defineCase(sequelize, DataTypes);
-  const Tags = defineTag(sequelize, DataTypes);
-
-  Case.belongsToMany(Tags, { through: 'caseTags', foreignKey: 'caseId', otherKey: 'tagId' });
-  Tags.belongsToMany(Case, { through: 'caseTags', foreignKey: 'tagId', otherKey: 'caseId' });
 
   router.post('/', verifySignedIn, verifyProjectDeveloperFromFolderId, async (req, res) => {
     const folderId = req.query.folderId;
@@ -55,15 +50,7 @@ export default function (sequelize) {
         folderId,
       });
 
-      const createdCase = await Case.findByPk(newCase.id, {
-        include: [
-          {
-            model: Tags,
-            attributes: ['id', 'name'],
-            through: { attributes: [] },
-          },
-        ],
-      });
+      const createdCase = await Case.findByPk(newCase.id);
 
       return res.status(201).json(createdCase);
     } catch (error) {
