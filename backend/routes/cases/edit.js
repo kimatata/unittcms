@@ -15,7 +15,6 @@ export default function (sequelize) {
     const updateCase = req.body;
     try {
       const testcase = await Case.findByPk(caseId);
-
       if (!testcase) {
         return res.status(404).send('Case not found');
       }
@@ -25,10 +24,7 @@ export default function (sequelize) {
       }
 
       await testcase.update(updateCase);
-
-      const caseRecord = await Case.findByPk(caseId);
-
-      res.json(caseRecord);
+      res.json(testcase);
     } catch (error) {
       console.error(error);
       res.status(500).send('Internal Server Error');

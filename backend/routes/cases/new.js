@@ -50,9 +50,7 @@ export default function (sequelize) {
         folderId,
       });
 
-      const createdCase = await Case.findByPk(newCase.id);
-
-      return res.status(201).json(createdCase);
+      res.json(newCase);
     } catch (error) {
       console.error('Error creating new case:', error);
       res.status(500).json({ error: 'Internal server error' });
