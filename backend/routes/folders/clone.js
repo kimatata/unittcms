@@ -10,7 +10,7 @@ import editableMiddleware from '../../middleware/verifyEditable.js';
 
 export default function (sequelize) {
   const { verifySignedIn } = authMiddleware(sequelize);
-  const { verifyProjectDeveloperFromProjectId } = editableMiddleware(sequelize);
+  const { verifyProjectDeveloperFromFolderId } = editableMiddleware(sequelize);
 
   const Folder = defineFolder(sequelize, DataTypes);
   const Case = defineCase(sequelize, DataTypes);
@@ -79,8 +79,9 @@ export default function (sequelize) {
     }
   }
 
-  router.post('/clone', verifySignedIn, verifyProjectDeveloperFromProjectId, async (req, res) => {
-    const { folderId, targetFolderId } = req.body;
+  router.post('/:folderId/clone', verifySignedIn, verifyProjectDeveloperFromFolderId, async (req, res) => {
+    const folderId = req.params.folderId;
+    const { targetFolderId } = req.body;
 
     try {
       const sourceFolder = await Folder.findByPk(folderId);
