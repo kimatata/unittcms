@@ -169,6 +169,28 @@ async function deleteCases(jwt: string, deleteCaseIds: number[], projectId: numb
   }
 }
 
+async function cloneCases(jwt: string, moveCaseIds: number[], targetFolderId: number, projectId: number) {
+  const fetchOptions = {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${jwt}`,
+    },
+    body: JSON.stringify({ caseIds: moveCaseIds, targetFolderId }),
+  };
+  const url = `${apiServer}/cases/clone?projectId=${projectId}`;
+  try {
+    const response = await fetch(url, fetchOptions);
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+    const data = await response.json();
+    return data;
+  } catch (error: unknown) {
+    logError('Error updating project', error);
+  }
+}
+
 async function exportCases(jwt: string, folderId: number, type: string) {
   if (type !== 'json' && type !== 'csv') {
     console.error('export type error. type:', type);
@@ -202,4 +224,4 @@ async function exportCases(jwt: string, folderId: number, type: string) {
   }
 }
 
-export { fetchCase, fetchCases, updateCase, createCase, deleteCases, exportCases };
+export { fetchCase, fetchCases, updateCase, createCase, deleteCases, cloneCases, exportCases };

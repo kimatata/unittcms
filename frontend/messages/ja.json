@@ -212,7 +212,11 @@
     "selected": "選択済み",
     "type": "タイプ",
     "select_types": "タイプを選択",
-    "cases_moved": "テストケースを移動しました"
+    "select_action": "アクションを選択",
+    "move": "移動",
+    "clone": "クローン",
+    "cases_moved": "テストケースを移動しました",
+    "cases_cloned": "テストケースをクローンしました"
   },
   "Case": {
     "back_to_cases": "テストケース一覧に戻る",

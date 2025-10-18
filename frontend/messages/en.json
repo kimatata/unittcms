@@ -211,7 +211,11 @@
     "selected": "Selected",
     "type": "Type",
     "select_types": "Select types",
-    "cases_moved": "Test cases moved"
+    "select_action": "Select action",
+    "move": "Move",
+    "clone": "Clone",
+    "cases_moved": "Test cases moved",
+    "cases_cloned": "Test cases cloned"
   },
   "Case": {
     "back_to_cases": "Back to test cases",

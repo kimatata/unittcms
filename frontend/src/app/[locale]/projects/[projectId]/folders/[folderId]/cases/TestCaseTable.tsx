@@ -286,7 +286,13 @@ export default function TestCaseTable({
                 placement="top-left"
               >
                 <PopoverTrigger>
-                  <Button startContent={<Filter size={16} />} size="sm" variant="bordered" className="me-2">
+                  <Button
+                    startContent={<Filter size={16} />}
+                    endContent={<ChevronDown size={16} />}
+                    size="sm"
+                    variant="bordered"
+                    className="me-2"
+                  >
                     {messages.filter}
                   </Button>
                 </PopoverTrigger>
