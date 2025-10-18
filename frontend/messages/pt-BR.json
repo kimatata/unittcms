@@ -211,7 +211,8 @@
     "selected": "Selecionado",
     "type": "Tipo",
     "select_types": "Selecionar tipos",
-    "cases_moved": "Casos de teste movidos"
+    "cases_moved": "Casos de teste movidos",
+    "tags": "Tags"
   },
   "Case": {
     "back_to_cases": "Voltar para os casos de teste",

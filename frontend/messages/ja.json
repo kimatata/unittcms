@@ -212,7 +212,8 @@
     "selected": "選択済み",
     "type": "タイプ",
     "select_types": "タイプを選択",
-    "cases_moved": "テストケースを移動しました"
+    "cases_moved": "テストケースを移動しました",
+    "tags": "タグ"
   },
   "Case": {
     "back_to_cases": "テストケース一覧に戻る",

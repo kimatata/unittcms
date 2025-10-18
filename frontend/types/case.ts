@@ -13,6 +13,10 @@ type CaseType = {
   Steps?: StepType[];
   RunCases?: RunCaseType[];
   Attachments?: AttachmentType[];
+  Tags?: {
+    id: number;
+    name: string;
+  }[];
 };
 
 type CaseStepType = {
@@ -85,6 +89,7 @@ type CasesMessages = {
   type: string;
   selectTypes: string;
   casesMoved: string;
+  tags: string;
 };
 
 type CaseMessages = {
