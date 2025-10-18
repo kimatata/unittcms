@@ -326,6 +326,21 @@
     "delete_project": "プロジェクトの削除",
     "delete": "削除",
     "close": "閉じる",
-    "are_you_sure": "プロジェクトを削除してもよろしいですか?"
+    "are_you_sure": "プロジェクトを削除してもよろしいですか?",
+    "tag_management": "タグ管理",
+    "tag_name": "タグ名",
+    "add_tag": "タグを追加",
+    "no_tags_available": "タグがありません",
+    "delete_tag": "タグを削除",
+    "are_you_sure_delete_tag": "このタグを削除してもよろしいですか?",
+    "tag_created": "タグが正常に作成されました。",
+    "tag_updated": "タグが正常に更新されました。",
+    "tag_deleted": "タグが正常に削除されました。",
+    "tag_error_empty": "タグ名を入力してください。",
+    "tag_error_min_length": "タグ名は3文字以上である必要があります。",
+    "tag_error_max_length": "タグ名は20文字を超えることはできません。",
+    "tag_error_create": "タグの作成に失敗しました。もう一度お試しください。",
+    "tag_error_update": "タグの更新に失敗しました。もう一度お試しください。",
+    "tag_error_delete": "タグの削除に失敗しました。もう一度お試しください。"
   }
 }

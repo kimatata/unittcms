@@ -325,6 +325,21 @@
     "delete_project": "Delete Project",
     "delete": "Delete",
     "close": "Close",
-    "are_you_sure": "Are you sure you want to delete the project?"
+    "are_you_sure": "Are you sure you want to delete the project?",
+    "tag_management": "Tag Management",
+    "tag_name": "Tag Name",
+    "add_tag": "Add Tag",
+    "no_tags_available": "No tags available",
+    "delete_tag": "Delete Tag",
+    "are_you_sure_delete_tag": "Are you sure you want to delete this tag?",
+    "tag_created": "Tag created successfully.",
+    "tag_updated": "Tag updated successfully.",
+    "tag_deleted": "Tag deleted successfully.",
+    "tag_error_empty": "Tag name cannot be empty.",
+    "tag_error_min_length": "Tag name must be at least 3 characters long.",
+    "tag_error_max_length": "Tag name cannot exceed 20 characters.",
+    "tag_error_create": "Failed to create tag. Please try again.",
+    "tag_error_update": "Failed to update tag. Please try again.",
+    "tag_error_delete": "Failed to delete tag. Please try again."
   }
 }
