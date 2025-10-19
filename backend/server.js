@@ -77,10 +77,12 @@ import foldersIndexRoute from './routes/folders/index.js';
 import foldersNewRoute from './routes/folders/new.js';
 import foldersEditRoute from './routes/folders/edit.js';
 import foldersDeleteRoute from './routes/folders/delete.js';
+import foldersCloneRoute from './routes/folders/clone.js';
 app.use('/folders', foldersIndexRoute(sequelize));
 app.use('/folders', foldersNewRoute(sequelize));
 app.use('/folders', foldersEditRoute(sequelize));
 app.use('/folders', foldersDeleteRoute(sequelize));
+app.use('/folders', foldersCloneRoute(sequelize));
 
 // "/cases"
 import casesDownloadRoute from './routes/cases/download.js';
@@ -91,6 +93,7 @@ import casesShowRoute from './routes/cases/show.js';
 import casesNewRoute from './routes/cases/new.js';
 import casesEditRoute from './routes/cases/edit.js';
 import casesDeleteRoute from './routes/cases/delete.js';
+import casesCloneRoute from './routes/cases/clone.js';
 app.use('/cases', casesDownloadRoute(sequelize));
 app.use('/cases', casesMoveRoute(sequelize));
 app.use('/cases', casesIndexRoute(sequelize));
@@ -99,6 +102,7 @@ app.use('/cases', casesShowRoute(sequelize));
 app.use('/cases', casesNewRoute(sequelize));
 app.use('/cases', casesEditRoute(sequelize));
 app.use('/cases', casesDeleteRoute(sequelize));
+app.use('/cases', casesCloneRoute(sequelize));
 
 // "/steps"
 import stepsEditRoute from './routes/steps/edit.js';
@@ -144,6 +148,24 @@ app.use('/members', membersNewRoute(sequelize));
 app.use('/members', membersEditRoute(sequelize));
 app.use('/members', membersDeleteRoute(sequelize));
 app.use('/members', membersCheckRoute(sequelize));
+
+// "/tags"
+import tagsNewRoute from './routes/tags/new.js';
+import tagsIndexRoute from './routes/tags/index.js';
+import tagsEditRoute from './routes/tags/edit.js';
+import tagsDeleteRoute from './routes/tags/delete.js';
+import tagsShowRoute from './routes/tags/show.js';
+app.use('/tags', tagsNewRoute(sequelize));
+app.use('/tags', tagsIndexRoute(sequelize));
+app.use('/tags', tagsShowRoute(sequelize));
+app.use('/tags', tagsDeleteRoute(sequelize));
+app.use('/tags', tagsEditRoute(sequelize));
+
+// "/casetags"
+import caseTagsNewRoute from './routes/casetags/new.js';
+import caseTagsDeleteRoute from './routes/casetags/delete.js';
+app.use('/casetags', caseTagsNewRoute(sequelize));
+app.use('/casetags', caseTagsDeleteRoute(sequelize));
 
 // "/home"
 import homeIndexRoute from './routes/home/index.js';

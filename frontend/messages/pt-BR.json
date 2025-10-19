@@ -211,7 +211,12 @@
     "selected": "Selecionado",
     "type": "Tipo",
     "select_types": "Selecionar tipos",
-    "moved": "Casos de teste movidos"
+    "cases_selected": "casos selecionados",
+    "select_action": "Selecionar ação",
+    "move": "Mover",
+    "clone": "Clonar",
+    "cases_moved": "Casos de teste movidos",
+    "cases_cloned": "Casos de teste clonados"
   },
   "Case": {
     "back_to_cases": "Voltar para os casos de teste",
