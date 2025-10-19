@@ -190,6 +190,7 @@ export default function CasesPane({
         testCaseIds={selectedCaseIds}
         projectId={projectId}
         targetFolderId={targetFolderId}
+        isDisabled={!context.isProjectDeveloper(Number(projectId))}
         onCancel={() => setIsMoveDialogOpen(false)}
         onMoved={handleMoved}
         messages={messages}

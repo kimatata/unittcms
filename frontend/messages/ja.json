@@ -212,6 +212,7 @@
     "selected": "選択済み",
     "type": "タイプ",
     "select_types": "タイプを選択",
+    "cases_selected": "件のテストケース",
     "select_action": "アクションを選択",
     "move": "移動",
     "clone": "クローン",

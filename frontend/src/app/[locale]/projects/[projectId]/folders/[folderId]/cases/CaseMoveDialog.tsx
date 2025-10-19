@@ -1,7 +1,7 @@
 'use client';
 import { useState } from 'react';
 import { Button, Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Spinner, addToast } from '@heroui/react';
-import { Files, FileInput } from 'lucide-react';
+import { Copy, Forward } from 'lucide-react';
 import { CasesMessages } from '@/types/case';
 import { moveCases, cloneCases } from '@/utils/caseControl';
 
@@ -10,6 +10,7 @@ type Props = {
   testCaseIds: number[];
   projectId: string;
   targetFolderId?: number;
+  isDisabled: boolean;
   onCancel: () => void;
   onMoved: () => void;
   messages: CasesMessages;
@@ -21,6 +22,7 @@ export default function CaseDialog({
   testCaseIds,
   projectId,
   targetFolderId,
+  isDisabled,
   onCancel,
   onMoved,
   messages,
@@ -77,7 +79,9 @@ export default function CaseDialog({
       <ModalContent>
         <ModalHeader className="flex flex-col gap-1">{messages.selectAction}</ModalHeader>
         <ModalBody>
-          <p>{testCaseIds.length} cases selected</p>
+          <p>
+            {testCaseIds.length} {messages.casesSelected}
+          </p>
         </ModalBody>
         <ModalFooter>
           {isProcessing ? (
@@ -87,10 +91,22 @@ export default function CaseDialog({
               <Button variant="light" size="sm" onPress={onCancel}>
                 {messages.close}
               </Button>
-              <Button color="primary" size="sm" onPress={handleClone} startContent={<Files size={16} />}>
+              <Button
+                color="primary"
+                size="sm"
+                onPress={handleClone}
+                startContent={<Copy size={16} />}
+                isDisabled={isDisabled}
+              >
                 {messages.clone}
               </Button>
-              <Button color="primary" size="sm" onPress={handleMove} startContent={<FileInput size={16} />}>
+              <Button
+                color="primary"
+                size="sm"
+                onPress={handleMove}
+                startContent={<Forward size={16} />}
+                isDisabled={isDisabled}
+              >
                 {messages.move}
               </Button>
             </>

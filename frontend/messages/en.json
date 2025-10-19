@@ -211,6 +211,7 @@
     "selected": "Selected",
     "type": "Type",
     "select_types": "Select types",
+    "cases_selected": "cases selected",
     "select_action": "Select action",
     "move": "Move",
     "clone": "Clone",

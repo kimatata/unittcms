@@ -40,6 +40,7 @@ export default function Page({ params }: { params: { projectId: string; folderId
     selected: t('selected'),
     type: t('type'),
     selectTypes: t('select_types'),
+    casesSelected: t('cases_selected'),
     selectAction: t('select_action'),
     move: t('move'),
     clone: t('clone'),
