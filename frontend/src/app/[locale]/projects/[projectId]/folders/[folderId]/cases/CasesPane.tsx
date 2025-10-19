@@ -1,5 +1,5 @@
 'use client';
-import { useState, useEffect, useContext } from 'react';
+import { useState, useEffect, useContext, useCallback } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import TestCaseTable from './TestCaseTable';
 import CaseDialog from './CaseDialog';
@@ -98,14 +98,6 @@ export default function CasesPane({
     fetchDataEffect();
   }, [context, folderId, searchParams]);
 
-  useEffect(() => {
-    const unsubscribe = onMoveEvent(async (e) => {
-      const { testCaseIds, targetFolderId } = e.detail;
-      openMoveDialog(testCaseIds, targetFolderId);
-    });
-    return unsubscribe;
-  }, [cases, context.token.access_token, messages.casesMoved, projectId]);
-
   const closeDialog = () => setIsCaseDialogOpen(false);
 
   const onSubmit = async (title: string, description: string) => {
@@ -154,14 +146,23 @@ export default function CasesPane({
   const [isMoveDialogOpen, setIsMoveDialogOpen] = useState(false);
   const [selectedCaseIds, setSelectedCaseIds] = useState<number[]>([]);
   const [targetFolderId, setTargetFolderId] = useState<number | undefined>(undefined);
-  const openMoveDialog = (caseIds: number[], folderId?: number) => {
+  const openMoveDialog = useCallback((caseIds: number[], folderId?: number) => {
     setSelectedCaseIds(caseIds);
     setTargetFolderId(folderId);
     setIsMoveDialogOpen(true);
-  };
+  }, []);
+
   const handleMoved = () => {
     setCases((prev) => prev.filter((c) => !selectedCaseIds.includes(c.id)));
   };
+
+  useEffect(() => {
+    const unsubscribe = onMoveEvent(async (e) => {
+      const { testCaseIds, targetFolderId } = e.detail;
+      openMoveDialog(testCaseIds, targetFolderId);
+    });
+    return unsubscribe;
+  }, [openMoveDialog]);
 
   return (
     <>

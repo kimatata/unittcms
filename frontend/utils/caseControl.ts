@@ -187,7 +187,7 @@ async function cloneCases(jwt: string, moveCaseIds: number[], targetFolderId: nu
     const data = await response.json();
     return data;
   } catch (error: unknown) {
-    logError('Error updating project', error);
+    logError('Error cloning project', error);
   }
 }
 
