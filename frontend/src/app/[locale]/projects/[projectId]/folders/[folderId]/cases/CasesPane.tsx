@@ -1,13 +1,13 @@
 'use client';
-import { useState, useEffect, useContext } from 'react';
+import { useState, useEffect, useContext, useCallback } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { addToast } from '@heroui/react';
 import TestCaseTable from './TestCaseTable';
 import CaseDialog from './CaseDialog';
-import { TokenContext } from '@/utils/TokenProvider';
-import { fetchCases, createCase, deleteCases, exportCases, moveCases } from '@/utils/caseControl';
-import { CaseType, CasesMessages } from '@/types/case';
+import CaseMoveDialog from './CaseMoveDialog';
 import DeleteConfirmDialog from '@/components/DeleteConfirmDialog';
+import { TokenContext } from '@/utils/TokenProvider';
+import { fetchCases, createCase, deleteCases, exportCases } from '@/utils/caseControl';
+import { CaseType, CasesMessages } from '@/types/case';
 import { PriorityMessages } from '@/types/priority';
 import { TestTypeMessages } from '@/types/testType';
 import { LocaleCodeType } from '@/types/locale';
@@ -98,25 +98,6 @@ export default function CasesPane({
     fetchDataEffect();
   }, [context, folderId, searchParams]);
 
-  useEffect(() => {
-    const unsubscribe = onMoveEvent(async (e) => {
-      const { testCaseIds, targetFolderId } = e.detail;
-      const moveRet = await moveCases(context.token.access_token, testCaseIds, targetFolderId, Number(projectId));
-      if (!moveRet) {
-        console.error('Error moving cases');
-        return;
-      }
-
-      setCases(cases.filter((entry) => !testCaseIds.includes(entry.id)));
-      addToast({
-        title: 'Success',
-        color: 'success',
-        description: messages.casesMoved,
-      });
-    });
-    return unsubscribe;
-  }, [cases, context.token.access_token, messages.casesMoved, projectId]);
-
   const closeDialog = () => setIsCaseDialogOpen(false);
 
   const onSubmit = async (title: string, description: string) => {
@@ -159,6 +140,30 @@ export default function CasesPane({
     updateUrlParams({ title: title, priority: priorities, type: types });
   };
 
+  // **************************************************************************
+  // Move/Clone cases
+  // **************************************************************************
+  const [isMoveDialogOpen, setIsMoveDialogOpen] = useState(false);
+  const [selectedCaseIds, setSelectedCaseIds] = useState<number[]>([]);
+  const [targetFolderId, setTargetFolderId] = useState<number | undefined>(undefined);
+  const openMoveDialog = useCallback((caseIds: number[], folderId?: number) => {
+    setSelectedCaseIds(caseIds);
+    setTargetFolderId(folderId);
+    setIsMoveDialogOpen(true);
+  }, []);
+
+  const handleMoved = () => {
+    setCases((prev) => prev.filter((c) => !selectedCaseIds.includes(c.id)));
+  };
+
+  useEffect(() => {
+    const unsubscribe = onMoveEvent(async (e) => {
+      const { testCaseIds, targetFolderId } = e.detail;
+      openMoveDialog(testCaseIds, targetFolderId);
+    });
+    return unsubscribe;
+  }, [openMoveDialog]);
+
   return (
     <>
       <TestCaseTable
@@ -180,6 +185,18 @@ export default function CasesPane({
       />
 
       <CaseDialog isOpen={isCaseDialogOpen} onCancel={closeDialog} onSubmit={onSubmit} messages={messages} />
+
+      <CaseMoveDialog
+        isOpen={isMoveDialogOpen}
+        testCaseIds={selectedCaseIds}
+        projectId={projectId}
+        targetFolderId={targetFolderId}
+        isDisabled={!context.isProjectDeveloper(Number(projectId))}
+        onCancel={() => setIsMoveDialogOpen(false)}
+        onMoved={handleMoved}
+        messages={messages}
+        token={context.token.access_token}
+      />
 
       <DeleteConfirmDialog
         isOpen={isDeleteConfirmDialogOpen}
