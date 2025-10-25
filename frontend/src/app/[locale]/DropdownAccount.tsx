@@ -1,5 +1,5 @@
 'use client';
-import { Button, DropdownTrigger, Dropdown, DropdownMenu, DropdownItem } from '@heroui/react';
+import { Button, DropdownTrigger, Dropdown, DropdownMenu, DropdownItem, user } from '@heroui/react';
 import { ChevronDown, PenTool, ArrowRightFromLine, ArrowRightToLine } from 'lucide-react';
 import { useContext } from 'react';
 import { TokenContext } from '@/utils/TokenProvider';
@@ -31,7 +31,9 @@ export default function DropdownAccount({ messages, locale, onItemPress }: Props
     {
       uid: 'account',
       title: messages.account,
-      icon: <UserAvatar context={context} />,
+      icon: (
+        <UserAvatar size={16} username={context.token?.user?.username} avatarPath={context.token?.user?.avatarPath} />
+      ),
       onPress: () => {
         router.push('/account', { locale: locale });
         onItemPress();
@@ -75,7 +77,13 @@ export default function DropdownAccount({ messages, locale, onItemPress }: Props
         <Button
           size="sm"
           variant="light"
-          startContent={<UserAvatar context={context} />}
+          startContent={
+            <UserAvatar
+              size={16}
+              username={context.token?.user?.username}
+              avatarPath={context.token?.user?.avatarPath}
+            />
+          }
           endContent={<ChevronDown size={16} />}
         >
           {context.isSignedIn() ? context.token?.user?.username : messages.signIn}

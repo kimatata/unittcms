@@ -11,6 +11,7 @@ export default function Page({ params }: PageType) {
     private: t('private'),
     notOwnAnyProjects: t('not_own_any_projects'),
     findProjects: t('find_projects'),
+    profileSettings: t('profile_settings'),
   };
 
   return <AccountPage messages={messages} locale={params.locale as LocaleCodeType} />;

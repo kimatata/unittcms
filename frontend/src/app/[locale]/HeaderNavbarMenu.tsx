@@ -185,7 +185,13 @@ export default function HeaderNavbarMenu({ messages, locale }: Props) {
               <ListboxItem
                 key="account"
                 title={messages.account}
-                startContent={<UserAvatar context={context} />}
+                startContent={
+                  <UserAvatar
+                    size={16}
+                    username={context.token?.user?.username}
+                    avatarPath={context.token?.user?.avatarPath}
+                  />
+                }
                 onPress={() => {
                   router.push('/account', { locale: locale });
                   setIsMenuOpen(false);
