@@ -30,11 +30,11 @@ export default function MembersTable({ candidates, onAddPress, messages }: Props
             <img
               src={`${apiServer}${candidate.avatarPath}`}
               alt="Avatar"
-              className="w-4 h-4 rounded-full object-cover"
+              className="w-6 h-6 rounded-full object-cover"
             />
           ) : (
             <Avatar
-              size={16}
+              size={24}
               name={candidate.username}
               variant="beam"
               colors={['#0A0310', '#49007E', '#FF005B', '#FF7D10', '#FFB238']}
@@ -54,7 +54,7 @@ export default function MembersTable({ candidates, onAddPress, messages }: Props
           return cellValue;
       }
     },
-    [messages.add, onAddPress, apiServer]
+    [messages.add, onAddPress]
   );
 
   const classNames = useMemo(

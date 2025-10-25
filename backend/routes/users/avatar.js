@@ -67,8 +67,13 @@ export default function (sequelize) {
 
       // Delete old avatar if exists
       if (user.avatarPath) {
+        // Validate that avatarPath is within expected directory
         const oldAvatarPath = path.join(__dirname, '../../public', user.avatarPath);
-        if (fs.existsSync(oldAvatarPath)) {
+        const avatarDirResolved = path.resolve(__dirname, '../../public/uploads/avatars');
+        const oldAvatarResolved = path.resolve(oldAvatarPath);
+        
+        // Ensure the path is within the avatars directory (prevent path traversal)
+        if (oldAvatarResolved.startsWith(avatarDirResolved) && fs.existsSync(oldAvatarPath)) {
           fs.unlinkSync(oldAvatarPath);
         }
       }
@@ -105,8 +110,13 @@ export default function (sequelize) {
 
       // Delete avatar file if exists
       if (user.avatarPath) {
+        // Validate that avatarPath is within expected directory
         const avatarPath = path.join(__dirname, '../../public', user.avatarPath);
-        if (fs.existsSync(avatarPath)) {
+        const avatarDirResolved = path.resolve(__dirname, '../../public/uploads/avatars');
+        const avatarPathResolved = path.resolve(avatarPath);
+        
+        // Ensure the path is within the avatars directory (prevent path traversal)
+        if (avatarPathResolved.startsWith(avatarDirResolved) && fs.existsSync(avatarPath)) {
           fs.unlinkSync(avatarPath);
         }
       }
