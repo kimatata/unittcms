@@ -2,7 +2,7 @@
 import { useState, useEffect, useContext } from 'react';
 import { Button, Card, CardHeader, CardFooter } from '@heroui/react';
 import Avatar from 'boring-avatars';
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, Settings } from 'lucide-react';
 import { Link, NextUiLinkClasses } from '@/src/i18n/routing';
 import { TokenContext } from '@/utils/TokenProvider';
 import { fetchMyProjects } from '@/utils/projectsControl';
@@ -10,6 +10,7 @@ import { ProjectType } from '@/types/project';
 import PublicityChip from '@/components/PublicityChip';
 import { LocaleCodeType } from '@/types/locale';
 import { logError } from '@/utils/errorHandler';
+import Config from '@/config/config';
 
 type AccountPageMessages = {
   yourProjects: string;
@@ -17,6 +18,7 @@ type AccountPageMessages = {
   private: string;
   notOwnAnyProjects: string;
   findProjects: string;
+  profileSettings: string;
 };
 
 type Props = {
@@ -27,6 +29,7 @@ type Props = {
 export default function AccountPage({ messages, locale }: Props) {
   const context = useContext(TokenContext);
   const [myProjects, setMyProjects] = useState<ProjectType[]>([]);
+  const apiServer = Config.apiServer;
 
   useEffect(() => {
     async function fetchDataEffect() {
@@ -51,17 +54,37 @@ export default function AccountPage({ messages, locale }: Props) {
         <div className="container mx-auto max-w-3xl pt-6 px-6 flex-grow">
           <div className="w-full p-3 flex items-center justify-between">
             <Card className="w-[600px]">
-              <CardHeader className="flex gap-6">
-                <Avatar
-                  size={48}
-                  name={context.token?.user?.username}
-                  variant="beam"
-                  colors={['#0A0310', '#49007E', '#FF005B', '#FF7D10', '#FFB238']}
-                />
-                <div className="flex flex-col">
-                  <p className="text-xl font-bold">{context.token?.user?.username}</p>
-                  <p className="text-lg text-default-500">{context.token?.user?.email}</p>
+              <CardHeader className="flex gap-6 justify-between">
+                <div className="flex gap-6">
+                  {context.token?.user?.avatarPath ? (
+                    <img
+                      src={`${apiServer}${context.token.user.avatarPath}`}
+                      alt="Avatar"
+                      className="w-12 h-12 rounded-full object-cover"
+                    />
+                  ) : (
+                    <Avatar
+                      size={48}
+                      name={context.token?.user?.username}
+                      variant="beam"
+                      colors={['#0A0310', '#49007E', '#FF005B', '#FF7D10', '#FFB238']}
+                    />
+                  )}
+                  <div className="flex flex-col">
+                    <p className="text-xl font-bold">{context.token?.user?.username}</p>
+                    <p className="text-lg text-default-500">{context.token?.user?.email}</p>
+                  </div>
                 </div>
+                <Button
+                  as={Link}
+                  href="/account/settings"
+                  locale={locale}
+                  variant="flat"
+                  size="sm"
+                  startContent={<Settings size={16} />}
+                >
+                  {messages.profileSettings}
+                </Button>
               </CardHeader>
             </Card>
           </div>

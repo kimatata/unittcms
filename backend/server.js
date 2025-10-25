@@ -51,12 +51,18 @@ import usersIndexRoute from './routes/users/index.js';
 import usersFindRoute from './routes/users/find.js';
 import usersSearchRoute from './routes/users/search.js';
 import usersUpdateRoute from './routes/users/update.js';
+import usersProfileRoute from './routes/users/profile.js';
+import usersPasswordRoute from './routes/users/password.js';
+import usersAvatarRoute from './routes/users/avatar.js';
 import signUpRoute from './routes/users/signup.js';
 import signInRoute from './routes/users/signin.js';
 app.use('/users', usersIndexRoute(sequelize));
 app.use('/users', usersFindRoute(sequelize));
 app.use('/users', usersSearchRoute(sequelize));
 app.use('/users', usersUpdateRoute(sequelize));
+app.use('/users', usersProfileRoute(sequelize));
+app.use('/users', usersPasswordRoute(sequelize));
+app.use('/users', usersAvatarRoute(sequelize));
 app.use('/users', signUpRoute(sequelize));
 app.use('/users', signInRoute(sequelize));
 

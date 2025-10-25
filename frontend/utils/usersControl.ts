@@ -76,4 +76,117 @@ async function updateUserRole(jwt: string, userId: number, newRole: number) {
   }
 }
 
-export { findUser, searchUsers, updateUserRole };
+async function updateUsername(jwt: string, username: string) {
+  const updateData = {
+    username,
+  };
+
+  const fetchOptions = {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${jwt}`,
+    },
+    body: JSON.stringify(updateData),
+  };
+
+  const url = `${apiServer}/users/profile`;
+
+  try {
+    const response = await fetch(url, fetchOptions);
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(errorText || `HTTP error! Status: ${response.status}`);
+    }
+    const data = await response.json();
+    return data;
+  } catch (error: unknown) {
+    logError('Error updating username:', error);
+    throw error;
+  }
+}
+
+async function updatePassword(jwt: string, currentPassword: string, newPassword: string) {
+  const updateData = {
+    currentPassword,
+    newPassword,
+  };
+
+  const fetchOptions = {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${jwt}`,
+    },
+    body: JSON.stringify(updateData),
+  };
+
+  const url = `${apiServer}/users/password`;
+
+  try {
+    const response = await fetch(url, fetchOptions);
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(errorText || `HTTP error! Status: ${response.status}`);
+    }
+    const data = await response.json();
+    return data;
+  } catch (error: unknown) {
+    logError('Error updating password:', error);
+    throw error;
+  }
+}
+
+async function uploadAvatar(jwt: string, file: File) {
+  const formData = new FormData();
+  formData.append('avatar', file);
+
+  const fetchOptions = {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${jwt}`,
+    },
+    body: formData,
+  };
+
+  const url = `${apiServer}/users/avatar`;
+
+  try {
+    const response = await fetch(url, fetchOptions);
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(errorText || `HTTP error! Status: ${response.status}`);
+    }
+    const data = await response.json();
+    return data;
+  } catch (error: unknown) {
+    logError('Error uploading avatar:', error);
+    throw error;
+  }
+}
+
+async function deleteAvatar(jwt: string) {
+  const fetchOptions = {
+    method: 'DELETE',
+    headers: {
+      Authorization: `Bearer ${jwt}`,
+    },
+  };
+
+  const url = `${apiServer}/users/avatar`;
+
+  try {
+    const response = await fetch(url, fetchOptions);
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(errorText || `HTTP error! Status: ${response.status}`);
+    }
+    const data = await response.json();
+    return data;
+  } catch (error: unknown) {
+    logError('Error deleting avatar:', error);
+    throw error;
+  }
+}
+
+export { findUser, searchUsers, updateUserRole, updateUsername, updatePassword, uploadAvatar, deleteAvatar };
