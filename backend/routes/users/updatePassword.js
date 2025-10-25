@@ -12,7 +12,7 @@ export default function (sequelize) {
   // Change user password
   router.put('/password', verifySignedIn, async (req, res) => {
     try {
-      const userId = req.user.userId;
+      const userId = req.userId;
       const { currentPassword, newPassword } = req.body;
 
       if (!currentPassword || !newPassword) {

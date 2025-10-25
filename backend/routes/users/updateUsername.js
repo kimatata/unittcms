@@ -11,7 +11,7 @@ export default function (sequelize) {
   // Update user profile (username)
   router.put('/profile', verifySignedIn, async (req, res) => {
     try {
-      const userId = req.user.userId;
+      const userId = req.userId;
       const { username } = req.body;
 
       if (!username || username.trim().length === 0) {

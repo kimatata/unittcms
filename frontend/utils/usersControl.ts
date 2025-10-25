@@ -62,7 +62,7 @@ async function updateUserRole(jwt: string, userId: number, newRole: number) {
     body: JSON.stringify(updateUserData),
   };
 
-  const url = `${apiServer}/users/${userId}`;
+  const url = `${apiServer}/users/${userId}/role`;
 
   try {
     const response = await fetch(url, fetchOptions);

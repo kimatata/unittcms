@@ -26,7 +26,7 @@ export default function (sequelize) {
     },
     filename: (req, file, cb) => {
       const ext = path.extname(file.originalname);
-      const fileName = `avatar_${req.user.userId}_${Date.now()}${ext}`;
+      const fileName = `avatar_${req.userId}_${Date.now()}${ext}`;
       cb(null, fileName);
     },
   });
@@ -51,7 +51,7 @@ export default function (sequelize) {
   // Upload avatar
   router.post('/avatar', verifySignedIn, upload.single('avatar'), async (req, res) => {
     try {
-      const userId = req.user.userId;
+      const userId = req.userId;
       const file = req.file;
 
       if (!file) {
@@ -71,7 +71,7 @@ export default function (sequelize) {
         const oldAvatarPath = path.join(__dirname, '../../public', user.avatarPath);
         const avatarDirResolved = path.resolve(__dirname, '../../public/uploads/avatars');
         const oldAvatarResolved = path.resolve(oldAvatarPath);
-        
+
         // Ensure the path is within the avatars directory (prevent path traversal)
         if (oldAvatarResolved.startsWith(avatarDirResolved) && fs.existsSync(oldAvatarPath)) {
           fs.unlinkSync(oldAvatarPath);
@@ -101,7 +101,7 @@ export default function (sequelize) {
   // Delete avatar
   router.delete('/avatar', verifySignedIn, async (req, res) => {
     try {
-      const userId = req.user.userId;
+      const userId = req.userId;
 
       const user = await User.findByPk(userId);
       if (!user) {
@@ -114,7 +114,7 @@ export default function (sequelize) {
         const avatarPath = path.join(__dirname, '../../public', user.avatarPath);
         const avatarDirResolved = path.resolve(__dirname, '../../public/uploads/avatars');
         const avatarPathResolved = path.resolve(avatarPath);
-        
+
         // Ensure the path is within the avatars directory (prevent path traversal)
         if (avatarPathResolved.startsWith(avatarDirResolved) && fs.existsSync(avatarPath)) {
           fs.unlinkSync(avatarPath);
