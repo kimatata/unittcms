@@ -18,6 +18,7 @@ import Avatar from 'boring-avatars';
 import { MemberType, UserType } from '@/types/user';
 import { memberRoles } from '@/config/selection';
 import { MembersMessages } from '@/types/member';
+import Config from '@/config/config';
 
 type Props = {
   members: MemberType[];
@@ -28,6 +29,7 @@ type Props = {
 };
 
 export default function MembersTable({ members, isDisabled, onChangeRole, onDeleteMember, messages }: Props) {
+  const apiServer = Config.apiServer;
   const headerColumns = [
     { name: messages.avatar, uid: 'avatar' },
     { name: messages.email, uid: 'email', sortable: true },
@@ -56,7 +58,13 @@ export default function MembersTable({ members, isDisabled, onChangeRole, onDele
 
     switch (columnKey) {
       case 'avatar':
-        return (
+        return member.User.avatarPath ? (
+          <img
+            src={`${apiServer}${member.User.avatarPath}`}
+            alt="Avatar"
+            className="w-6 h-6 rounded-full object-cover"
+          />
+        ) : (
           <Avatar
             size={24}
             name={member.User.username}

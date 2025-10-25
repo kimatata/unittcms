@@ -1,0 +1,127 @@
+import { describe, it, expect, vi, beforeEach } from 'vitest';
+import request from 'supertest';
+import express from 'express';
+import { Sequelize } from 'sequelize';
+import profileRoute from './profile.js';
+import passwordRoute from './password.js';
+import bcrypt from 'bcrypt';
+
+// mock of authentication middleware
+let mockUserId = 1;
+vi.mock('../../middleware/auth.js', () => ({
+  default: () => ({
+    verifySignedIn: vi.fn((req, res, next) => {
+      req.user = { userId: mockUserId };
+      next();
+    }),
+  }),
+}));
+
+// mock defineUser
+const mockUsers = new Map();
+const mockUser = {
+  findByPk: vi.fn((id) => {
+    const user = mockUsers.get(id);
+    if (!user) return null;
+    return {
+      ...user,
+      update: vi.fn(async (data) => {
+        Object.assign(user, data);
+        return user;
+      }),
+    };
+  }),
+};
+
+vi.mock('../../models/users.js', () => ({
+  default: () => mockUser,
+}));
+
+describe('User Profile Routes', () => {
+  let app;
+  const sequelize = new Sequelize({
+    dialect: 'sqlite',
+    logging: false,
+  });
+
+  beforeEach(() => {
+    app = express();
+    app.use(express.json());
+    app.use('/users', profileRoute(sequelize));
+    app.use('/users', passwordRoute(sequelize));
+
+    // Reset mock users
+    mockUsers.clear();
+    mockUserId = 1;
+
+    // Create a test user
+    mockUsers.set(1, {
+      id: 1,
+      email: 'test@example.com',
+      username: 'testuser',
+      password: bcrypt.hashSync('testpassword123', 10),
+      role: 1,
+      avatarPath: null,
+    });
+
+    vi.clearAllMocks();
+  });
+
+  it('should update username', async () => {
+    const newUsername = 'updatedusername';
+    const response = await request(app).put('/users/profile').send({ username: newUsername });
+
+    expect(response.status).toBe(200);
+    expect(response.body.user.username).toBe(newUsername);
+  });
+
+  it('should reject empty username', async () => {
+    const response = await request(app).put('/users/profile').send({ username: '' });
+
+    expect(response.status).toBe(400);
+  });
+
+  it('should reject whitespace-only username', async () => {
+    const response = await request(app).put('/users/profile').send({ username: '   ' });
+
+    expect(response.status).toBe(400);
+  });
+
+  it('should update password', async () => {
+    const newPassword = 'newpassword123';
+    const response = await request(app).put('/users/password').send({
+      currentPassword: 'testpassword123',
+      newPassword: newPassword,
+    });
+
+    expect(response.status).toBe(200);
+    expect(response.body.message).toContain('successfully');
+  });
+
+  it('should reject incorrect current password', async () => {
+    const response = await request(app).put('/users/password').send({
+      currentPassword: 'wrongpassword',
+      newPassword: 'newpassword456',
+    });
+
+    expect(response.status).toBe(401);
+  });
+
+  it('should reject password shorter than 8 characters', async () => {
+    const response = await request(app).put('/users/password').send({
+      currentPassword: 'testpassword123',
+      newPassword: 'short',
+    });
+
+    expect(response.status).toBe(400);
+  });
+
+  it('should reject missing current password', async () => {
+    const response = await request(app).put('/users/password').send({
+      newPassword: 'newpassword123',
+    });
+
+    expect(response.status).toBe(400);
+  });
+});
+

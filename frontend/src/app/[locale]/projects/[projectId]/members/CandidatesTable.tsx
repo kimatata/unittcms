@@ -3,6 +3,7 @@ import { Button, Table, TableHeader, TableColumn, TableBody, TableRow, TableCell
 import Avatar from 'boring-avatars';
 import { UserType } from '@/types/user';
 import { MembersMessages } from '@/types/member';
+import Config from '@/config/config';
 
 type Props = {
   candidates: UserType[];
@@ -11,6 +12,7 @@ type Props = {
 };
 
 export default function MembersTable({ candidates, onAddPress, messages }: Props) {
+  const apiServer = Config.apiServer;
   const headerColumns = [
     { name: messages.avatar, uid: 'avatar', sortable: false },
     { name: messages.email, uid: 'email', sortable: false },
@@ -24,7 +26,13 @@ export default function MembersTable({ candidates, onAddPress, messages }: Props
 
       switch (columnKey) {
         case 'avatar':
-          return (
+          return candidate.avatarPath ? (
+            <img
+              src={`${apiServer}${candidate.avatarPath}`}
+              alt="Avatar"
+              className="w-4 h-4 rounded-full object-cover"
+            />
+          ) : (
             <Avatar
               size={16}
               name={candidate.username}
@@ -46,7 +54,7 @@ export default function MembersTable({ candidates, onAddPress, messages }: Props
           return cellValue;
       }
     },
-    [messages.add, onAddPress]
+    [messages.add, onAddPress, apiServer]
   );
 
   const classNames = useMemo(

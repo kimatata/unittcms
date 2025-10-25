@@ -17,6 +17,7 @@ import { ChevronDown } from 'lucide-react';
 import Avatar from 'boring-avatars';
 import { UserType, AdminMessages } from '@/types/user';
 import { roles } from '@/config/selection';
+import Config from '@/config/config';
 
 type Props = {
   users: UserType[];
@@ -26,6 +27,7 @@ type Props = {
 };
 
 export default function UsersTable({ users, myself, onChangeRole, messages }: Props) {
+  const apiServer = Config.apiServer;
   const headerColumns = [
     { name: messages.avatar, uid: 'avatar', sortable: false },
     { name: messages.id, uid: 'id', sortable: true },
@@ -62,7 +64,13 @@ export default function UsersTable({ users, myself, onChangeRole, messages }: Pr
 
     switch (columnKey) {
       case 'avatar':
-        return (
+        return user.avatarPath ? (
+          <img
+            src={`${apiServer}${user.avatarPath}`}
+            alt="Avatar"
+            className="w-6 h-6 rounded-full object-cover"
+          />
+        ) : (
           <Avatar
             size={24}
             name={user.username}
