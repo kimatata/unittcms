@@ -1,11 +1,11 @@
 'use client';
 import { useState, useContext, useRef } from 'react';
-import { Button, Input, Card, CardHeader, CardBody, addToast, CardFooter, Image } from '@heroui/react';
-import Avatar from 'boring-avatars';
+import { Button, Input, Card, CardHeader, CardBody, addToast, CardFooter } from '@heroui/react';
 import { TokenContext } from '@/utils/TokenProvider';
 import { updateUsername, updatePassword, uploadAvatar, deleteAvatar } from '@/utils/usersControl';
 import { LocaleCodeType } from '@/types/locale';
 import { logError } from '@/utils/errorHandler';
+import UserAvatar from '@/components/UserAvatar';
 import Config from '@/config/config';
 
 type ProfileSettingsPageMessages = {
@@ -49,8 +49,6 @@ export default function ProfileSettingsPage({ messages }: Props) {
   const [isUpdatingUsername, setIsUpdatingUsername] = useState(false);
   const [isUpdatingPassword, setIsUpdatingPassword] = useState(false);
   const [isUploadingAvatar, setIsUploadingAvatar] = useState(false);
-
-  const apiServer = Config.apiServer;
 
   const handleUsernameUpdate = async () => {
     if (!username.trim()) {
@@ -251,6 +249,7 @@ export default function ProfileSettingsPage({ messages }: Props) {
           <form>
             <div className="space-y-4">
               <Input
+                size="sm"
                 autoComplete="username"
                 label={messages.newUsername}
                 placeholder={context.token?.user?.username || ''}
@@ -281,7 +280,18 @@ export default function ProfileSettingsPage({ messages }: Props) {
         <CardBody>
           <form>
             <div className="space-y-4">
+              {/* hidden username field for accessibility */}
+              <input
+                type="text"
+                name="username"
+                autoComplete="username"
+                value={context.token?.user?.username || ''}
+                style={{ display: 'none' }}
+                tabIndex={-1}
+                readOnly
+              />
               <Input
+                size="sm"
                 type="password"
                 autoComplete="current-password"
                 label={messages.currentPassword}
@@ -289,6 +299,7 @@ export default function ProfileSettingsPage({ messages }: Props) {
                 onChange={(e) => setCurrentPassword(e.target.value)}
               />
               <Input
+                size="sm"
                 type="password"
                 autoComplete="new-password"
                 label={messages.newPassword}
@@ -296,6 +307,7 @@ export default function ProfileSettingsPage({ messages }: Props) {
                 onChange={(e) => setNewPassword(e.target.value)}
               />
               <Input
+                size="sm"
                 type="password"
                 autoComplete="new-password"
                 label={messages.confirmNewPassword}
@@ -307,6 +319,7 @@ export default function ProfileSettingsPage({ messages }: Props) {
         </CardBody>
         <CardFooter className="flex justify-end">
           <Button
+            size="sm"
             color="primary"
             onPress={handlePasswordUpdate}
             isLoading={isUpdatingPassword}
@@ -326,20 +339,11 @@ export default function ProfileSettingsPage({ messages }: Props) {
           <form>
             <div className="space-y-4">
               <div className="flex items-center gap-4">
-                {context.token?.user?.avatarPath ? (
-                  <Image
-                    alt={'avatar'}
-                    src={`${apiServer}${context.token.user.avatarPath}`}
-                    className="object-cover h-40 w-40"
-                  />
-                ) : (
-                  <Avatar
-                    size={96}
-                    name={context.token?.user?.username}
-                    variant="beam"
-                    colors={['#0A0310', '#49007E', '#FF005B', '#FF7D10', '#FFB238']}
-                  />
-                )}
+                <UserAvatar
+                  size={96}
+                  username={context.token?.user?.username}
+                  avatarPath={context.token?.user?.avatarPath}
+                />
                 <div className="text-sm text-gray-500">{messages.maxFileSize5mb}</div>
               </div>
               <div className="flex gap-2">
@@ -356,11 +360,17 @@ export default function ProfileSettingsPage({ messages }: Props) {
         </CardBody>
         <CardFooter className="flex justify-end">
           {context.token?.user?.avatarPath && (
-            <Button color="danger" className="me-2" onPress={handleAvatarRemove} isLoading={isUploadingAvatar}>
+            <Button
+              size="sm"
+              color="danger"
+              className="me-2"
+              onPress={handleAvatarRemove}
+              isLoading={isUploadingAvatar}
+            >
               {messages.removeAvatar}
             </Button>
           )}
-          <Button color="primary" onPress={() => fileInputRef.current?.click()} isLoading={isUploadingAvatar}>
+          <Button size="sm" color="primary" onPress={() => fileInputRef.current?.click()} isLoading={isUploadingAvatar}>
             {messages.uploadAvatar}
           </Button>
         </CardFooter>

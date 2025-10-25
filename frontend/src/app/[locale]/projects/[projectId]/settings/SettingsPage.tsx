@@ -1,7 +1,6 @@
 'use client';
 import { useState, useEffect, useContext } from 'react';
 import { Button, Table, TableHeader, TableColumn, TableBody, TableRow, TableCell } from '@heroui/react';
-import Avatar from 'boring-avatars';
 import { Pencil, Trash } from 'lucide-react';
 import { SettingsMessages } from '@/types/settings';
 import { TokenContext } from '@/utils/TokenProvider';
@@ -14,6 +13,7 @@ import { UserType } from '@/types/user';
 import { findUser } from '@/utils/usersControl';
 import { logError } from '@/utils/errorHandler';
 import Config from '@/config/config';
+import UserAvatar from '@/components/UserAvatar';
 
 type Props = {
   projectId: string;
@@ -25,7 +25,6 @@ type Props = {
 export default function SettingsPage({ projectId, messages, projectDialogMessages, locale }: Props) {
   const context = useContext(TokenContext);
   const router = useRouter();
-  const apiServer = Config.apiServer;
   const [project, setProject] = useState<ProjectType>({
     id: 0,
     name: '',
@@ -132,20 +131,7 @@ export default function SettingsPage({ projectId, messages, projectDialogMessage
               <TableCell>{messages.projectOwner}</TableCell>
               <TableCell>
                 <div className="flex gap-2 items-center">
-                  {owner.avatarPath ? (
-                    <img
-                      src={`${apiServer}${owner.avatarPath}`}
-                      alt="Avatar"
-                      className="w-6 h-6 rounded-full object-cover"
-                    />
-                  ) : (
-                    <Avatar
-                      size={24}
-                      name={owner.username}
-                      variant="beam"
-                      colors={['#0A0310', '#49007E', '#FF005B', '#FF7D10', '#FFB238']}
-                    />
-                  )}
+                  <UserAvatar size={24} username={owner.username} avatarPath={owner.avatarPath} />
                   <p className="">{owner.username}</p>
                 </div>
               </TableCell>

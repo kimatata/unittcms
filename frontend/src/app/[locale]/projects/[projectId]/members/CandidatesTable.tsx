@@ -1,9 +1,9 @@
 import { useMemo, useCallback } from 'react';
 import { Button, Table, TableHeader, TableColumn, TableBody, TableRow, TableCell } from '@heroui/react';
-import Avatar from 'boring-avatars';
 import { UserType } from '@/types/user';
 import { MembersMessages } from '@/types/member';
 import Config from '@/config/config';
+import UserAvatar from '@/components/UserAvatar';
 
 type Props = {
   candidates: UserType[];
@@ -12,7 +12,6 @@ type Props = {
 };
 
 export default function MembersTable({ candidates, onAddPress, messages }: Props) {
-  const apiServer = Config.apiServer;
   const headerColumns = [
     { name: messages.avatar, uid: 'avatar', sortable: false },
     { name: messages.email, uid: 'email', sortable: false },
@@ -26,20 +25,7 @@ export default function MembersTable({ candidates, onAddPress, messages }: Props
 
       switch (columnKey) {
         case 'avatar':
-          return candidate.avatarPath ? (
-            <img
-              src={`${apiServer}${candidate.avatarPath}`}
-              alt="Avatar"
-              className="w-6 h-6 rounded-full object-cover"
-            />
-          ) : (
-            <Avatar
-              size={24}
-              name={candidate.username}
-              variant="beam"
-              colors={['#0A0310', '#49007E', '#FF005B', '#FF7D10', '#FFB238']}
-            />
-          );
+          return <UserAvatar size={24} username={candidate.username} avatarPath={candidate.avatarPath} />;
         case 'email':
           return cellValue;
         case 'username':

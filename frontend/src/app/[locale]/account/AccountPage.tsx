@@ -1,13 +1,13 @@
 'use client';
 import { useState, useEffect, useContext } from 'react';
 import { Button, Card, CardHeader, CardFooter } from '@heroui/react';
-import Avatar from 'boring-avatars';
 import { ArrowRight, Settings } from 'lucide-react';
 import { Link, NextUiLinkClasses } from '@/src/i18n/routing';
 import { TokenContext } from '@/utils/TokenProvider';
 import { fetchMyProjects } from '@/utils/projectsControl';
 import { ProjectType } from '@/types/project';
 import PublicityChip from '@/components/PublicityChip';
+import UserAvatar from '@/components/UserAvatar';
 import { LocaleCodeType } from '@/types/locale';
 import { logError } from '@/utils/errorHandler';
 import Config from '@/config/config';
@@ -29,7 +29,6 @@ type Props = {
 export default function AccountPage({ messages, locale }: Props) {
   const context = useContext(TokenContext);
   const [myProjects, setMyProjects] = useState<ProjectType[]>([]);
-  const apiServer = Config.apiServer;
 
   useEffect(() => {
     async function fetchDataEffect() {
@@ -56,20 +55,11 @@ export default function AccountPage({ messages, locale }: Props) {
             <Card className="w-[600px]">
               <CardHeader className="flex gap-6 justify-between">
                 <div className="flex gap-6">
-                  {context.token?.user?.avatarPath ? (
-                    <img
-                      src={`${apiServer}${context.token.user.avatarPath}`}
-                      alt="Avatar"
-                      className="w-12 h-12 rounded-full object-cover"
-                    />
-                  ) : (
-                    <Avatar
-                      size={48}
-                      name={context.token?.user?.username}
-                      variant="beam"
-                      colors={['#0A0310', '#49007E', '#FF005B', '#FF7D10', '#FFB238']}
-                    />
-                  )}
+                  <UserAvatar
+                    size={48}
+                    username={context.token?.user?.username}
+                    avatarPath={context.token?.user?.avatarPath}
+                  />
                   <div className="flex flex-col">
                     <p className="text-xl font-bold">{context.token?.user?.username}</p>
                     <p className="text-lg text-default-500">{context.token?.user?.email}</p>

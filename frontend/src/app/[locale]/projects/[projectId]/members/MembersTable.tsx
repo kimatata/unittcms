@@ -14,11 +14,11 @@ import {
   DropdownItem,
 } from '@heroui/react';
 import { ChevronDown } from 'lucide-react';
-import Avatar from 'boring-avatars';
 import { MemberType, UserType } from '@/types/user';
 import { memberRoles } from '@/config/selection';
 import { MembersMessages } from '@/types/member';
 import Config from '@/config/config';
+import UserAvatar from '@/components/UserAvatar';
 
 type Props = {
   members: MemberType[];
@@ -58,20 +58,7 @@ export default function MembersTable({ members, isDisabled, onChangeRole, onDele
 
     switch (columnKey) {
       case 'avatar':
-        return member.User.avatarPath ? (
-          <img
-            src={`${apiServer}${member.User.avatarPath}`}
-            alt="Avatar"
-            className="w-6 h-6 rounded-full object-cover"
-          />
-        ) : (
-          <Avatar
-            size={24}
-            name={member.User.username}
-            variant="beam"
-            colors={['#0A0310', '#49007E', '#FF005B', '#FF7D10', '#FFB238']}
-          />
-        );
+        return <UserAvatar size={24} username={member.User.username} avatarPath={member.User.avatarPath} />;
       case 'email':
         return member.User.email;
       case 'username':
