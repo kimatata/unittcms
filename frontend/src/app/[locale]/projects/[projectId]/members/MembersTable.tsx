@@ -17,7 +17,6 @@ import { ChevronDown } from 'lucide-react';
 import { MemberType, UserType } from '@/types/user';
 import { memberRoles } from '@/config/selection';
 import { MembersMessages } from '@/types/member';
-import Config from '@/config/config';
 import UserAvatar from '@/components/UserAvatar';
 
 type Props = {
