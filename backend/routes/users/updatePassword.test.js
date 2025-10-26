@@ -1,7 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import request from 'supertest';
 import express from 'express';
-import bcrypt from 'bcrypt';
 import { Sequelize } from 'sequelize';
 import updatePasswordRoute from './updatePassword.js';
 
@@ -36,6 +35,16 @@ vi.mock('../../models/users.js', () => ({
   default: () => mockUser,
 }));
 
+// mock bcrypt (just add 'hashed_' prefix)
+vi.mock('bcrypt', () => ({
+  default: {
+    hashSync: (pw) => `hashed_${pw}`,
+    compareSync: (pw, hashed) => hashed === `hashed_${pw}`,
+    hash: async (pw) => `hashed_${pw}`,
+    compare: async (pw, hashed) => hashed === `hashed_${pw}`,
+  },
+}));
+
 describe('User Profile Routes', () => {
   let app;
   const sequelize = new Sequelize({
@@ -57,7 +66,7 @@ describe('User Profile Routes', () => {
       id: 1,
       email: 'test@example.com',
       username: 'testuser',
-      password: bcrypt.hashSync('testpassword123', 10),
+      password: 'hashed_testpassword123',
       role: 1,
       avatarPath: null,
     });

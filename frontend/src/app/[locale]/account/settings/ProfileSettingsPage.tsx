@@ -6,7 +6,6 @@ import { updateUsername, updatePassword, uploadAvatar, deleteAvatar } from '@/ut
 import { LocaleCodeType } from '@/types/locale';
 import { logError } from '@/utils/errorHandler';
 import UserAvatar from '@/components/UserAvatar';
-import Config from '@/config/config';
 
 type ProfileSettingsPageMessages = {
   profileSettings: string;

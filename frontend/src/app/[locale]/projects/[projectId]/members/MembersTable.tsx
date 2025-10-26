@@ -29,7 +29,6 @@ type Props = {
 };
 
 export default function MembersTable({ members, isDisabled, onChangeRole, onDeleteMember, messages }: Props) {
-  const apiServer = Config.apiServer;
   const headerColumns = [
     { name: messages.avatar, uid: 'avatar' },
     { name: messages.email, uid: 'email', sortable: true },

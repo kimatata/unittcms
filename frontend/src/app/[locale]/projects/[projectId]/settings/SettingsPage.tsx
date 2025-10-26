@@ -12,7 +12,6 @@ import ProjectDialog from '@/components/ProjectDialog';
 import { UserType } from '@/types/user';
 import { findUser } from '@/utils/usersControl';
 import { logError } from '@/utils/errorHandler';
-import Config from '@/config/config';
 import UserAvatar from '@/components/UserAvatar';
 
 type Props = {
