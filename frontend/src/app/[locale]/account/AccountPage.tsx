@@ -10,7 +10,6 @@ import PublicityChip from '@/components/PublicityChip';
 import UserAvatar from '@/components/UserAvatar';
 import { LocaleCodeType } from '@/types/locale';
 import { logError } from '@/utils/errorHandler';
-import Config from '@/config/config';
 
 type AccountPageMessages = {
   yourProjects: string;

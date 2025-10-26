@@ -13,7 +13,7 @@ import {
   ListboxItem,
   Listbox,
 } from '@heroui/react';
-import { ArrowRightFromLine, ArrowRightToLine, File, Globe, MoveUpRight, PenTool } from 'lucide-react';
+import { ArrowRightFromLine, ArrowRightToLine, File, Globe, MoveUpRight, PenTool, Settings } from 'lucide-react';
 import DropdownAccount from './DropdownAccount';
 import DropdownLanguage from './DropdownLanguage';
 import { ThemeSwitch } from '@/components/ThemeSwitch';
@@ -31,6 +31,7 @@ type NabbarMenuMessages = {
   docs: string;
   roadmap: string;
   account: string;
+  profileSettings: string;
   signUp: string;
   signIn: string;
   signOut: string;
@@ -194,6 +195,15 @@ export default function HeaderNavbarMenu({ messages, locale }: Props) {
                 }
                 onPress={() => {
                   router.push('/account', { locale: locale });
+                  setIsMenuOpen(false);
+                }}
+              />
+              <ListboxItem
+                key="profile"
+                title={messages.profileSettings}
+                startContent={<Settings size={16} />}
+                onPress={() => {
+                  router.push('/account/settings', { locale: locale });
                   setIsMenuOpen(false);
                 }}
               />

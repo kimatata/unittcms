@@ -8,8 +8,7 @@ export default function (sequelize) {
   const { verifySignedIn } = authMiddleware(sequelize);
   const User = defineUser(sequelize, DataTypes);
 
-  // Update user profile (username)
-  router.put('/profile', verifySignedIn, async (req, res) => {
+  router.put('/username', verifySignedIn, async (req, res) => {
     try {
       const userId = req.userId;
       const { username } = req.body;

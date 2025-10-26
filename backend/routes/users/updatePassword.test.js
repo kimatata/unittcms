@@ -1,17 +1,16 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import request from 'supertest';
 import express from 'express';
-import { Sequelize } from 'sequelize';
-import profileRoute from './profile.js';
-import passwordRoute from './password.js';
 import bcrypt from 'bcrypt';
+import { Sequelize } from 'sequelize';
+import updatePasswordRoute from './updatePassword.js';
 
 // mock of authentication middleware
 let mockUserId = 1;
 vi.mock('../../middleware/auth.js', () => ({
   default: () => ({
     verifySignedIn: vi.fn((req, res, next) => {
-      req.user = { userId: mockUserId };
+      req.userId = mockUserId; // Mock user ID
       next();
     }),
   }),
@@ -47,8 +46,7 @@ describe('User Profile Routes', () => {
   beforeEach(() => {
     app = express();
     app.use(express.json());
-    app.use('/users', profileRoute(sequelize));
-    app.use('/users', passwordRoute(sequelize));
+    app.use('/users', updatePasswordRoute(sequelize));
 
     // Reset mock users
     mockUsers.clear();
@@ -65,26 +63,6 @@ describe('User Profile Routes', () => {
     });
 
     vi.clearAllMocks();
-  });
-
-  it('should update username', async () => {
-    const newUsername = 'updatedusername';
-    const response = await request(app).put('/users/profile').send({ username: newUsername });
-
-    expect(response.status).toBe(200);
-    expect(response.body.user.username).toBe(newUsername);
-  });
-
-  it('should reject empty username', async () => {
-    const response = await request(app).put('/users/profile').send({ username: '' });
-
-    expect(response.status).toBe(400);
-  });
-
-  it('should reject whitespace-only username', async () => {
-    const response = await request(app).put('/users/profile').send({ username: '   ' });
-
-    expect(response.status).toBe(400);
   });
 
   it('should update password', async () => {
@@ -124,4 +102,3 @@ describe('User Profile Routes', () => {
     expect(response.status).toBe(400);
   });
 });
-

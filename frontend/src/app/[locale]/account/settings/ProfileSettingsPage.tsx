@@ -64,6 +64,14 @@ export default function ProfileSettingsPage({ messages }: Props) {
     try {
       const result = await updateUsername(context.token.access_token, username);
       if (result && result.user) {
+        // refresh username
+        const newToken = { ...context.token };
+        if (newToken.user) {
+          newToken.user.username = result.user.username;
+        }
+        context.setToken(newToken);
+        context.storeTokenToLocalStorage(newToken);
+
         addToast({
           title: 'Success',
           color: 'success',

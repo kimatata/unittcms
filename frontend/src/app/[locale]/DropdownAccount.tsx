@@ -1,6 +1,6 @@
 'use client';
-import { Button, DropdownTrigger, Dropdown, DropdownMenu, DropdownItem, user } from '@heroui/react';
-import { ChevronDown, PenTool, ArrowRightFromLine, ArrowRightToLine } from 'lucide-react';
+import { Button, DropdownTrigger, Dropdown, DropdownMenu, DropdownItem } from '@heroui/react';
+import { ChevronDown, PenTool, ArrowRightFromLine, ArrowRightToLine, Settings } from 'lucide-react';
 import { useContext } from 'react';
 import { TokenContext } from '@/utils/TokenProvider';
 import { useRouter } from '@/src/i18n/routing';
@@ -36,6 +36,15 @@ export default function DropdownAccount({ messages, locale, onItemPress }: Props
       ),
       onPress: () => {
         router.push('/account', { locale: locale });
+        onItemPress();
+      },
+    },
+    {
+      uid: 'profile',
+      title: messages.profileSettings,
+      icon: <Settings size={16} />,
+      onPress: () => {
+        router.push('/account/settings', { locale: locale });
         onItemPress();
       },
     },

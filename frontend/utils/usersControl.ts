@@ -90,7 +90,7 @@ async function updateUsername(jwt: string, username: string) {
     body: JSON.stringify(updateData),
   };
 
-  const url = `${apiServer}/users/profile`;
+  const url = `${apiServer}/users/username`;
 
   try {
     const response = await fetch(url, fetchOptions);
