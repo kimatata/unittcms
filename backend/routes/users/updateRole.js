@@ -9,7 +9,7 @@ export default function (sequelize) {
   const { verifySignedIn, verifyAdmin } = authMiddleware(sequelize);
   const User = defineUser(sequelize, DataTypes);
 
-  router.put('/:userId', verifySignedIn, verifyAdmin, async (req, res) => {
+  router.put('/:userId/role', verifySignedIn, verifyAdmin, async (req, res) => {
     // param check
     const userId = req.params.userId;
     if (!userId) {
