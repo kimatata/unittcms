@@ -22,8 +22,8 @@ erDiagram
   cases ||--o{ caseSteps: "has"
   cases ||--o{ caseAttachments: "has"
   attachments ||--o{ caseAttachments: "has"
-  cases ||--o{ "caseTags(unimplemented)": "has"
-  "tags(unimplemented)" ||--o{ "caseTags(unimplemented)": "has"
+  cases ||--o{ "caseTags": "has"
+  "tags" ||--o{ "caseTags": "has"
 
   users {
     integer id PK
@@ -139,7 +139,7 @@ erDiagram
     integer attachmentId FK
   }
 
-  "tags(unimplemented)" {
+  "tags" {
     integer id PK
     string name
     integer projectId FK
@@ -147,7 +147,7 @@ erDiagram
     timestamp deleted_at
   }
 
-  "caseTags(unimplemented)" {
+  "caseTags" {
     integer id PK
     integer caseId FK
     integer tagId FK
