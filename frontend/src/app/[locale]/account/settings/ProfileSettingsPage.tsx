@@ -178,12 +178,10 @@ export default function ProfileSettingsPage({ messages }: Props) {
     try {
       const result = await uploadAvatar(context.token.access_token, file);
       if (result && result.user) {
-        // Update token context with new user data
-        const newToken = {
-          access_token: context.token.access_token,
-          expires_at: Date.now() + 3600 * 1000 * 24,
-          user: result.user,
-        };
+        const newToken = { ...context.token };
+        if (newToken.user) {
+          newToken.user = result.user;
+        }
         context.setToken(newToken);
         context.storeTokenToLocalStorage(newToken);
         addToast({
@@ -213,12 +211,10 @@ export default function ProfileSettingsPage({ messages }: Props) {
     try {
       const result = await deleteAvatar(context.token.access_token);
       if (result && result.user) {
-        // Update token context with new user data
-        const newToken = {
-          access_token: context.token.access_token,
-          expires_at: Date.now() + 3600 * 1000 * 24,
-          user: result.user,
-        };
+        const newToken = { ...context.token };
+        if (newToken.user) {
+          newToken.user = result.user;
+        }
         context.setToken(newToken);
         context.storeTokenToLocalStorage(newToken);
         addToast({
