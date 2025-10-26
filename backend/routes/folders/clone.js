@@ -54,6 +54,7 @@ export default function (sequelize) {
     const cases = folderCases.map((c) => c.get({ plain: true }));
 
     const clonedCases = cases.map((c) => {
+      // eslint-disable-next-line no-unused-vars
       const { id: _id, createdAt: _createdAt, updatedAt: _updatedAt, ...clonedCase } = c;
       return { ...clonedCase, folderId: targetFolderId };
     });
@@ -63,6 +64,7 @@ export default function (sequelize) {
 
       if (c.Steps && c.Steps.length > 0) {
         const clonedSteps = c.Steps.map((s) => {
+          // eslint-disable-next-line no-unused-vars
           const { id: _id, createdAt: _createdAt, updatedAt: _updatedAt, ...clonedStep } = s;
           return clonedStep;
         });

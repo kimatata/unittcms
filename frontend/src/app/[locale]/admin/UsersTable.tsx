@@ -14,9 +14,9 @@ import {
   DropdownItem,
 } from '@heroui/react';
 import { ChevronDown } from 'lucide-react';
-import Avatar from 'boring-avatars';
 import { UserType, AdminMessages } from '@/types/user';
 import { roles } from '@/config/selection';
+import UserAvatar from '@/components/UserAvatar';
 
 type Props = {
   users: UserType[];
@@ -62,14 +62,7 @@ export default function UsersTable({ users, myself, onChangeRole, messages }: Pr
 
     switch (columnKey) {
       case 'avatar':
-        return (
-          <Avatar
-            size={24}
-            name={user.username}
-            variant="beam"
-            colors={['#0A0310', '#49007E', '#FF005B', '#FF7D10', '#FFB238']}
-          />
-        );
+        return <UserAvatar size={24} username={user.username} avatarPath={user.avatarPath} />;
       case 'id':
         return <span>{cellValue}</span>;
       case 'email':
