@@ -5,8 +5,6 @@ import eslintConfigPrettier from 'eslint-config-prettier';
 import eslintPluginReact from 'eslint-plugin-react';
 import eslintPluginReactHooks from 'eslint-plugin-react-hooks';
 import * as eslintPluginImport from 'eslint-plugin-import';
-import eslintPluginUnusedImports from 'eslint-plugin-unused-imports';
-import eslintPluginOnlyWarn from 'eslint-plugin-only-warn';
 import eslintPluginNext from '@next/eslint-plugin-next';
 
 export default tseslint.config(
@@ -25,11 +23,9 @@ export default tseslint.config(
     },
     plugins: {
       import: eslintPluginImport,
-      'unused-imports': eslintPluginUnusedImports,
       react: eslintPluginReact,
       'react-hooks': eslintPluginReactHooks,
       '@next/next': eslintPluginNext,
-      'only-warn': eslintPluginOnlyWarn,
     },
     settings: {
       react: {
@@ -46,16 +42,7 @@ export default tseslint.config(
     extends: [eslint.configs.recommended],
     rules: {
       'import/order': 'error',
-      'unused-imports/no-unused-imports': 'error',
-      'unused-imports/no-unused-vars': [
-        'error',
-        {
-          vars: 'all',
-          varsIgnorePattern: '^_',
-          args: 'after-used',
-          argsIgnorePattern: '^_',
-        },
-      ],
+      'no-unused-vars': 'error',
     },
   },
   {
@@ -67,7 +54,6 @@ export default tseslint.config(
       eslintPluginReact.configs.flat['jsx-runtime'],
     ],
     rules: {
-      '@typescript-eslint/no-unused-vars': 'off',
       '@typescript-eslint/no-namespace': 'off',
       'react/prop-types': 'off',
       ...eslintPluginReactHooks.configs.recommended.rules,
