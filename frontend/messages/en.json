@@ -244,7 +244,14 @@
     "or_drag_and_drop": " or drag and drop",
     "max_file_size": "Max. file size",
     "are_you_sure_leave": "Are you sure you want to leave the page?",
-    "tags": "Tags"
+    "tags": "Tags",
+    "max_tags_limit": "Max. tags limit",
+    "tag_already_exists": "Tag already exists",
+    "tag_created_and_added": "Tag created and added",
+    "error_creating_tag": "Error creating tag",
+    "error_updating_test_case": "Error updating test case",
+    "search_or_create_tag": "Search or create tag",
+    "no_tags_selected": "No tags selected"
   },
   "Runs": {
     "run_list": "Test Run List",

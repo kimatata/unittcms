@@ -123,6 +123,14 @@ type CaseMessages = {
   orDragAndDrop: string;
   maxFileSize: string;
   areYouSureLeave: string;
+  tags: string;
+  maxTagsLimit: string;
+  tagAlreadyExists: string;
+  tagCreatedAndAdded: string;
+  errorCreatingTag: string;
+  errorUpdatingTestCase: string;
+  searchOrCreateTag: string;
+  noTagsSelected: string;
 };
 
 export type { CaseType, StepType, AttachmentType, CasesMessages, CaseMessages };

@@ -244,7 +244,15 @@
     "click_to_upload": "Clique para enviar",
     "or_drag_and_drop": " ou arraste e solte",
     "max_file_size": "Tamanho máx. do arquivo",
-    "are_you_sure_leave": "Tem certeza de que deseja sair da página?"
+    "are_you_sure_leave": "Tem certeza de que deseja sair da página?",
+    "tags": "Tags",
+    "max_tags_limit": "Limite máximo de tags",
+    "tag_already_exists": "Tag já existe",
+    "tag_created_and_added": "Tag criada e adicionada",
+    "error_creating_tag": "Erro ao criar tag",
+    "error_updating_test_case": "Erro ao atualizar caso de teste",
+    "search_or_create_tag": "Buscar ou criar tag",
+    "no_tags_selected": "Nenhuma tag selecionada"
   },
   "Runs": {
     "run_list": "Lista de Execuções de Teste",

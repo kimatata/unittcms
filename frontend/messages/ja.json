@@ -245,7 +245,15 @@
     "click_to_upload": "クリックしてアップロード",
     "or_drag_and_drop": "またはドラッグアンドドロップ",
     "max_file_size": "最大ファイルサイズ",
-    "are_you_sure_leave": "ページを離れてもよろしいですか?"
+    "are_you_sure_leave": "ページを離れてもよろしいですか?",
+    "tags": "タグ",
+    "max_tags_limit": "最大タグ数",
+    "tag_already_exists": "タグは既に存在します",
+    "tag_created_and_added": "タグが作成されて追加されました",
+    "error_creating_tag": "タグの作成中にエラーが発生しました",
+    "error_updating_test_case": "テストケースの更新中にエラーが発生しました",
+    "search_or_create_tag": "タグを検索または作成",
+    "no_tags_selected": "タグが選択されていません"
   },
   "Runs": {
     "run_list": "テストラン一覧",
