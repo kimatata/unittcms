@@ -1,6 +1,19 @@
 'use client';
-import { useState, useEffect, useContext, useCallback, ChangeEvent, DragEvent } from 'react';
-import { Input, Textarea, Select, SelectItem, Button, Divider, Tooltip, addToast, Badge } from '@heroui/react';
+import { useState, useEffect, useContext, ChangeEvent, DragEvent, useRef, useMemo } from 'react';
+import {
+  Input,
+  Textarea,
+  Select,
+  SelectItem,
+  Button,
+  Divider,
+  Tooltip,
+  addToast,
+  Badge,
+  Chip,
+  Autocomplete,
+  AutocompleteItem,
+} from '@heroui/react';
 import { Save, Plus, ArrowLeft, Circle } from 'lucide-react';
 import CaseStepsEditor from './CaseStepsEditor';
 import CaseAttachmentsEditor from './CaseAttachmentsEditor';
@@ -15,6 +28,8 @@ import { CaseType, AttachmentType, CaseMessages, StepType } from '@/types/case';
 import { PriorityMessages } from '@/types/priority';
 import { TestTypeMessages } from '@/types/testType';
 import { logError } from '@/utils/errorHandler';
+import { createTag, fetchTags } from '@/utils/tagsControls';
+import { updateCaseTags } from '@/utils/caseTagsControls';
 
 const defaultTestCase = {
   id: 0,
@@ -32,6 +47,7 @@ const defaultTestCase = {
   Attachments: [],
   isIncluded: false,
   runStatus: 0,
+  Tags: [],
 };
 
 type Props = {
@@ -59,8 +75,105 @@ export default function CaseEditor({
   const [isUpdating, setIsUpdating] = useState<boolean>(false);
   const [plusCount, setPlusCount] = useState<number>(0);
   const [isDirty, setIsDirty] = useState(false);
+  const [tags, setTags] = useState<{ id: number; name: string }[]>([]);
+  const [selectedTags, setSelectedTags] = useState<{ id: number; name: string }[]>([]);
+  const [inputValue, setInputValue] = useState('');
+  const autocompleteRef = useRef<any>(null);
+  const max_tags = 5;
+
+  const availableTags = useMemo(() => {
+    return tags.filter((t) => !selectedTags.some((s) => s.id === t.id));
+  }, [tags, selectedTags]);
+
   const router = useRouter();
   useFormGuard(isDirty, messages.areYouSureLeave);
+
+  useEffect(() => {
+    const fetchDataEffect = async () => {
+      try {
+        const tagsResponse = (await fetchTags(tokenContext.token.access_token, projectId)) || [];
+        setTags(tagsResponse);
+      } catch (error: unknown) {
+        logError('Error fetching case tags', error);
+        addToast({
+          title: 'Error',
+          description: 'Error fetching tags',
+          color: 'danger',
+        });
+      }
+    };
+    fetchDataEffect();
+  }, [projectId, tokenContext.token.access_token]);
+
+  const handleTagRemove = (tagId: number) => {
+    setSelectedTags((prev) => prev.filter((tag) => tag.id !== tagId));
+    setIsDirty(true);
+  };
+
+  const handleTagAdd = (tag: { id: number; name: string }) => {
+    if (selectedTags.length >= max_tags) {
+      addToast({
+        title: 'Warning',
+        description: messages.maxTagsLimit,
+        color: 'warning',
+      });
+      return;
+    }
+    if (selectedTags.some((t) => t.id === tag.id)) return;
+
+    setSelectedTags([...selectedTags, tag]);
+    setIsDirty(true);
+    setInputValue('');
+    if (autocompleteRef.current) {
+      autocompleteRef.current.blur();
+    }
+  };
+
+  const handleCreateTag = async (name: string) => {
+    if (selectedTags.length >= max_tags) {
+      addToast({
+        title: 'Warning',
+        description: messages.maxTagsLimit,
+        color: 'warning',
+      });
+      return;
+    }
+    const normalizedName = name.trim().toLowerCase();
+    if (
+      tags.some((tag) => tag.name.toLowerCase() === normalizedName) ||
+      selectedTags.some((tag) => tag.name.toLowerCase() === normalizedName)
+    ) {
+      addToast({
+        title: 'Warning',
+        description: messages.tagAlreadyExists,
+        color: 'warning',
+      });
+      return;
+    }
+
+    try {
+      const tag = await createTag(tokenContext.token.access_token, projectId, name);
+      setTags((prev) => [...prev, tag]); // só adiciona em tags
+      setSelectedTags((prev) => [...prev, tag]); // e seleciona
+      setIsDirty(true);
+      setInputValue('');
+      if (autocompleteRef.current) {
+        autocompleteRef.current.blur();
+      }
+      addToast({
+        title: 'Success',
+        description: messages.tagCreatedAndAdded,
+        color: 'success',
+      });
+    } catch (error: unknown) {
+      logError('Error creating tag', error);
+      addToast({
+        title: 'Error',
+        description: messages.errorCreatingTag,
+        color: 'danger',
+      });
+    }
+  };
 
   const onPlusClick = async (newStepNo: number) => {
     setIsDirty(true);
@@ -210,24 +323,24 @@ export default function CaseEditor({
     }
   };
 
-  const fetchAndSetCase = useCallback(async () => {
-    if (!tokenContext.isSignedIn()) {
-      return;
-    }
-    try {
-      const data = await fetchCase(tokenContext.token.access_token, Number(caseId));
-      data.Steps.forEach((step: StepType) => {
-        step.editState = 'notChanged';
-      });
-      setTestCase(data);
-    } catch (error: unknown) {
-      logError('Error fetching case data', error);
-    }
-  }, [tokenContext, caseId]);
-
   useEffect(() => {
+    const fetchAndSetCase = async () => {
+      if (!tokenContext.isSignedIn()) return;
+      try {
+        const data = await fetchCase(tokenContext.token.access_token, Number(caseId));
+        data.Steps.forEach((step: StepType) => {
+          step.editState = 'notChanged';
+        });
+        setTestCase(data);
+        if (data.Tags) {
+          setSelectedTags(Array.isArray(data.Tags) ? data.Tags : []);
+        }
+      } catch (error: unknown) {
+        logError('Error fetching case data', error);
+      }
+    };
     fetchAndSetCase();
-  }, [caseId, tokenContext, fetchAndSetCase]);
+  }, [tokenContext, caseId]);
 
   return (
     <>
@@ -258,18 +371,30 @@ export default function CaseEditor({
             isLoading={isUpdating}
             onPress={async () => {
               setIsUpdating(true);
-              await updateCase(tokenContext.token.access_token, testCase);
-              if (testCase.Steps) {
-                await updateSteps(tokenContext.token.access_token, Number(caseId), testCase.Steps);
-              }
-              await fetchAndSetCase();
+              try {
+                await updateCase(tokenContext.token.access_token, testCase);
+                if (testCase.Steps) {
+                  await updateSteps(tokenContext.token.access_token, Number(caseId), testCase.Steps);
+                }
 
-              addToast({
-                title: 'Info',
-                description: messages.updatedTestCase,
-              });
-              setIsUpdating(false);
-              setIsDirty(false);
+                const tagIds = selectedTags.map((tag) => tag.id);
+                await updateCaseTags(tokenContext.token.access_token, Number(caseId), tagIds, projectId);
+
+                addToast({
+                  title: 'Info',
+                  description: messages.updatedTestCase,
+                });
+                setIsDirty(false);
+              } catch (error) {
+                logError('Error updating test case', error);
+                addToast({
+                  title: 'Error',
+                  description: messages.errorUpdatingTestCase,
+                  color: 'danger',
+                });
+              } finally {
+                setIsUpdating(false);
+              }
             }}
           >
             {isUpdating ? messages.updating : messages.update}
@@ -304,6 +429,60 @@ export default function CaseEditor({
           }}
           className="mt-3"
         />
+
+        <Autocomplete
+          className="max-w-xs mt-2"
+          size="sm"
+          variant="bordered"
+          inputValue={inputValue}
+          label={messages.tags}
+          placeholder={selectedTags.length >= max_tags ? messages.maxTagsLimit : messages.searchOrCreateTag}
+          isDisabled={selectedTags.length >= max_tags}
+          onInputChange={(value) => setInputValue(value)}
+          ref={autocompleteRef}
+          onOpenChange={(isOpen) => {
+            if (!isOpen) setInputValue('');
+          }}
+        >
+          {inputValue.trim() &&
+          availableTags.filter((tag) => tag.name.toLowerCase().includes(inputValue.trim().toLowerCase())).length ===
+            0 ? (
+            <AutocompleteItem
+              key="create-tag"
+              textValue={inputValue.trim()}
+              onPress={() => handleCreateTag(inputValue.trim())}
+              className="text-primary"
+            >
+              {`Create tag "${inputValue.trim()}"`}
+            </AutocompleteItem>
+          ) : (
+            availableTags
+              .filter((tag) => tag.name.toLowerCase().includes(inputValue.trim().toLowerCase()))
+              .map((tag) => (
+                <AutocompleteItem key={tag.id} textValue={tag.name} onPress={() => handleTagAdd(tag)}>
+                  {tag.name}
+                </AutocompleteItem>
+              ))
+          )}
+        </Autocomplete>
+
+        <div className="gap-2 flex items-center mt-3">
+          <div className="flex justify-start align-center gap-1.5 flex-wrap">
+            {selectedTags.length === 0 && (
+              <p className="text-foreground-500 text-xs mb-1.5">{messages.noTagsSelected}</p>
+            )}
+            {selectedTags.map((tag) => (
+              <Chip
+                key={tag.id}
+                size="md"
+                onClose={() => handleTagRemove(tag.id)}
+                isCloseable={tokenContext.isProjectDeveloper(Number(projectId))}
+              >
+                {tag.name}
+              </Chip>
+            ))}
+          </div>
+        </div>
 
         <div>
           <Select
