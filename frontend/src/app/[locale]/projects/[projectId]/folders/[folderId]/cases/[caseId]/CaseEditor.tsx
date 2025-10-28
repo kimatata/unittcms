@@ -78,7 +78,7 @@ export default function CaseEditor({
   const [tags, setTags] = useState<{ id: number; name: string }[]>([]);
   const [selectedTags, setSelectedTags] = useState<{ id: number; name: string }[]>([]);
   const [inputValue, setInputValue] = useState('');
-  const autocompleteRef = useRef<any>(null);
+  const autocompleteRef = useRef<HTMLInputElement | null>(null);
   const max_tags = 5;
 
   const availableTags = useMemo(() => {
