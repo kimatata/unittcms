@@ -2,7 +2,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import request from 'supertest';
 import express from 'express';
 import { Sequelize } from 'sequelize';
-import updateRoute from './update';
+import updateRoleRoute from './updateRole';
 import { roles } from './authSettings.js';
 
 const adminRoleIndex = roles.findIndex((entry) => entry.uid === 'administrator');
@@ -44,11 +44,11 @@ describe('updateUserRole', () => {
     app.use(express.json());
 
     // Mount the update route
-    app.use('/users', updateRoute(sequelize));
+    app.use('/users', updateRoleRoute(sequelize));
   });
 
   it('call update API without new role', async () => {
-    const response = await request(app).put('/users/2').send();
+    const response = await request(app).put('/users/2/role').send();
 
     expect(response.status).toBe(400);
     expect(response.text).toBe('newRole is required');
@@ -56,7 +56,7 @@ describe('updateUserRole', () => {
 
   it('promote not existing user to admin will return 404', async () => {
     mockUser.findByPk.mockResolvedValue(null); // No user found
-    const response = await request(app).put('/users/2').send({
+    const response = await request(app).put('/users/2/role').send({
       newRole: 0,
     });
 
@@ -68,7 +68,7 @@ describe('updateUserRole', () => {
     const targetUser = { id: 2, role: userRoleIndex, update: vi.fn() }; // Normal user
     mockUser.findByPk.mockResolvedValue(targetUser);
 
-    const response = await request(app).put('/users/2').send({
+    const response = await request(app).put('/users/2/role').send({
       newRole: 0,
     });
 
@@ -81,7 +81,7 @@ describe('updateUserRole', () => {
     mockUser.findByPk.mockResolvedValue(targetUser);
     mockUser.count.mockResolvedValue(1); // Only one admin
 
-    const response = await request(app).put('/users/1').send({
+    const response = await request(app).put('/users/1/role').send({
       newRole: 1,
     }); // Downgrading admin to user
 
@@ -96,7 +96,7 @@ describe('updateUserRole', () => {
     // Simulate DB error
     mockUser.findByPk.mockRejectedValue(new Error('Database error'));
 
-    const response = await request(app).put('/users/1').send({
+    const response = await request(app).put('/users/1/role').send({
       newRole: 0,
     });
 

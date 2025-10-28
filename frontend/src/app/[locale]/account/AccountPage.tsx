@@ -1,13 +1,13 @@
 'use client';
 import { useState, useEffect, useContext } from 'react';
 import { Button, Card, CardHeader, CardFooter } from '@heroui/react';
-import Avatar from 'boring-avatars';
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, Settings } from 'lucide-react';
 import { Link, NextUiLinkClasses } from '@/src/i18n/routing';
 import { TokenContext } from '@/utils/TokenProvider';
 import { fetchMyProjects } from '@/utils/projectsControl';
 import { ProjectType } from '@/types/project';
 import PublicityChip from '@/components/PublicityChip';
+import UserAvatar from '@/components/UserAvatar';
 import { LocaleCodeType } from '@/types/locale';
 import { logError } from '@/utils/errorHandler';
 
@@ -17,6 +17,7 @@ type AccountPageMessages = {
   private: string;
   notOwnAnyProjects: string;
   findProjects: string;
+  profileSettings: string;
 };
 
 type Props = {
@@ -51,17 +52,28 @@ export default function AccountPage({ messages, locale }: Props) {
         <div className="container mx-auto max-w-3xl pt-6 px-6 flex-grow">
           <div className="w-full p-3 flex items-center justify-between">
             <Card className="w-[600px]">
-              <CardHeader className="flex gap-6">
-                <Avatar
-                  size={48}
-                  name={context.token?.user?.username}
-                  variant="beam"
-                  colors={['#0A0310', '#49007E', '#FF005B', '#FF7D10', '#FFB238']}
-                />
-                <div className="flex flex-col">
-                  <p className="text-xl font-bold">{context.token?.user?.username}</p>
-                  <p className="text-lg text-default-500">{context.token?.user?.email}</p>
+              <CardHeader className="flex gap-6 justify-between">
+                <div className="flex gap-6">
+                  <UserAvatar
+                    size={48}
+                    username={context.token?.user?.username}
+                    avatarPath={context.token?.user?.avatarPath}
+                  />
+                  <div className="flex flex-col">
+                    <p className="text-xl font-bold">{context.token?.user?.username}</p>
+                    <p className="text-lg text-default-500">{context.token?.user?.email}</p>
+                  </div>
                 </div>
+                <Button
+                  as={Link}
+                  href="/account/settings"
+                  locale={locale}
+                  variant="flat"
+                  size="sm"
+                  startContent={<Settings size={16} />}
+                >
+                  {messages.profileSettings}
+                </Button>
               </CardHeader>
             </Card>
           </div>

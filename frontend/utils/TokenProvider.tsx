@@ -28,6 +28,7 @@ function removeTokenFromLocalStorage() {
 const defaultContext = {
   token: {
     access_token: '',
+    expires_at: 0,
     user: null,
   },
   isSignedIn: () => false,

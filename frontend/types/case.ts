@@ -88,8 +88,13 @@ type CasesMessages = {
   selected: string;
   type: string;
   selectTypes: string;
+  casesSelected: string;
+  selectAction: string;
+  move: string;
+  clone: string;
   casesMoved: string;
   tags: string;
+  casesCloned: string;
 };
 
 type CaseMessages = {
