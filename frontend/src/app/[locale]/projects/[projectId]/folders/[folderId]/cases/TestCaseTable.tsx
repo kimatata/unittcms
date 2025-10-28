@@ -86,8 +86,6 @@ export default function TestCaseTable({
     { name: messages.actions, uid: 'actions' },
   ];
 
-  console.log(cases);
-
   const renderCell = useCallback(
     (testCase: CaseType, columnKey: string): ReactNode => {
       const cellValue = testCase[columnKey as keyof CaseType];
