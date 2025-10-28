@@ -4,7 +4,7 @@ const apiServer = Config.apiServer;
 
 export async function updateCaseTags(jwt: string, caseId: number, tagIds: number[], projectId: string) {
   const fetchOptions = {
-    method: 'Post',
+    method: 'POST',
     headers: {
       'Content-Type': 'application/json',
       Authorization: `Bearer ${jwt}`,
