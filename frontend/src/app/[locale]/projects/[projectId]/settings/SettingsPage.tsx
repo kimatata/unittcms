@@ -28,8 +28,8 @@ import ProjectDialog from '@/components/ProjectDialog';
 import { UserType } from '@/types/user';
 import { findUser } from '@/utils/usersControl';
 import { logError } from '@/utils/errorHandler';
-import { createTag, deleteTag, fetchCaseTags, updateTag } from '@/utils/caseTagsControls';
-import { CaseTags } from '@/types/caseTags';
+import { createTag, deleteTag, fetchTags, updateTag } from '@/utils/tagsControls';
+import { Tag } from '@/types/tag';
 
 type Props = {
   projectId: string;
@@ -61,7 +61,7 @@ export default function SettingsPage({ projectId, messages, projectDialogMessage
     username: '',
   });
 
-  const [tags, setTags] = useState<CaseTags[]>([]);
+  const [tags, setTags] = useState<Tag[]>([]);
   const [editedTagName, setEditedTagName] = useState('');
   const [tagName, setTagName] = useState('');
   const [isValidTag, setIsValidTag] = useState(true);
@@ -78,7 +78,7 @@ export default function SettingsPage({ projectId, messages, projectDialogMessage
       try {
         const data = await fetchProject(context.token.access_token, Number(projectId));
         setProject(data);
-        const caseTags = (await fetchCaseTags(context.token.access_token, projectId)) || [];
+        const caseTags = (await fetchTags(context.token.access_token, projectId)) || [];
         setTags(caseTags);
 
         if (data.userId) {

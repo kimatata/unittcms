@@ -1,7 +1,7 @@
-type CaseTags = {
+type Tag = {
   id: number;
   name: string;
   projectId: string;
 };
 
-export type { CaseTags };
+export type { Tag };
