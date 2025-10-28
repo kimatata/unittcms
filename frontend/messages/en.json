@@ -271,6 +271,7 @@
     "max_file_size": "Max. file size",
     "are_you_sure_leave": "Are you sure you want to leave the page?",
     "tags": "Tags",
+    "create_tag": "Create tag",
     "max_tags_limit": "Max. tags limit",
     "tag_already_exists": "Tag already exists",
     "tag_created_and_added": "Tag created and added",

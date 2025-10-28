@@ -46,6 +46,7 @@ export default function Page({
     maxFileSize: t('max_file_size'),
     areYouSureLeave: t('are_you_sure_leave'),
     tags: t('tags'),
+    createTag: t('create_tag'),
     maxTagsLimit: t('max_tags_limit'),
     tagAlreadyExists: t('tag_already_exists'),
     tagCreatedAndAdded: t('tag_created_and_added'),

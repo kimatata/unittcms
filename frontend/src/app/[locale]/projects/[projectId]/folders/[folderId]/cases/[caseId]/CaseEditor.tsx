@@ -453,7 +453,7 @@ export default function CaseEditor({
               onPress={() => handleCreateTag(inputValue.trim())}
               className="text-primary"
             >
-              {`Create tag "${inputValue.trim()}"`}
+              {`${messages.createTag} "${inputValue.trim()}"`}
             </AutocompleteItem>
           ) : (
             availableTags

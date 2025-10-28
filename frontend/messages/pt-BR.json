@@ -272,6 +272,7 @@
     "max_file_size": "Tamanho máx. do arquivo",
     "are_you_sure_leave": "Tem certeza de que deseja sair da página?",
     "tags": "Tags",
+    "create_tag": "Criar tag",
     "max_tags_limit": "Limite máximo de tags",
     "tag_already_exists": "Tag já existe",
     "tag_created_and_added": "Tag criada e adicionada",

@@ -273,6 +273,7 @@
     "max_file_size": "最大ファイルサイズ",
     "are_you_sure_leave": "ページを離れてもよろしいですか?",
     "tags": "タグ",
+    "create_tag": "タグを作成",
     "max_tags_limit": "最大タグ数",
     "tag_already_exists": "タグは既に存在します",
     "tag_created_and_added": "タグが作成されて追加されました",

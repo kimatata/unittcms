@@ -129,6 +129,7 @@ type CaseMessages = {
   maxFileSize: string;
   areYouSureLeave: string;
   tags: string;
+  createTag: string;
   maxTagsLimit: string;
   tagAlreadyExists: string;
   tagCreatedAndAdded: string;
