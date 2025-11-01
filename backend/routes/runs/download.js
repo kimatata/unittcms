@@ -9,6 +9,7 @@ import defineCase from '../../models/cases.js';
 import defineFolder from '../../models/folders.js';
 import authMiddleware from '../../middleware/auth.js';
 import visibilityMiddleware from '../../middleware/verifyVisible.js';
+import { testRunCaseStatus, testRunStatus, priorities, testTypes, automationStatus } from '../../config/enums.js';
 
 export default function (sequelize) {
   const { verifySignedIn } = authMiddleware(sequelize);
@@ -99,11 +100,11 @@ export default function (sequelize) {
         const records = runCases.map((rc) => ({
           id: rc.Case.id,
           title: rc.Case.title,
-          state: rc.Case.state,
-          priority: rc.Case.priority,
-          type: rc.Case.type,
-          automationStatus: rc.Case.automationStatus,
-          status: rc.status,
+          state: testRunStatus[rc.Case.state] || rc.Case.state,
+          priority: priorities[rc.Case.priority] || rc.Case.priority,
+          type: testTypes[rc.Case.type] || rc.Case.type,
+          automationStatus: automationStatus[rc.Case.automationStatus] || rc.Case.automationStatus,
+          status: testRunCaseStatus[rc.status] || rc.status,
         }));
 
         const csv = Papa.unparse(records, {
@@ -111,7 +112,7 @@ export default function (sequelize) {
           skipEmptyLines: true,
         });
 
-        res.setHeader('Content-Type', 'text/csv');
+        res.setHeader('Content-Type', 'text/csv; charset=utf-8');
         res.setHeader('Content-Disposition', `attachment; filename=run_${runId}.csv`);
         return res.send(csv);
       }
