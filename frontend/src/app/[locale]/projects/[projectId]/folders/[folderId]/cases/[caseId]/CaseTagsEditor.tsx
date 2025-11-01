@@ -118,7 +118,7 @@ export default function CaseTagsEditor({ projectId, selectedTags, onChange, mess
         inputValue={inputValue}
         label={messages.tags}
         placeholder={selectedTags.length >= maxTags ? messages.maxTagsLimit : messages.searchOrCreateTag}
-        isDisabled={selectedTags.length >= maxTags || !isProjectDeveloper}
+        isDisabled={selectedTags.length >= maxTags}
         onInputChange={setInputValue}
         ref={autocompleteRef}
         onOpenChange={(isOpen) => !isOpen && setInputValue('')}
@@ -137,7 +137,12 @@ export default function CaseTagsEditor({ projectId, selectedTags, onChange, mess
           availableTags
             .filter((tag) => tag.name.toLowerCase().includes(inputValue.trim().toLowerCase()))
             .map((tag) => (
-              <AutocompleteItem key={tag.id} textValue={tag.name} onPress={() => handleTagAdd(tag)}>
+              <AutocompleteItem
+                key={tag.id}
+                textValue={tag.name}
+                isReadOnly={!isProjectDeveloper}
+                onPress={() => handleTagAdd(tag)}
+              >
                 {tag.name}
               </AutocompleteItem>
             ))
