@@ -9,7 +9,13 @@ import defineCase from '../../models/cases.js';
 import defineFolder from '../../models/folders.js';
 import authMiddleware from '../../middleware/auth.js';
 import visibilityMiddleware from '../../middleware/verifyVisible.js';
-import { testRunCaseStatus, testRunStatus, priorities, testTypes, automationStatus } from '../../config/enums.js';
+import {
+  testRunCaseStatusUids,
+  testRunStatusUids,
+  priorityUids,
+  testTypeUids,
+  automationStatusUids,
+} from '../../../frontend/config/enums.js';
 
 export default function (sequelize) {
   const { verifySignedIn } = authMiddleware(sequelize);
@@ -100,11 +106,11 @@ export default function (sequelize) {
         const records = runCases.map((rc) => ({
           id: rc.Case.id,
           title: rc.Case.title,
-          state: testRunStatus[rc.Case.state] || rc.Case.state,
-          priority: priorities[rc.Case.priority] || rc.Case.priority,
-          type: testTypes[rc.Case.type] || rc.Case.type,
-          automationStatus: automationStatus[rc.Case.automationStatus] || rc.Case.automationStatus,
-          status: testRunCaseStatus[rc.status] || rc.status,
+          state: testRunStatusUids[rc.Case.state] || rc.Case.state,
+          priority: priorityUids[rc.Case.priority] || rc.Case.priority,
+          type: testTypeUids[rc.Case.type] || rc.Case.type,
+          automationStatus: automationStatusUids[rc.Case.automationStatus] || rc.Case.automationStatus,
+          status: testRunCaseStatusUids[rc.status] || rc.status,
         }));
 
         const csv = Papa.unparse(records, {

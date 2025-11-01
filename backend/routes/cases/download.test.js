@@ -17,6 +17,29 @@ vi.mock('papaparse', () => ({
   },
 }));
 
+// mock frontend/config/enums.js
+vi.mock('../../../frontend/config/enums.js', () => ({
+  testRunStatusUids: ['new', 'inProgress', 'underReview', 'rejected', 'done', 'closed'],
+  priorityUids: ['critical', 'high', 'medium', 'low'],
+  testTypeUids: [
+    'other',
+    'security',
+    'performance',
+    'accessibility',
+    'functional',
+    'acceptance',
+    'usability',
+    'smokeSanity',
+    'compatibility',
+    'destructive',
+    'regression',
+    'automated',
+    'manual',
+  ],
+  automationStatusUids: ['automated', 'automation-not-required', 'cannot-be-automated', 'obsolete'],
+  templateUids: ['text', 'step'],
+}));
+
 // mock of authentication middleware
 vi.mock('../../middleware/auth.js', () => ({
   default: () => ({

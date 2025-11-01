@@ -5,7 +5,13 @@ import Papa from 'papaparse';
 import defineCase from '../../models/cases.js';
 import authMiddleware from '../../middleware/auth.js';
 import visibilityMiddleware from '../../middleware/verifyVisible.js';
-import { testRunStatus, priorities, testTypes, automationStatus, templates } from '../../config/enums.js';
+import {
+  testRunStatusUids,
+  priorityUids,
+  testTypeUids,
+  automationStatusUids,
+  templateUids,
+} from '../../../frontend/config/enums.js';
 
 export default function (sequelize) {
   const Case = defineCase(sequelize, DataTypes);
@@ -39,11 +45,11 @@ export default function (sequelize) {
         // Convert numeric values to human-readable labels
         const casesWithLabels = cases.map((c) => ({
           ...c,
-          state: testRunStatus[c.state] || c.state,
-          priority: priorities[c.priority] || c.priority,
-          type: testTypes[c.type] || c.type,
-          automationStatus: automationStatus[c.automationStatus] || c.automationStatus,
-          template: templates[c.template] || c.template,
+          state: testRunStatusUids[c.state] || c.state,
+          priority: priorityUids[c.priority] || c.priority,
+          type: testTypeUids[c.type] || c.type,
+          automationStatus: automationStatusUids[c.automationStatus] || c.automationStatus,
+          template: templateUids[c.template] || c.template,
         }));
 
         const csv = Papa.unparse(casesWithLabels, {

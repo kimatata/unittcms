@@ -22,6 +22,29 @@ vi.mock('xmlbuilder2', () => ({
   create: vi.fn(),
 }));
 
+// mock frontend/config/enums.js
+vi.mock('../../../frontend/config/enums.js', () => ({
+  testRunCaseStatusUids: ['untested', 'passed', 'failed', 'retest', 'skipped'],
+  testRunStatusUids: ['new', 'inProgress', 'underReview', 'rejected', 'done', 'closed'],
+  priorityUids: ['critical', 'high', 'medium', 'low'],
+  testTypeUids: [
+    'other',
+    'security',
+    'performance',
+    'accessibility',
+    'functional',
+    'acceptance',
+    'usability',
+    'smokeSanity',
+    'compatibility',
+    'destructive',
+    'regression',
+    'automated',
+    'manual',
+  ],
+  automationStatusUids: ['automated', 'automation-not-required', 'cannot-be-automated', 'obsolete'],
+}));
+
 // mock of authentication middleware
 vi.mock('../../middleware/auth.js', () => ({
   default: () => ({
