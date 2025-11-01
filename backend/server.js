@@ -168,7 +168,7 @@ app.use('/tags', tagsDeleteRoute(sequelize));
 app.use('/tags', tagsEditRoute(sequelize));
 
 // "/casetags"
-import caseTagsEditRoute from './routes/caseTags/edit.js';
+import caseTagsEditRoute from './routes/casetags/edit.js';
 app.use('/casetags', caseTagsEditRoute(sequelize));
 
 // "/home"
