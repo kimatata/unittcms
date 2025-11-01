@@ -2,6 +2,7 @@
 import { useState, useEffect, useContext } from 'react';
 import { Button, Table, TableHeader, TableColumn, TableBody, TableRow, TableCell } from '@heroui/react';
 import { Pencil, Trash } from 'lucide-react';
+import ProjectTagsManager from './ProjectTagsManager';
 import { SettingsMessages } from '@/types/settings';
 import { TokenContext } from '@/utils/TokenProvider';
 import { deleteProject, fetchProject, updateProject } from '@/utils/projectsControl';
@@ -141,6 +142,14 @@ export default function SettingsPage({ projectId, messages, projectDialogMessage
             </TableRow>
           </TableBody>
         </Table>
+      </div>
+
+      <div className="w-full p-3 flex items-center justify-between">
+        <h3 className="font-bold">{messages.tagManagement}</h3>
+      </div>
+
+      <div className="w-full p-3">
+        <ProjectTagsManager projectId={projectId} messages={messages} />
       </div>
 
       <ProjectDialog
