@@ -1,24 +1,12 @@
 'use client';
-import { useState, useEffect, useContext, ChangeEvent, DragEvent, useRef, useMemo } from 'react';
-import {
-  Input,
-  Textarea,
-  Select,
-  SelectItem,
-  Button,
-  Divider,
-  Tooltip,
-  addToast,
-  Badge,
-  Chip,
-  Autocomplete,
-  AutocompleteItem,
-} from '@heroui/react';
+import { useState, useEffect, useContext, ChangeEvent, DragEvent } from 'react';
+import { Input, Textarea, Select, SelectItem, Button, Divider, Tooltip, addToast, Badge } from '@heroui/react';
 import { Save, Plus, ArrowLeft, Circle } from 'lucide-react';
 import CaseStepsEditor from './CaseStepsEditor';
 import CaseAttachmentsEditor from './CaseAttachmentsEditor';
 import { updateSteps } from './stepControl';
 import { fetchCreateAttachments, fetchDownloadAttachment, fetchDeleteAttachment } from './attachmentControl';
+import CaseTagsEditor from './CaseTagsEditor';
 import { fetchCase, updateCase } from '@/utils/caseControl';
 import { priorities, testTypes, templates } from '@/config/selection';
 import { useRouter } from '@/src/i18n/routing';
@@ -28,7 +16,6 @@ import { CaseType, AttachmentType, CaseMessages, StepType } from '@/types/case';
 import { PriorityMessages } from '@/types/priority';
 import { TestTypeMessages } from '@/types/testType';
 import { logError } from '@/utils/errorHandler';
-import { createTag, fetchTags } from '@/utils/tagsControls';
 import { updateCaseTags } from '@/utils/caseTagsControls';
 
 const defaultTestCase = {
@@ -75,105 +62,10 @@ export default function CaseEditor({
   const [isUpdating, setIsUpdating] = useState<boolean>(false);
   const [plusCount, setPlusCount] = useState<number>(0);
   const [isDirty, setIsDirty] = useState(false);
-  const [tags, setTags] = useState<{ id: number; name: string }[]>([]);
   const [selectedTags, setSelectedTags] = useState<{ id: number; name: string }[]>([]);
-  const [inputValue, setInputValue] = useState('');
-  const autocompleteRef = useRef<HTMLInputElement | null>(null);
-  const max_tags = 5;
-
-  const availableTags = useMemo(() => {
-    return tags.filter((t) => !selectedTags.some((s) => s.id === t.id));
-  }, [tags, selectedTags]);
 
   const router = useRouter();
   useFormGuard(isDirty, messages.areYouSureLeave);
-
-  useEffect(() => {
-    const fetchDataEffect = async () => {
-      try {
-        const tagsResponse = (await fetchTags(tokenContext.token.access_token, projectId)) || [];
-        setTags(tagsResponse);
-      } catch (error: unknown) {
-        logError('Error fetching case tags', error);
-        addToast({
-          title: 'Error',
-          description: 'Error fetching tags',
-          color: 'danger',
-        });
-      }
-    };
-    fetchDataEffect();
-  }, [projectId, tokenContext.token.access_token]);
-
-  const handleTagRemove = (tagId: number) => {
-    setSelectedTags((prev) => prev.filter((tag) => tag.id !== tagId));
-    setIsDirty(true);
-  };
-
-  const handleTagAdd = (tag: { id: number; name: string }) => {
-    if (selectedTags.length >= max_tags) {
-      addToast({
-        title: 'Warning',
-        description: messages.maxTagsLimit,
-        color: 'warning',
-      });
-      return;
-    }
-    if (selectedTags.some((t) => t.id === tag.id)) return;
-
-    setSelectedTags([...selectedTags, tag]);
-    setIsDirty(true);
-    setInputValue('');
-    if (autocompleteRef.current) {
-      autocompleteRef.current.blur();
-    }
-  };
-
-  const handleCreateTag = async (name: string) => {
-    if (selectedTags.length >= max_tags) {
-      addToast({
-        title: 'Warning',
-        description: messages.maxTagsLimit,
-        color: 'warning',
-      });
-      return;
-    }
-    const normalizedName = name.trim().toLowerCase();
-    if (
-      tags.some((tag) => tag.name.toLowerCase() === normalizedName) ||
-      selectedTags.some((tag) => tag.name.toLowerCase() === normalizedName)
-    ) {
-      addToast({
-        title: 'Warning',
-        description: messages.tagAlreadyExists,
-        color: 'warning',
-      });
-      return;
-    }
-
-    try {
-      const tag = await createTag(tokenContext.token.access_token, projectId, name);
-      setTags((prev) => [...prev, tag]); // só adiciona em tags
-      setSelectedTags((prev) => [...prev, tag]); // e seleciona
-      setIsDirty(true);
-      setInputValue('');
-      if (autocompleteRef.current) {
-        autocompleteRef.current.blur();
-      }
-      addToast({
-        title: 'Success',
-        description: messages.tagCreatedAndAdded,
-        color: 'success',
-      });
-    } catch (error: unknown) {
-      logError('Error creating tag', error);
-      addToast({
-        title: 'Error',
-        description: messages.errorCreatingTag,
-        color: 'danger',
-      });
-    }
-  };
 
   const onPlusClick = async (newStepNo: number) => {
     setIsDirty(true);
@@ -430,59 +322,15 @@ export default function CaseEditor({
           className="mt-3"
         />
 
-        <Autocomplete
-          className="max-w-xs mt-2"
-          size="sm"
-          variant="bordered"
-          inputValue={inputValue}
-          label={messages.tags}
-          placeholder={selectedTags.length >= max_tags ? messages.maxTagsLimit : messages.searchOrCreateTag}
-          isDisabled={selectedTags.length >= max_tags}
-          onInputChange={(value) => setInputValue(value)}
-          ref={autocompleteRef}
-          onOpenChange={(isOpen) => {
-            if (!isOpen) setInputValue('');
+        <CaseTagsEditor
+          projectId={projectId}
+          selectedTags={selectedTags}
+          onChange={(tags) => {
+            setSelectedTags(tags);
+            setIsDirty(true);
           }}
-        >
-          {inputValue.trim() &&
-          availableTags.filter((tag) => tag.name.toLowerCase().includes(inputValue.trim().toLowerCase())).length ===
-            0 ? (
-            <AutocompleteItem
-              key="create-tag"
-              textValue={inputValue.trim()}
-              onPress={() => handleCreateTag(inputValue.trim())}
-              className="text-primary"
-            >
-              {`${messages.createTag} "${inputValue.trim()}"`}
-            </AutocompleteItem>
-          ) : (
-            availableTags
-              .filter((tag) => tag.name.toLowerCase().includes(inputValue.trim().toLowerCase()))
-              .map((tag) => (
-                <AutocompleteItem key={tag.id} textValue={tag.name} onPress={() => handleTagAdd(tag)}>
-                  {tag.name}
-                </AutocompleteItem>
-              ))
-          )}
-        </Autocomplete>
-
-        <div className="gap-2 flex items-center mt-3">
-          <div className="flex justify-start align-center gap-1.5 flex-wrap">
-            {selectedTags.length === 0 && (
-              <p className="text-foreground-500 text-xs mb-1.5">{messages.noTagsSelected}</p>
-            )}
-            {selectedTags.map((tag) => (
-              <Chip
-                key={tag.id}
-                size="md"
-                onClose={() => handleTagRemove(tag.id)}
-                isCloseable={tokenContext.isProjectDeveloper(Number(projectId))}
-              >
-                {tag.name}
-              </Chip>
-            ))}
-          </div>
-        </div>
+          messages={messages}
+        />
 
         <div>
           <Select
