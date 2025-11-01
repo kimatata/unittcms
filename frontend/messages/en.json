@@ -237,7 +237,8 @@
     "move": "Move",
     "clone": "Clone",
     "cases_moved": "Test cases moved",
-    "cases_cloned": "Test cases cloned"
+    "cases_cloned": "Test cases cloned",
+    "tags": "Tags"
   },
   "Case": {
     "back_to_cases": "Back to test cases",
