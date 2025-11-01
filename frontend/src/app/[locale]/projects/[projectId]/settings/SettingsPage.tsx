@@ -1,22 +1,8 @@
 'use client';
 import { useState, useEffect, useContext } from 'react';
-import {
-  Button,
-  Table,
-  TableHeader,
-  TableColumn,
-  TableBody,
-  TableRow,
-  TableCell,
-  Card,
-  CardBody,
-  Input,
-  addToast,
-  Popover,
-  PopoverTrigger,
-  PopoverContent,
-} from '@heroui/react';
-import { Check, Pencil, Plus, Trash, Trash2, X } from 'lucide-react';
+import { Button, Table, TableHeader, TableColumn, TableBody, TableRow, TableCell } from '@heroui/react';
+import { Pencil, Trash } from 'lucide-react';
+import ProjectTagsManager from './ProjectTagsManager';
 import { SettingsMessages } from '@/types/settings';
 import { TokenContext } from '@/utils/TokenProvider';
 import { deleteProject, fetchProject, updateProject } from '@/utils/projectsControl';
@@ -28,8 +14,6 @@ import { UserType } from '@/types/user';
 import { findUser } from '@/utils/usersControl';
 import { logError } from '@/utils/errorHandler';
 import UserAvatar from '@/components/UserAvatar';
-import { createTag, deleteTag, fetchTags, updateTag } from '@/utils/tagsControls';
-import { Tag } from '@/types/tag';
 
 type Props = {
   projectId: string;
@@ -61,14 +45,6 @@ export default function SettingsPage({ projectId, messages, projectDialogMessage
     username: '',
   });
 
-  const [tags, setTags] = useState<Tag[]>([]);
-  const [editedTagName, setEditedTagName] = useState('');
-  const [tagName, setTagName] = useState('');
-  const [isValidTag, setIsValidTag] = useState(true);
-  const [errorMessage, setErrorMessage] = useState('');
-  const [isValidEditTag, setIsValidEditTag] = useState(true);
-  const [editErrorMessage, setEditErrorMessage] = useState('');
-
   useEffect(() => {
     async function fetchDataEffect() {
       if (!context.isSignedIn()) {
@@ -78,8 +54,6 @@ export default function SettingsPage({ projectId, messages, projectDialogMessage
       try {
         const data = await fetchProject(context.token.access_token, Number(projectId));
         setProject(data);
-        const caseTags = (await fetchTags(context.token.access_token, projectId)) || [];
-        setTags(caseTags);
 
         if (data.userId) {
           const ownerData = await findUser(context.token.access_token, data.userId);
@@ -109,120 +83,6 @@ export default function SettingsPage({ projectId, messages, projectDialogMessage
     await deleteProject(context.token.access_token, Number(projectId));
     setIsDeleteConfirmDialogOpen(false);
     router.push(`/projects/`, { locale: locale });
-  };
-  const [editingTag, setEditingTag] = useState<number | null>(null);
-  const [openPopoverTagId, setOpenPopoverTagId] = useState<number | null>(null);
-
-  const validateTagName = (name: string) => {
-    const trimmedName = name.trim();
-    if (!trimmedName) {
-      setIsValidTag(false);
-      setErrorMessage(messages.tagErrorEmpty);
-      return false;
-    }
-    if (trimmedName.length < 3) {
-      setIsValidTag(false);
-      setErrorMessage(messages.tagErrorMinLength);
-      return false;
-    }
-    if (trimmedName.length > 20) {
-      setIsValidTag(false);
-      setErrorMessage(messages.tagErrorMaxLength);
-      return false;
-    }
-    setIsValidTag(true);
-    setErrorMessage('');
-    return true;
-  };
-
-  const validateEditTagName = (name: string) => {
-    const trimmedName = name.trim();
-    if (!trimmedName) {
-      setIsValidEditTag(false);
-      setEditErrorMessage(messages.tagErrorEmpty);
-      return false;
-    }
-    if (trimmedName.length < 3) {
-      setIsValidEditTag(false);
-      setEditErrorMessage(messages.tagErrorMinLength);
-      return false;
-    }
-    if (trimmedName.length > 20) {
-      setIsValidEditTag(false);
-      setEditErrorMessage(messages.tagErrorMaxLength);
-      return false;
-    }
-    setIsValidEditTag(true);
-    setEditErrorMessage('');
-    return true;
-  };
-
-  const onCreateTag = async () => {
-    if (!validateTagName(tagName)) {
-      return;
-    }
-    try {
-      const newTag = await createTag(context.token.access_token, projectId, tagName);
-      setTags((prev) => [...prev, newTag]);
-      setIsValidTag(true);
-      setErrorMessage('');
-      setTagName('');
-      addToast({
-        title: 'Success',
-        description: messages.tagCreated,
-      });
-    } catch (error: unknown) {
-      const errorMessage = error instanceof Error ? error.message : messages.tagErrorCreate;
-      addToast({
-        title: 'Error',
-        description: errorMessage,
-      });
-      logError('Error creating tag:', error);
-    }
-  };
-
-  const onUpdateTag = async (tagId: number) => {
-    if (!validateEditTagName(editedTagName)) {
-      return;
-    }
-    try {
-      await updateTag(context.token.access_token, projectId, tagId, editedTagName);
-      setTags(tags.map((tag) => (tag.id === tagId ? { ...tag, name: editedTagName } : tag)));
-      setEditingTag(null);
-      setEditedTagName('');
-      setIsValidEditTag(true);
-      setEditErrorMessage('');
-      addToast({
-        title: 'Success',
-        description: messages.tagUpdated,
-      });
-    } catch (error: unknown) {
-      const errorMessage = error instanceof Error ? error.message : messages.tagErrorUpdate;
-      addToast({
-        title: 'Error',
-        description: errorMessage,
-      });
-      logError('Error updating tag:', error);
-    }
-  };
-
-  const onDeleteTag = async (tagId: number) => {
-    try {
-      await deleteTag(context.token.access_token, projectId, tagId);
-      setTags(tags.filter((tag) => tag.id !== tagId));
-      setOpenPopoverTagId(null);
-      addToast({
-        title: 'Success',
-        description: messages.tagDeleted,
-      });
-    } catch (error: unknown) {
-      const errorMessage = error instanceof Error ? error.message : messages.tagErrorDelete;
-      addToast({
-        title: 'Error',
-        description: errorMessage,
-      });
-      logError('Error deleting tag:', error);
-    }
   };
 
   return (
@@ -289,160 +149,7 @@ export default function SettingsPage({ projectId, messages, projectDialogMessage
       </div>
 
       <div className="w-full p-3">
-        <Card>
-          <CardBody>
-            <div className="mb-6 flex items-baseline gap-3">
-              <Input
-                size="sm"
-                type="text"
-                placeholder={messages.tagName}
-                variant="bordered"
-                isInvalid={!isValidTag}
-                errorMessage={errorMessage}
-                value={tagName}
-                onChange={(e) => {
-                  setTagName(e.target.value);
-                  validateTagName(e.target.value);
-                }}
-                classNames={{
-                  inputWrapper: 'h-10 flex',
-                }}
-              />
-
-              <div>
-                <Button
-                  startContent={<Plus className="w-4 h-4" />}
-                  color="primary"
-                  isDisabled={!context.isProjectOwner(Number(projectId)) || !isValidTag}
-                  onPress={() => {
-                    if (!validateTagName(tagName)) {
-                      return;
-                    }
-                    onCreateTag();
-                    setTagName('');
-                  }}
-                >
-                  {messages.addTag}
-                </Button>
-              </div>
-            </div>
-            <div className="space-y-1">
-              {tags.length === 0 && <div className="text-center text-gray-500 mb-3">{messages.noTagsAvailable}</div>}
-
-              {tags.map((tag) => (
-                <div
-                  key={tag.id}
-                  className="flex items-center justify-between p-2 hover:bg-gray-100 hover:dark:bg-[#2a2a2a] transition-colors rounded-lg"
-                >
-                  {editingTag === tag.id ? (
-                    <>
-                      <div className="flex flex-1 items-start gap-3">
-                        <Input
-                          size="sm"
-                          type="text"
-                          variant="bordered"
-                          value={editedTagName}
-                          onChange={(e) => {
-                            setEditedTagName(e.target.value);
-                            validateEditTagName(e.target.value);
-                          }}
-                          isInvalid={!isValidEditTag}
-                          errorMessage={editErrorMessage}
-                          classNames={{
-                            inputWrapper: 'h-7 flex',
-                          }}
-                        />
-                        <div className="flex gap-2">
-                          <Button
-                            size="sm"
-                            color="primary"
-                            isIconOnly
-                            isDisabled={!isValidEditTag}
-                            onPress={() => onUpdateTag(tag.id)}
-                          >
-                            <Check className="h-4 w-4" />
-                          </Button>
-                          <Button
-                            size="sm"
-                            variant="ghost"
-                            className="h-8 "
-                            isIconOnly
-                            onPress={() => {
-                              setEditingTag(null);
-                              setEditedTagName('');
-                              setIsValidEditTag(true);
-                              setEditErrorMessage('');
-                            }}
-                          >
-                            <X className="h-4 w-4" />
-                          </Button>
-                        </div>
-                      </div>
-                    </>
-                  ) : (
-                    <>
-                      <div className="flex items-center gap-3">
-                        <span className="font-medium">{tag.name}</span>
-                      </div>
-                      <div className="flex gap-2 transition-opacity group-hover:opacity-100">
-                        <Button
-                          size="sm"
-                          variant="ghost"
-                          className="h-8"
-                          isIconOnly
-                          onPress={() => {
-                            setEditingTag(tag.id);
-                            setEditedTagName(tag.name);
-                            validateEditTagName(tag.name);
-                          }}
-                        >
-                          <Pencil className="h-4 w-4" />
-                        </Button>
-                        <Popover
-                          placement="top"
-                          isOpen={openPopoverTagId === tag.id}
-                          onOpenChange={(open) => setOpenPopoverTagId(open ? tag.id : null)}
-                        >
-                          <PopoverTrigger>
-                            <Button size="sm" variant="ghost" color="danger" className="h-8 " isIconOnly>
-                              <Trash2 className="h-4 w-4" />
-                            </Button>
-                          </PopoverTrigger>
-                          <PopoverContent>
-                            <div className="px-1 py-2">
-                              <div className="text-small font-bold">{messages.deleteTag}</div>
-                              <div className="text-tiny">{messages.areYouSureDeleteTag}</div>
-                              <div className="flex justify-end gap-2 mt-2">
-                                <Button
-                                  size="sm"
-                                  variant="ghost"
-                                  className="h-8"
-                                  isIconOnly
-                                  onPress={() => setOpenPopoverTagId(null)}
-                                >
-                                  <X className="h-4 w-4" />
-                                </Button>
-                                <Button
-                                  size="sm"
-                                  className="h-8"
-                                  color="danger"
-                                  isIconOnly
-                                  onPress={() => onDeleteTag(tag.id)}
-                                >
-                                  <Check className="h-4 w-4" />
-                                </Button>
-                              </div>
-                            </div>
-                          </PopoverContent>
-                        </Popover>
-                      </div>
-                    </>
-                  )}
-                </div>
-              ))}
-            </div>
-          </CardBody>
-        </Card>
+        <ProjectTagsManager projectId={projectId} messages={messages} />
       </div>
 
       <ProjectDialog

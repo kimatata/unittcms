@@ -1,7 +1,7 @@
-type Tag = {
+type TagType = {
   id: number;
   name: string;
   projectId: string;
 };
 
-export type { Tag };
+export type { TagType };
