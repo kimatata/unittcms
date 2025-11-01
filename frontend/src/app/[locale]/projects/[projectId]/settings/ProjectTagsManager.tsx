@@ -24,6 +24,8 @@ export default function ProjectTagsManager({ projectId, messages }: ProjectTagsM
   const [editErrorMessage, setEditErrorMessage] = useState('');
   const [openPopoverTagId, setOpenPopoverTagId] = useState<number | null>(null);
 
+  const isProjectDeveloper = context.isProjectDeveloper(Number(projectId));
+
   useEffect(() => {
     async function fetchDataEffect() {
       if (!context.isSignedIn()) {
@@ -144,16 +146,14 @@ export default function ProjectTagsManager({ projectId, messages }: ProjectTagsM
               setIsValidTag(isValid);
               setErrorMessage(errorMessage);
             }}
-            classNames={{
-              inputWrapper: 'h-10 flex',
-            }}
           />
 
           <div>
             <Button
               startContent={<Plus className="w-4 h-4" />}
               color="primary"
-              isDisabled={!context.isProjectDeveloper(Number(projectId)) || !isValidTag}
+              size="sm"
+              isDisabled={!isProjectDeveloper || !isValidTag}
               onPress={() => {
                 onCreateTag();
                 setTagName('');
@@ -229,6 +229,7 @@ export default function ProjectTagsManager({ projectId, messages }: ProjectTagsM
                       variant="ghost"
                       className="h-8"
                       isIconOnly
+                      isDisabled={!isProjectDeveloper}
                       onPress={() => {
                         setEditingTag(tag.id);
                         setEditedTagName(tag.name);
@@ -244,7 +245,14 @@ export default function ProjectTagsManager({ projectId, messages }: ProjectTagsM
                       onOpenChange={(open) => setOpenPopoverTagId(open ? tag.id : null)}
                     >
                       <PopoverTrigger>
-                        <Button size="sm" variant="ghost" color="danger" className="h-8 " isIconOnly>
+                        <Button
+                          size="sm"
+                          variant="ghost"
+                          color="danger"
+                          className="h-8 "
+                          isIconOnly
+                          isDisabled={!isProjectDeveloper}
+                        >
                           <Trash2 className="h-4 w-4" />
                         </Button>
                       </PopoverTrigger>
