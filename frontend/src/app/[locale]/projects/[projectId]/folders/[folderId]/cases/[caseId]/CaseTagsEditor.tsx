@@ -24,6 +24,8 @@ export default function CaseTagsEditor({ projectId, selectedTags, onChange, mess
   const [inputValue, setInputValue] = useState('');
   const autocompleteRef = useRef<HTMLInputElement | null>(null);
 
+  const isProjectDeveloper = tokenContext.isProjectDeveloper(Number(projectId));
+
   useEffect(() => {
     const fetchDataEffect = async () => {
       try {
@@ -116,7 +118,7 @@ export default function CaseTagsEditor({ projectId, selectedTags, onChange, mess
         inputValue={inputValue}
         label={messages.tags}
         placeholder={selectedTags.length >= maxTags ? messages.maxTagsLimit : messages.searchOrCreateTag}
-        isDisabled={selectedTags.length >= maxTags || !tokenContext.isProjectDeveloper(Number(projectId))}
+        isDisabled={selectedTags.length >= maxTags || !isProjectDeveloper}
         onInputChange={setInputValue}
         ref={autocompleteRef}
         onOpenChange={(isOpen) => !isOpen && setInputValue('')}
@@ -149,9 +151,8 @@ export default function CaseTagsEditor({ projectId, selectedTags, onChange, mess
             <Chip
               key={tag.id}
               size="md"
-              onClose={() => handleTagRemove(tag.id)}
-              isDisabled={!tokenContext.isProjectDeveloper(Number(projectId))}
-              isCloseable={!!tokenContext.isProjectDeveloper(Number(projectId))}
+              onClose={!isProjectDeveloper ? undefined : () => handleTagRemove(tag.id)}
+              isDisabled={!isProjectDeveloper}
             >
               {tag.name}
             </Chip>
