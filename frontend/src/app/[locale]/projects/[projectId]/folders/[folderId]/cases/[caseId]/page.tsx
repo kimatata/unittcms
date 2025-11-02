@@ -45,6 +45,15 @@ export default function Page({
     orDragAndDrop: t('or_drag_and_drop'),
     maxFileSize: t('max_file_size'),
     areYouSureLeave: t('are_you_sure_leave'),
+    tags: t('tags'),
+    createTag: t('create_tag'),
+    maxTagsLimit: t('max_tags_limit'),
+    tagAlreadyExists: t('tag_already_exists'),
+    tagCreatedAndAdded: t('tag_created_and_added'),
+    errorCreatingTag: t('error_creating_tag'),
+    errorUpdatingTestCase: t('error_updating_test_case'),
+    searchOrCreateTag: t('search_or_create_tag'),
+    noTagsSelected: t('no_tags_selected'),
   };
 
   const tt = useTranslations('Type');

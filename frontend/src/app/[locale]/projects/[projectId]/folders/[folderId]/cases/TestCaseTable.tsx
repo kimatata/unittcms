@@ -14,6 +14,7 @@ import {
   Checkbox,
   Card,
   CardBody,
+  Chip,
 } from '@heroui/react';
 import {
   Plus,
@@ -81,6 +82,7 @@ export default function TestCaseTable({
     { name: messages.id, uid: 'id', sortable: true },
     { name: messages.title, uid: 'title', sortable: true },
     { name: messages.priority, uid: 'priority', sortable: true },
+    { name: messages.tags, uid: 'tags' },
     { name: messages.actions, uid: 'actions' },
   ];
 
@@ -107,6 +109,17 @@ export default function TestCaseTable({
           );
         case 'priority':
           return <TestCasePriority priorityValue={cellValue as number} priorityMessages={priorityMessages} />;
+
+        case 'tags':
+          return (
+            <div className="space-x-2">
+              {testCase.Tags?.map((tag) => (
+                <Chip size="sm" key={tag.id}>
+                  {tag.name}
+                </Chip>
+              ))}
+            </div>
+          );
         case 'actions':
           return (
             <Dropdown>

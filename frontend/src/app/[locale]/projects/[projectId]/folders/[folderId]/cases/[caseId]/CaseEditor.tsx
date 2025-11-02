@@ -1,11 +1,12 @@
 'use client';
-import { useState, useEffect, useContext, useCallback, ChangeEvent, DragEvent } from 'react';
+import { useState, useEffect, useContext, ChangeEvent, DragEvent } from 'react';
 import { Input, Textarea, Select, SelectItem, Button, Divider, Tooltip, addToast, Badge } from '@heroui/react';
 import { Save, Plus, ArrowLeft, Circle } from 'lucide-react';
 import CaseStepsEditor from './CaseStepsEditor';
 import CaseAttachmentsEditor from './CaseAttachmentsEditor';
 import { updateSteps } from './stepControl';
 import { fetchCreateAttachments, fetchDownloadAttachment, fetchDeleteAttachment } from './attachmentControl';
+import CaseTagsEditor from './CaseTagsEditor';
 import { fetchCase, updateCase } from '@/utils/caseControl';
 import { priorities, testTypes, templates } from '@/config/selection';
 import { useRouter } from '@/src/i18n/routing';
@@ -15,6 +16,7 @@ import { CaseType, AttachmentType, CaseMessages, StepType } from '@/types/case';
 import { PriorityMessages } from '@/types/priority';
 import { TestTypeMessages } from '@/types/testType';
 import { logError } from '@/utils/errorHandler';
+import { updateCaseTags } from '@/utils/caseTagsControls';
 
 const defaultTestCase = {
   id: 0,
@@ -32,6 +34,7 @@ const defaultTestCase = {
   Attachments: [],
   isIncluded: false,
   runStatus: 0,
+  Tags: [],
 };
 
 type Props = {
@@ -59,6 +62,8 @@ export default function CaseEditor({
   const [isUpdating, setIsUpdating] = useState<boolean>(false);
   const [plusCount, setPlusCount] = useState<number>(0);
   const [isDirty, setIsDirty] = useState(false);
+  const [selectedTags, setSelectedTags] = useState<{ id: number; name: string }[]>([]);
+
   const router = useRouter();
   useFormGuard(isDirty, messages.areYouSureLeave);
 
@@ -210,24 +215,24 @@ export default function CaseEditor({
     }
   };
 
-  const fetchAndSetCase = useCallback(async () => {
-    if (!tokenContext.isSignedIn()) {
-      return;
-    }
-    try {
-      const data = await fetchCase(tokenContext.token.access_token, Number(caseId));
-      data.Steps.forEach((step: StepType) => {
-        step.editState = 'notChanged';
-      });
-      setTestCase(data);
-    } catch (error: unknown) {
-      logError('Error fetching case data', error);
-    }
-  }, [tokenContext, caseId]);
-
   useEffect(() => {
+    const fetchAndSetCase = async () => {
+      if (!tokenContext.isSignedIn()) return;
+      try {
+        const data = await fetchCase(tokenContext.token.access_token, Number(caseId));
+        data.Steps.forEach((step: StepType) => {
+          step.editState = 'notChanged';
+        });
+        setTestCase(data);
+        if (data.Tags) {
+          setSelectedTags(Array.isArray(data.Tags) ? data.Tags : []);
+        }
+      } catch (error: unknown) {
+        logError('Error fetching case data', error);
+      }
+    };
     fetchAndSetCase();
-  }, [caseId, tokenContext, fetchAndSetCase]);
+  }, [tokenContext, caseId]);
 
   return (
     <>
@@ -258,18 +263,30 @@ export default function CaseEditor({
             isLoading={isUpdating}
             onPress={async () => {
               setIsUpdating(true);
-              await updateCase(tokenContext.token.access_token, testCase);
-              if (testCase.Steps) {
-                await updateSteps(tokenContext.token.access_token, Number(caseId), testCase.Steps);
-              }
-              await fetchAndSetCase();
+              try {
+                await updateCase(tokenContext.token.access_token, testCase);
+                if (testCase.Steps) {
+                  await updateSteps(tokenContext.token.access_token, Number(caseId), testCase.Steps);
+                }
 
-              addToast({
-                title: 'Info',
-                description: messages.updatedTestCase,
-              });
-              setIsUpdating(false);
-              setIsDirty(false);
+                const tagIds = selectedTags.map((tag) => tag.id);
+                await updateCaseTags(tokenContext.token.access_token, Number(caseId), tagIds, projectId);
+
+                addToast({
+                  title: 'Info',
+                  description: messages.updatedTestCase,
+                });
+                setIsDirty(false);
+              } catch (error) {
+                logError('Error updating test case', error);
+                addToast({
+                  title: 'Error',
+                  description: messages.errorUpdatingTestCase,
+                  color: 'danger',
+                });
+              } finally {
+                setIsUpdating(false);
+              }
             }}
           >
             {isUpdating ? messages.updating : messages.update}
@@ -303,6 +320,16 @@ export default function CaseEditor({
             setTestCase({ ...testCase, description: changeValue });
           }}
           className="mt-3"
+        />
+
+        <CaseTagsEditor
+          projectId={projectId}
+          selectedTags={selectedTags}
+          onChange={(tags) => {
+            setSelectedTags(tags);
+            setIsDirty(true);
+          }}
+          messages={messages}
         />
 
         <div>
