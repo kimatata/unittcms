@@ -56,6 +56,7 @@ export default function (sequelize) {
             {
               model: RunCase,
               attributes: ['id', 'runId', 'status'],
+              required: false,
               where: {
                 runId: runId,
               },
