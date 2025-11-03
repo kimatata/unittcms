@@ -10,6 +10,7 @@ import { fetchCases, createCase, deleteCases, exportCases } from '@/utils/caseCo
 import { CaseType, CasesMessages } from '@/types/case';
 import { PriorityMessages } from '@/types/priority';
 import { TestTypeMessages } from '@/types/testType';
+import { RunStatusMessages } from '@/types/status';
 import { LocaleCodeType } from '@/types/locale';
 import { logError } from '@/utils/errorHandler';
 import { parseQueryParam } from '@/utils/parseQueryParam';
@@ -21,6 +22,7 @@ type Props = {
   messages: CasesMessages;
   priorityMessages: PriorityMessages;
   testTypeMessages: TestTypeMessages;
+  runStatusMessages: RunStatusMessages;
   locale: LocaleCodeType;
 };
 
@@ -30,6 +32,7 @@ export default function CasesPane({
   messages,
   priorityMessages,
   testTypeMessages,
+  runStatusMessages,
   locale,
 }: Props) {
   const [cases, setCases] = useState<CaseType[]>([]);
@@ -130,7 +133,7 @@ export default function CasesPane({
   };
 
   const onExportCases = async (type: string) => {
-    await exportCases(context.token.access_token, Number(folderId), type);
+    await exportCases(context.token.access_token, Number(folderId), type, runStatusMessages, priorityMessages, testTypeMessages);
   };
 
   const handleFilterChange = (title: string, priorities: number[], types: number[]) => {

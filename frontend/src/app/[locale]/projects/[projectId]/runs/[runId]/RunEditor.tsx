@@ -246,7 +246,7 @@ export default function RunEditor({
               <DropdownItem
                 key="csv"
                 startContent={<FileSpreadsheet size={16} />}
-                onPress={() => exportRun(tokenContext.token.access_token, Number(testRun.id), 'csv')}
+                onPress={() => exportRun(tokenContext.token.access_token, Number(testRun.id), 'csv', runStatusMessages, testRunCaseStatusMessages, priorityMessages, testTypeMessages)}
               >
                 csv
               </DropdownItem>

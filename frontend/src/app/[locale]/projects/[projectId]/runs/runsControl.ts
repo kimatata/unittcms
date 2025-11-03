@@ -2,7 +2,10 @@ import { logError } from '@/utils/errorHandler';
 import { CaseType } from '@/types/case';
 import { RunType, RunCaseType } from '@/types/run';
 import Config from '@/config/config';
-import { testRunCaseStatus } from '@/config/selection';
+import { testRunCaseStatus, testRunStatus, priorities, testTypes, automationStatus } from '@/config/selection';
+import { RunStatusMessages, TestRunCaseStatusMessages } from '@/types/status';
+import { PriorityMessages } from '@/types/priority';
+import { TestTypeMessages } from '@/types/testType';
 const apiServer = Config.apiServer;
 
 async function fetchRun(jwt: string, runId: number) {
@@ -130,11 +133,91 @@ async function deleteRun(jwt: string, runId: number) {
   }
 }
 
-async function exportRun(jwt: string, runId: number, type: string) {
+async function exportRun(
+  jwt: string,
+  runId: number,
+  type: string,
+  runStatusMessages?: RunStatusMessages,
+  testRunCaseStatusMessages?: TestRunCaseStatusMessages,
+  priorityMessages?: PriorityMessages,
+  testTypeMessages?: TestTypeMessages
+) {
   if (type !== 'xml' && type !== 'json' && type !== 'csv') {
     console.error('export type error. type:', type);
     return;
   }
+
+  // For CSV, fetch JSON data and generate CSV client-side with localized labels
+  if (type === 'csv') {
+    try {
+      const url = `${apiServer}/runs/download/${runId}?type=json`;
+      const response = await fetch(url, {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${jwt}`,
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+
+      const runCases = await response.json();
+
+      // Convert numeric values to localized labels
+      const records = runCases.map((rc: { Case: CaseType; status: number }) => ({
+        id: rc.Case.id,
+        title: rc.Case.title,
+        state: runStatusMessages && testRunStatus[rc.Case.state]
+          ? runStatusMessages[testRunStatus[rc.Case.state].uid]
+          : testRunStatus[rc.Case.state]?.uid || rc.Case.state,
+        priority: priorityMessages && priorities[rc.Case.priority]
+          ? priorityMessages[priorities[rc.Case.priority].uid]
+          : priorities[rc.Case.priority]?.uid || rc.Case.priority,
+        type: testTypeMessages && testTypes[rc.Case.type]
+          ? testTypeMessages[testTypes[rc.Case.type].uid]
+          : testTypes[rc.Case.type]?.uid || rc.Case.type,
+        automationStatus: automationStatus[rc.Case.automationStatus]?.uid || rc.Case.automationStatus,
+        status: testRunCaseStatusMessages && testRunCaseStatus[rc.status]
+          ? testRunCaseStatusMessages[testRunCaseStatus[rc.status].uid]
+          : testRunCaseStatus[rc.status]?.uid || rc.status,
+      }));
+
+      // Generate CSV
+      const headers = Object.keys(records[0]);
+      const csvRows = [
+        headers.join(','),
+        ...records.map((row: Record<string, string | number>) =>
+          headers.map((header) => {
+            const value = row[header];
+            // Escape quotes and wrap in quotes if contains comma, quote, or newline
+            const stringValue = String(value);
+            if (stringValue.includes(',') || stringValue.includes('"') || stringValue.includes('\n')) {
+              return `"${stringValue.replace(/"/g, '""')}"`;
+            }
+            return stringValue;
+          }).join(',')
+        ),
+      ];
+      const csvContent = csvRows.join('\n');
+
+      // Download CSV
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      const objectUrl = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = objectUrl;
+      a.download = `run_${runId}.csv`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      window.URL.revokeObjectURL(objectUrl);
+    } catch (error: unknown) {
+      logError('Error exporting CSV:', error);
+    }
+    return;
+  }
+
+  // For XML and JSON, use backend endpoint
   const url = `${apiServer}/runs/download/${runId}?type=${type}`;
 
   try {

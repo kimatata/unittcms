@@ -2,6 +2,10 @@ import { logError } from '@/utils/errorHandler';
 import Config from '@/config/config';
 const apiServer = Config.apiServer;
 import { CaseType } from '@/types/case';
+import { testRunStatus, priorities, testTypes, automationStatus, templates } from '@/config/selection';
+import { RunStatusMessages } from '@/types/status';
+import { PriorityMessages } from '@/types/priority';
+import { TestTypeMessages } from '@/types/testType';
 
 async function fetchCase(jwt: string, caseId: number) {
   const url = `${apiServer}/cases/${caseId}`;
@@ -191,11 +195,99 @@ async function cloneCases(jwt: string, moveCaseIds: number[], targetFolderId: nu
   }
 }
 
-async function exportCases(jwt: string, folderId: number, type: string) {
+async function exportCases(
+  jwt: string,
+  folderId: number,
+  type: string,
+  runStatusMessages?: RunStatusMessages,
+  priorityMessages?: PriorityMessages,
+  testTypeMessages?: TestTypeMessages
+) {
   if (type !== 'json' && type !== 'csv') {
     console.error('export type error. type:', type);
     return;
   }
+
+  // For CSV, fetch JSON data and generate CSV client-side with localized labels
+  if (type === 'csv') {
+    try {
+      const url = `${apiServer}/cases/download?folderId=${folderId}&type=json`;
+      const response = await fetch(url, {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${jwt}`,
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+
+      const cases = await response.json();
+
+      // Convert numeric values to localized labels
+      const records = cases.map((c: CaseType) => ({
+        id: c.id,
+        title: c.title,
+        state: runStatusMessages && testRunStatus[c.state]
+          ? runStatusMessages[testRunStatus[c.state].uid]
+          : testRunStatus[c.state]?.uid || c.state,
+        priority: priorityMessages && priorities[c.priority]
+          ? priorityMessages[priorities[c.priority].uid]
+          : priorities[c.priority]?.uid || c.priority,
+        type: testTypeMessages && testTypes[c.type]
+          ? testTypeMessages[testTypes[c.type].uid]
+          : testTypes[c.type]?.uid || c.type,
+        automationStatus: automationStatus[c.automationStatus]?.uid || c.automationStatus,
+        description: c.description,
+        template: templates[c.template]?.uid || c.template,
+        preConditions: c.preConditions,
+        expectedResults: c.expectedResults,
+        folderId: c.folderId,
+        createdAt: c.createdAt,
+        updatedAt: c.updatedAt,
+      }));
+
+      // Generate CSV
+      if (records.length === 0) {
+        console.warn('No records to export');
+        return;
+      }
+
+      const headers = Object.keys(records[0]);
+      const csvRows = [
+        headers.join(','),
+        ...records.map((row: Record<string, string | number>) =>
+          headers.map((header) => {
+            const value = row[header];
+            // Escape quotes and wrap in quotes if contains comma, quote, or newline
+            const stringValue = String(value);
+            if (stringValue.includes(',') || stringValue.includes('"') || stringValue.includes('\n')) {
+              return `"${stringValue.replace(/"/g, '""')}"`;
+            }
+            return stringValue;
+          }).join(',')
+        ),
+      ];
+      const csvContent = csvRows.join('\n');
+
+      // Download CSV
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      const objectUrl = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = objectUrl;
+      a.download = `folder_${folderId}.csv`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      window.URL.revokeObjectURL(objectUrl);
+    } catch (error: unknown) {
+      logError('Error exporting CSV:', error);
+    }
+    return;
+  }
+
+  // For JSON, use backend endpoint
   const url = `${apiServer}/cases/download?folderId=${folderId}&type=${type}`;
 
   try {
