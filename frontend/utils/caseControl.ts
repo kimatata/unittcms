@@ -26,7 +26,14 @@ async function fetchCase(jwt: string, caseId: number) {
   }
 }
 
-async function fetchCases(jwt: string, folderId: number, title?: string, priority?: number[], type?: number[]) {
+async function fetchCases(
+  jwt: string,
+  folderId: number,
+  title?: string,
+  priority?: number[],
+  type?: number[],
+  tag?: number[]
+) {
   const queryParams = [`folderId=${folderId}`];
 
   if (title) {
@@ -39,6 +46,10 @@ async function fetchCases(jwt: string, folderId: number, title?: string, priorit
 
   if (type && type.length > 0) {
     queryParams.push(`type=${type.join(',')}`);
+  }
+
+  if (tag && tag.length > 0) {
+    queryParams.push(`tag=${tag.join(',')}`);
   }
 
   const query = queryParams.length > 0 ? `?${queryParams.join('&')}` : '';
