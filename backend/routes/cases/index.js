@@ -17,7 +17,7 @@ export default function (sequelize) {
   Tags.belongsToMany(Case, { through: 'caseTags', foreignKey: 'tagId', otherKey: 'caseId' });
 
   router.get('/', verifySignedIn, verifyProjectVisibleFromFolderId, async (req, res) => {
-    const { folderId, title, priority, type } = req.query;
+    const { folderId, title, priority, type, tag } = req.query;
 
     if (!folderId) {
       return res.status(400).json({ error: 'folderId is required' });
@@ -60,15 +60,27 @@ export default function (sequelize) {
         }
       }
 
+      const tagInclude = {
+        model: Tags,
+        attributes: ['id', 'name'],
+        through: { attributes: [] },
+      };
+
+      if (tag) {
+        const tagIds = tag
+          .split(',')
+          .map((t) => parseInt(t.trim(), 10))
+          .filter((t) => !isNaN(t));
+
+        if (tagIds.length > 0) {
+          tagInclude.where = { id: { [Op.in]: tagIds } };
+          tagInclude.required = true;
+        }
+      }
+
       const cases = await Case.findAll({
         where: whereClause,
-        include: [
-          {
-            model: Tags,
-            attributes: ['id', 'name'],
-            through: { attributes: [] },
-          },
-        ],
+        include: [tagInclude],
       });
       res.json(cases);
     } catch (error) {
