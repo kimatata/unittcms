@@ -192,7 +192,8 @@ export default function RunEditor({
     await initTestCases();
 
     addToast({
-      title: 'Info',
+      title: 'Success',
+      color: 'success',
       description: messages.updatedTestRun,
     });
     setIsUpdating(false);
