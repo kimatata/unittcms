@@ -1,10 +1,23 @@
-import { useState, useEffect } from 'react';
-import { Button, Dropdown, DropdownTrigger, DropdownMenu, DropdownItem, Selection, Input } from '@heroui/react';
+import { useState, useEffect, useContext } from 'react';
+import {
+  Button,
+  Dropdown,
+  DropdownTrigger,
+  DropdownMenu,
+  DropdownItem,
+  Selection,
+  Input,
+  addToast,
+} from '@heroui/react';
 import { SearchIcon, ChevronDown, Circle } from 'lucide-react';
 import { PriorityMessages } from '@/types/priority';
 import { TestTypeMessages } from '@/types/testType';
 import { CasesMessages } from '@/types/case';
 import { priorities, testTypes } from '@/config/selection';
+import { TagType } from '@/types/tag';
+import { fetchTags } from '@/utils/tagsControls';
+import { TokenContext } from '@/utils/TokenProvider';
+import { logError } from '@/utils/errorHandler';
 
 type TestCaseFilterProps = {
   messages: CasesMessages;
@@ -13,8 +26,12 @@ type TestCaseFilterProps = {
   activeTitleFilter: string;
   activePriorityFilters: number[];
   activeTypeFilters: number[];
-  onFilterChange: (title: string, priorities: number[], types: number[]) => void;
+  activeTagFilters: number[];
+  projectId: string;
+  onFilterChange: (title: string, priorities: number[], types: number[], tags: number[]) => void;
 };
+
+type Tag = Pick<TagType, 'id' | 'name'>;
 
 export default function TestCaseFilter({
   messages,
@@ -23,11 +40,38 @@ export default function TestCaseFilter({
   activeTitleFilter,
   activePriorityFilters,
   activeTypeFilters,
+  activeTagFilters,
   onFilterChange,
+  projectId,
 }: TestCaseFilterProps) {
+  const tokenContext = useContext(TokenContext);
   const [title, setTitle] = useState<string>('');
   const [selectedPriorities, setSelectedPriorities] = useState<Selection>(new Set([]));
   const [selectedTypes, setSelectedTypes] = useState<Selection>(new Set([]));
+  const [selectedTags, setSelectedTags] = useState<Selection>(new Set([]));
+  const [tags, setTags] = useState<Tag[]>([]);
+
+  useEffect(() => {
+    const fetchDataEffect = async () => {
+      try {
+        const tagsResponse = (await fetchTags(tokenContext.token.access_token, projectId)) || [];
+        setTags(tagsResponse);
+      } catch (error) {
+        logError('Error fetching case tags', error);
+        addToast({ title: 'Error', description: 'Error fetching tags', color: 'danger' });
+      }
+    };
+    fetchDataEffect();
+  }, [projectId, tokenContext.token.access_token]);
+
+  useEffect(() => {
+    if (activeTagFilters.length > 0) {
+      const activeKeys = activeTagFilters.map((id) => id.toString());
+      setSelectedTags(new Set(activeKeys));
+    } else {
+      setSelectedTags(new Set([]));
+    }
+  }, [activeTagFilters]);
 
   useEffect(() => {
     setTitle(activeTitleFilter);
@@ -74,13 +118,20 @@ export default function TestCaseFilter({
         .filter((index) => index !== -1);
     }
 
-    onFilterChange(title, priorityIndices, typeIndices);
+    let tagIds: number[] = [];
+    if (selectedTags !== 'all' && selectedTags.size > 0) {
+      tagIds = Array.from(selectedTags)
+        .map((key) => parseInt(key as string))
+        .filter((id) => !isNaN(id));
+    }
+
+    onFilterChange(title, priorityIndices, typeIndices, tagIds);
   };
 
   const handleClearFilter = () => {
     setSelectedPriorities(new Set([]));
     setSelectedTypes(new Set([]));
-    onFilterChange('', [], []);
+    onFilterChange('', [], [], []);
   };
 
   return (
@@ -159,6 +210,35 @@ export default function TestCaseFilter({
             </DropdownMenu>
           </Dropdown>
         </div>
+        <div className="flex-col space-y-1">
+          <h3 className="text-default-500 text-small"></h3>
+        </div>
+      </div>
+
+      <div className="mb-3 space-y-1">
+        <h3 className="text-default-500 text-small">{messages.tags}</h3>
+        <Dropdown>
+          <DropdownTrigger>
+            <Button size="sm" variant="bordered" className="w-32" endContent={<ChevronDown size={16} />}>
+              {selectedTags === 'all' || selectedTags.size === 0
+                ? messages.selectTags
+                : `${selectedTags.size} ${messages.selected || 'selected'}`}
+            </Button>
+          </DropdownTrigger>
+          <DropdownMenu
+            className="max-h-[50vh] overflow-y-auto"
+            aria-label="Tag filter"
+            selectionMode="multiple"
+            selectedKeys={selectedTags}
+            onSelectionChange={setSelectedTags}
+          >
+            {tags.map((tag) => (
+              <DropdownItem key={tag.id.toString()} textValue={tag.name}>
+                <span className="text-sm">{tag.name}</span>
+              </DropdownItem>
+            ))}
+          </DropdownMenu>
+        </Dropdown>
       </div>
       <div className="flex justify-end">
         <Button className="me-2" size="sm" variant="light" onPress={handleClearFilter}>

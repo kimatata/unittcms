@@ -238,7 +238,8 @@
     "clone": "Clonar",
     "cases_moved": "Casos de teste movidos",
     "cases_cloned": "Casos de teste clonados",
-    "tags": "Tags"
+    "tags": "Tags",
+    "select_tags": "Selecionar tags"
   },
   "Case": {
     "back_to_cases": "Voltar para os casos de teste",

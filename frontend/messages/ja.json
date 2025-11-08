@@ -239,7 +239,8 @@
     "clone": "クローン",
     "cases_moved": "テストケースを移動しました",
     "cases_cloned": "テストケースをクローンしました",
-    "tags": "タグ"
+    "tags": "タグ",
+    "select_tags": "タグを選択"
   },
   "Case": {
     "back_to_cases": "テストケース一覧に戻る",

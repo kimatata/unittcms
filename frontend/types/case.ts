@@ -95,6 +95,7 @@ type CasesMessages = {
   casesMoved: string;
   tags: string;
   casesCloned: string;
+  selectTags: string;
 };
 
 type CaseMessages = {
