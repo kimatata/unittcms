@@ -273,7 +273,8 @@ export default function CaseEditor({
                 await updateCaseTags(tokenContext.token.access_token, Number(caseId), tagIds, projectId);
 
                 addToast({
-                  title: 'Info',
+                  title: 'Success',
+                  color: 'success',
                   description: messages.updatedTestCase,
                 });
                 setIsDirty(false);

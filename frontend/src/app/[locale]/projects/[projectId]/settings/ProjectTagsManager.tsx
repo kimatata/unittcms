@@ -71,12 +71,14 @@ export default function ProjectTagsManager({ projectId, messages }: ProjectTagsM
       setTagName('');
       addToast({
         title: 'Success',
+        color: 'success',
         description: messages.tagCreated,
       });
     } catch (error: unknown) {
       const errorMessage = error instanceof Error ? error.message : messages.tagErrorCreate;
       addToast({
         title: 'Error',
+        color: 'danger',
         description: errorMessage,
       });
       logError('Error creating tag:', error);
@@ -97,12 +99,14 @@ export default function ProjectTagsManager({ projectId, messages }: ProjectTagsM
       setEditErrorMessage('');
       addToast({
         title: 'Success',
+        color: 'success',
         description: messages.tagUpdated,
       });
     } catch (error: unknown) {
       const errorMessage = error instanceof Error ? error.message : messages.tagErrorUpdate;
       addToast({
         title: 'Error',
+        color: 'danger',
         description: errorMessage,
       });
       logError('Error updating tag:', error);
@@ -116,12 +120,14 @@ export default function ProjectTagsManager({ projectId, messages }: ProjectTagsM
       setOpenPopoverTagId(null);
       addToast({
         title: 'Success',
+        color: 'success',
         description: messages.tagDeleted,
       });
     } catch (error: unknown) {
       const errorMessage = error instanceof Error ? error.message : messages.tagErrorDelete;
       addToast({
         title: 'Error',
+        color: 'danger',
         description: errorMessage,
       });
       logError('Error deleting tag:', error);
