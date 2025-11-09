@@ -352,7 +352,12 @@
     "are_you_sure": "メンバーを削除してもよろしいですか?",
     "member_added": "メンバーが追加されました",
     "role_changed": "メンバーのロールを更新しました",
-    "member_deleted": "メンバーを削除しました"
+    "member_deleted": "メンバーを削除しました",
+    "success": "成功",
+    "error": "エラー",
+    "member_add_failed": "メンバーの追加に失敗しました",
+    "member_delete_failed": "メンバーの削除に失敗しました",
+    "role_change_failed": "メンバーのロール変更に失敗しました"
   },
   "Settings": {
     "project_management": "プロジェクト管理",

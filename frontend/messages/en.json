@@ -351,7 +351,12 @@
     "are_you_sure": "Are you sure you want to delete member?",
     "member_added": "Member added",
     "role_changed": "Member role changed",
-    "member_deleted": "Member deleted"
+    "member_deleted": "Member deleted",
+    "success": "Success",
+    "error": "Error",
+    "member_add_failed": "Failed to add member",
+    "member_delete_failed": "Failed to delete member",
+    "role_change_failed": "Failed to change member role"
   },
   "Settings": {
     "project_management": "Project Management",

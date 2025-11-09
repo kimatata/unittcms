@@ -351,7 +351,12 @@
     "are_you_sure": "Tem certeza de que deseja excluir o membro?",
     "member_added": "Membro adicionado",
     "role_changed": "Função do membro alterada",
-    "member_deleted": "Membro excluído"
+    "member_deleted": "Membro excluído",
+    "success": "Sucesso",
+    "error": "Erro",
+    "member_add_failed": "Falha ao adicionar membro",
+    "member_delete_failed": "Falha ao excluir membro",
+    "role_change_failed": "Falha ao alterar função do membro"
   },
   "Settings": {
     "project_management": "Gerenciamento de Projetos",

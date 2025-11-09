@@ -40,16 +40,25 @@ export default function MembersPage({ projectId, messages }: Props) {
 
   const handleAddMember = async (userAdded: UserType) => {
     if (userAdded.id) {
-      const newMember = await addMember(context.token.access_token, userAdded.id, Number(projectId));
-      newMember.User = userAdded;
-      const updateMembers = [...members];
-      updateMembers.push(newMember);
-      setMembers(updateMembers);
-      addToast({
-        title: 'Success',
-        color: 'success',
-        description: messages.memberAdded,
-      });
+      try {
+        const newMember = await addMember(context.token.access_token, userAdded.id, Number(projectId));
+        newMember.User = userAdded;
+        const updateMembers = [...members];
+        updateMembers.push(newMember);
+        setMembers(updateMembers);
+        addToast({
+          title: messages.success,
+          color: 'success',
+          description: messages.memberAdded,
+        });
+      } catch (error) {
+        logError('Error adding member:', error);
+        addToast({
+          title: messages.error,
+          color: 'danger',
+          description: messages.memberAddFailed,
+        });
+      }
     }
 
     setIsDialogOpen(false);
@@ -70,33 +79,51 @@ export default function MembersPage({ projectId, messages }: Props) {
 
   const onConfirm = async () => {
     if (deleteMemberId) {
-      await deleteMember(context.token.access_token, deleteMemberId, Number(projectId));
-      setMembers(members.filter((member) => member.User.id !== deleteMemberId));
-      closeDeleteConfirmDialog();
-      addToast({
-        title: 'Success',
-        color: 'success',
-        description: messages.memberDeleted,
-      });
+      try {
+        await deleteMember(context.token.access_token, deleteMemberId, Number(projectId));
+        setMembers(members.filter((member) => member.User.id !== deleteMemberId));
+        closeDeleteConfirmDialog();
+        addToast({
+          title: messages.success,
+          color: 'success',
+          description: messages.memberDeleted,
+        });
+      } catch (error) {
+        logError('Error deleting member:', error);
+        addToast({
+          title: messages.error,
+          color: 'danger',
+          description: messages.memberDeleteFailed,
+        });
+      }
     }
   };
 
   const handleChangeRole = async (userEdit: UserType, role: number) => {
     if (userEdit.id) {
-      await updateMember(context.token.access_token, userEdit.id, Number(projectId), role);
-      addToast({
-        title: 'Success',
-        color: 'success',
-        description: messages.roleChanged,
-      });
-      setMembers((prevMembers) => {
-        return prevMembers.map((member) => {
-          if (member.User.id === userEdit.id) {
-            return { ...member, role: role };
-          }
-          return member;
+      try {
+        await updateMember(context.token.access_token, userEdit.id, Number(projectId), role);
+        addToast({
+          title: messages.success,
+          color: 'success',
+          description: messages.roleChanged,
         });
-      });
+        setMembers((prevMembers) => {
+          return prevMembers.map((member) => {
+            if (member.User.id === userEdit.id) {
+              return { ...member, role: role };
+            }
+            return member;
+          });
+        });
+      } catch (error) {
+        logError('Error updating member role:', error);
+        addToast({
+          title: messages.error,
+          color: 'danger',
+          description: messages.roleChangeFailed,
+        });
+      }
     }
   };
 

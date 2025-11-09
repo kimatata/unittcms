@@ -45,6 +45,7 @@ async function addMember(jwt: string, userId: number, projectId: number) {
     return data;
   } catch (error: unknown) {
     logError('Error fetching data:', error);
+    throw error;
   }
 }
 
@@ -66,6 +67,7 @@ async function deleteMember(jwt: string, userId: number, projectId: number) {
     }
   } catch (error: unknown) {
     logError('Error fetching data:', error);
+    throw error;
   }
 }
 
@@ -89,6 +91,7 @@ async function updateMember(jwt: string, userId: number, projectId: number, role
     return data;
   } catch (error: unknown) {
     logError('Error fetching data:', error);
+    throw error;
   }
 }
 
