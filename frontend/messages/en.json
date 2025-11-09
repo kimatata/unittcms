@@ -348,7 +348,10 @@
     "user_name_or_email": "User name or email",
     "close": "Close",
     "add": "Add",
-    "are_you_sure": "Are you sure you want to delete member?"
+    "are_you_sure": "Are you sure you want to delete member?",
+    "member_added": "Member added",
+    "role_changed": "Member role changed",
+    "member_deleted": "Member deleted"
   },
   "Settings": {
     "project_management": "Project Management",

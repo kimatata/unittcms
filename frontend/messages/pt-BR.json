@@ -348,7 +348,10 @@
     "user_name_or_email": "Nome de usuário ou e-mail",
     "close": "Fechar",
     "add": "Adicionar",
-    "are_you_sure": "Tem certeza de que deseja excluir o membro?"
+    "are_you_sure": "Tem certeza de que deseja excluir o membro?",
+    "member_added": "Membro adicionado",
+    "role_changed": "Função do membro alterada",
+    "member_deleted": "Membro excluído"
   },
   "Settings": {
     "project_management": "Gerenciamento de Projetos",

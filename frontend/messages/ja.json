@@ -349,7 +349,10 @@
     "user_name_or_email": "ユーザー名またはメールアドレス",
     "close": "閉じる",
     "add": "追加",
-    "are_you_sure": "メンバーを削除してもよろしいですか?"
+    "are_you_sure": "メンバーを削除してもよろしいですか?",
+    "member_added": "メンバーが追加されました",
+    "role_changed": "メンバーのロールを更新しました",
+    "member_deleted": "メンバーを削除しました"
   },
   "Settings": {
     "project_management": "プロジェクト管理",
