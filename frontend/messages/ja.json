@@ -15,7 +15,6 @@
     "skipped": "スキップ"
   },
   "Priority": {
-    "priority": "優先度",
     "critical": "致",
     "high": "高",
     "medium": "中",
@@ -136,6 +135,14 @@
     "current_password_incorrect": "現在のパスワードが正しくありません",
     "update_error": "更新に失敗しました"
   },
+  "Health": {
+    "health_check": "ヘルスチェック",
+    "status": "ステータス",
+    "ok": "正常",
+    "error": "エラー",
+    "api_server": "APIサーバー",
+    "unittcms_version": "UnitTCMS バージョン"
+  },
   "Admin": {
     "user_management": "ユーザー管理",
     "avatar": "アバター",
@@ -153,14 +160,6 @@
     "role_changed": "ロールを更新しました",
     "lost_admin_auth": "管理者権限を失いました",
     "at_least": "最低1人以上の管理者が必要です。"
-  },
-  "Health": {
-    "health_check": "ヘルスチェック",
-    "status": "ステータス",
-    "ok": "正常",
-    "error": "エラー",
-    "api_server": "APIサーバー",
-    "unittcms_version": "UnitTCMS バージョン"
   },
   "Projects": {
     "project_list": "プロジェクト一覧",
@@ -314,8 +313,8 @@
     "refresh": "再読み込み",
     "id": "ID",
     "title": "タイトル",
-    "description": "詳細",
     "please_enter": "タイトルを入力してください",
+    "description": "詳細",
     "priority": "優先度",
     "status": "ステータス",
     "actions": "アクション",
