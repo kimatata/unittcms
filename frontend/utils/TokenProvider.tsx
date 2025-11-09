@@ -139,7 +139,7 @@ const TokenProvider = ({ toastMessages, locale, children }: TokenProps) => {
       if (ret.reason === 'notoken') {
         if (toastMessages) {
           addToast({
-            title: 'Info',
+            title: 'Error',
             description: toastMessages.needSignedIn,
             color: 'danger',
           });
@@ -147,7 +147,7 @@ const TokenProvider = ({ toastMessages, locale, children }: TokenProps) => {
       } else if (ret.reason === 'expired') {
         if (toastMessages) {
           addToast({
-            title: 'Info',
+            title: 'Error',
             description: toastMessages.sessionExpired,
             color: 'danger',
           });

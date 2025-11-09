@@ -14,6 +14,7 @@ import {
   Checkbox,
   Card,
   CardBody,
+  Chip,
 } from '@heroui/react';
 import {
   Plus,
@@ -45,10 +46,11 @@ type Props = {
   onDeleteCase: (caseId: number) => void;
   onDeleteCases: (caseIds: number[]) => void;
   onExportCases: (type: string) => void;
-  onFilterChange: (query: string, priorities: number[], types: number[]) => void;
+  onFilterChange: (query: string, priorities: number[], types: number[], tag: number[]) => void;
   activeTitleFilter: string;
   activePriorityFilters: number[];
   activeTypeFilters: number[];
+  activeTagFilters: number[];
   messages: CasesMessages;
   priorityMessages: PriorityMessages;
   testTypeMessages: TestTypeMessages;
@@ -67,6 +69,7 @@ export default function TestCaseTable({
   activeTitleFilter,
   activePriorityFilters,
   activeTypeFilters,
+  activeTagFilters,
   messages,
   priorityMessages,
   testTypeMessages,
@@ -81,6 +84,7 @@ export default function TestCaseTable({
     { name: messages.id, uid: 'id', sortable: true },
     { name: messages.title, uid: 'title', sortable: true },
     { name: messages.priority, uid: 'priority', sortable: true },
+    { name: messages.tags, uid: 'tags' },
     { name: messages.actions, uid: 'actions' },
   ];
 
@@ -107,6 +111,17 @@ export default function TestCaseTable({
           );
         case 'priority':
           return <TestCasePriority priorityValue={cellValue as number} priorityMessages={priorityMessages} />;
+
+        case 'tags':
+          return (
+            <div className="space-x-2">
+              {testCase.Tags?.map((tag) => (
+                <Chip size="sm" key={tag.id}>
+                  {tag.name}
+                </Chip>
+              ))}
+            </div>
+          );
         case 'actions':
           return (
             <Dropdown>
@@ -139,7 +154,8 @@ export default function TestCaseTable({
   // filter test case
   // **************************************************************************
   const [showFilter, setShowFilter] = useState(false);
-  const activeFilterNum = (activeTitleFilter ? 1 : 0) + activePriorityFilters.length + activeTypeFilters.length;
+  const activeFilterNum =
+    (activeTitleFilter ? 1 : 0) + activePriorityFilters.length + activeTypeFilters.length + activeTagFilters.length;
 
   // **************************************************************************
   // select test case
@@ -305,9 +321,11 @@ export default function TestCaseTable({
                   activeTitleFilter={activeTitleFilter}
                   activePriorityFilters={activePriorityFilters}
                   activeTypeFilters={activeTypeFilters}
-                  onFilterChange={(newTitleFilter, newPriorityFilters, newTypeFilters) => {
+                  activeTagFilters={activeTagFilters}
+                  projectId={projectId}
+                  onFilterChange={(newTitleFilter, newPriorityFilters, newTypeFilters, newTagFilters) => {
                     setShowFilter(false);
-                    onFilterChange(newTitleFilter, newPriorityFilters, newTypeFilters);
+                    onFilterChange(newTitleFilter, newPriorityFilters, newTypeFilters, newTagFilters);
                   }}
                 />
               </PopoverContent>

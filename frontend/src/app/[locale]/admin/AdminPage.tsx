@@ -84,7 +84,8 @@ export default function AdminPage({ messages, locale }: Props) {
       const data = await updateUserRole(tokenContext.token.access_token, userEdit.id, role);
       if (data.user) {
         addToast({
-          title: 'Info',
+          title: 'Success',
+          color: 'success',
           description: messages.roleChanged,
         });
         setUsers((prevUsers) => {
@@ -106,13 +107,16 @@ export default function AdminPage({ messages, locale }: Props) {
 
       if (data && data.user) {
         addToast({
-          title: 'Info',
+          title: 'Success',
+          color: 'success',
           description: messages.lostAdminAuth,
         });
         router.push(`/`, { locale: locale });
       } else {
+        setIsConfirmDialogOpen(false);
         addToast({
-          title: 'Info',
+          title: 'Error',
+          color: 'danger',
           description: messages.atLeast,
         });
       }

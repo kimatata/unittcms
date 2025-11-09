@@ -25,41 +25,56 @@ export default function (sequelize) {
   RunCase.belongsTo(Case, { foreignKey: 'caseId' });
   const { verifySignedIn } = authMiddleware(sequelize);
   const { verifyProjectVisibleFromProjectId } = visibilityMiddleware(sequelize);
+  const { verifyProjectVisibleFromRunId } = visibilityMiddleware(sequelize);
 
-  router.get('/byproject', verifySignedIn, verifyProjectVisibleFromProjectId, async (req, res) => {
-    const { projectId } = req.query;
+  router.get(
+    '/byproject',
+    verifySignedIn,
+    verifyProjectVisibleFromProjectId,
+    verifyProjectVisibleFromRunId,
+    async (req, res) => {
+      const { projectId, runId } = req.query;
 
-    if (!projectId) {
-      return res.status(400).json({ error: 'projectId is required' });
-    }
+      if (!projectId) {
+        return res.status(400).json({ error: 'projectId is required' });
+      }
 
-    try {
-      const cases = await Case.findAll({
-        include: [
-          {
-            model: Folder,
-            where: {
-              projectId: projectId,
+      if (!runId) {
+        return res.status(400).json({ error: 'runId is required' });
+      }
+
+      try {
+        const cases = await Case.findAll({
+          include: [
+            {
+              model: Folder,
+              where: {
+                projectId: projectId,
+              },
+              attributes: [],
             },
-            attributes: [],
-          },
-          {
-            model: RunCase,
-            attributes: ['id', 'runId', 'status'],
-          },
-          {
-            model: Tags,
-            attributes: ['id', 'name'],
-            through: { attributes: [] },
-          },
-        ],
-      });
-      res.json(cases);
-    } catch (error) {
-      console.error(error);
-      res.status(500).send('Internal Server Error');
+            {
+              model: RunCase,
+              attributes: ['id', 'runId', 'status'],
+              required: false,
+              where: {
+                runId: runId,
+              },
+            },
+            {
+              model: Tags,
+              attributes: ['id', 'name'],
+              through: { attributes: [] },
+            },
+          ],
+        });
+        res.json(cases);
+      } catch (error) {
+        console.error(error);
+        res.status(500).send('Internal Server Error');
+      }
     }
-  });
+  );
 
   return router;
 }

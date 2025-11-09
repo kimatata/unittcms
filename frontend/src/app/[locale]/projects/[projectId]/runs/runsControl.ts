@@ -315,8 +315,8 @@ async function updateRunCases(jwt: string, runId: number, testCases: CaseType[])
   }
 }
 
-async function fetchProjectCases(jwt: string, projectId: number) {
-  const url = `${apiServer}/cases/byproject?projectId=${projectId}`;
+async function fetchProjectCases(jwt: string, projectId: number, runId: number) {
+  const url = `${apiServer}/cases/byproject?projectId=${projectId}&runId=${runId}`;
 
   try {
     const response = await fetch(url, {

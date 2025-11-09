@@ -237,7 +237,9 @@
     "move": "Mover",
     "clone": "Clonar",
     "cases_moved": "Casos de teste movidos",
-    "cases_cloned": "Casos de teste clonados"
+    "cases_cloned": "Casos de teste clonados",
+    "tags": "Tags",
+    "select_tags": "Selecionar tags"
   },
   "Case": {
     "back_to_cases": "Voltar para os casos de teste",
@@ -269,7 +271,16 @@
     "click_to_upload": "Clique para enviar",
     "or_drag_and_drop": " ou arraste e solte",
     "max_file_size": "Tamanho máx. do arquivo",
-    "are_you_sure_leave": "Tem certeza de que deseja sair da página?"
+    "are_you_sure_leave": "Tem certeza de que deseja sair da página?",
+    "tags": "Tags",
+    "create_tag": "Criar tag",
+    "max_tags_limit": "Limite máximo de tags",
+    "tag_already_exists": "Tag já existe",
+    "tag_created_and_added": "Tag criada e adicionada",
+    "error_creating_tag": "Erro ao criar tag",
+    "error_updating_test_case": "Erro ao atualizar caso de teste",
+    "search_or_create_tag": "Buscar ou criar tag",
+    "no_tags_selected": "Nenhuma tag selecionada"
   },
   "Runs": {
     "run_list": "Lista de Execuções de Teste",
@@ -337,7 +348,10 @@
     "user_name_or_email": "Nome de usuário ou e-mail",
     "close": "Fechar",
     "add": "Adicionar",
-    "are_you_sure": "Tem certeza de que deseja excluir o membro?"
+    "are_you_sure": "Tem certeza de que deseja excluir o membro?",
+    "member_added": "Membro adicionado",
+    "role_changed": "Função do membro alterada",
+    "member_deleted": "Membro excluído"
   },
   "Settings": {
     "project_management": "Gerenciamento de Projetos",
@@ -351,6 +365,21 @@
     "delete_project": "Excluir Projeto",
     "delete": "Excluir",
     "close": "Fechar",
-    "are_you_sure": "Tem certeza de que deseja excluir o projeto?"
+    "are_you_sure": "Tem certeza de que deseja excluir o projeto?",
+    "tag_management": "Gerenciamento de Tags",
+    "tag_name": "Nome da Tag",
+    "add_tag": "Adicionar Tag",
+    "no_tags_available": "Nenhuma tag disponível",
+    "delete_tag": "Excluir Tag",
+    "are_you_sure_delete_tag": "Tem certeza de que deseja excluir esta tag?",
+    "tag_created": "Tag criada com sucesso.",
+    "tag_updated": "Tag atualizada com sucesso.",
+    "tag_deleted": "Tag excluída com sucesso.",
+    "tag_error_empty": "O nome da tag não pode estar vazio.",
+    "tag_error_min_length": "O nome da tag deve ter pelo menos 3 caracteres.",
+    "tag_error_max_length": "O nome da tag não pode exceder 20 caracteres.",
+    "tag_error_create": "Falha ao criar tag. Por favor, tente novamente.",
+    "tag_error_update": "Falha ao atualizar tag. Por favor, tente novamente.",
+    "tag_error_delete": "Falha ao excluir tag. Por favor, tente novamente."
   }
 }

@@ -112,7 +112,7 @@ export default function RunEditor({
   };
 
   const initTestCases = async () => {
-    const casesData = await fetchProjectCases(tokenContext.token.access_token, Number(projectId));
+    const casesData = await fetchProjectCases(tokenContext.token.access_token, Number(projectId), Number(runId));
     casesData.forEach((testCase: CaseType) => {
       if (testCase.RunCases && testCase.RunCases.length > 0) {
         testCase.RunCases[0].editState = 'notChanged';
@@ -192,7 +192,8 @@ export default function RunEditor({
     await initTestCases();
 
     addToast({
-      title: 'Info',
+      title: 'Success',
+      color: 'success',
       description: messages.updatedTestRun,
     });
     setIsUpdating(false);

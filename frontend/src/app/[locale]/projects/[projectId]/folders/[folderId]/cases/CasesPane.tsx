@@ -37,6 +37,7 @@ export default function CasesPane({
   const [titleFilter, setTitleFilter] = useState('');
   const [priorityFilter, setPriorityFilter] = useState<number[]>([]);
   const [typeFilter, setTypeFilter] = useState<number[]>([]);
+  const [tagFilter, setTagFilter] = useState<number[]>([]);
   const [isDeleteConfirmDialogOpen, setIsDeleteConfirmDialogOpen] = useState(false);
   const [deleteCaseIds, setDeleteCaseIds] = useState<number[]>([]);
 
@@ -44,7 +45,7 @@ export default function CasesPane({
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  const updateUrlParams = (updates: { title?: string; priority?: number[]; type?: number[] }) => {
+  const updateUrlParams = (updates: { title?: string; priority?: number[]; type?: number[]; tag?: number[] }) => {
     const currentParams = new URLSearchParams(searchParams.toString());
 
     if (updates.title) {
@@ -65,6 +66,12 @@ export default function CasesPane({
       currentParams.delete('type');
     }
 
+    if (updates.tag && updates.tag.length > 0) {
+      currentParams.set('tag', updates.tag.join(','));
+    } else {
+      currentParams.delete('tag');
+    }
+
     const newUrl = `${window.location.pathname}?${currentParams.toString()}`;
     router.push(newUrl, { scroll: false });
   };
@@ -76,10 +83,12 @@ export default function CasesPane({
       const titleParam = searchParams.get('title') || '';
       const priorityParam = parseQueryParam(searchParams.get('priority'));
       const typeParam = parseQueryParam(searchParams.get('type'));
+      const tagParam = parseQueryParam(searchParams.get('tag'));
 
       setTitleFilter(titleParam);
       setPriorityFilter(priorityParam);
       setTypeFilter(typeParam);
+      setTagFilter(tagParam);
 
       try {
         const data = await fetchCases(
@@ -87,7 +96,8 @@ export default function CasesPane({
           Number(folderId),
           titleParam || undefined,
           priorityParam.length > 0 ? priorityParam : undefined,
-          typeParam.length > 0 ? typeParam : undefined
+          typeParam.length > 0 ? typeParam : undefined,
+          tagParam.length > 0 ? tagParam : undefined
         );
         setCases(data);
       } catch (error: unknown) {
@@ -133,11 +143,12 @@ export default function CasesPane({
     await exportCases(context.token.access_token, Number(folderId), type);
   };
 
-  const handleFilterChange = (title: string, priorities: number[], types: number[]) => {
+  const handleFilterChange = (title: string, priorities: number[], types: number[], tag: number[]) => {
     setTitleFilter(title);
     setPriorityFilter(priorities);
     setTypeFilter(types);
-    updateUrlParams({ title: title, priority: priorities, type: types });
+    setTagFilter(tag);
+    updateUrlParams({ title: title, priority: priorities, type: types, tag: tag });
   };
 
   // **************************************************************************
@@ -178,6 +189,7 @@ export default function CasesPane({
         activeTitleFilter={titleFilter}
         activePriorityFilters={priorityFilter}
         activeTypeFilters={typeFilter}
+        activeTagFilters={tagFilter}
         messages={messages}
         priorityMessages={priorityMessages}
         testTypeMessages={testTypeMessages}
