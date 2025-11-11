@@ -100,6 +100,7 @@ import casesNewRoute from './routes/cases/new.js';
 import casesEditRoute from './routes/cases/edit.js';
 import casesDeleteRoute from './routes/cases/delete.js';
 import casesCloneRoute from './routes/cases/clone.js';
+import casesImportRoute from './routes/cases/import.js';
 app.use('/cases', casesDownloadRoute(sequelize));
 app.use('/cases', casesMoveRoute(sequelize));
 app.use('/cases', casesIndexRoute(sequelize));
@@ -109,6 +110,7 @@ app.use('/cases', casesNewRoute(sequelize));
 app.use('/cases', casesEditRoute(sequelize));
 app.use('/cases', casesDeleteRoute(sequelize));
 app.use('/cases', casesCloneRoute(sequelize));
+app.use('/cases', casesImportRoute(sequelize));
 
 // "/steps"
 import stepsEditRoute from './routes/steps/edit.js';
