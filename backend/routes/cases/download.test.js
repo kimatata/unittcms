@@ -37,9 +37,17 @@ vi.mock('../../middleware/verifyVisible.js', () => ({
 // mock defineCase
 const mockCase = {
   findAll: vi.fn(),
+  belongsToMany: vi.fn(),
 };
 vi.mock('../../models/cases.js', () => ({
   default: () => mockCase,
+}));
+
+const mockStep = {
+  belongsToMany: vi.fn(),
+};
+vi.mock('../../models/steps.js', () => ({
+  default: () => mockStep,
 }));
 
 describe('GET /download with type=csv', () => {
