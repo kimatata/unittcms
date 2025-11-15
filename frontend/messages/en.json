@@ -223,6 +223,7 @@
     "no_cases_found": "No test cases found",
     "case_title": "Test Case Title",
     "case_description": "Test Case Description",
+    "case_title_or_description": "Test case title or description",
     "create": "Create",
     "please_enter": "Please enter test case title",
     "filter": "Filter",

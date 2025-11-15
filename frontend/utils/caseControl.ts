@@ -29,15 +29,15 @@ async function fetchCase(jwt: string, caseId: number) {
 async function fetchCases(
   jwt: string,
   folderId: number,
-  title?: string,
+  search?: string,
   priority?: number[],
   type?: number[],
   tag?: number[]
 ) {
   const queryParams = [`folderId=${folderId}`];
 
-  if (title) {
-    queryParams.push(`title=${title}`);
+  if (search) {
+    queryParams.push(`search=${search}`);
   }
 
   if (priority && priority.length > 0) {

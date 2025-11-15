@@ -47,7 +47,7 @@ type Props = {
   onDeleteCases: (caseIds: number[]) => void;
   onExportCases: (type: string) => void;
   onFilterChange: (query: string, priorities: number[], types: number[], tag: number[]) => void;
-  activeTitleFilter: string;
+  activeSearchFilter: string;
   activePriorityFilters: number[];
   activeTypeFilters: number[];
   activeTagFilters: number[];
@@ -66,7 +66,7 @@ export default function TestCaseTable({
   onDeleteCases,
   onExportCases,
   onFilterChange,
-  activeTitleFilter,
+  activeSearchFilter,
   activePriorityFilters,
   activeTypeFilters,
   activeTagFilters,
@@ -105,7 +105,7 @@ export default function TestCaseTable({
             >
               {highlightSearchTerm({
                 text: cellValue as string,
-                searchTerm: activeTitleFilter,
+                searchTerm: activeSearchFilter,
               })}
             </Link>
           );
@@ -147,7 +147,7 @@ export default function TestCaseTable({
       }
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [activeTitleFilter]
+    [activeSearchFilter]
   );
 
   // **************************************************************************
@@ -155,7 +155,7 @@ export default function TestCaseTable({
   // **************************************************************************
   const [showFilter, setShowFilter] = useState(false);
   const activeFilterNum =
-    (activeTitleFilter ? 1 : 0) + activePriorityFilters.length + activeTypeFilters.length + activeTagFilters.length;
+    (activeSearchFilter ? 1 : 0) + activePriorityFilters.length + activeTypeFilters.length + activeTagFilters.length;
 
   // **************************************************************************
   // select test case
@@ -318,7 +318,7 @@ export default function TestCaseTable({
                   messages={messages}
                   priorityMessages={priorityMessages}
                   testTypeMessages={testTypeMessages}
-                  activeTitleFilter={activeTitleFilter}
+                  activeSearchFilter={activeSearchFilter}
                   activePriorityFilters={activePriorityFilters}
                   activeTypeFilters={activeTypeFilters}
                   activeTagFilters={activeTagFilters}

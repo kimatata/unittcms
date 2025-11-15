@@ -223,6 +223,7 @@
     "no_cases_found": "テストケースがありません",
     "case_title": "テストケースタイトル",
     "case_description": "テストケース詳細",
+    "case_title_or_description": "テストケースのタイトルまたは説明",
     "create": "作成",
     "please_enter": "テストケースタイトルを入力してください",
     "filter": "フィルター",

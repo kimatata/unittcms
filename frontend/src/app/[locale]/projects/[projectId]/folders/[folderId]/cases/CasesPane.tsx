@@ -34,7 +34,7 @@ export default function CasesPane({
 }: Props) {
   const [cases, setCases] = useState<CaseType[]>([]);
   const [isCaseDialogOpen, setIsCaseDialogOpen] = useState(false);
-  const [titleFilter, setTitleFilter] = useState('');
+  const [searchFilter, setSearchFilter] = useState('');
   const [priorityFilter, setPriorityFilter] = useState<number[]>([]);
   const [typeFilter, setTypeFilter] = useState<number[]>([]);
   const [tagFilter, setTagFilter] = useState<number[]>([]);
@@ -45,13 +45,13 @@ export default function CasesPane({
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  const updateUrlParams = (updates: { title?: string; priority?: number[]; type?: number[]; tag?: number[] }) => {
+  const updateUrlParams = (updates: { search?: string; priority?: number[]; type?: number[]; tag?: number[] }) => {
     const currentParams = new URLSearchParams(searchParams.toString());
 
-    if (updates.title) {
-      currentParams.set('title', updates.title);
+    if (updates.search) {
+      currentParams.set('search', updates.search);
     } else {
-      currentParams.delete('title');
+      currentParams.delete('search');
     }
 
     if (updates.priority && updates.priority.length > 0) {
@@ -80,12 +80,12 @@ export default function CasesPane({
     async function fetchDataEffect() {
       if (!context.isSignedIn()) return;
 
-      const titleParam = searchParams.get('title') || '';
+      const searchParam = searchParams.get('search') || '';
       const priorityParam = parseQueryParam(searchParams.get('priority'));
       const typeParam = parseQueryParam(searchParams.get('type'));
       const tagParam = parseQueryParam(searchParams.get('tag'));
 
-      setTitleFilter(titleParam);
+      setSearchFilter(searchParam);
       setPriorityFilter(priorityParam);
       setTypeFilter(typeParam);
       setTagFilter(tagParam);
@@ -94,7 +94,7 @@ export default function CasesPane({
         const data = await fetchCases(
           context.token.access_token,
           Number(folderId),
-          titleParam || undefined,
+          searchParam || undefined,
           priorityParam.length > 0 ? priorityParam : undefined,
           typeParam.length > 0 ? typeParam : undefined,
           tagParam.length > 0 ? tagParam : undefined
@@ -143,12 +143,12 @@ export default function CasesPane({
     await exportCases(context.token.access_token, Number(folderId), type);
   };
 
-  const handleFilterChange = (title: string, priorities: number[], types: number[], tag: number[]) => {
-    setTitleFilter(title);
+  const handleFilterChange = (search: string, priorities: number[], types: number[], tag: number[]) => {
+    setSearchFilter(search);
     setPriorityFilter(priorities);
     setTypeFilter(types);
     setTagFilter(tag);
-    updateUrlParams({ title: title, priority: priorities, type: types, tag: tag });
+    updateUrlParams({ search: search, priority: priorities, type: types, tag: tag });
   };
 
   // **************************************************************************
@@ -186,7 +186,7 @@ export default function CasesPane({
         onDeleteCases={onDeleteCases}
         onExportCases={onExportCases}
         onFilterChange={handleFilterChange}
-        activeTitleFilter={titleFilter}
+        activeSearchFilter={searchFilter}
         activePriorityFilters={priorityFilter}
         activeTypeFilters={typeFilter}
         activeTagFilters={tagFilter}

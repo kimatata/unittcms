@@ -23,12 +23,12 @@ type TestCaseFilterProps = {
   messages: CasesMessages;
   priorityMessages: PriorityMessages;
   testTypeMessages: TestTypeMessages;
-  activeTitleFilter: string;
+  activeSearchFilter: string;
   activePriorityFilters: number[];
   activeTypeFilters: number[];
   activeTagFilters: number[];
   projectId: string;
-  onFilterChange: (title: string, priorities: number[], types: number[], tags: number[]) => void;
+  onFilterChange: (search: string, priorities: number[], types: number[], tags: number[]) => void;
 };
 
 type Tag = Pick<TagType, 'id' | 'name'>;
@@ -37,7 +37,7 @@ export default function TestCaseFilter({
   messages,
   priorityMessages,
   testTypeMessages,
-  activeTitleFilter,
+  activeSearchFilter,
   activePriorityFilters,
   activeTypeFilters,
   activeTagFilters,
@@ -45,7 +45,7 @@ export default function TestCaseFilter({
   projectId,
 }: TestCaseFilterProps) {
   const tokenContext = useContext(TokenContext);
-  const [title, setTitle] = useState<string>('');
+  const [search, setSearch] = useState<string>('');
   const [selectedPriorities, setSelectedPriorities] = useState<Selection>(new Set([]));
   const [selectedTypes, setSelectedTypes] = useState<Selection>(new Set([]));
   const [selectedTags, setSelectedTags] = useState<Selection>(new Set([]));
@@ -74,8 +74,8 @@ export default function TestCaseFilter({
   }, [activeTagFilters]);
 
   useEffect(() => {
-    setTitle(activeTitleFilter);
-  }, [activeTitleFilter]);
+    setSearch(activeSearchFilter);
+  }, [activeSearchFilter]);
 
   useEffect(() => {
     if (activePriorityFilters.length > 0) {
@@ -125,7 +125,7 @@ export default function TestCaseFilter({
         .filter((id) => !isNaN(id));
     }
 
-    onFilterChange(title, priorityIndices, typeIndices, tagIds);
+    onFilterChange(search, priorityIndices, typeIndices, tagIds);
   };
 
   const handleClearFilter = () => {
@@ -137,7 +137,7 @@ export default function TestCaseFilter({
   return (
     <div className="p-3">
       <div className="mb-3 space-y-1">
-        <h3 className="text-default-500 text-small">{messages.caseTitle}</h3>
+        <h3 className="text-default-500 text-small">{messages.caseTitleOrDescription}</h3>
         <Input
           variant="bordered"
           classNames={{
@@ -148,8 +148,8 @@ export default function TestCaseFilter({
           size="sm"
           startContent={<SearchIcon size={18} />}
           type="search"
-          value={title}
-          onValueChange={setTitle}
+          value={search}
+          onValueChange={setSearch}
           maxLength={100}
         />
       </div>

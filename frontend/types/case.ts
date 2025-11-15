@@ -79,6 +79,7 @@ type CasesMessages = {
   noCasesFound: string;
   caseTitle: string;
   caseDescription: string;
+  caseTitleOrDescription: string;
   create: string;
   pleaseEnter: string;
   filter: string;

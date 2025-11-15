@@ -31,6 +31,7 @@ export default function Page({ params }: { params: { projectId: string; folderId
     noCasesFound: t('no_cases_found'),
     caseTitle: t('case_title'),
     caseDescription: t('case_description'),
+    caseTitleOrDescription: t('case_title_or_description'),
     create: t('create'),
     pleaseEnter: t('please_enter'),
     apply: t('apply'),
