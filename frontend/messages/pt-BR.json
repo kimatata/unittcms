@@ -240,7 +240,10 @@
     "cases_moved": "Casos de teste movidos",
     "cases_cloned": "Casos de teste clonados",
     "tags": "Tags",
-    "select_tags": "Selecionar tags"
+    "select_tags": "Selecionar tags",
+    "import": "Importar",
+    "import_cases": "Importar Casos de Teste",
+    "download_template": "Baixar Modelo Excel para Importação"
   },
   "Case": {
     "back_to_cases": "Voltar para os casos de teste",

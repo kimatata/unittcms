@@ -20,6 +20,7 @@ import {
   Plus,
   MoreVertical,
   Trash,
+  FileUp,
   FileDown,
   ChevronUp,
   ChevronDown,
@@ -64,6 +65,7 @@ export default function TestCaseTable({
   onCreateCase,
   onDeleteCase,
   onDeleteCases,
+  onShowImportDialog,
   onExportCases,
   onFilterChange,
   activeSearchFilter,
@@ -355,6 +357,16 @@ export default function TestCaseTable({
                 </DropdownItem>
               </DropdownMenu>
             </Dropdown>
+            <Button
+              startContent={<FileUp size={16} />}
+              size="sm"
+              variant="bordered"
+              className="me-2"
+              isDisabled={isDisabled}
+              onPress={onShowImportDialog}
+            >
+              {messages.import}
+            </Button>
             <Button
               startContent={<Plus size={16} />}
               size="sm"

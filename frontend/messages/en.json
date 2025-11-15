@@ -240,7 +240,10 @@
     "cases_moved": "Test cases moved",
     "cases_cloned": "Test cases cloned",
     "tags": "Tags",
-    "select_tags": "Select tags"
+    "select_tags": "Select tags",
+    "import": "Import",
+    "import_cases": "Import Test Cases",
+    "download_template": "Download Excel Template for Import"
   },
   "Case": {
     "back_to_cases": "Back to test cases",

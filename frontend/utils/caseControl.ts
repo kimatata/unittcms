@@ -235,4 +235,27 @@ async function exportCases(jwt: string, folderId: number, type: string) {
   }
 }
 
-export { fetchCase, fetchCases, updateCase, createCase, deleteCases, cloneCases, exportCases };
+async function importCases(jwt: string, folderId: number, file: File) {
+  const url = `${apiServer}/cases/import?folderId=${folderId}`;
+
+  try {
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${jwt}`,
+      },
+      body: file,
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (error: unknown) {
+    logError('Error importing data', error);
+  }
+}
+
+export { fetchCase, fetchCases, updateCase, createCase, deleteCases, cloneCases, exportCases, importCases };

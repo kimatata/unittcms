@@ -4,6 +4,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import TestCaseTable from './TestCaseTable';
 import CaseDialog from './CaseDialog';
 import CaseMoveDialog from './CaseMoveDialog';
+import CaseImportDialog from './CaseImportDialog';
 import DeleteConfirmDialog from '@/components/DeleteConfirmDialog';
 import { TokenContext } from '@/utils/TokenProvider';
 import { fetchCases, createCase, deleteCases, exportCases } from '@/utils/caseControl';
@@ -175,6 +176,15 @@ export default function CasesPane({
     return unsubscribe;
   }, [openMoveDialog]);
 
+  // **************************************************************************
+  // Import cases
+  // **************************************************************************
+  const [isImportDialogOpen, setIsImportDialogOpen] = useState(false);
+  const handleImport = () => {
+    fetchDataEffect();
+    setIsImportDialogOpen(false);
+  };
+
   return (
     <>
       <TestCaseTable
@@ -184,6 +194,7 @@ export default function CasesPane({
         onCreateCase={() => setIsCaseDialogOpen(true)}
         onDeleteCase={onDeleteCase}
         onDeleteCases={onDeleteCases}
+        onShowImportDialog={() => setIsImportDialogOpen(true)}
         onExportCases={onExportCases}
         onFilterChange={handleFilterChange}
         activeSearchFilter={searchFilter}
@@ -206,6 +217,16 @@ export default function CasesPane({
         isDisabled={!context.isProjectDeveloper(Number(projectId))}
         onCancel={() => setIsMoveDialogOpen(false)}
         onMoved={handleMoved}
+        messages={messages}
+        token={context.token.access_token}
+      />
+
+      <CaseImportDialog
+        isOpen={isImportDialogOpen}
+        targetFolderId={targetFolderId}
+        isDisabled={!context.isProjectDeveloper(Number(projectId))}
+        onImport={handleImport}
+        onCancel={() => setIsImportDialogOpen(false)}
         messages={messages}
         token={context.token.access_token}
       />

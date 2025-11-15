@@ -97,6 +97,9 @@ type CasesMessages = {
   tags: string;
   casesCloned: string;
   selectTags: string;
+  import: string;
+  importCases: string;
+  downloadTemplate: string;
 };
 
 type CaseMessages = {
