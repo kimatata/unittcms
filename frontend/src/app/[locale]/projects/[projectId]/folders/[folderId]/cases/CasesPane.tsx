@@ -15,6 +15,7 @@ import { LocaleCodeType } from '@/types/locale';
 import { logError } from '@/utils/errorHandler';
 import { parseQueryParam } from '@/utils/parseQueryParam';
 import { onMoveEvent } from '@/utils/testCaseMoveEvent';
+import { addToast } from '@heroui/react';
 
 type Props = {
   projectId: string;
@@ -77,37 +78,37 @@ export default function CasesPane({
     router.push(newUrl, { scroll: false });
   };
 
-  useEffect(() => {
-    async function fetchDataEffect() {
-      if (!context.isSignedIn()) return;
+  const refreshCases = useCallback(async () => {
+    if (!context.isSignedIn()) return;
 
-      const searchParam = searchParams.get('search') || '';
-      const priorityParam = parseQueryParam(searchParams.get('priority'));
-      const typeParam = parseQueryParam(searchParams.get('type'));
-      const tagParam = parseQueryParam(searchParams.get('tag'));
+    const searchParam = searchParams.get('search') || '';
+    const priorityParam = parseQueryParam(searchParams.get('priority'));
+    const typeParam = parseQueryParam(searchParams.get('type'));
+    const tagParam = parseQueryParam(searchParams.get('tag'));
 
-      setSearchFilter(searchParam);
-      setPriorityFilter(priorityParam);
-      setTypeFilter(typeParam);
-      setTagFilter(tagParam);
+    setSearchFilter(searchParam);
+    setPriorityFilter(priorityParam);
+    setTypeFilter(typeParam);
+    setTagFilter(tagParam);
 
-      try {
-        const data = await fetchCases(
-          context.token.access_token,
-          Number(folderId),
-          searchParam || undefined,
-          priorityParam.length > 0 ? priorityParam : undefined,
-          typeParam.length > 0 ? typeParam : undefined,
-          tagParam.length > 0 ? tagParam : undefined
-        );
-        setCases(data);
-      } catch (error: unknown) {
-        logError('Error fetching cases:', error);
-      }
+    try {
+      const data = await fetchCases(
+        context.token.access_token,
+        Number(folderId),
+        searchParam || undefined,
+        priorityParam.length > 0 ? priorityParam : undefined,
+        typeParam.length > 0 ? typeParam : undefined,
+        tagParam.length > 0 ? tagParam : undefined
+      );
+      setCases(data);
+    } catch (error: unknown) {
+      logError('Error fetching cases:', error);
     }
-
-    fetchDataEffect();
   }, [context, folderId, searchParams]);
+
+  useEffect(() => {
+    refreshCases();
+  }, [refreshCases]);
 
   const closeDialog = () => setIsCaseDialogOpen(false);
 
@@ -181,8 +182,13 @@ export default function CasesPane({
   // **************************************************************************
   const [isImportDialogOpen, setIsImportDialogOpen] = useState(false);
   const handleImport = () => {
-    fetchDataEffect();
+    refreshCases();
     setIsImportDialogOpen(false);
+    addToast({
+      title: 'Success',
+      color: 'success',
+      description: messages.casesImported,
+    });
   };
 
   return (
@@ -223,7 +229,7 @@ export default function CasesPane({
 
       <CaseImportDialog
         isOpen={isImportDialogOpen}
-        targetFolderId={targetFolderId}
+        folderId={Number(folderId)}
         isDisabled={!context.isProjectDeveloper(Number(projectId))}
         onImport={handleImport}
         onCancel={() => setIsImportDialogOpen(false)}

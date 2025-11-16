@@ -104,6 +104,7 @@ type CasesMessages = {
   clickToUpload: string;
   orDragAndDrop: string;
   maxFileSize: string;
+  casesImported: string;
 };
 
 type CaseMessages = {

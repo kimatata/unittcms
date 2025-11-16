@@ -237,6 +237,8 @@ async function exportCases(jwt: string, folderId: number, type: string) {
 
 async function importCases(jwt: string, folderId: number, file: File) {
   const url = `${apiServer}/cases/import?folderId=${folderId}`;
+  const formData = new FormData();
+  formData.append('file', file);
 
   try {
     const response = await fetch(url, {
@@ -244,12 +246,8 @@ async function importCases(jwt: string, folderId: number, file: File) {
       headers: {
         Authorization: `Bearer ${jwt}`,
       },
-      body: file,
+      body: formData,
     });
-
-    if (!response.ok) {
-      throw new Error(`HTTP error! Status: ${response.status}`);
-    }
 
     const data = await response.json();
     return data;

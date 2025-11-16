@@ -46,6 +46,7 @@ type Props = {
   onCreateCase: () => void;
   onDeleteCase: (caseId: number) => void;
   onDeleteCases: (caseIds: number[]) => void;
+  onShowImportDialog: () => void;
   onExportCases: (type: string) => void;
   onFilterChange: (query: string, priorities: number[], types: number[], tag: number[]) => void;
   activeSearchFilter: string;
@@ -362,7 +363,6 @@ export default function TestCaseTable({
               size="sm"
               variant="bordered"
               className="me-2"
-              isDisabled={isDisabled}
               onPress={onShowImportDialog}
             >
               {messages.import}
