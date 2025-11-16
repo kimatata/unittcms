@@ -51,6 +51,7 @@ export default function Page({ params }: { params: { projectId: string; folderId
     selectTags: t('select_tags'),
     import: t('import'),
     importCases: t('import_cases'),
+    importAvailable: t('import_available'),
     downloadTemplate: t('download_template'),
   };
 

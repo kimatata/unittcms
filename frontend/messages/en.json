@@ -243,7 +243,8 @@
     "select_tags": "Select tags",
     "import": "Import",
     "import_cases": "Import Test Cases",
-    "download_template": "Download Excel Template for Import"
+    "import_available": "You can import test cases from Excel file (xlsx, xls). The Excel file to be imported must follow the specified format.",
+    "download_template": "Download Template"
   },
   "Case": {
     "back_to_cases": "Back to test cases",

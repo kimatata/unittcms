@@ -243,7 +243,8 @@
     "select_tags": "タグを選択",
     "import": "インポート",
     "import_cases": "テストケースのインポート",
-    "download_template": "インポート用のExcelテンプレートをダウンロード"
+    "import_available": "Excelファイル(xlsx, xls)からテストケースをインポートできます。インポートするExcelファイルは既定のフォーマットに従う必要があります。",
+    "download_template": "テンプレートをダウンロード"
   },
   "Case": {
     "back_to_cases": "テストケース一覧に戻る",

@@ -53,8 +53,16 @@ export default function CaseImportDialog({
       <ModalContent>
         <ModalHeader className="flex flex-col gap-1">{messages.importCases}</ModalHeader>
         <ModalBody>
+          <div className="flex items-center justify-center w-full">
+            <div className={`p-4 bg-yellow-50 text-yellow-900 text-sm rounded`}>
+              <div>{messages.importAvailable}</div>
+              <a href="/template/unittcms-import-template-v1.xlsx" download className="text-tiny underline">
+                {messages.downloadTemplate}
+              </a>
+            </div>
+          </div>
           <div
-            className="flex items-center justify-center w-96 mt-3"
+            className="flex items-center justify-center w-full mt-3"
             onDrop={(event) => {
               if (isDisabled) {
                 return;
@@ -90,9 +98,6 @@ export default function CaseImportDialog({
             <Spinner />
           ) : (
             <>
-              <Button variant="light" size="sm" onPress={onCancel}>
-                {messages.downloadTemplate}
-              </Button>
               <Button variant="light" size="sm" onPress={onCancel}>
                 {messages.close}
               </Button>

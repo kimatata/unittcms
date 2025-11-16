@@ -243,7 +243,8 @@
     "select_tags": "Selecionar tags",
     "import": "Importar",
     "import_cases": "Importar Casos de Teste",
-    "download_template": "Baixar Modelo Excel para Importação"
+    "import_available": "Você pode importar casos de teste a partir de um arquivo Excel (xlsx, xls). O arquivo Excel a ser importado deve seguir o formato especificado.",
+    "download_template": "Baixar Modelo"
   },
   "Case": {
     "back_to_cases": "Voltar para os casos de teste",

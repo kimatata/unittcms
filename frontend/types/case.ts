@@ -99,6 +99,7 @@ type CasesMessages = {
   selectTags: string;
   import: string;
   importCases: string;
+  importAvailable: string;
   downloadTemplate: string;
 };
 
