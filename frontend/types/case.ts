@@ -101,6 +101,9 @@ type CasesMessages = {
   importCases: string;
   importAvailable: string;
   downloadTemplate: string;
+  clickToUpload: string;
+  orDragAndDrop: string;
+  maxFileSize: string;
 };
 
 type CaseMessages = {

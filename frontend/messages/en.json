@@ -244,7 +244,10 @@
     "import": "Import",
     "import_cases": "Import Test Cases",
     "import_available": "You can import test cases from Excel file (xlsx, xls). The Excel file to be imported must follow the specified format.",
-    "download_template": "Download Template"
+    "download_template": "Download Template",
+    "click_to_upload": "Click to upload",
+    "or_drag_and_drop": " or drag and drop",
+    "max_file_size": "Max. file size"
   },
   "Case": {
     "back_to_cases": "Back to test cases",

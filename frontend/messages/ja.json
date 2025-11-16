@@ -244,7 +244,10 @@
     "import": "インポート",
     "import_cases": "テストケースのインポート",
     "import_available": "Excelファイル(xlsx, xls)からテストケースをインポートできます。インポートするExcelファイルは既定のフォーマットに従う必要があります。",
-    "download_template": "テンプレートをダウンロード"
+    "download_template": "テンプレートをダウンロード",
+    "click_to_upload": "クリックしてアップロード",
+    "or_drag_and_drop": "またはドラッグアンドドロップ",
+    "max_file_size": "最大ファイルサイズ"
   },
   "Case": {
     "back_to_cases": "テストケース一覧に戻る",
