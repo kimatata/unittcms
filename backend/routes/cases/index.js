@@ -17,7 +17,7 @@ export default function (sequelize) {
   Tags.belongsToMany(Case, { through: 'caseTags', foreignKey: 'tagId', otherKey: 'caseId' });
 
   router.get('/', verifySignedIn, verifyProjectVisibleFromFolderId, async (req, res) => {
-    const { folderId, title, priority, type, tag } = req.query;
+    const { folderId, search, priority, type, tag } = req.query;
 
     if (!folderId) {
       return res.status(400).json({ error: 'folderId is required' });
@@ -28,15 +28,18 @@ export default function (sequelize) {
         folderId: folderId,
       };
 
-      if (title) {
-        const searchTerm = title.trim();
+      if (search) {
+        const searchTerm = search.trim();
 
         if (searchTerm.length > 100) {
-          return res.status(400).json({ error: 'too long title param' });
+          return res.status(400).json({ error: 'too long search param' });
         }
 
         if (searchTerm.length >= 1) {
-          whereClause[Op.or] = [{ title: { [Op.like]: `%${searchTerm}%` } }];
+          whereClause[Op.or] = [
+            { title: { [Op.like]: `%${searchTerm}%` } },
+            { description: { [Op.like]: `%${searchTerm}%` } },
+          ];
         }
       }
 

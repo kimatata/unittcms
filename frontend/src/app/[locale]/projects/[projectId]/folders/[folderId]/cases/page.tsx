@@ -31,6 +31,7 @@ export default function Page({ params }: { params: { projectId: string; folderId
     noCasesFound: t('no_cases_found'),
     caseTitle: t('case_title'),
     caseDescription: t('case_description'),
+    caseTitleOrDescription: t('case_title_or_description'),
     create: t('create'),
     pleaseEnter: t('please_enter'),
     apply: t('apply'),
@@ -48,6 +49,14 @@ export default function Page({ params }: { params: { projectId: string; folderId
     casesCloned: t('cases_cloned'),
     tags: t('tags'),
     selectTags: t('select_tags'),
+    import: t('import'),
+    importCases: t('import_cases'),
+    importAvailable: t('import_available'),
+    downloadTemplate: t('download_template'),
+    clickToUpload: t('click_to_upload'),
+    orDragAndDrop: t('or_drag_and_drop'),
+    maxFileSize: t('max_file_size'),
+    casesImported: t('cases_imported'),
   };
 
   const priorityTranslation = useTranslations('Priority');

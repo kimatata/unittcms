@@ -3,12 +3,16 @@ const router = express.Router();
 import { DataTypes } from 'sequelize';
 import Papa from 'papaparse';
 import defineCase from '../../models/cases.js';
+import defineStep from '../../models/steps.js';
 import authMiddleware from '../../middleware/auth.js';
 import visibilityMiddleware from '../../middleware/verifyVisible.js';
 import { testRunStatus, priorities, testTypes, automationStatus, templates } from '../../config/enums.js';
 
 export default function (sequelize) {
   const Case = defineCase(sequelize, DataTypes);
+  const Step = defineStep(sequelize, DataTypes);
+  Case.belongsToMany(Step, { through: 'caseSteps' });
+  Step.belongsToMany(Case, { through: 'caseSteps' });
   const { verifySignedIn } = authMiddleware(sequelize);
   const { verifyProjectVisibleFromFolderId } = visibilityMiddleware(sequelize);
 
@@ -25,6 +29,15 @@ export default function (sequelize) {
 
     try {
       const cases = await Case.findAll({
+        attributes: { exclude: ['createdAt', 'updatedAt', 'caseSteps'] },
+        include: [
+          {
+            model: Step,
+            through: { attributes: [] },
+            order: [['stepNo', 'ASC']],
+            attributes: { exclude: ['createdAt', 'updatedAt'] },
+          },
+        ],
         where: { folderId },
         raw: true,
       });
@@ -33,20 +46,22 @@ export default function (sequelize) {
         return res.status(404).send('No cases found');
       }
 
-      if (type === 'json') {
-        return res.json(cases);
-      } else if (type === 'csv') {
-        // Convert numeric values to human-readable labels
-        const casesWithLabels = cases.map((c) => ({
-          ...c,
-          state: testRunStatus[c.state] || c.state,
-          priority: priorities[c.priority] || c.priority,
-          type: testTypes[c.type] || c.type,
-          automationStatus: automationStatus[c.automationStatus] || c.automationStatus,
-          template: templates[c.template] || c.template,
-        }));
+      // Convert numeric values to human-readable labels
+      const casesWithLabels = cases.map((c) => ({
+        ...c,
+        state: testRunStatus[c.state] || c.state,
+        priority: priorities[c.priority] || c.priority,
+        type: testTypes[c.type] || c.type,
+        automationStatus: automationStatus[c.automationStatus] || c.automationStatus,
+        template: templates[c.template] || c.template,
+      }));
 
-        const csv = Papa.unparse(casesWithLabels, {
+      if (type === 'json') {
+        const formattedJsonCases = _formatRawCasesToJson(casesWithLabels);
+        return res.json(formattedJsonCases);
+      } else if (type === 'csv') {
+        const formattedCsvCases = _formatRawCasesToCsv(casesWithLabels);
+        const csv = Papa.unparse(formattedCsvCases, {
           quotes: true,
           skipEmptyLines: true,
         });
@@ -65,3 +80,55 @@ export default function (sequelize) {
 
   return router;
 }
+
+// Group cases by caseId and format steps to Steps array to better visualization
+const _formatRawCasesToJson = (cases) => {
+  const casesObject = {};
+
+  cases.forEach((c) => {
+    if (!casesObject[c.id]) {
+      casesObject[c.id] = {
+        id: c.id,
+        folderId: c.folderId,
+        title: c.title,
+        state: c.state,
+        priority: c.priority,
+        type: c.type,
+        automationStatus: c.automationStatus,
+        description: c.description,
+        template: c.template,
+        preConditions: c.preConditions,
+        expectedResults: c.expectedResults,
+        Steps: [],
+      };
+    }
+
+    if (c['Steps.id']) {
+      casesObject[c.id].Steps.push({
+        step: c['Steps.step'],
+        expectedStepResult: c['Steps.result'],
+      });
+    }
+  });
+
+  return casesObject;
+};
+
+// Rename fields to better CSV headers
+const _formatRawCasesToCsv = (cases) => {
+  return cases.map((c) => ({
+    id: c.id,
+    folderId: c.folderId,
+    title: c.title,
+    state: c.state,
+    priority: c.priority,
+    type: c.type,
+    automationStatus: c.automationStatus,
+    description: c.description,
+    template: c.template,
+    preConditions: c.preConditions,
+    expectedResults: c.expectedResults,
+    step: c['Steps.step'],
+    expectedStepResult: c['Steps.result'],
+  }));
+};

@@ -223,6 +223,7 @@
     "no_cases_found": "テストケースがありません",
     "case_title": "テストケースタイトル",
     "case_description": "テストケース詳細",
+    "case_title_or_description": "テストケースのタイトルまたは説明",
     "create": "作成",
     "please_enter": "テストケースタイトルを入力してください",
     "filter": "フィルター",
@@ -239,7 +240,15 @@
     "cases_moved": "テストケースを移動しました",
     "cases_cloned": "テストケースをクローンしました",
     "tags": "タグ",
-    "select_tags": "タグを選択"
+    "select_tags": "タグを選択",
+    "import": "インポート",
+    "import_cases": "テストケースのインポート",
+    "import_available": "Excelファイル(xlsx, xls)からテストケースをインポートできます。インポートするExcelファイルは既定のフォーマットに従う必要があります。",
+    "download_template": "テンプレートをダウンロード",
+    "click_to_upload": "クリックしてアップロード",
+    "or_drag_and_drop": "またはドラッグアンドドロップ",
+    "max_file_size": "最大ファイルサイズ",
+    "cases_imported": "テストケースがインポートされました"
   },
   "Case": {
     "back_to_cases": "テストケース一覧に戻る",

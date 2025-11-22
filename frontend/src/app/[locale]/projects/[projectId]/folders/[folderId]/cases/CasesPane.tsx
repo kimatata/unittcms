@@ -1,9 +1,11 @@
 'use client';
 import { useState, useEffect, useContext, useCallback } from 'react';
+import { addToast } from '@heroui/react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import TestCaseTable from './TestCaseTable';
 import CaseDialog from './CaseDialog';
 import CaseMoveDialog from './CaseMoveDialog';
+import CaseImportDialog from './CaseImportDialog';
 import DeleteConfirmDialog from '@/components/DeleteConfirmDialog';
 import { TokenContext } from '@/utils/TokenProvider';
 import { fetchCases, createCase, deleteCases, exportCases } from '@/utils/caseControl';
@@ -34,7 +36,7 @@ export default function CasesPane({
 }: Props) {
   const [cases, setCases] = useState<CaseType[]>([]);
   const [isCaseDialogOpen, setIsCaseDialogOpen] = useState(false);
-  const [titleFilter, setTitleFilter] = useState('');
+  const [searchFilter, setSearchFilter] = useState('');
   const [priorityFilter, setPriorityFilter] = useState<number[]>([]);
   const [typeFilter, setTypeFilter] = useState<number[]>([]);
   const [tagFilter, setTagFilter] = useState<number[]>([]);
@@ -45,13 +47,13 @@ export default function CasesPane({
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  const updateUrlParams = (updates: { title?: string; priority?: number[]; type?: number[]; tag?: number[] }) => {
+  const updateUrlParams = (updates: { search?: string; priority?: number[]; type?: number[]; tag?: number[] }) => {
     const currentParams = new URLSearchParams(searchParams.toString());
 
-    if (updates.title) {
-      currentParams.set('title', updates.title);
+    if (updates.search) {
+      currentParams.set('search', updates.search);
     } else {
-      currentParams.delete('title');
+      currentParams.delete('search');
     }
 
     if (updates.priority && updates.priority.length > 0) {
@@ -76,37 +78,37 @@ export default function CasesPane({
     router.push(newUrl, { scroll: false });
   };
 
-  useEffect(() => {
-    async function fetchDataEffect() {
-      if (!context.isSignedIn()) return;
+  const refreshCases = useCallback(async () => {
+    if (!context.isSignedIn()) return;
 
-      const titleParam = searchParams.get('title') || '';
-      const priorityParam = parseQueryParam(searchParams.get('priority'));
-      const typeParam = parseQueryParam(searchParams.get('type'));
-      const tagParam = parseQueryParam(searchParams.get('tag'));
+    const searchParam = searchParams.get('search') || '';
+    const priorityParam = parseQueryParam(searchParams.get('priority'));
+    const typeParam = parseQueryParam(searchParams.get('type'));
+    const tagParam = parseQueryParam(searchParams.get('tag'));
 
-      setTitleFilter(titleParam);
-      setPriorityFilter(priorityParam);
-      setTypeFilter(typeParam);
-      setTagFilter(tagParam);
+    setSearchFilter(searchParam);
+    setPriorityFilter(priorityParam);
+    setTypeFilter(typeParam);
+    setTagFilter(tagParam);
 
-      try {
-        const data = await fetchCases(
-          context.token.access_token,
-          Number(folderId),
-          titleParam || undefined,
-          priorityParam.length > 0 ? priorityParam : undefined,
-          typeParam.length > 0 ? typeParam : undefined,
-          tagParam.length > 0 ? tagParam : undefined
-        );
-        setCases(data);
-      } catch (error: unknown) {
-        logError('Error fetching cases:', error);
-      }
+    try {
+      const data = await fetchCases(
+        context.token.access_token,
+        Number(folderId),
+        searchParam || undefined,
+        priorityParam.length > 0 ? priorityParam : undefined,
+        typeParam.length > 0 ? typeParam : undefined,
+        tagParam.length > 0 ? tagParam : undefined
+      );
+      setCases(data);
+    } catch (error: unknown) {
+      logError('Error fetching cases:', error);
     }
-
-    fetchDataEffect();
   }, [context, folderId, searchParams]);
+
+  useEffect(() => {
+    refreshCases();
+  }, [refreshCases]);
 
   const closeDialog = () => setIsCaseDialogOpen(false);
 
@@ -143,12 +145,12 @@ export default function CasesPane({
     await exportCases(context.token.access_token, Number(folderId), type);
   };
 
-  const handleFilterChange = (title: string, priorities: number[], types: number[], tag: number[]) => {
-    setTitleFilter(title);
+  const handleFilterChange = (search: string, priorities: number[], types: number[], tag: number[]) => {
+    setSearchFilter(search);
     setPriorityFilter(priorities);
     setTypeFilter(types);
     setTagFilter(tag);
-    updateUrlParams({ title: title, priority: priorities, type: types, tag: tag });
+    updateUrlParams({ search: search, priority: priorities, type: types, tag: tag });
   };
 
   // **************************************************************************
@@ -175,6 +177,20 @@ export default function CasesPane({
     return unsubscribe;
   }, [openMoveDialog]);
 
+  // **************************************************************************
+  // Import cases
+  // **************************************************************************
+  const [isImportDialogOpen, setIsImportDialogOpen] = useState(false);
+  const handleImport = () => {
+    refreshCases();
+    setIsImportDialogOpen(false);
+    addToast({
+      title: 'Success',
+      color: 'success',
+      description: messages.casesImported,
+    });
+  };
+
   return (
     <>
       <TestCaseTable
@@ -184,9 +200,10 @@ export default function CasesPane({
         onCreateCase={() => setIsCaseDialogOpen(true)}
         onDeleteCase={onDeleteCase}
         onDeleteCases={onDeleteCases}
+        onShowImportDialog={() => setIsImportDialogOpen(true)}
         onExportCases={onExportCases}
         onFilterChange={handleFilterChange}
-        activeTitleFilter={titleFilter}
+        activeSearchFilter={searchFilter}
         activePriorityFilters={priorityFilter}
         activeTypeFilters={typeFilter}
         activeTagFilters={tagFilter}
@@ -206,6 +223,16 @@ export default function CasesPane({
         isDisabled={!context.isProjectDeveloper(Number(projectId))}
         onCancel={() => setIsMoveDialogOpen(false)}
         onMoved={handleMoved}
+        messages={messages}
+        token={context.token.access_token}
+      />
+
+      <CaseImportDialog
+        isOpen={isImportDialogOpen}
+        folderId={Number(folderId)}
+        isDisabled={!context.isProjectDeveloper(Number(projectId))}
+        onImport={handleImport}
+        onCancel={() => setIsImportDialogOpen(false)}
         messages={messages}
         token={context.token.access_token}
       />

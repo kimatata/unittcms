@@ -79,6 +79,7 @@ type CasesMessages = {
   noCasesFound: string;
   caseTitle: string;
   caseDescription: string;
+  caseTitleOrDescription: string;
   create: string;
   pleaseEnter: string;
   filter: string;
@@ -96,6 +97,14 @@ type CasesMessages = {
   tags: string;
   casesCloned: string;
   selectTags: string;
+  import: string;
+  importCases: string;
+  importAvailable: string;
+  downloadTemplate: string;
+  clickToUpload: string;
+  orDragAndDrop: string;
+  maxFileSize: string;
+  casesImported: string;
 };
 
 type CaseMessages = {
