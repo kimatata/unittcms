@@ -68,7 +68,7 @@ export default function (sequelize) {
 
         let errorMessage = null;
         const casesToCreate = [];
-        const requiredFields = ['title', 'preConditions', 'expectedResults'];
+        const requiredFields = ['title', 'priority', 'type', 'template'];
         for (const [index, row] of jsonData.entries()) {
           const rowNumber = index + 2;
           for (const field of requiredFields) {

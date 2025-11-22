@@ -20,6 +20,7 @@ import {
   Plus,
   MoreVertical,
   Trash,
+  FileUp,
   FileDown,
   ChevronUp,
   ChevronDown,
@@ -45,6 +46,7 @@ type Props = {
   onCreateCase: () => void;
   onDeleteCase: (caseId: number) => void;
   onDeleteCases: (caseIds: number[]) => void;
+  onShowImportDialog: () => void;
   onExportCases: (type: string) => void;
   onFilterChange: (query: string, priorities: number[], types: number[], tag: number[]) => void;
   activeSearchFilter: string;
@@ -64,6 +66,7 @@ export default function TestCaseTable({
   onCreateCase,
   onDeleteCase,
   onDeleteCases,
+  onShowImportDialog,
   onExportCases,
   onFilterChange,
   activeSearchFilter,
@@ -355,6 +358,15 @@ export default function TestCaseTable({
                 </DropdownItem>
               </DropdownMenu>
             </Dropdown>
+            <Button
+              startContent={<FileUp size={16} />}
+              size="sm"
+              variant="bordered"
+              className="me-2"
+              onPress={onShowImportDialog}
+            >
+              {messages.import}
+            </Button>
             <Button
               startContent={<Plus size={16} />}
               size="sm"

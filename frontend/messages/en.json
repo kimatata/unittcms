@@ -240,7 +240,15 @@
     "cases_moved": "Test cases moved",
     "cases_cloned": "Test cases cloned",
     "tags": "Tags",
-    "select_tags": "Select tags"
+    "select_tags": "Select tags",
+    "import": "Import",
+    "import_cases": "Import Test Cases",
+    "import_available": "You can import test cases from Excel file (xlsx, xls). The Excel file to be imported must follow the specified format.",
+    "download_template": "Download Template",
+    "click_to_upload": "Click to upload",
+    "or_drag_and_drop": " or drag and drop",
+    "max_file_size": "Max. file size",
+    "cases_imported": "Test cases imported"
   },
   "Case": {
     "back_to_cases": "Back to test cases",

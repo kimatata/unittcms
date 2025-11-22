@@ -240,7 +240,15 @@
     "cases_moved": "Casos de teste movidos",
     "cases_cloned": "Casos de teste clonados",
     "tags": "Tags",
-    "select_tags": "Selecionar tags"
+    "select_tags": "Selecionar tags",
+    "import": "Importar",
+    "import_cases": "Importar Casos de Teste",
+    "import_available": "Você pode importar casos de teste a partir de um arquivo Excel (xlsx, xls). O arquivo Excel a ser importado deve seguir o formato especificado.",
+    "download_template": "Baixar Modelo",
+    "click_to_upload": "Clique para enviar",
+    "or_drag_and_drop": " ou arraste e solte",
+    "max_file_size": "Tamanho máx. do arquivo",
+    "cases_imported": "Casos de teste importados"
   },
   "Case": {
     "back_to_cases": "Voltar para os casos de teste",
