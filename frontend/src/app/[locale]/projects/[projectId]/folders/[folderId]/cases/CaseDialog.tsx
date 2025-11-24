@@ -88,9 +88,6 @@ export default function CaseDialog({ isOpen, onCancel, onSubmit, messages }: Pro
           />
         </ModalBody>
         <ModalFooter>
-          <Button variant="light" onPress={onCancel}>
-            {messages.close}
-          </Button>
           <Button color="primary" onPress={validate}>
             {messages.create}
           </Button>
