@@ -108,7 +108,6 @@ export default function CaseDialog({ isOpen, onCancel, onSubmit, messages }: Pro
           <Switch size="sm" isSelected={createMore} onValueChange={setCreateMore}>
             {messages.createMore}
           </Switch>
-          <div className="flex-grow" />
           <Button color="primary" onPress={validate}>
             {messages.create}
           </Button>
