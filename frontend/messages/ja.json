@@ -217,7 +217,7 @@
     "delete": "削除",
     "close": "閉じる",
     "are_you_sure": "テストケースを削除してもよろしいですか?",
-    "new_test_case": "新規テストケース",
+    "new_test_case": "新規",
     "export": "エクスポート",
     "status": "ステータス",
     "no_cases_found": "テストケースがありません",

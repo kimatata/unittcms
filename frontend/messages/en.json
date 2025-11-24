@@ -217,7 +217,7 @@
     "delete": "Delete",
     "close": "Close",
     "are_you_sure": "Are you sure you want to delete test cases?",
-    "new_test_case": "New Test Case",
+    "new_test_case": "New",
     "export": "Export",
     "status": "Status",
     "no_cases_found": "No test cases found",
