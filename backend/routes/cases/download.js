@@ -4,6 +4,7 @@ import { DataTypes } from 'sequelize';
 import Papa from 'papaparse';
 import defineCase from '../../models/cases.js';
 import defineStep from '../../models/steps.js';
+import defineFolder from '../../models/folders.js';
 import authMiddleware from '../../middleware/auth.js';
 import visibilityMiddleware from '../../middleware/verifyVisible.js';
 import { testRunStatus, priorities, testTypes, automationStatus, templates } from '../../config/enums.js';
@@ -11,6 +12,8 @@ import { testRunStatus, priorities, testTypes, automationStatus, templates } fro
 export default function (sequelize) {
   const Case = defineCase(sequelize, DataTypes);
   const Step = defineStep(sequelize, DataTypes);
+  const Folder = defineFolder(sequelize, DataTypes);
+  Case.belongsTo(Folder);
   Case.belongsToMany(Step, { through: 'caseSteps' });
   Step.belongsToMany(Case, { through: 'caseSteps' });
   const { verifySignedIn } = authMiddleware(sequelize);
@@ -36,6 +39,10 @@ export default function (sequelize) {
             through: { attributes: [] },
             order: [['stepNo', 'ASC']],
             attributes: { exclude: ['createdAt', 'updatedAt'] },
+          },
+          {
+            model: Folder,
+            attributes: ['name'],
           },
         ],
         where: { folderId },
@@ -90,6 +97,7 @@ const _formatRawCasesToJson = (cases) => {
       casesObject[c.id] = {
         id: c.id,
         folderId: c.folderId,
+        folder: c['Folder.name'],
         title: c.title,
         state: c.state,
         priority: c.priority,
@@ -119,6 +127,7 @@ const _formatRawCasesToCsv = (cases) => {
   return cases.map((c) => ({
     id: c.id,
     folderId: c.folderId,
+    folder: c['Folder.name'],
     title: c.title,
     state: c.state,
     priority: c.priority,
