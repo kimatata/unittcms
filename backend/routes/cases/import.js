@@ -5,6 +5,8 @@ import multer from 'multer';
 import XLSX from 'xlsx';
 import { DataTypes } from 'sequelize';
 import defineCase from '../../models/cases.js';
+import defineStep from '../../models/steps.js';
+import defineCaseStep from '../../models/caseSteps.js';
 import authMiddleware from '../../middleware/auth.js';
 import editableMiddleware from '../../middleware/verifyEditable.js';
 import { priorities, testTypes, automationStatus, templates } from '../../config/enums.js';
@@ -34,6 +36,10 @@ const upload = multer({
 
 export default function (sequelize) {
   const Case = defineCase(sequelize, DataTypes);
+  const Step = defineStep(sequelize, DataTypes);
+  const CaseStep = defineCaseStep(sequelize, DataTypes);
+  Case.belongsToMany(Step, { through: CaseStep });
+  Step.belongsToMany(Case, { through: CaseStep });
   const { verifySignedIn } = authMiddleware(sequelize);
   const { verifyProjectDeveloperFromFolderId } = editableMiddleware(sequelize);
 
@@ -60,6 +66,7 @@ export default function (sequelize) {
         return res.status(400).json({ error: 'folderId is required' });
       }
 
+      const t = await sequelize.transaction();
       try {
         const workbook = XLSX.read(req.file.buffer, { type: 'buffer' });
         const sheetName = workbook.SheetNames[0];
@@ -67,7 +74,10 @@ export default function (sequelize) {
         const jsonData = XLSX.utils.sheet_to_json(worksheet);
 
         let errorMessage = null;
+        let currentTitle = null;
+        let stepNo = 1;
         const casesToCreate = [];
+        const stepsToCreate = [];
         const requiredFields = ['title', 'priority', 'type', 'template'];
         for (const [index, row] of jsonData.entries()) {
           const rowNumber = index + 2;
@@ -118,23 +128,56 @@ export default function (sequelize) {
             return res.status(400).json({ error: errorMessage });
           }
 
-          casesToCreate.push({
-            folderId: folderId,
-            title: row['title'],
-            description: row['description'] || '',
-            state: 0, // default state
-            priority: priorityIndex,
-            type: typeIndex,
-            preConditions: row['preConditions'],
-            expectedResults: row['expectedResults'],
-            automationStatus: automationStatusIndex,
-            template: templateIndex,
-          });
+          currentTitle = row['title'].trim();
+          if (casesToCreate.length > 0 && casesToCreate[casesToCreate.length - 1].title === currentTitle) {
+            stepsToCreate.push({
+              caseIndex: casesToCreate.length - 1,
+              stepNo: stepNo,
+              step: row['step'] || '',
+              result: row['expectedStepResult'] || '',
+            });
+            stepNo += 1;
+          } else {
+            casesToCreate.push({
+              folderId: folderId,
+              title: currentTitle,
+              description: row['description'] || '',
+              state: 0, // default state
+              priority: priorityIndex,
+              type: typeIndex,
+              preConditions: row['preConditions'],
+              expectedResults: row['expectedResults'],
+              automationStatus: automationStatusIndex,
+              template: templateIndex,
+            });
+            stepNo = 1;
+          }
+        }
+        const createdCases = await Case.bulkCreate(casesToCreate, { transaction: t, returning: true });
+
+        for (const stepData of stepsToCreate) {
+          const createdCase = createdCases[stepData.caseIndex];
+          const createdStep = await Step.create(
+            {
+              step: stepData.step,
+              result: stepData.result,
+            },
+            { transaction: t }
+          );
+          await CaseStep.create(
+            {
+              caseId: createdCase.id,
+              stepId: createdStep.id,
+              stepNo: stepData.stepNo,
+            },
+            { transaction: t }
+          );
         }
 
-        const createdCases = await Case.bulkCreate(casesToCreate);
+        await t.commit();
         res.json(createdCases);
       } catch (error) {
+        await t.rollback();
         console.error(error);
         res.status(500).send('Internal Server Error');
       }
