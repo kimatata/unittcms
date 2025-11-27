@@ -1,6 +1,16 @@
 'use client';
 import { useState } from 'react';
-import { Button, Input, Textarea, Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Switch } from '@heroui/react';
+import {
+  Button,
+  Input,
+  Textarea,
+  Modal,
+  ModalContent,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+  Switch,
+} from '@heroui/react';
 import { CasesMessages } from '@/types/case';
 
 type Props = {
