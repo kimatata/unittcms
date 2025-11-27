@@ -217,7 +217,7 @@
     "delete": "Delete",
     "close": "Close",
     "are_you_sure": "Are you sure you want to delete test cases?",
-    "new_test_case": "New Test Case",
+    "new_test_case": "New",
     "export": "Export",
     "status": "Status",
     "no_cases_found": "No test cases found",
@@ -248,7 +248,8 @@
     "click_to_upload": "Click to upload",
     "or_drag_and_drop": " or drag and drop",
     "max_file_size": "Max. file size",
-    "cases_imported": "Test cases imported"
+    "cases_imported": "Test cases imported",
+    "create_more": "Create more"
   },
   "Case": {
     "back_to_cases": "Back to test cases",

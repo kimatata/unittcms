@@ -217,7 +217,7 @@
     "delete": "Excluir",
     "close": "Fechar",
     "are_you_sure": "Tem certeza de que deseja excluir os casos de teste?",
-    "new_test_case": "Novo Caso de Teste",
+    "new_test_case": "Novo",
     "export": "Exportar",
     "status": "Status",
     "no_cases_found": "Nenhum caso de teste encontrado",
@@ -248,7 +248,8 @@
     "click_to_upload": "Clique para enviar",
     "or_drag_and_drop": " ou arraste e solte",
     "max_file_size": "Tamanho máx. do arquivo",
-    "cases_imported": "Casos de teste importados"
+    "cases_imported": "Casos de teste importados",
+    "create_more": "Criar mais"
   },
   "Case": {
     "back_to_cases": "Voltar para os casos de teste",

@@ -57,6 +57,7 @@ export default function Page({ params }: { params: { projectId: string; folderId
     orDragAndDrop: t('or_drag_and_drop'),
     maxFileSize: t('max_file_size'),
     casesImported: t('cases_imported'),
+    createMore: t('create_more'),
   };
 
   const priorityTranslation = useTranslations('Priority');

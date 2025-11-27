@@ -217,7 +217,7 @@
     "delete": "削除",
     "close": "閉じる",
     "are_you_sure": "テストケースを削除してもよろしいですか?",
-    "new_test_case": "新規テストケース",
+    "new_test_case": "新規",
     "export": "エクスポート",
     "status": "ステータス",
     "no_cases_found": "テストケースがありません",
@@ -248,7 +248,8 @@
     "click_to_upload": "クリックしてアップロード",
     "or_drag_and_drop": "またはドラッグアンドドロップ",
     "max_file_size": "最大ファイルサイズ",
-    "cases_imported": "テストケースがインポートされました"
+    "cases_imported": "テストケースがインポートされました",
+    "create_more": "さらに作成"
   },
   "Case": {
     "back_to_cases": "テストケース一覧に戻る",
