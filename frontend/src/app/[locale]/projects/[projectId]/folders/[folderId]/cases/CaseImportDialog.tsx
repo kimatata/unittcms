@@ -70,7 +70,7 @@ export default function CaseImportDialog({ isOpen, folderId, isDisabled, onImpor
           <div className="flex items-center justify-center w-full">
             <div className={`mt-1 text-neutral-500 dark:text-neutral-400 text-sm rounded`}>
               <div>{messages.importAvailable}</div>
-              <a href="/template/unittcms-import-template-v1.xlsx" download className="text-tiny underline">
+              <a href="/template/unittcms-import-template-v1.1.xlsx" download className="text-tiny underline">
                 {messages.downloadTemplate}
               </a>
             </div>
