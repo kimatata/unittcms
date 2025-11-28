@@ -80,14 +80,14 @@ export default function (sequelize) {
         const stepsToCreate = [];
         for (const [index, row] of jsonData.entries()) {
           const errorMessage = _getRowValidationError(row, index);
-          if (errorMessage){
-            return res.status(400).json({ error: errorMessage })
+          if (errorMessage) {
+            return res.status(400).json({ error: errorMessage });
           }
 
           // Add step to the same case if the current row title is equal to previous row title
-          // This handle cases with multiple steps :) 
+          // This handle cases with multiple steps :)
           currentTitle = row['title'].trim();
-          previousTitle = casesToCreate[casesToCreate.length - 1]?.title.trim()
+          previousTitle = casesToCreate[casesToCreate.length - 1]?.title.trim();
           if (casesToCreate.length > 0 && previousTitle === currentTitle) {
             stepNo += 1;
             stepsToCreate.push({
@@ -107,7 +107,9 @@ export default function (sequelize) {
               type: row['type'] ? testTypes.indexOf(row['type']) : testTypes.indexOf('other'),
               preConditions: row['preConditions'],
               expectedResults: row['expectedResults'],
-              automationStatus: row['automationStatus'] ? automationStatus.indexOf(row['automationStatus']) : automationStatus.indexOf('automation-not-required'),
+              automationStatus: row['automationStatus']
+                ? automationStatus.indexOf(row['automationStatus'])
+                : automationStatus.indexOf('automation-not-required'),
               template: row['template'] ? templates.indexOf(row['template']) : templates.indexOf('text'),
             });
             stepsToCreate.push({
@@ -152,7 +154,7 @@ export default function (sequelize) {
   return router;
 }
 
-function _getRowValidationError(row, index){
+function _getRowValidationError(row, index) {
   const requiredFields = ['title', 'priority', 'type', 'template'];
   const rowNumber = index + 2;
 
