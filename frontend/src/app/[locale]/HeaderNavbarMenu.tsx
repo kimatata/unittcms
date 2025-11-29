@@ -16,7 +16,6 @@ import {
 import { ArrowRightFromLine, ArrowRightToLine, File, Globe, MoveUpRight, PenTool, Settings } from 'lucide-react';
 import DropdownAccount from './DropdownAccount';
 import DropdownLanguage from './DropdownLanguage';
-import { ThemeSwitch } from '@/components/ThemeSwitch';
 import { locales } from '@/config/selection';
 import { Link, useRouter } from '@/src/i18n/routing';
 import { TokenContext } from '@/utils/TokenProvider';
@@ -129,7 +128,6 @@ export default function HeaderNavbarMenu({ messages, locale }: Props) {
       </NavbarContent>
 
       <NavbarContent className="basis-1 pl-4" justify="end">
-        <ThemeSwitch />
         <div className="hidden md:block">
           <DropdownAccount messages={messages} locale={locale} onItemPress={() => {}} />
           <DropdownLanguage locale={locale} onChangeLocale={changeLocale} />
