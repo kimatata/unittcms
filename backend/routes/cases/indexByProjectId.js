@@ -1,6 +1,6 @@
 import express from 'express';
 const router = express.Router();
-import { DataTypes } from 'sequelize';
+import { DataTypes, Op } from 'sequelize';
 import defineProject from '../../models/projects.js';
 import defineFolder from '../../models/folders.js';
 import defineCase from '../../models/cases.js';
@@ -8,6 +8,7 @@ import defineTag from '../../models/tags.js';
 import defineRunCase from '../../models/runCases.js';
 import authMiddleware from '../../middleware/auth.js';
 import visibilityMiddleware from '../../middleware/verifyVisible.js';
+import { testRunCaseStatus } from '../../config/enums.js';
 
 export default function (sequelize) {
   const Project = defineProject(sequelize, DataTypes);
@@ -33,7 +34,7 @@ export default function (sequelize) {
     verifyProjectVisibleFromProjectId,
     verifyProjectVisibleFromRunId,
     async (req, res) => {
-      const { projectId, runId } = req.query;
+      const { projectId, runId, status, tag } = req.query;
 
       if (!projectId) {
         return res.status(400).json({ error: 'projectId is required' });
@@ -41,6 +42,23 @@ export default function (sequelize) {
 
       if (!runId) {
         return res.status(400).json({ error: 'runId is required' });
+      }
+
+      let errorMessage = null;
+      let statusFilter = undefined;
+      if (status) {
+        let statusIndex = testRunCaseStatus.indexOf(status.toLowerCase());
+        if (statusIndex === -1) {
+          errorMessage = `Invalid status filter: ${status}`;
+        } else {
+          statusFilter = { status: statusIndex };
+        }
+      }
+
+      let tagFilter = tag ? { name: tag } : undefined;
+
+      if (errorMessage) {
+        return res.status(400).json({ error: errorMessage });
       }
 
       try {
@@ -56,15 +74,17 @@ export default function (sequelize) {
             {
               model: RunCase,
               attributes: ['id', 'runId', 'status'],
-              required: false,
+              // Must be 'true' when filtering by status, otherwise all cases are returned.
+              required: statusFilter ? true : false,
               where: {
-                runId: runId,
+                [Op.and]: [{ runId: runId }, statusFilter],
               },
             },
             {
               model: Tags,
               attributes: ['id', 'name'],
               through: { attributes: [] },
+              ...(tagFilter ? { where: tagFilter } : {}),
             },
           ],
         });
