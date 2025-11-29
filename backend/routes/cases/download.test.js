@@ -38,6 +38,7 @@ vi.mock('../../middleware/verifyVisible.js', () => ({
 const mockCase = {
   findAll: vi.fn(),
   belongsToMany: vi.fn(),
+  belongsTo: vi.fn(),
 };
 vi.mock('../../models/cases.js', () => ({
   default: () => mockCase,
