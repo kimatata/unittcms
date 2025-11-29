@@ -1,6 +1,6 @@
 import express from 'express';
 const router = express.Router();
-import { DataTypes } from 'sequelize';
+import { DataTypes, Op } from 'sequelize';
 import defineProject from '../../models/projects.js';
 import defineFolder from '../../models/folders.js';
 import defineCase from '../../models/cases.js';
@@ -8,7 +8,6 @@ import defineTag from '../../models/tags.js';
 import defineRunCase from '../../models/runCases.js';
 import authMiddleware from '../../middleware/auth.js';
 import visibilityMiddleware from '../../middleware/verifyVisible.js';
-import { Op } from 'sequelize';
 import { testRunCaseStatus } from '../../config/enums.js';
 
 export default function (sequelize) {
@@ -47,19 +46,19 @@ export default function (sequelize) {
 
       let errorMessage = null;
       let statusFilter = undefined;
-      if (status){
+      if (status) {
         let statusIndex = testRunCaseStatus.indexOf(status.toLowerCase());
         if (statusIndex === -1) {
           errorMessage = `Invalid status filter: ${status}`;
         } else {
-          statusFilter = { status: statusIndex }
+          statusFilter = { status: statusIndex };
         }
       }
 
       let tagFilter = tag ? { name: tag } : undefined;
 
       if (errorMessage) {
-        return res.status(400).json({ error: errorMessage })
+        return res.status(400).json({ error: errorMessage });
       }
 
       try {
@@ -76,12 +75,9 @@ export default function (sequelize) {
               model: RunCase,
               attributes: ['id', 'runId', 'status'],
               // Must be 'true' when filtering by status, otherwise all cases are returned.
-              required: statusFilter ? true : false, 
+              required: statusFilter ? true : false,
               where: {
-                [Op.and]: [
-                  { runId: runId },
-                  statusFilter
-                ]
+                [Op.and]: [{ runId: runId }, statusFilter],
               },
             },
             {
