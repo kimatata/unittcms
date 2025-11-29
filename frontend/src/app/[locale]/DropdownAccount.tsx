@@ -6,6 +6,7 @@ import { TokenContext } from '@/utils/TokenProvider';
 import { useRouter } from '@/src/i18n/routing';
 import { AccountDropDownMessages } from '@/types/user';
 import UserAvatar from '@/components/UserAvatar';
+import { GithubIcon } from '@/components/icons';
 
 type Props = {
   messages: AccountDropDownMessages;
@@ -49,6 +50,15 @@ export default function DropdownAccount({ messages, locale, onItemPress }: Props
       },
     },
     {
+      uid: 'github',
+      title: 'GitHub',
+      icon: <GithubIcon size={16} />,
+      onPress: () => {
+        window.open('https://github.com/kimatata/unittcms', '_blank');
+        onItemPress();
+      },
+    },
+    {
       uid: 'signout',
       title: messages.signOut,
       icon: <ArrowRightFromLine size={16} />,
@@ -75,6 +85,15 @@ export default function DropdownAccount({ messages, locale, onItemPress }: Props
       icon: <PenTool size={16} />,
       onPress: () => {
         router.push('/account/signup', { locale: locale });
+        onItemPress();
+      },
+    },
+    {
+      uid: 'github',
+      title: 'GitHub',
+      icon: <GithubIcon size={16} />,
+      onPress: () => {
+        window.open('https://github.com/kimatata/unittcms', '_blank');
         onItemPress();
       },
     },
