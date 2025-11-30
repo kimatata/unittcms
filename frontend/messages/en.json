@@ -340,7 +340,11 @@
     "preconditions": "Preconditions",
     "expected_result": "Expected result",
     "details_of_the_step": "Details of the step",
-    "close": "Close"
+    "filter": "Filter",
+    "clear_all": "Clear all",
+    "apply": "Apply",
+    "select_status": "Select status",
+    "please_save": "Please save changes"
   },
   "Members": {
     "member_management": "Member Management",

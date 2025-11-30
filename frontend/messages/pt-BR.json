@@ -340,7 +340,12 @@
     "preconditions": "Pré-condições",
     "expected_result": "Resultado esperado",
     "details_of_the_step": "Detalhes do passo",
-    "close": "Fechar"
+    "close": "Fechar",
+    "filter": "Filtrar",
+    "clear_all": "Limpar tudo",
+    "apply": "Aplicar",
+    "select_status": "Selecionar status",
+    "please_save": "Por favor, salve as alterações"
   },
   "Members": {
     "member_management": "Gerenciamento de Membros",

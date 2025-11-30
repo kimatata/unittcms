@@ -340,7 +340,12 @@
     "preconditions": "前提条件",
     "expected_result": "期待結果",
     "details_of_the_step": "ステップ詳細",
-    "close": "閉じる"
+    "close": "閉じる",
+    "filter": "フィルター",
+    "clear_all": "すべてクリア",
+    "apply": "適用",
+    "select_status": "ステータスを選択",
+    "please_save": "変更を保存してください"
   },
   "Members": {
     "member_management": "メンバー管理",

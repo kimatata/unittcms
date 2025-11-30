@@ -15,6 +15,9 @@ import {
   DropdownItem,
   addToast,
   Badge,
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
 } from '@heroui/react';
 import {
   Save,
@@ -29,6 +32,7 @@ import {
   FileJson,
   ChevronRight,
   Folder,
+  Filter,
 } from 'lucide-react';
 import { useTheme } from 'next-themes';
 import { NodeApi, Tree } from 'react-arborist';
@@ -57,6 +61,7 @@ import { TestTypeMessages } from '@/types/testType';
 import { logError } from '@/utils/errorHandler';
 import TreeItem from '@/components/TreeItem';
 import { buildFolderTree } from '@/utils/buildFolderTree';
+import TestRunFilter from './TestRunFilter';
 
 const defaultTestRun = {
   id: 0,
@@ -200,6 +205,26 @@ export default function RunEditor({
     setIsDirty(false);
   };
 
+  // **************************************************************************
+  // Filter
+  // **************************************************************************
+  const [showFilter, setShowFilter] = useState(false);
+  const [statusFilter, setStatusFilter] = useState('');
+  const activeFilterNum = statusFilter ? 1 : 0;
+  const handleFilterChange = async (status: string) => {
+    if (isDirty) {
+      addToast({
+        title: 'Error',
+        color: 'danger',
+        description: messages.pleaseSave,
+      });
+      return;
+    }
+
+    setStatusFilter(status);
+    await initTestCases();
+  };
+
   return (
     <>
       <div className="border-b-1 dark:border-neutral-700 w-full p-3 flex items-center justify-between">
@@ -217,6 +242,43 @@ export default function RunEditor({
           <h3 className="font-bold ms-2">{testRun.name}</h3>
         </div>
         <div className="flex items-center">
+          <Popover placement="bottom" isOpen={showFilter} onOpenChange={(open) => setShowFilter(open)}>
+            <Badge
+              color="danger"
+              content={activeFilterNum}
+              isInvisible={activeFilterNum === 0}
+              shape="circle"
+              placement="top-left"
+            >
+              <PopoverTrigger>
+                <Button
+                  startContent={<Filter size={16} />}
+                  endContent={<ChevronDown size={16} />}
+                  size="sm"
+                  variant="bordered"
+                  className="me-2"
+                >
+                  {messages.filter}
+                </Button>
+              </PopoverTrigger>
+            </Badge>
+            <PopoverContent>
+              <TestRunFilter
+                messages={messages}
+                priorityMessages={priorityMessages}
+                testTypeMessages={testTypeMessages}
+                activeSearchFilter={activeSearchFilter}
+                activePriorityFilters={activePriorityFilters}
+                activeTypeFilters={activeTypeFilters}
+                activeTagFilters={activeTagFilters}
+                projectId={projectId}
+                onFilterChange={(newTitleFilter, newPriorityFilters, newTypeFilters, newTagFilters) => {
+                  setShowFilter(false);
+                  onFilterChange(newTitleFilter, newPriorityFilters, newTypeFilters, newTagFilters);
+                }}
+              />
+            </PopoverContent>
+          </Popover>
           <Dropdown placement="bottom-end">
             <DropdownTrigger>
               <Button

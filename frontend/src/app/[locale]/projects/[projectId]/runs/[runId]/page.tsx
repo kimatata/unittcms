@@ -35,6 +35,11 @@ export default function Page({ params }: { params: { projectId: string; runId: s
     expectedResult: t('expected_result'),
     detailsOfTheStep: t('details_of_the_step'),
     close: t('close'),
+    filter: t('filter'),
+    clear_all: t('clear_all'),
+    apply: t('apply'),
+    select_status: t('select_status'),
+    pleaseSave: t('please_save'),
   };
 
   const rst = useTranslations('RunStatus');

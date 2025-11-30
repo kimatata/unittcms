@@ -80,6 +80,11 @@ type RunMessages = {
   expectedResult: string;
   detailsOfTheStep: string;
   close: string;
+  filter: string;
+  clear_all: string;
+  apply: string;
+  select_status: string;
+  pleaseSave: string;
 };
 
 export type { RunType, RunCaseType, RunStatusCountType, ProgressSeriesType, RunsMessages, RunMessages };
