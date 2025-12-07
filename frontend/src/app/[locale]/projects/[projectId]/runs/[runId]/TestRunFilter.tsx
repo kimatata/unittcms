@@ -104,6 +104,7 @@ export default function TestRunFilter({
   };
 
   const handleClearFilter = () => {
+    setSearch('');
     setSelectedStatuses(new Set([]));
     setSelectedTags(new Set([]));
     onFilterChange('', [], []);
@@ -136,7 +137,7 @@ export default function TestRunFilter({
               <Button size="sm" variant="bordered" className="w-32" endContent={<ChevronDown size={16} />}>
                 {selectedStatuses === 'all' || selectedStatuses.size === 0
                   ? messages.selectStatus
-                  : `${selectedStatuses.size} ${messages.selected || 'selected'}`}
+                  : `${selectedStatuses.size} ${messages.selected}`}
               </Button>
             </DropdownTrigger>
             <DropdownMenu
@@ -166,7 +167,7 @@ export default function TestRunFilter({
               <Button size="sm" variant="bordered" className="w-32" endContent={<ChevronDown size={16} />}>
                 {selectedTags === 'all' || selectedTags.size === 0
                   ? messages.selectTags
-                  : `${selectedTags.size} ${messages.selected || 'selected'}`}
+                  : `${selectedTags.size} ${messages.selected}`}
               </Button>
             </DropdownTrigger>
             <DropdownMenu

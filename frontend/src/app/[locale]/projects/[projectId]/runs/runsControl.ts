@@ -337,7 +337,7 @@ async function fetchProjectCases(
     queryParams.push(`tag=${tag.join(',')}`);
   }
 
-  const query = queryParams.length > 0 ? `?${queryParams.join('&')}` : '';
+  const query = `?${queryParams.join('&')}`;
 
   const url = `${apiServer}/cases/byproject${query}`;
 
