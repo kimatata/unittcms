@@ -84,6 +84,10 @@ export type AdminMessages = {
   roleChanged: string;
   lostAdminAuth: string;
   atLeast: string;
+  resetPassword: string;
+  reset: string;
+  invalidPassword: string;
+  passwordNotMatch: string;
 };
 
 export type AccountDropDownMessages = {
