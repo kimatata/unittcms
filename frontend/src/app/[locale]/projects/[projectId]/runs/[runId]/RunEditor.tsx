@@ -107,6 +107,9 @@ export default function RunEditor({
   const [isNameInvalid] = useState<boolean>(false);
   const [isUpdating, setIsUpdating] = useState<boolean>(false);
   const [isDirty, setIsDirty] = useState(false);
+  const [searchFilter, setSearchFilter] = useState('');
+  const [statusFilter, setStatusFilter] = useState<number[]>([]);
+  const [tagFilter, setTagFilter] = useState<number[]>([]);
   const router = useRouter();
   useFormGuard(isDirty, messages.areYouSureLeave);
 
@@ -229,7 +232,10 @@ export default function RunEditor({
       return;
     }
 
-    setActiveFilterNum((search ? 1 : 0) + status.length + tag.length);
+    setSearchFilter(search);
+    setStatusFilter(status);
+    setTagFilter(tag);
+    setActiveFilterNum((search ? 1 : 0) + (status.length > 0 ? 1 : 0) + (tag.length > 0 ? 1 : 0));
     await initTestCases();
   };
 
@@ -274,6 +280,9 @@ export default function RunEditor({
               <TestRunFilter
                 messages={messages}
                 testRunCaseStatusMessages={testRunCaseStatusMessages}
+                activeSearchFilter={searchFilter}
+                activeStatusFilters={statusFilter}
+                activeTagFilters={tagFilter}
                 projectId={projectId}
                 onFilterChange={(newTitleFilter, newStatusFilters, newTagFilters) => {
                   setShowFilter(false);

@@ -9,7 +9,8 @@ import {
   Input,
   addToast,
 } from '@heroui/react';
-import { SearchIcon, ChevronDown, Circle } from 'lucide-react';
+import { SearchIcon, ChevronDown } from 'lucide-react';
+import RunCaseStatus from './RunCaseStatus';
 import { RunMessages } from '@/types/run';
 import { testRunCaseStatus } from '@/config/selection';
 import { TagType } from '@/types/tag';
@@ -17,12 +18,14 @@ import { fetchTags } from '@/utils/tagsControls';
 import { TokenContext } from '@/utils/TokenProvider';
 import { logError } from '@/utils/errorHandler';
 import { TestRunCaseStatusMessages } from '@/types/status';
-import RunCaseStatus from './RunCaseStatus';
 
 type TestRunFilterProps = {
   messages: RunMessages;
   testRunCaseStatusMessages: TestRunCaseStatusMessages;
   projectId: string;
+  activeSearchFilter: string;
+  activeStatusFilters: number[];
+  activeTagFilters: number[];
   onFilterChange: (search: string, statusIndices: number[], tagIds: number[]) => void;
 };
 
@@ -33,6 +36,9 @@ export default function TestRunFilter({
   testRunCaseStatusMessages,
   onFilterChange,
   projectId,
+  activeSearchFilter = '',
+  activeStatusFilters = [],
+  activeTagFilters = [],
 }: TestRunFilterProps) {
   const tokenContext = useContext(TokenContext);
   const [search, setSearch] = useState<string>('');
@@ -52,6 +58,28 @@ export default function TestRunFilter({
     };
     fetchDataEffect();
   }, [projectId, tokenContext.token.access_token]);
+
+  useEffect(() => {
+    setSearch(activeSearchFilter || '');
+  }, [activeSearchFilter]);
+
+  useEffect(() => {
+    if (activeStatusFilters && activeStatusFilters.length > 0) {
+      const activeKeys = activeStatusFilters.map((index) => testRunCaseStatus[index]?.uid).filter((uid) => !!uid);
+      setSelectedStatuses(new Set(activeKeys as Iterable<string>));
+    } else {
+      setSelectedStatuses(new Set([]));
+    }
+  }, [activeStatusFilters]);
+
+  useEffect(() => {
+    if (activeTagFilters && activeTagFilters.length > 0) {
+      const activeKeys = activeTagFilters.map((id) => id.toString());
+      setSelectedTags(new Set(activeKeys));
+    } else {
+      setSelectedTags(new Set([]));
+    }
+  }, [activeTagFilters]);
 
   const handleStatusSelectionChange = (keys: Selection) => {
     setSelectedStatuses(keys);
