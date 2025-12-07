@@ -26,7 +26,7 @@ export default function PasswordResetDialog({ isOpen, onCancel, onReset, message
       return;
     }
 
-    await onReset(newPassword);
+    onReset(newPassword);
   };
 
   return (
@@ -57,6 +57,7 @@ export default function PasswordResetDialog({ isOpen, onCancel, onReset, message
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 autoComplete="new-password"
+                className="mt-3"
               />
             </form>
           </div>

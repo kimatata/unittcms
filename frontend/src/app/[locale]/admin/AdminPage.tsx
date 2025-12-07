@@ -127,33 +127,19 @@ export default function AdminPage({ messages, locale }: Props) {
   // Reset password dialog state
   const [isResetDialogOpen, setIsResetDialogOpen] = useState(false);
   const [resetTarget, setResetTarget] = useState<UserType | null>(null);
-  const [confirmPassword, setConfirmPassword] = useState('');
 
   const openResetDialog = (user: UserType) => {
     setResetTarget(user);
-    setConfirmPassword('');
     setIsResetDialogOpen(true);
   };
 
   const onReset = async (newPassword: string) => {
-    if (!tokenContext.isAdmin()) {
-      console.error('you are not admin');
-      return;
-    }
+    setIsResetDialogOpen(false);
     if (!resetTarget || !resetTarget.id) return;
-    if (newPassword.length < 8) {
-      addToast({ title: 'Warning', color: 'warning', description: 'Password must be at least 8 characters' });
-      return;
-    }
-    if (newPassword !== confirmPassword) {
-      addToast({ title: 'Warning', color: 'warning', description: 'Password does not match' });
-      return;
-    }
 
     try {
       await adminResetPassword(tokenContext.token.access_token, resetTarget.id, newPassword);
       addToast({ title: 'Success', color: 'success', description: 'Password updated' });
-      setIsResetDialogOpen(false);
       setResetTarget(null);
     } catch (error: unknown) {
       logError('Failed to reset password', error);
