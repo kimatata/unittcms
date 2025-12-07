@@ -344,7 +344,11 @@
     "clear_all": "Clear all",
     "apply": "Apply",
     "select_status": "Select status",
-    "please_save": "Please save changes"
+    "please_save": "Please save changes",
+    "case_title_or_description": "Test case title or description",
+    "selected": "Selected",
+    "tags": "Tags",
+    "select_tags": "Select tags"
   },
   "Members": {
     "member_management": "Member Management",

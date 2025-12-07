@@ -36,10 +36,14 @@ export default function Page({ params }: { params: { projectId: string; runId: s
     detailsOfTheStep: t('details_of_the_step'),
     close: t('close'),
     filter: t('filter'),
-    clear_all: t('clear_all'),
+    clearAll: t('clear_all'),
     apply: t('apply'),
-    select_status: t('select_status'),
+    selectStatus: t('select_status'),
     pleaseSave: t('please_save'),
+    caseTitleOrDescription: t('case_title_or_description'),
+    selected: t('selected'),
+    tags: t('tags'),
+    selectTags: t('select_tags'),
   };
 
   const rst = useTranslations('RunStatus');

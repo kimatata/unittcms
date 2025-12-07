@@ -48,6 +48,7 @@ import {
 import { fetchFolders } from '../../folders/foldersControl';
 import RunProgressChart from './RunPregressDonutChart';
 import TestCaseSelector from './TestCaseSelector';
+import TestRunFilter from './TestRunFilter';
 import { useRouter } from '@/src/i18n/routing';
 import { testRunStatus } from '@/config/selection';
 import { RunType, RunStatusCountType, RunMessages } from '@/types/run';
@@ -61,7 +62,6 @@ import { TestTypeMessages } from '@/types/testType';
 import { logError } from '@/utils/errorHandler';
 import TreeItem from '@/components/TreeItem';
 import { buildFolderTree } from '@/utils/buildFolderTree';
-import TestRunFilter from './TestRunFilter';
 
 const defaultTestRun = {
   id: 0,
@@ -116,8 +116,15 @@ export default function RunEditor({
     setRunStatusCounts(statusCounts);
   };
 
-  const initTestCases = async () => {
-    const casesData = await fetchProjectCases(tokenContext.token.access_token, Number(projectId), Number(runId));
+  const initTestCases = async (search?: string, status?: string[], tag?: string[]) => {
+    const casesData = await fetchProjectCases(
+      tokenContext.token.access_token,
+      Number(projectId),
+      Number(runId),
+      search,
+      status,
+      tag
+    );
     casesData.forEach((testCase: CaseType) => {
       if (testCase.RunCases && testCase.RunCases.length > 0) {
         testCase.RunCases[0].editState = 'notChanged';
@@ -209,9 +216,9 @@ export default function RunEditor({
   // Filter
   // **************************************************************************
   const [showFilter, setShowFilter] = useState(false);
-  const [statusFilter, setStatusFilter] = useState('');
-  const activeFilterNum = statusFilter ? 1 : 0;
-  const handleFilterChange = async (status: string) => {
+  const [activeFilterNum, setActiveFilterNum] = useState(0);
+
+  const onFilterChange = async (search: string, status: number[], tag: number[]) => {
     if (isDirty) {
       addToast({
         title: 'Error',
@@ -221,7 +228,7 @@ export default function RunEditor({
       return;
     }
 
-    setStatusFilter(status);
+    setActiveFilterNum((search ? 1 : 0) + status.length + tag.length);
     await initTestCases();
   };
 
@@ -265,16 +272,11 @@ export default function RunEditor({
             <PopoverContent>
               <TestRunFilter
                 messages={messages}
-                priorityMessages={priorityMessages}
-                testTypeMessages={testTypeMessages}
-                activeSearchFilter={activeSearchFilter}
-                activePriorityFilters={activePriorityFilters}
-                activeTypeFilters={activeTypeFilters}
-                activeTagFilters={activeTagFilters}
+                testRunCaseStatusMessages={testRunCaseStatusMessages}
                 projectId={projectId}
-                onFilterChange={(newTitleFilter, newPriorityFilters, newTypeFilters, newTagFilters) => {
+                onFilterChange={(newTitleFilter, newStatusFilters, newTagFilters) => {
                   setShowFilter(false);
-                  onFilterChange(newTitleFilter, newPriorityFilters, newTypeFilters, newTagFilters);
+                  onFilterChange(newTitleFilter, newStatusFilters, newTagFilters);
                 }}
               />
             </PopoverContent>

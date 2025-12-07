@@ -10,38 +10,31 @@ import {
   addToast,
 } from '@heroui/react';
 import { SearchIcon, ChevronDown, Circle } from 'lucide-react';
-import { PriorityMessages } from '@/types/priority';
-import { TestTypeMessages } from '@/types/testType';
 import { RunMessages } from '@/types/run';
 import { testRunCaseStatus } from '@/config/selection';
 import { TagType } from '@/types/tag';
 import { fetchTags } from '@/utils/tagsControls';
 import { TokenContext } from '@/utils/TokenProvider';
 import { logError } from '@/utils/errorHandler';
+import { TestRunCaseStatusMessages } from '@/types/status';
 
 type TestCaseFilterProps = {
   messages: RunMessages;
-  priorityMessages: PriorityMessages;
-  testTypeMessages: TestTypeMessages;
-  activeSearchFilter: string;
-  activePriorityFilters: number[];
-  activeTypeFilters: number[];
-  activeTagFilters: number[];
+  testRunCaseStatusMessages: TestRunCaseStatusMessages;
   projectId: string;
-  onFilterChange: (status: string) => void;
+  onFilterChange: (search: string, statusIndices: number[], tagIds: number[]) => void;
 };
 
 type Tag = Pick<TagType, 'id' | 'name'>;
 
 export default function TestCaseFilter({
   messages,
-  priorityMessages,
-  activeStatusFilters,
-  activeTagFilters,
+  testRunCaseStatusMessages,
   onFilterChange,
   projectId,
 }: TestCaseFilterProps) {
   const tokenContext = useContext(TokenContext);
+  const [search, setSearch] = useState<string>('');
   const [selectedStatuses, setSelectedStatuses] = useState<Selection>(new Set([]));
   const [selectedTags, setSelectedTags] = useState<Selection>(new Set([]));
   const [tags, setTags] = useState<Tag[]>([]);
@@ -59,40 +52,33 @@ export default function TestCaseFilter({
     fetchDataEffect();
   }, [projectId, tokenContext.token.access_token]);
 
-  useEffect(() => {
-    if (activeTagFilters.length > 0) {
-      const activeKeys = activeTagFilters.map((id) => id.toString());
-      setSelectedTags(new Set(activeKeys));
-    } else {
-      setSelectedTags(new Set([]));
-    }
-  }, [activeTagFilters]);
+  // useEffect(() => {
+  //   if (activeTagFilters.length > 0) {
+  //     const activeKeys = activeTagFilters.map((id) => id.toString());
+  //     setSelectedTags(new Set(activeKeys));
+  //   } else {
+  //     setSelectedTags(new Set([]));
+  //   }
+  // }, [activeTagFilters]);
 
-  useEffect(() => {
-    if (activeStatusFilters.length > 0) {
-      const activeKeys = activeStatusFilters.map((index) => testRunCaseStatus[index]?.uid).filter(Boolean);
-      setSelectedStatuses(new Set(activeKeys));
-    } else {
-      setSelectedStatuses(new Set([]));
-    }
-  }, [activeStatusFilters]);
+  // useEffect(() => {
+  //   if (activeStatusFilters.length > 0) {
+  //     const activeKeys = activeStatusFilters.map((index) => testRunCaseStatus[index]?.uid).filter(Boolean);
+  //     setSelectedStatuses(new Set(activeKeys));
+  //   } else {
+  //     setSelectedStatuses(new Set([]));
+  //   }
+  // }, [activeStatusFilters]);
 
   const handleStatusSelectionChange = (keys: Selection) => {
     setSelectedStatuses(keys);
   };
 
   const handleApplyFilter = () => {
-    let priorityIndices: number[] = [];
-    if (selectedPriorities !== 'all' && selectedPriorities.size > 0) {
-      priorityIndices = Array.from(selectedPriorities)
-        .map((key) => priorities.findIndex((priority) => priority.uid === key))
-        .filter((index) => index !== -1);
-    }
-
-    let typeIndices: number[] = [];
-    if (selectedTypes !== 'all' && selectedTypes.size > 0) {
-      typeIndices = Array.from(selectedTypes)
-        .map((key) => testTypes.findIndex((type) => type.uid === key))
+    let statusIndices: number[] = [];
+    if (selectedStatuses !== 'all' && selectedStatuses.size > 0) {
+      statusIndices = Array.from(selectedStatuses)
+        .map((key) => testRunCaseStatus.findIndex((status) => status.uid === key))
         .filter((index) => index !== -1);
     }
 
@@ -103,13 +89,13 @@ export default function TestCaseFilter({
         .filter((id) => !isNaN(id));
     }
 
-    onFilterChange(search, priorityIndices, typeIndices, tagIds);
+    onFilterChange(search, statusIndices, tagIds);
   };
 
   const handleClearFilter = () => {
-    setSelectedPriorities(new Set([]));
-    setSelectedTypes(new Set([]));
-    onFilterChange('', [], [], []);
+    setSelectedStatuses(new Set([]));
+    setSelectedTags(new Set([]));
+    onFilterChange('', [], []);
   };
 
   return (
@@ -137,59 +123,31 @@ export default function TestCaseFilter({
           <Dropdown>
             <DropdownTrigger>
               <Button size="sm" variant="bordered" className="w-32" endContent={<ChevronDown size={16} />}>
-                {selectedPriorities === 'all' || selectedPriorities.size === 0
-                  ? messages.selectPriorities
-                  : `${selectedPriorities.size} ${messages.selected || 'selected'}`}
+                {selectedStatuses === 'all' || selectedStatuses.size === 0
+                  ? messages.selectStatus
+                  : `${selectedStatuses.size} ${messages.selected || 'selected'}`}
               </Button>
             </DropdownTrigger>
             <DropdownMenu
-              aria-label="Priority filter"
+              aria-label="Status filter"
               selectionMode="multiple"
-              selectedKeys={selectedPriorities}
-              onSelectionChange={handlePrioritySelectionChange}
+              selectedKeys={selectedStatuses}
+              onSelectionChange={handleStatusSelectionChange}
             >
-              {priorities.map((priority) => (
+              {testRunCaseStatus.map((status) => (
                 <DropdownItem
-                  key={priority.uid}
-                  textValue={priorityMessages[priority.uid]}
+                  key={status.uid}
+                  textValue={testRunCaseStatusMessages[status.uid]}
                   className="flex items-center"
                 >
                   <div className="flex items-center gap-2">
-                    <Circle size={8} color={priority.color} fill={priority.color} />
-                    <span className="text-sm">{priorityMessages[priority.uid]}</span>
+                    <Circle size={8} color={status.color} fill={status.color} />
+                    <span className="text-sm">{testRunCaseStatusMessages[status.uid]}</span>
                   </div>
                 </DropdownItem>
               ))}
             </DropdownMenu>
           </Dropdown>
-        </div>
-        <div className="flex-col space-y-1">
-          <h3 className="text-default-500 text-small">{messages.type}</h3>
-          <Dropdown>
-            <DropdownTrigger>
-              <Button size="sm" variant="bordered" className="w-32" endContent={<ChevronDown size={16} />}>
-                {selectedTypes === 'all' || selectedTypes.size === 0
-                  ? messages.selectTypes || 'Select Types'
-                  : `${selectedTypes.size} ${messages.selected || 'selected'}`}
-              </Button>
-            </DropdownTrigger>
-            <DropdownMenu
-              className="max-h-[50vh] overflow-y-auto"
-              aria-label="Type filter"
-              selectionMode="multiple"
-              selectedKeys={selectedTypes}
-              onSelectionChange={handleTypeSelectionChange}
-            >
-              {testTypes.map((type) => (
-                <DropdownItem key={type.uid} textValue={testTypeMessages[type.uid]} className="flex items-center">
-                  <span className="text-sm">{testTypeMessages[type.uid]}</span>
-                </DropdownItem>
-              ))}
-            </DropdownMenu>
-          </Dropdown>
-        </div>
-        <div className="flex-col space-y-1">
-          <h3 className="text-default-500 text-small"></h3>
         </div>
       </div>
 

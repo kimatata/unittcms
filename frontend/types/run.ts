@@ -81,10 +81,14 @@ type RunMessages = {
   detailsOfTheStep: string;
   close: string;
   filter: string;
-  clear_all: string;
+  clearAll: string;
   apply: string;
-  select_status: string;
+  selectStatus: string;
   pleaseSave: string;
+  caseTitleOrDescription: string;
+  selected: string;
+  tags: string;
+  selectTags: string;
 };
 
 export type { RunType, RunCaseType, RunStatusCountType, ProgressSeriesType, RunsMessages, RunMessages };
