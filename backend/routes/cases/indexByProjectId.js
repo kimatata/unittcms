@@ -8,7 +8,6 @@ import defineTag from '../../models/tags.js';
 import defineRunCase from '../../models/runCases.js';
 import authMiddleware from '../../middleware/auth.js';
 import visibilityMiddleware from '../../middleware/verifyVisible.js';
-import { testRunCaseStatus } from '../../config/enums.js';
 
 export default function (sequelize) {
   const Project = defineProject(sequelize, DataTypes);
@@ -70,11 +69,8 @@ export default function (sequelize) {
         if (status) {
           const statusValues = status
             .split(',')
-            .map((s) => {
-              const statusIndex = testRunCaseStatus.indexOf(s.trim().toLowerCase());
-              return statusIndex;
-            })
-            .filter((s) => s !== -1);
+            .map((t) => parseInt(t.trim(), 10))
+            .filter((t) => !isNaN(t));
 
           if (statusValues.length > 0) {
             statusFilter = { status: { [Op.in]: statusValues } };

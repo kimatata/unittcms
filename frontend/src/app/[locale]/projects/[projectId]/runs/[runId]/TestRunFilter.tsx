@@ -130,7 +130,7 @@ export default function TestRunFilter({
       </div>
       <div className="mb-3 flex justify-between gap-2">
         <div className="flex-col space-y-1">
-          <h3 className="text-default-500 text-small">{messages.priority}</h3>
+          <h3 className="text-default-500 text-small">{messages.status}</h3>
           <Dropdown>
             <DropdownTrigger>
               <Button size="sm" variant="bordered" className="w-32" endContent={<ChevronDown size={16} />}>
@@ -158,33 +158,34 @@ export default function TestRunFilter({
             </DropdownMenu>
           </Dropdown>
         </div>
+
+        <div className="flex-col space-y-1">
+          <h3 className="text-default-500 text-small">{messages.tags}</h3>
+          <Dropdown>
+            <DropdownTrigger>
+              <Button size="sm" variant="bordered" className="w-32" endContent={<ChevronDown size={16} />}>
+                {selectedTags === 'all' || selectedTags.size === 0
+                  ? messages.selectTags
+                  : `${selectedTags.size} ${messages.selected || 'selected'}`}
+              </Button>
+            </DropdownTrigger>
+            <DropdownMenu
+              className="max-h-[50vh] overflow-y-auto"
+              aria-label="Tag filter"
+              selectionMode="multiple"
+              selectedKeys={selectedTags}
+              onSelectionChange={setSelectedTags}
+            >
+              {tags.map((tag) => (
+                <DropdownItem key={tag.id.toString()} textValue={tag.name}>
+                  <span className="text-sm">{tag.name}</span>
+                </DropdownItem>
+              ))}
+            </DropdownMenu>
+          </Dropdown>
+        </div>
       </div>
 
-      <div className="mb-3 space-y-1">
-        <h3 className="text-default-500 text-small">{messages.tags}</h3>
-        <Dropdown>
-          <DropdownTrigger>
-            <Button size="sm" variant="bordered" className="w-32" endContent={<ChevronDown size={16} />}>
-              {selectedTags === 'all' || selectedTags.size === 0
-                ? messages.selectTags
-                : `${selectedTags.size} ${messages.selected || 'selected'}`}
-            </Button>
-          </DropdownTrigger>
-          <DropdownMenu
-            className="max-h-[50vh] overflow-y-auto"
-            aria-label="Tag filter"
-            selectionMode="multiple"
-            selectedKeys={selectedTags}
-            onSelectionChange={setSelectedTags}
-          >
-            {tags.map((tag) => (
-              <DropdownItem key={tag.id.toString()} textValue={tag.name}>
-                <span className="text-sm">{tag.name}</span>
-              </DropdownItem>
-            ))}
-          </DropdownMenu>
-        </Dropdown>
-      </div>
       <div className="flex justify-end">
         <Button className="me-2" size="sm" variant="light" onPress={handleClearFilter}>
           {messages.clearAll}

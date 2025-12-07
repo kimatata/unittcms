@@ -128,7 +128,6 @@ export default function RunEditor({
       status,
       tag
     );
-    console.log(casesData);
     casesData.forEach((testCase: CaseType) => {
       if (testCase.RunCases && testCase.RunCases.length > 0) {
         testCase.RunCases[0].editState = 'notChanged';
@@ -236,7 +235,7 @@ export default function RunEditor({
     setStatusFilter(status);
     setTagFilter(tag);
     setActiveFilterNum((search ? 1 : 0) + (status.length > 0 ? 1 : 0) + (tag.length > 0 ? 1 : 0));
-    await initTestCases();
+    await initTestCases(search, status.map(String), tag.map(String));
   };
 
   return (
