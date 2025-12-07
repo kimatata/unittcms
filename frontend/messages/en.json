@@ -349,7 +349,11 @@
     "case_title_or_description": "Test case title or description",
     "selected": "Selected",
     "tags": "Tags",
-    "select_tags": "Select tags"
+    "select_tags": "Select tags",
+    "reset_password": "Reset password",
+    "reset": "Reset",
+    "invalid_password": "Password must be at least 8 characters",
+    "password_not_match": "Pasword does not match"
   },
   "Members": {
     "member_management": "Member Management",

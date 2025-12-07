@@ -189,4 +189,43 @@ async function deleteAvatar(jwt: string) {
   }
 }
 
-export { findUser, searchUsers, updateUserRole, updateUsername, updatePassword, uploadAvatar, deleteAvatar };
+async function adminResetPassword(jwt: string, userId: number, newPassword: string) {
+  const updateData = {
+    newPassword,
+  };
+
+  const fetchOptions = {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${jwt}`,
+    },
+    body: JSON.stringify(updateData),
+  };
+
+  const url = `${apiServer}/users/${userId}/password`;
+
+  try {
+    const response = await fetch(url, fetchOptions);
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(errorText || `HTTP error! Status: ${response.status}`);
+    }
+    const data = await response.json();
+    return data;
+  } catch (error: unknown) {
+    logError('Error admin resetting password:', error);
+    throw error;
+  }
+}
+
+export {
+  findUser,
+  searchUsers,
+  updateUserRole,
+  updateUsername,
+  updatePassword,
+  uploadAvatar,
+  deleteAvatar,
+  adminResetPassword,
+};

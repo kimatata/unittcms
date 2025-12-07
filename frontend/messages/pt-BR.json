@@ -159,7 +159,11 @@
     "quit_confirm": "Se você renunciar aos seus privilégios de administrador, não poderá mais acessar a página de administração.",
     "role_changed": "Função alterada",
     "lost_admin_auth": "Perdeu a autoridade de administrador",
-    "at_least": "É necessário pelo menos um administrador"
+    "at_least": "É necessário pelo menos um administrador",
+    "reset_password": "Redefinir senha",
+    "reset": "Redefinir",
+    "invalid_password": "A senha deve ter pelo menos 8 caracteres",
+    "password_not_match": "A senha não corresponde"
   },
   "Projects": {
     "project_list": "Lista de Projetos",

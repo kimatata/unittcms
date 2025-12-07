@@ -2,14 +2,15 @@
 import { useState, useEffect, useContext } from 'react';
 import { Button, addToast } from '@heroui/react';
 import UsersTable from './UsersTable';
+import PasswordResetDialog from './PasswordResetDialog';
+import DeleteConfirmDialog from '@/components/DeleteConfirmDialog';
 import { UserType, AdminMessages } from '@/types/user';
 import { TokenContext } from '@/utils/TokenProvider';
 import { useRouter } from '@/src/i18n/routing';
 import Config from '@/config/config';
 import { LocaleCodeType } from '@/types/locale';
-import { updateUserRole } from '@/utils/usersControl';
+import { updateUserRole, adminResetPassword } from '@/utils/usersControl';
 import { roles } from '@/config/selection';
-import DeleteConfirmDialog from '@/components/DeleteConfirmDialog';
 import { logError } from '@/utils/errorHandler';
 const apiServer = Config.apiServer;
 
@@ -123,6 +124,42 @@ export default function AdminPage({ messages, locale }: Props) {
     }
   };
 
+  // Reset password dialog state
+  const [isResetDialogOpen, setIsResetDialogOpen] = useState(false);
+  const [resetTarget, setResetTarget] = useState<UserType | null>(null);
+  const [confirmPassword, setConfirmPassword] = useState('');
+
+  const openResetDialog = (user: UserType) => {
+    setResetTarget(user);
+    setConfirmPassword('');
+    setIsResetDialogOpen(true);
+  };
+
+  const onReset = async (newPassword: string) => {
+    if (!tokenContext.isAdmin()) {
+      console.error('you are not admin');
+      return;
+    }
+    if (!resetTarget || !resetTarget.id) return;
+    if (newPassword.length < 8) {
+      addToast({ title: 'Warning', color: 'warning', description: 'Password must be at least 8 characters' });
+      return;
+    }
+    if (newPassword !== confirmPassword) {
+      addToast({ title: 'Warning', color: 'warning', description: 'Password does not match' });
+      return;
+    }
+
+    try {
+      await adminResetPassword(tokenContext.token.access_token, resetTarget.id, newPassword);
+      addToast({ title: 'Success', color: 'success', description: 'Password updated' });
+      setIsResetDialogOpen(false);
+      setResetTarget(null);
+    } catch (error: unknown) {
+      logError('Failed to reset password', error);
+    }
+  };
+
   return (
     <>
       <div className="container mx-auto max-w-3xl pt-16 px-6 flex-grow">
@@ -130,7 +167,13 @@ export default function AdminPage({ messages, locale }: Props) {
           <h3 className="font-bold">{messages.userManagement}</h3>
         </div>
 
-        <UsersTable users={users} myself={myself} onChangeRole={handleChangeRole} messages={messages} />
+        <UsersTable
+          users={users}
+          myself={myself}
+          onChangeRole={handleChangeRole}
+          openResetDialog={openResetDialog}
+          messages={messages}
+        />
         <Button className="mt-4" color="danger" variant="bordered" onPress={() => setIsConfirmDialogOpen(true)}>
           {messages.quitAdmin}
         </Button>
@@ -143,6 +186,13 @@ export default function AdminPage({ messages, locale }: Props) {
         closeText={messages.close}
         confirmText={messages.quitConfirm}
         deleteText={messages.quit}
+      />
+
+      <PasswordResetDialog
+        isOpen={isResetDialogOpen}
+        onCancel={() => setIsResetDialogOpen(false)}
+        onReset={onReset}
+        messages={messages}
       />
     </>
   );

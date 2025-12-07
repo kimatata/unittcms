@@ -32,6 +32,10 @@ export default function Page({ params }: PageType) {
     roleChanged: t('role_changed'),
     lostAdminAuth: t('lost_admin_auth'),
     atLeast: t('at_least'),
+    resetPassword: t('reset_password'),
+    reset: t('reset'),
+    invalidPassword: t('invalid_password'),
+    passwordNotMatch: t('password_not_match'),
   };
 
   return (

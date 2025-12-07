@@ -13,7 +13,7 @@ import {
   DropdownMenu,
   DropdownItem,
 } from '@heroui/react';
-import { ChevronDown } from 'lucide-react';
+import { ChevronDown, MoreVertical } from 'lucide-react';
 import { UserType, AdminMessages } from '@/types/user';
 import { roles } from '@/config/selection';
 import UserAvatar from '@/components/UserAvatar';
@@ -22,16 +22,18 @@ type Props = {
   users: UserType[];
   myself: UserType | null;
   onChangeRole: (userEdit: UserType, role: number) => void;
+  openResetDialog: (user: UserType) => void;
   messages: AdminMessages;
 };
 
-export default function UsersTable({ users, myself, onChangeRole, messages }: Props) {
+export default function UsersTable({ users, myself, onChangeRole, openResetDialog, messages }: Props) {
   const headerColumns = [
     { name: messages.avatar, uid: 'avatar', sortable: false },
     { name: messages.id, uid: 'id', sortable: true },
     { name: messages.email, uid: 'email', sortable: true },
     { name: messages.username, uid: 'username', sortable: true },
     { name: messages.role, uid: 'role', sortable: true },
+    { name: '', uid: 'actions', sortable: false },
   ];
 
   const [sortDescriptor, setSortDescriptor] = useState<SortDescriptor>({
@@ -90,6 +92,24 @@ export default function UsersTable({ users, myself, onChangeRole, messages }: Pr
               ))}
             </DropdownMenu>
           </Dropdown>
+        );
+
+      case 'actions':
+        return (
+          !isMyself(myself, user) && (
+            <Dropdown>
+              <DropdownTrigger>
+                <Button isIconOnly size="sm" className="bg-transparent rounded-full">
+                  <MoreVertical size={16} />
+                </Button>
+              </DropdownTrigger>
+              <DropdownMenu aria-label="Static Actions">
+                <DropdownItem key="edit" onPress={() => openResetDialog(user)}>
+                  {messages.resetPassword}
+                </DropdownItem>
+              </DropdownMenu>
+            </Dropdown>
+          )
         );
 
       default:
