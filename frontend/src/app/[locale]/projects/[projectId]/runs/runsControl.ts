@@ -339,7 +339,7 @@ async function fetchProjectCases(
 
   const query = queryParams.length > 0 ? `?${queryParams.join('&')}` : '';
 
-  const url = `${apiServer}/cases${query}`;
+  const url = `${apiServer}/cases/byproject${query}`;
 
   try {
     const response = await fetch(url, {

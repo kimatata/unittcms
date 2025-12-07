@@ -17,8 +17,9 @@ import { fetchTags } from '@/utils/tagsControls';
 import { TokenContext } from '@/utils/TokenProvider';
 import { logError } from '@/utils/errorHandler';
 import { TestRunCaseStatusMessages } from '@/types/status';
+import RunCaseStatus from './RunCaseStatus';
 
-type TestCaseFilterProps = {
+type TestRunFilterProps = {
   messages: RunMessages;
   testRunCaseStatusMessages: TestRunCaseStatusMessages;
   projectId: string;
@@ -27,12 +28,12 @@ type TestCaseFilterProps = {
 
 type Tag = Pick<TagType, 'id' | 'name'>;
 
-export default function TestCaseFilter({
+export default function TestRunFilter({
   messages,
   testRunCaseStatusMessages,
   onFilterChange,
   projectId,
-}: TestCaseFilterProps) {
+}: TestRunFilterProps) {
   const tokenContext = useContext(TokenContext);
   const [search, setSearch] = useState<string>('');
   const [selectedStatuses, setSelectedStatuses] = useState<Selection>(new Set([]));
@@ -51,24 +52,6 @@ export default function TestCaseFilter({
     };
     fetchDataEffect();
   }, [projectId, tokenContext.token.access_token]);
-
-  // useEffect(() => {
-  //   if (activeTagFilters.length > 0) {
-  //     const activeKeys = activeTagFilters.map((id) => id.toString());
-  //     setSelectedTags(new Set(activeKeys));
-  //   } else {
-  //     setSelectedTags(new Set([]));
-  //   }
-  // }, [activeTagFilters]);
-
-  // useEffect(() => {
-  //   if (activeStatusFilters.length > 0) {
-  //     const activeKeys = activeStatusFilters.map((index) => testRunCaseStatus[index]?.uid).filter(Boolean);
-  //     setSelectedStatuses(new Set(activeKeys));
-  //   } else {
-  //     setSelectedStatuses(new Set([]));
-  //   }
-  // }, [activeStatusFilters]);
 
   const handleStatusSelectionChange = (keys: Selection) => {
     setSelectedStatuses(keys);
@@ -138,12 +121,10 @@ export default function TestCaseFilter({
                 <DropdownItem
                   key={status.uid}
                   textValue={testRunCaseStatusMessages[status.uid]}
+                  startContent={<RunCaseStatus uid={status.uid} />}
                   className="flex items-center"
                 >
-                  <div className="flex items-center gap-2">
-                    <Circle size={8} color={status.color} fill={status.color} />
-                    <span className="text-sm">{testRunCaseStatusMessages[status.uid]}</span>
-                  </div>
+                  {testRunCaseStatusMessages[status.uid]}
                 </DropdownItem>
               ))}
             </DropdownMenu>

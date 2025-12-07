@@ -125,6 +125,7 @@ export default function RunEditor({
       status,
       tag
     );
+    console.log(casesData);
     casesData.forEach((testCase: CaseType) => {
       if (testCase.RunCases && testCase.RunCases.length > 0) {
         testCase.RunCases[0].editState = 'notChanged';
