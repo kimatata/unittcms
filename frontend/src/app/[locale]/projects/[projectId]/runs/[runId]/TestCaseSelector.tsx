@@ -13,6 +13,7 @@ import {
   DropdownItem,
   Selection,
   SortDescriptor,
+  Chip,
 } from '@heroui/react';
 import {
   ChevronDown,
@@ -66,6 +67,7 @@ export default function TestCaseSelector({
     { name: messages.id, uid: 'id', sortable: true },
     { name: messages.title, uid: 'title', sortable: true },
     { name: messages.priority, uid: 'priority', sortable: true },
+    { name: messages.tags, uid: 'tags', sortable: false },
     { name: messages.status, uid: 'runStatus', sortable: true },
     { name: messages.actions, uid: 'actions' },
   ];
@@ -151,6 +153,20 @@ export default function TestCaseSelector({
         return (
           <div className={isIncluded ? '' : notIncludedCaseClass}>
             <TestCasePriority priorityValue={cellValue as number} priorityMessages={priorityMessages} />
+          </div>
+        );
+      case 'tags':
+        return (
+          <div className={`flex gap-1 flex-wrap ${isIncluded ? '' : notIncludedCaseClass}`}>
+            {testCase.Tags && testCase.Tags.length > 0 ? (
+              testCase.Tags.map((tag) => (
+                <Chip key={tag.id} size="sm" variant="flat">
+                  {tag.name}
+                </Chip>
+              ))
+            ) : (
+              <span>-</span>
+            )}
           </div>
         );
       case 'runStatus':

@@ -7,6 +7,7 @@ import defineRun from '../../models/runs.js';
 import defineRunCase from '../../models/runCases.js';
 import defineCase from '../../models/cases.js';
 import defineFolder from '../../models/folders.js';
+import defineTag from '../../models/tags.js';
 import authMiddleware from '../../middleware/auth.js';
 import visibilityMiddleware from '../../middleware/verifyVisible.js';
 import { testRunCaseStatus, testRunStatus, priorities, testTypes, automationStatus } from '../../config/enums.js';
@@ -19,8 +20,11 @@ export default function (sequelize) {
   const RunCase = defineRunCase(sequelize, DataTypes);
   const Case = defineCase(sequelize, DataTypes);
   const Folder = defineFolder(sequelize, DataTypes);
+  const Tags = defineTag(sequelize, DataTypes);
 
   RunCase.belongsTo(Case, { foreignKey: 'caseId' });
+  Case.belongsToMany(Tags, { through: 'caseTags', foreignKey: 'caseId', otherKey: 'tagId' });
+  Tags.belongsToMany(Case, { through: 'caseTags', foreignKey: 'tagId', otherKey: 'caseId' });
 
   router.get('/download/:runId', verifySignedIn, verifyProjectVisibleFromRunId, async (req, res) => {
     const { runId } = req.params;
@@ -38,7 +42,18 @@ export default function (sequelize) {
 
       const runCases = await RunCase.findAll({
         where: { runId },
-        include: [{ model: Case }],
+        include: [
+          {
+            model: Case,
+            include: [
+              {
+                model: Tags,
+                attributes: ['id', 'name'],
+                through: { attributes: [] },
+              },
+            ],
+          },
+        ],
       });
 
       if (type === 'xml') {
@@ -104,6 +119,7 @@ export default function (sequelize) {
           priority: priorities[rc.Case.priority] || rc.Case.priority,
           type: testTypes[rc.Case.type] || rc.Case.type,
           automationStatus: automationStatus[rc.Case.automationStatus] || rc.Case.automationStatus,
+          tags: rc.Case.Tags && rc.Case.Tags.length > 0 ? rc.Case.Tags.map((tag) => tag.name).join(', ') : '',
           status: testRunCaseStatus[rc.status] || rc.status,
         }));
 
