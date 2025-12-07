@@ -159,7 +159,11 @@
     "quit_confirm": "If you relinquish your administrator privileges, you will no longer be able to access the administration page.",
     "role_changed": "Role changed",
     "lost_admin_auth": "Lost admin authority",
-    "at_least": "At least one administrator is required"
+    "at_least": "At least one administrator is required",
+    "reset_password": "Reset password",
+    "reset": "Reset",
+    "invalid_password": "Password must be at least 8 characters",
+    "password_not_match": "Pasword does not match"
   },
   "Projects": {
     "project_list": "Project List",
@@ -217,7 +221,7 @@
     "delete": "Delete",
     "close": "Close",
     "are_you_sure": "Are you sure you want to delete test cases?",
-    "new_test_case": "New Test Case",
+    "new_test_case": "New",
     "export": "Export",
     "status": "Status",
     "no_cases_found": "No test cases found",
@@ -248,7 +252,8 @@
     "click_to_upload": "Click to upload",
     "or_drag_and_drop": " or drag and drop",
     "max_file_size": "Max. file size",
-    "cases_imported": "Test cases imported"
+    "cases_imported": "Test cases imported",
+    "create_more": "Create more"
   },
   "Case": {
     "back_to_cases": "Back to test cases",
@@ -339,7 +344,16 @@
     "preconditions": "Preconditions",
     "expected_result": "Expected result",
     "details_of_the_step": "Details of the step",
-    "close": "Close"
+    "close": "Close",
+    "filter": "Filter",
+    "clear_all": "Clear all",
+    "apply": "Apply",
+    "select_status": "Select status",
+    "please_save": "Please save changes",
+    "case_title_or_description": "Test case title or description",
+    "selected": "Selected",
+    "tags": "Tags",
+    "select_tags": "Select tags"
   },
   "Members": {
     "member_management": "Member Management",

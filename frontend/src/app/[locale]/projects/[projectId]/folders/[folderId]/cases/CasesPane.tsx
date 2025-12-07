@@ -112,10 +112,12 @@ export default function CasesPane({
 
   const closeDialog = () => setIsCaseDialogOpen(false);
 
-  const onSubmit = async (title: string, description: string) => {
+  const onSubmit = async (title: string, description: string, createMore: boolean) => {
     const newCase = await createCase(context.token.access_token, folderId, title, description);
     setCases([...cases, newCase]);
-    closeDialog();
+    if (!createMore) {
+      closeDialog();
+    }
   };
 
   const closeDeleteConfirmDialog = () => {

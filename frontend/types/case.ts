@@ -105,6 +105,7 @@ type CasesMessages = {
   orDragAndDrop: string;
   maxFileSize: string;
   casesImported: string;
+  createMore: string;
 };
 
 type CaseMessages = {

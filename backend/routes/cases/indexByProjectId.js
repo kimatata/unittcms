@@ -1,6 +1,6 @@
 import express from 'express';
 const router = express.Router();
-import { DataTypes } from 'sequelize';
+import { DataTypes, Op } from 'sequelize';
 import defineProject from '../../models/projects.js';
 import defineFolder from '../../models/folders.js';
 import defineCase from '../../models/cases.js';
@@ -33,7 +33,7 @@ export default function (sequelize) {
     verifyProjectVisibleFromProjectId,
     verifyProjectVisibleFromRunId,
     async (req, res) => {
-      const { projectId, runId } = req.query;
+      const { projectId, runId, status, tag, search } = req.query;
 
       if (!projectId) {
         return res.status(400).json({ error: 'projectId is required' });
@@ -44,7 +44,61 @@ export default function (sequelize) {
       }
 
       try {
+        // Build where clause for Case model
+        const caseWhereClause = {};
+
+        // Handle search parameter
+        if (search) {
+          const searchTerm = search.trim();
+
+          if (searchTerm.length > 100) {
+            return res.status(400).json({ error: 'too long search param' });
+          }
+
+          if (searchTerm.length >= 1) {
+            caseWhereClause[Op.or] = [
+              { title: { [Op.like]: `%${searchTerm}%` } },
+              { description: { [Op.like]: `%${searchTerm}%` } },
+            ];
+          }
+        }
+
+        // Handle status filter for RunCase
+        let statusFilter = undefined;
+        let runCaseRequired = false;
+        if (status) {
+          const statusValues = status
+            .split(',')
+            .map((t) => parseInt(t.trim(), 10))
+            .filter((t) => !isNaN(t));
+
+          if (statusValues.length > 0) {
+            statusFilter = { status: { [Op.in]: statusValues } };
+            runCaseRequired = true;
+          }
+        }
+
+        // Handle tag filter
+        const tagInclude = {
+          model: Tags,
+          attributes: ['id', 'name'],
+          through: { attributes: [] },
+        };
+
+        if (tag) {
+          const tagIds = tag
+            .split(',')
+            .map((t) => parseInt(t.trim(), 10))
+            .filter((t) => !isNaN(t));
+
+          if (tagIds.length > 0) {
+            tagInclude.where = { id: { [Op.in]: tagIds } };
+            tagInclude.required = true;
+          }
+        }
+
         const cases = await Case.findAll({
+          where: caseWhereClause,
           include: [
             {
               model: Folder,
@@ -56,16 +110,13 @@ export default function (sequelize) {
             {
               model: RunCase,
               attributes: ['id', 'runId', 'status'],
-              required: false,
+              // Must be 'true' when filtering by status, otherwise all cases are returned.
+              required: runCaseRequired,
               where: {
-                runId: runId,
+                [Op.and]: [{ runId: runId }, statusFilter],
               },
             },
-            {
-              model: Tags,
-              attributes: ['id', 'name'],
-              through: { attributes: [] },
-            },
+            tagInclude,
           ],
         });
         res.json(cases);

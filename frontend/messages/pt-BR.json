@@ -159,7 +159,11 @@
     "quit_confirm": "Se você renunciar aos seus privilégios de administrador, não poderá mais acessar a página de administração.",
     "role_changed": "Função alterada",
     "lost_admin_auth": "Perdeu a autoridade de administrador",
-    "at_least": "É necessário pelo menos um administrador"
+    "at_least": "É necessário pelo menos um administrador",
+    "reset_password": "Redefinir senha",
+    "reset": "Redefinir",
+    "invalid_password": "A senha deve ter pelo menos 8 caracteres",
+    "password_not_match": "A senha não corresponde"
   },
   "Projects": {
     "project_list": "Lista de Projetos",
@@ -217,7 +221,7 @@
     "delete": "Excluir",
     "close": "Fechar",
     "are_you_sure": "Tem certeza de que deseja excluir os casos de teste?",
-    "new_test_case": "Novo Caso de Teste",
+    "new_test_case": "Novo",
     "export": "Exportar",
     "status": "Status",
     "no_cases_found": "Nenhum caso de teste encontrado",
@@ -248,7 +252,8 @@
     "click_to_upload": "Clique para enviar",
     "or_drag_and_drop": " ou arraste e solte",
     "max_file_size": "Tamanho máx. do arquivo",
-    "cases_imported": "Casos de teste importados"
+    "cases_imported": "Casos de teste importados",
+    "create_more": "Criar mais"
   },
   "Case": {
     "back_to_cases": "Voltar para os casos de teste",
@@ -339,7 +344,16 @@
     "preconditions": "Pré-condições",
     "expected_result": "Resultado esperado",
     "details_of_the_step": "Detalhes do passo",
-    "close": "Fechar"
+    "close": "Fechar",
+    "filter": "Filtrar",
+    "clear_all": "Limpar tudo",
+    "apply": "Aplicar",
+    "select_status": "Selecionar status",
+    "please_save": "Por favor, salve as alterações",
+    "case_title_or_description": "Título ou descrição do caso de teste",
+    "selected": "Selecionado",
+    "tags": "Tags",
+    "select_tags": "Selecionar tags"
   },
   "Members": {
     "member_management": "Gerenciamento de Membros",

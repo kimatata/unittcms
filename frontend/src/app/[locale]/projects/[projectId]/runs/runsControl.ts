@@ -315,8 +315,31 @@ async function updateRunCases(jwt: string, runId: number, testCases: CaseType[])
   }
 }
 
-async function fetchProjectCases(jwt: string, projectId: number, runId: number) {
-  const url = `${apiServer}/cases/byproject?projectId=${projectId}&runId=${runId}`;
+async function fetchProjectCases(
+  jwt: string,
+  projectId: number,
+  runId: number,
+  search?: string,
+  status?: string[],
+  tag?: string[]
+) {
+  const queryParams = [`projectId=${projectId}&runId=${runId}`];
+
+  if (search) {
+    queryParams.push(`search=${search}`);
+  }
+
+  if (status && status.length > 0) {
+    queryParams.push(`status=${status.join(',')}`);
+  }
+
+  if (tag && tag.length > 0) {
+    queryParams.push(`tag=${tag.join(',')}`);
+  }
+
+  const query = `?${queryParams.join('&')}`;
+
+  const url = `${apiServer}/cases/byproject${query}`;
 
   try {
     const response = await fetch(url, {
