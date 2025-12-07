@@ -339,7 +339,8 @@
     "preconditions": "Preconditions",
     "expected_result": "Expected result",
     "details_of_the_step": "Details of the step",
-    "close": "Close"
+    "close": "Close",
+    "tags": "Tags"
   },
   "Members": {
     "member_management": "Member Management",

@@ -59,6 +59,7 @@ vi.mock('../../models/runCases.js', () => ({
 // mock defineCase
 const mockCase = {
   belongsTo: vi.fn(),
+  belongsToMany: vi.fn(),
 };
 vi.mock('../../models/cases.js', () => ({
   default: () => mockCase,
@@ -70,6 +71,14 @@ const mockFolder = {
 };
 vi.mock('../../models/folders.js', () => ({
   default: () => mockFolder,
+}));
+
+// mock defineTag
+const mockTags = {
+  belongsToMany: vi.fn(),
+};
+vi.mock('../../models/tags.js', () => ({
+  default: () => mockTags,
 }));
 
 describe('GET /download/:runId with type=csv', () => {
@@ -105,6 +114,10 @@ describe('GET /download/:runId with type=csv', () => {
           priority: 0, // critical
           type: 4, // functional
           automationStatus: 0, // automated
+          Tags: [
+            { id: 1, name: 'tag1' },
+            { id: 2, name: 'tag2' },
+          ],
         },
       },
       {
@@ -119,6 +132,7 @@ describe('GET /download/:runId with type=csv', () => {
           priority: 1, // high
           type: 1, // security
           automationStatus: 1, // automation-not-required
+          Tags: [],
         },
       },
       {
@@ -133,6 +147,7 @@ describe('GET /download/:runId with type=csv', () => {
           priority: 2, // medium
           type: 2, // performance
           automationStatus: 2, // cannot-be-automated
+          Tags: [{ id: 3, name: 'tag3' }],
         },
       },
     ]);
@@ -161,6 +176,11 @@ describe('GET /download/:runId with type=csv', () => {
     expect(csvContent).toContain('new');
     expect(csvContent).toContain('inProgress');
     expect(csvContent).toContain('underReview');
+
+    // Check that tags are included in the CSV
+    expect(csvContent).toContain('tags');
+    expect(csvContent).toContain('tag1, tag2');
+    expect(csvContent).toContain('tag3');
 
     // Ensure numeric values are not present (except for id which should be numeric)
     const lines = csvContent.split('\n');

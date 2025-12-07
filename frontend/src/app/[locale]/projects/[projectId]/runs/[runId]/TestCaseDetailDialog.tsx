@@ -1,5 +1,5 @@
 import { useState, useEffect, useContext } from 'react';
-import { Button, Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Avatar, Textarea } from '@heroui/react';
+import { Button, Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Avatar, Textarea, Chip } from '@heroui/react';
 import { testTypes, templates } from '@/config/selection';
 import { RunMessages } from '@/types/run';
 import { CaseType, StepType } from '@/types/case';
@@ -101,6 +101,21 @@ export default function TestCaseDetailDialog({
             <div className="w-1/2">
               <p className={'font-bold'}>{messages.type}</p>
               <div>{testTypeMessages[testTypes[testCase.type].uid]}</div>
+            </div>
+          </div>
+
+          <div className="my-2">
+            <p className={'font-bold'}>{messages.tags}</p>
+            <div className="flex gap-1 flex-wrap mt-1">
+              {testCase.Tags && testCase.Tags.length > 0 ? (
+                testCase.Tags.map((tag) => (
+                  <Chip key={tag.id} size="sm" variant="flat">
+                    {tag.name}
+                  </Chip>
+                ))
+              ) : (
+                <span>-</span>
+              )}
             </div>
           </div>
         </ModalBody>

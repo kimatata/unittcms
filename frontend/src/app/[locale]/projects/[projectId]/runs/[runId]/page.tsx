@@ -35,6 +35,7 @@ export default function Page({ params }: { params: { projectId: string; runId: s
     expectedResult: t('expected_result'),
     detailsOfTheStep: t('details_of_the_step'),
     close: t('close'),
+    tags: t('tags'),
   };
 
   const rst = useTranslations('RunStatus');
