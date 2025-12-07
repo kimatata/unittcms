@@ -14,19 +14,9 @@ import {
   Selection,
   SortDescriptor,
 } from '@heroui/react';
-import {
-  ChevronDown,
-  MoveDiagonal,
-  MoreVertical,
-  CopyPlus,
-  CopyMinus,
-  Circle,
-  CircleCheck,
-  CircleDashed,
-  CircleX,
-  CircleSlash2,
-} from 'lucide-react';
+import { ChevronDown, MoveDiagonal, MoreVertical, CopyPlus, CopyMinus } from 'lucide-react';
 import TestCaseDetailDialog from './TestCaseDetailDialog';
+import RunCaseStatus from './RunCaseStatus';
 import { testRunCaseStatus } from '@/config/selection';
 import { CaseType } from '@/types/case';
 import { RunMessages } from '@/types/run';
@@ -103,20 +93,6 @@ export default function TestCaseSelector({
 
   const notIncludedCaseClass = 'text-neutral-200 dark:text-neutral-600';
 
-  const renderStatusIcon = (uid: string) => {
-    if (uid === 'untested') {
-      return <Circle size={16} color="#d4d4d8" />;
-    } else if (uid === 'passed') {
-      return <CircleCheck size={16} color="#17c964" />;
-    } else if (uid === 'retest') {
-      return <CircleDashed size={16} color="#f5a524" />;
-    } else if (uid === 'failed') {
-      return <CircleX size={16} color="#f31260" />;
-    } else if (uid === 'skipped') {
-      return <CircleSlash2 size={16} color="#52525b" />;
-    }
-  };
-
   const isCaseIncluded = (testCase: CaseType) => {
     let isIncluded = false;
     if (testCase.RunCases && testCase.RunCases.length > 0) {
@@ -161,7 +137,7 @@ export default function TestCaseSelector({
                 size="sm"
                 variant="light"
                 isDisabled={!isIncluded}
-                startContent={isIncluded && renderStatusIcon(testRunCaseStatus[runStatus].uid)}
+                startContent={isIncluded && <RunCaseStatus uid={testRunCaseStatus[runStatus].uid} />}
                 endContent={isIncluded && <ChevronDown size={16} />}
               >
                 <span className="w-12">
@@ -173,7 +149,7 @@ export default function TestCaseSelector({
               {testRunCaseStatus.map((runCaseStatus, index) => (
                 <DropdownItem
                   key={runCaseStatus.uid}
-                  startContent={renderStatusIcon(runCaseStatus.uid)}
+                  startContent={<RunCaseStatus uid={runCaseStatus.uid} />}
                   onPress={() => onChangeStatus(testCase.id, index)}
                 >
                   {testRunCaseStatusMessages[runCaseStatus.uid]}
