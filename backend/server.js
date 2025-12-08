@@ -50,13 +50,21 @@ app.use('/health', healthIndexRoute());
 import usersIndexRoute from './routes/users/index.js';
 import usersFindRoute from './routes/users/find.js';
 import usersSearchRoute from './routes/users/search.js';
-import usersUpdateRoute from './routes/users/update.js';
+import usersUpdateUsernameRoute from './routes/users/updateUsername.js';
+import usersUpdatePasswordRoute from './routes/users/updatePassword.js';
+import usersAdminResetPasswordRoute from './routes/users/adminResetPassword.js';
+import usersUpdateAvatarRoute from './routes/users/updateAvatar.js';
+import usersUpdateRoleRoute from './routes/users/updateRole.js';
 import signUpRoute from './routes/users/signup.js';
 import signInRoute from './routes/users/signin.js';
 app.use('/users', usersIndexRoute(sequelize));
 app.use('/users', usersFindRoute(sequelize));
 app.use('/users', usersSearchRoute(sequelize));
-app.use('/users', usersUpdateRoute(sequelize));
+app.use('/users', usersUpdateUsernameRoute(sequelize));
+app.use('/users', usersUpdatePasswordRoute(sequelize));
+app.use('/users', usersAdminResetPasswordRoute(sequelize));
+app.use('/users', usersUpdateAvatarRoute(sequelize));
+app.use('/users', usersUpdateRoleRoute(sequelize));
 app.use('/users', signUpRoute(sequelize));
 app.use('/users', signInRoute(sequelize));
 
@@ -94,6 +102,7 @@ import casesNewRoute from './routes/cases/new.js';
 import casesEditRoute from './routes/cases/edit.js';
 import casesDeleteRoute from './routes/cases/delete.js';
 import casesCloneRoute from './routes/cases/clone.js';
+import casesImportRoute from './routes/cases/import.js';
 app.use('/cases', casesDownloadRoute(sequelize));
 app.use('/cases', casesMoveRoute(sequelize));
 app.use('/cases', casesIndexRoute(sequelize));
@@ -103,6 +112,7 @@ app.use('/cases', casesNewRoute(sequelize));
 app.use('/cases', casesEditRoute(sequelize));
 app.use('/cases', casesDeleteRoute(sequelize));
 app.use('/cases', casesCloneRoute(sequelize));
+app.use('/cases', casesImportRoute(sequelize));
 
 // "/steps"
 import stepsEditRoute from './routes/steps/edit.js';
@@ -162,10 +172,8 @@ app.use('/tags', tagsDeleteRoute(sequelize));
 app.use('/tags', tagsEditRoute(sequelize));
 
 // "/casetags"
-import caseTagsNewRoute from './routes/casetags/new.js';
-import caseTagsDeleteRoute from './routes/casetags/delete.js';
-app.use('/casetags', caseTagsNewRoute(sequelize));
-app.use('/casetags', caseTagsDeleteRoute(sequelize));
+import caseTagsEditRoute from './routes/casetags/edit.js';
+app.use('/casetags', caseTagsEditRoute(sequelize));
 
 // "/home"
 import homeIndexRoute from './routes/home/index.js';

@@ -25,6 +25,7 @@ export type TokenType = {
 export type TokenContextType = {
   token: {
     access_token: string;
+    expires_at: number;
     user: UserType | null;
   };
   isSignedIn: () => boolean;
@@ -83,10 +84,15 @@ export type AdminMessages = {
   roleChanged: string;
   lostAdminAuth: string;
   atLeast: string;
+  resetPassword: string;
+  reset: string;
+  invalidPassword: string;
+  passwordNotMatch: string;
 };
 
 export type AccountDropDownMessages = {
   account: string;
+  profileSettings: string;
   signUp: string;
   signIn: string;
   signOut: string;

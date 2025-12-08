@@ -1,8 +1,8 @@
 'use client';
 import { useState, useEffect, useContext } from 'react';
 import { Button, Table, TableHeader, TableColumn, TableBody, TableRow, TableCell } from '@heroui/react';
-import Avatar from 'boring-avatars';
 import { Pencil, Trash } from 'lucide-react';
+import ProjectTagsManager from './ProjectTagsManager';
 import { SettingsMessages } from '@/types/settings';
 import { TokenContext } from '@/utils/TokenProvider';
 import { deleteProject, fetchProject, updateProject } from '@/utils/projectsControl';
@@ -13,6 +13,7 @@ import ProjectDialog from '@/components/ProjectDialog';
 import { UserType } from '@/types/user';
 import { findUser } from '@/utils/usersControl';
 import { logError } from '@/utils/errorHandler';
+import UserAvatar from '@/components/UserAvatar';
 
 type Props = {
   projectId: string;
@@ -130,12 +131,7 @@ export default function SettingsPage({ projectId, messages, projectDialogMessage
               <TableCell>{messages.projectOwner}</TableCell>
               <TableCell>
                 <div className="flex gap-2 items-center">
-                  <Avatar
-                    size={24}
-                    name={owner.username}
-                    variant="beam"
-                    colors={['#0A0310', '#49007E', '#FF005B', '#FF7D10', '#FFB238']}
-                  />
+                  <UserAvatar size={24} username={owner.username} avatarPath={owner.avatarPath} />
                   <p className="">{owner.username}</p>
                 </div>
               </TableCell>
@@ -146,6 +142,14 @@ export default function SettingsPage({ projectId, messages, projectDialogMessage
             </TableRow>
           </TableBody>
         </Table>
+      </div>
+
+      <div className="w-full p-3 flex items-center justify-between">
+        <h3 className="font-bold">{messages.tagManagement}</h3>
+      </div>
+
+      <div className="w-full p-3">
+        <ProjectTagsManager projectId={projectId} messages={messages} />
       </div>
 
       <ProjectDialog

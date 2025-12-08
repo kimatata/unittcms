@@ -1,12 +1,22 @@
 'use client';
 import { useState } from 'react';
-import { Button, Input, Textarea, Modal, ModalContent, ModalHeader, ModalBody, ModalFooter } from '@heroui/react';
+import {
+  Button,
+  Input,
+  Textarea,
+  Modal,
+  ModalContent,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+  Switch,
+} from '@heroui/react';
 import { CasesMessages } from '@/types/case';
 
 type Props = {
   isOpen: boolean;
   onCancel: () => void;
-  onSubmit: (title: string, description: string) => void;
+  onSubmit: (title: string, description: string, createMore: boolean) => void;
   messages: CasesMessages;
 };
 
@@ -22,6 +32,8 @@ export default function CaseDialog({ isOpen, onCancel, onSubmit, messages }: Pro
     isValid: false,
     errorMessage: '',
   });
+
+  const [createMore, setCreateMore] = useState(false);
 
   const clear = () => {
     setCaseName({
@@ -47,8 +59,23 @@ export default function CaseDialog({ isOpen, onCancel, onSubmit, messages }: Pro
       return;
     }
 
-    onSubmit(caseTitle.text, caseDescription.text);
-    clear();
+    onSubmit(caseTitle.text, caseDescription.text, createMore);
+
+    if (!createMore) {
+      clear();
+    } else {
+      // Reset form fields but keep dialog open
+      setCaseName({
+        isValid: false,
+        text: 'Untitled Case',
+        errorMessage: '',
+      });
+      setCaseDescription({
+        isValid: false,
+        text: '',
+        errorMessage: '',
+      });
+    }
   };
 
   return (
@@ -88,9 +115,9 @@ export default function CaseDialog({ isOpen, onCancel, onSubmit, messages }: Pro
           />
         </ModalBody>
         <ModalFooter>
-          <Button variant="light" onPress={onCancel}>
-            {messages.close}
-          </Button>
+          <Switch size="sm" isSelected={createMore} onValueChange={setCreateMore}>
+            {messages.createMore}
+          </Switch>
           <Button color="primary" onPress={validate}>
             {messages.create}
           </Button>

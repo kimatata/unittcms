@@ -3,7 +3,6 @@ const router = express.Router();
 import { DataTypes, Op } from 'sequelize';
 import authMiddleware from '../../middleware/auth.js';
 import editableMiddleware from '../../middleware/verifyEditable.js';
-
 import defineTag from '../../models/tags.js';
 
 export default function (sequelize) {
@@ -48,9 +47,19 @@ export default function (sequelize) {
         return res.status(409).json({ error: 'Tag name must be unique' });
       }
 
-      const [updated, [updatedTag]] = await Tags.update({ name: trimmedName }, { where: { id: tagId, projectId } });
+      const [updated] = await Tags.update({ name: trimmedName }, { where: { id: tagId, projectId } });
 
-      if (updated === 0) return res.status(404).json({ error: 'Tag not found' });
+      if (updated === 0) {
+        return res.status(404).json({ error: 'Tag not found' });
+      }
+
+      const updatedTag = await Tags.findOne({
+        where: { id: tagId, projectId },
+      });
+
+      if (!updatedTag) {
+        return res.status(404).json({ error: 'Tag not found after update' });
+      }
 
       res.status(200).json(updatedTag);
     } catch (error) {

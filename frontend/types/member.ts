@@ -15,4 +15,7 @@ export type MembersMessages = {
   close: string;
   add: string;
   areYouSure: string;
+  memberAdded: string;
+  roleChanged: string;
+  memberDeleted: string;
 };

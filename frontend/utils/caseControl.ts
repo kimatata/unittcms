@@ -26,11 +26,18 @@ async function fetchCase(jwt: string, caseId: number) {
   }
 }
 
-async function fetchCases(jwt: string, folderId: number, title?: string, priority?: number[], type?: number[]) {
+async function fetchCases(
+  jwt: string,
+  folderId: number,
+  search?: string,
+  priority?: number[],
+  type?: number[],
+  tag?: number[]
+) {
   const queryParams = [`folderId=${folderId}`];
 
-  if (title) {
-    queryParams.push(`title=${title}`);
+  if (search) {
+    queryParams.push(`search=${search}`);
   }
 
   if (priority && priority.length > 0) {
@@ -39,6 +46,10 @@ async function fetchCases(jwt: string, folderId: number, title?: string, priorit
 
   if (type && type.length > 0) {
     queryParams.push(`type=${type.join(',')}`);
+  }
+
+  if (tag && tag.length > 0) {
+    queryParams.push(`tag=${tag.join(',')}`);
   }
 
   const query = queryParams.length > 0 ? `?${queryParams.join('&')}` : '';
@@ -224,4 +235,25 @@ async function exportCases(jwt: string, folderId: number, type: string) {
   }
 }
 
-export { fetchCase, fetchCases, updateCase, createCase, deleteCases, cloneCases, exportCases };
+async function importCases(jwt: string, folderId: number, file: File) {
+  const url = `${apiServer}/cases/import?folderId=${folderId}`;
+  const formData = new FormData();
+  formData.append('file', file);
+
+  try {
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${jwt}`,
+      },
+      body: formData,
+    });
+
+    const data = await response.json();
+    return data;
+  } catch (error: unknown) {
+    logError('Error importing data', error);
+  }
+}
+
+export { fetchCase, fetchCases, updateCase, createCase, deleteCases, cloneCases, exportCases, importCases };

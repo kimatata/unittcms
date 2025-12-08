@@ -77,6 +77,7 @@
     "projects": "Projetos",
     "admin": "Administração",
     "account": "Conta",
+    "profile_settings": "Configurações do Perfil",
     "signup": "Cadastre-se",
     "signin": "Entrar",
     "signout": "Sair",
@@ -112,7 +113,27 @@
     "public": "Público",
     "private": "Privado",
     "not_own_any_projects": "Você não possui nenhum projeto.",
-    "find_projects": "Encontrar projetos"
+    "find_projects": "Encontrar projetos",
+    "profile_settings": "Configurações do Perfil",
+    "change_username": "Alterar Nome de Usuário",
+    "new_username": "Novo Nome de Usuário",
+    "update_username": "Atualizar Nome de Usuário",
+    "username_updated": "Nome de usuário atualizado com sucesso",
+    "change_password": "Alterar Senha",
+    "current_password": "Senha Atual",
+    "new_password": "Nova Senha",
+    "confirm_new_password": "Confirmar Nova Senha",
+    "update_password": "Atualizar Senha",
+    "password_updated": "Senha atualizada com sucesso",
+    "change_avatar": "Alterar Avatar",
+    "upload_avatar": "Enviar Avatar",
+    "remove_avatar": "Remover Avatar",
+    "avatar_updated": "Avatar atualizado com sucesso",
+    "avatar_removed": "Avatar removido com sucesso",
+    "max_file_size_5mb": "Tamanho máximo do arquivo: 5MB",
+    "only_images_allowed": "Apenas arquivos de imagem são permitidos",
+    "current_password_incorrect": "A senha atual está incorreta",
+    "update_error": "Falha na atualização"
   },
   "Health": {
     "health_check": "Verificação de Saúde",
@@ -138,7 +159,11 @@
     "quit_confirm": "Se você renunciar aos seus privilégios de administrador, não poderá mais acessar a página de administração.",
     "role_changed": "Função alterada",
     "lost_admin_auth": "Perdeu a autoridade de administrador",
-    "at_least": "É necessário pelo menos um administrador"
+    "at_least": "É necessário pelo menos um administrador",
+    "reset_password": "Redefinir senha",
+    "reset": "Redefinir",
+    "invalid_password": "A senha deve ter pelo menos 8 caracteres",
+    "password_not_match": "A senha não corresponde"
   },
   "Projects": {
     "project_list": "Lista de Projetos",
@@ -196,12 +221,13 @@
     "delete": "Excluir",
     "close": "Fechar",
     "are_you_sure": "Tem certeza de que deseja excluir os casos de teste?",
-    "new_test_case": "Novo Caso de Teste",
+    "new_test_case": "Novo",
     "export": "Exportar",
     "status": "Status",
     "no_cases_found": "Nenhum caso de teste encontrado",
     "case_title": "Título do Caso de Teste",
     "case_description": "Descrição do Caso de Teste",
+    "case_title_or_description": "Título ou descrição do caso de teste",
     "create": "Criar",
     "please_enter": "Por favor, insira o título do caso de teste",
     "filter": "Filtrar",
@@ -216,7 +242,18 @@
     "move": "Mover",
     "clone": "Clonar",
     "cases_moved": "Casos de teste movidos",
-    "cases_cloned": "Casos de teste clonados"
+    "cases_cloned": "Casos de teste clonados",
+    "tags": "Tags",
+    "select_tags": "Selecionar tags",
+    "import": "Importar",
+    "import_cases": "Importar Casos de Teste",
+    "import_available": "Você pode importar casos de teste a partir de um arquivo Excel (xlsx, xls). O arquivo Excel a ser importado deve seguir o formato especificado.",
+    "download_template": "Baixar Modelo",
+    "click_to_upload": "Clique para enviar",
+    "or_drag_and_drop": " ou arraste e solte",
+    "max_file_size": "Tamanho máx. do arquivo",
+    "cases_imported": "Casos de teste importados",
+    "create_more": "Criar mais"
   },
   "Case": {
     "back_to_cases": "Voltar para os casos de teste",
@@ -248,7 +285,16 @@
     "click_to_upload": "Clique para enviar",
     "or_drag_and_drop": " ou arraste e solte",
     "max_file_size": "Tamanho máx. do arquivo",
-    "are_you_sure_leave": "Tem certeza de que deseja sair da página?"
+    "are_you_sure_leave": "Tem certeza de que deseja sair da página?",
+    "tags": "Tags",
+    "create_tag": "Criar tag",
+    "max_tags_limit": "Limite máximo de tags",
+    "tag_already_exists": "Tag já existe",
+    "tag_created_and_added": "Tag criada e adicionada",
+    "error_creating_tag": "Erro ao criar tag",
+    "error_updating_test_case": "Erro ao atualizar caso de teste",
+    "search_or_create_tag": "Buscar ou criar tag",
+    "no_tags_selected": "Nenhuma tag selecionada"
   },
   "Runs": {
     "run_list": "Lista de Execuções de Teste",
@@ -298,7 +344,16 @@
     "preconditions": "Pré-condições",
     "expected_result": "Resultado esperado",
     "details_of_the_step": "Detalhes do passo",
-    "close": "Fechar"
+    "close": "Fechar",
+    "filter": "Filtrar",
+    "clear_all": "Limpar tudo",
+    "apply": "Aplicar",
+    "select_status": "Selecionar status",
+    "please_save": "Por favor, salve as alterações",
+    "case_title_or_description": "Título ou descrição do caso de teste",
+    "selected": "Selecionado",
+    "tags": "Tags",
+    "select_tags": "Selecionar tags"
   },
   "Members": {
     "member_management": "Gerenciamento de Membros",
@@ -316,7 +371,10 @@
     "user_name_or_email": "Nome de usuário ou e-mail",
     "close": "Fechar",
     "add": "Adicionar",
-    "are_you_sure": "Tem certeza de que deseja excluir o membro?"
+    "are_you_sure": "Tem certeza de que deseja excluir o membro?",
+    "member_added": "Membro adicionado",
+    "role_changed": "Função do membro alterada",
+    "member_deleted": "Membro excluído"
   },
   "Settings": {
     "project_management": "Gerenciamento de Projetos",
@@ -330,6 +388,21 @@
     "delete_project": "Excluir Projeto",
     "delete": "Excluir",
     "close": "Fechar",
-    "are_you_sure": "Tem certeza de que deseja excluir o projeto?"
+    "are_you_sure": "Tem certeza de que deseja excluir o projeto?",
+    "tag_management": "Gerenciamento de Tags",
+    "tag_name": "Nome da Tag",
+    "add_tag": "Adicionar Tag",
+    "no_tags_available": "Nenhuma tag disponível",
+    "delete_tag": "Excluir Tag",
+    "are_you_sure_delete_tag": "Tem certeza de que deseja excluir esta tag?",
+    "tag_created": "Tag criada com sucesso.",
+    "tag_updated": "Tag atualizada com sucesso.",
+    "tag_deleted": "Tag excluída com sucesso.",
+    "tag_error_empty": "O nome da tag não pode estar vazio.",
+    "tag_error_min_length": "O nome da tag deve ter pelo menos 3 caracteres.",
+    "tag_error_max_length": "O nome da tag não pode exceder 20 caracteres.",
+    "tag_error_create": "Falha ao criar tag. Por favor, tente novamente.",
+    "tag_error_update": "Falha ao atualizar tag. Por favor, tente novamente.",
+    "tag_error_delete": "Falha ao excluir tag. Por favor, tente novamente."
   }
 }

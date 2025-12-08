@@ -1,6 +1,6 @@
 'use client';
 import { useState, useEffect, useContext } from 'react';
-import { Button } from '@heroui/react';
+import { addToast, Button } from '@heroui/react';
 import { Plus } from 'lucide-react';
 import MembersTable from './MembersTable';
 import AddMemberDialog from './AddMemberDialog';
@@ -45,6 +45,11 @@ export default function MembersPage({ projectId, messages }: Props) {
       const updateMembers = [...members];
       updateMembers.push(newMember);
       setMembers(updateMembers);
+      addToast({
+        title: 'Success',
+        color: 'success',
+        description: messages.memberAdded,
+      });
     }
 
     setIsDialogOpen(false);
@@ -68,12 +73,22 @@ export default function MembersPage({ projectId, messages }: Props) {
       await deleteMember(context.token.access_token, deleteMemberId, Number(projectId));
       setMembers(members.filter((member) => member.User.id !== deleteMemberId));
       closeDeleteConfirmDialog();
+      addToast({
+        title: 'Success',
+        color: 'success',
+        description: messages.memberDeleted,
+      });
     }
   };
 
   const handleChangeRole = async (userEdit: UserType, role: number) => {
     if (userEdit.id) {
       await updateMember(context.token.access_token, userEdit.id, Number(projectId), role);
+      addToast({
+        title: 'Success',
+        color: 'success',
+        description: messages.roleChanged,
+      });
       setMembers((prevMembers) => {
         return prevMembers.map((member) => {
           if (member.User.id === userEdit.id) {

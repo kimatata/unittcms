@@ -2,14 +2,15 @@
 import { useState, useEffect, useContext } from 'react';
 import { Button, addToast } from '@heroui/react';
 import UsersTable from './UsersTable';
+import PasswordResetDialog from './PasswordResetDialog';
+import DeleteConfirmDialog from '@/components/DeleteConfirmDialog';
 import { UserType, AdminMessages } from '@/types/user';
 import { TokenContext } from '@/utils/TokenProvider';
 import { useRouter } from '@/src/i18n/routing';
 import Config from '@/config/config';
 import { LocaleCodeType } from '@/types/locale';
-import { updateUserRole } from '@/utils/usersControl';
+import { updateUserRole, adminResetPassword } from '@/utils/usersControl';
 import { roles } from '@/config/selection';
-import DeleteConfirmDialog from '@/components/DeleteConfirmDialog';
 import { logError } from '@/utils/errorHandler';
 const apiServer = Config.apiServer;
 
@@ -84,7 +85,8 @@ export default function AdminPage({ messages, locale }: Props) {
       const data = await updateUserRole(tokenContext.token.access_token, userEdit.id, role);
       if (data.user) {
         addToast({
-          title: 'Info',
+          title: 'Success',
+          color: 'success',
           description: messages.roleChanged,
         });
         setUsers((prevUsers) => {
@@ -106,16 +108,41 @@ export default function AdminPage({ messages, locale }: Props) {
 
       if (data && data.user) {
         addToast({
-          title: 'Info',
+          title: 'Success',
+          color: 'success',
           description: messages.lostAdminAuth,
         });
         router.push(`/`, { locale: locale });
       } else {
+        setIsConfirmDialogOpen(false);
         addToast({
-          title: 'Info',
+          title: 'Error',
+          color: 'danger',
           description: messages.atLeast,
         });
       }
+    }
+  };
+
+  // Reset password dialog state
+  const [isResetDialogOpen, setIsResetDialogOpen] = useState(false);
+  const [resetTarget, setResetTarget] = useState<UserType | null>(null);
+
+  const openResetDialog = (user: UserType) => {
+    setResetTarget(user);
+    setIsResetDialogOpen(true);
+  };
+
+  const onReset = async (newPassword: string) => {
+    setIsResetDialogOpen(false);
+    if (!resetTarget || !resetTarget.id) return;
+
+    try {
+      await adminResetPassword(tokenContext.token.access_token, resetTarget.id, newPassword);
+      addToast({ title: 'Success', color: 'success', description: 'Password updated' });
+      setResetTarget(null);
+    } catch (error: unknown) {
+      logError('Failed to reset password', error);
     }
   };
 
@@ -126,7 +153,13 @@ export default function AdminPage({ messages, locale }: Props) {
           <h3 className="font-bold">{messages.userManagement}</h3>
         </div>
 
-        <UsersTable users={users} myself={myself} onChangeRole={handleChangeRole} messages={messages} />
+        <UsersTable
+          users={users}
+          myself={myself}
+          onChangeRole={handleChangeRole}
+          openResetDialog={openResetDialog}
+          messages={messages}
+        />
         <Button className="mt-4" color="danger" variant="bordered" onPress={() => setIsConfirmDialogOpen(true)}>
           {messages.quitAdmin}
         </Button>
@@ -139,6 +172,13 @@ export default function AdminPage({ messages, locale }: Props) {
         closeText={messages.close}
         confirmText={messages.quitConfirm}
         deleteText={messages.quit}
+      />
+
+      <PasswordResetDialog
+        isOpen={isResetDialogOpen}
+        onCancel={() => setIsResetDialogOpen(false)}
+        onReset={onReset}
+        messages={messages}
       />
     </>
   );

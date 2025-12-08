@@ -10,6 +10,7 @@ export default function Header(params: { locale: LocaleCodeType }) {
     docs: t('docs'),
     roadmap: t('roadmap'),
     account: t('account'),
+    profileSettings: t('profile_settings'),
     signUp: t('signup'),
     signIn: t('signin'),
     signOut: t('signout'),

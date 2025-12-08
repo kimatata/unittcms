@@ -13,6 +13,10 @@ type CaseType = {
   Steps?: StepType[];
   RunCases?: RunCaseType[];
   Attachments?: AttachmentType[];
+  Tags?: {
+    id: number;
+    name: string;
+  }[];
 };
 
 type CaseStepType = {
@@ -75,6 +79,7 @@ type CasesMessages = {
   noCasesFound: string;
   caseTitle: string;
   caseDescription: string;
+  caseTitleOrDescription: string;
   create: string;
   pleaseEnter: string;
   filter: string;
@@ -89,7 +94,18 @@ type CasesMessages = {
   move: string;
   clone: string;
   casesMoved: string;
+  tags: string;
   casesCloned: string;
+  selectTags: string;
+  import: string;
+  importCases: string;
+  importAvailable: string;
+  downloadTemplate: string;
+  clickToUpload: string;
+  orDragAndDrop: string;
+  maxFileSize: string;
+  casesImported: string;
+  createMore: string;
 };
 
 type CaseMessages = {
@@ -123,6 +139,15 @@ type CaseMessages = {
   orDragAndDrop: string;
   maxFileSize: string;
   areYouSureLeave: string;
+  tags: string;
+  createTag: string;
+  maxTagsLimit: string;
+  tagAlreadyExists: string;
+  tagCreatedAndAdded: string;
+  errorCreatingTag: string;
+  errorUpdatingTestCase: string;
+  searchOrCreateTag: string;
+  noTagsSelected: string;
 };
 
 export type { CaseType, StepType, AttachmentType, CasesMessages, CaseMessages };

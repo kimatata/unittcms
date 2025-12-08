@@ -77,6 +77,7 @@
     "projects": "Projects",
     "admin": "Administration",
     "account": "Account",
+    "profile_settings": "Profile Settings",
     "signup": "Sign up",
     "signin": "Sign in",
     "signout": "Sign out",
@@ -112,7 +113,27 @@
     "public": "Public",
     "private": "Private",
     "not_own_any_projects": "You don't own any projects.",
-    "find_projects": "Find projects"
+    "find_projects": "Find projects",
+    "profile_settings": "Profile Settings",
+    "change_username": "Change Username",
+    "new_username": "New Username",
+    "update_username": "Update Username",
+    "username_updated": "Username updated successfully",
+    "change_password": "Change Password",
+    "current_password": "Current Password",
+    "new_password": "New Password",
+    "confirm_new_password": "Confirm New Password",
+    "update_password": "Update Password",
+    "password_updated": "Password updated successfully",
+    "change_avatar": "Change Avatar",
+    "upload_avatar": "Upload Avatar",
+    "remove_avatar": "Remove Avatar",
+    "avatar_updated": "Avatar updated successfully",
+    "avatar_removed": "Avatar removed successfully",
+    "max_file_size_5mb": "Max. file size: 5MB",
+    "only_images_allowed": "Only image files are allowed",
+    "current_password_incorrect": "Current password is incorrect",
+    "update_error": "Update failed"
   },
   "Health": {
     "health_check": "Health Check",
@@ -138,7 +159,11 @@
     "quit_confirm": "If you relinquish your administrator privileges, you will no longer be able to access the administration page.",
     "role_changed": "Role changed",
     "lost_admin_auth": "Lost admin authority",
-    "at_least": "At least one administrator is required"
+    "at_least": "At least one administrator is required",
+    "reset_password": "Reset password",
+    "reset": "Reset",
+    "invalid_password": "Password must be at least 8 characters",
+    "password_not_match": "Pasword does not match"
   },
   "Projects": {
     "project_list": "Project List",
@@ -196,12 +221,13 @@
     "delete": "Delete",
     "close": "Close",
     "are_you_sure": "Are you sure you want to delete test cases?",
-    "new_test_case": "New Test Case",
+    "new_test_case": "New",
     "export": "Export",
     "status": "Status",
     "no_cases_found": "No test cases found",
     "case_title": "Test Case Title",
     "case_description": "Test Case Description",
+    "case_title_or_description": "Test case title or description",
     "create": "Create",
     "please_enter": "Please enter test case title",
     "filter": "Filter",
@@ -216,7 +242,18 @@
     "move": "Move",
     "clone": "Clone",
     "cases_moved": "Test cases moved",
-    "cases_cloned": "Test cases cloned"
+    "cases_cloned": "Test cases cloned",
+    "tags": "Tags",
+    "select_tags": "Select tags",
+    "import": "Import",
+    "import_cases": "Import Test Cases",
+    "import_available": "You can import test cases from Excel file (xlsx, xls). The Excel file to be imported must follow the specified format.",
+    "download_template": "Download Template",
+    "click_to_upload": "Click to upload",
+    "or_drag_and_drop": " or drag and drop",
+    "max_file_size": "Max. file size",
+    "cases_imported": "Test cases imported",
+    "create_more": "Create more"
   },
   "Case": {
     "back_to_cases": "Back to test cases",
@@ -248,7 +285,16 @@
     "click_to_upload": "Click to upload",
     "or_drag_and_drop": " or drag and drop",
     "max_file_size": "Max. file size",
-    "are_you_sure_leave": "Are you sure you want to leave the page?"
+    "are_you_sure_leave": "Are you sure you want to leave the page?",
+    "tags": "Tags",
+    "create_tag": "Create tag",
+    "max_tags_limit": "Max. tags limit",
+    "tag_already_exists": "Tag already exists",
+    "tag_created_and_added": "Tag created and added",
+    "error_creating_tag": "Error creating tag",
+    "error_updating_test_case": "Error updating test case",
+    "search_or_create_tag": "Search or create tag",
+    "no_tags_selected": "No tags selected"
   },
   "Runs": {
     "run_list": "Test Run List",
@@ -298,7 +344,16 @@
     "preconditions": "Preconditions",
     "expected_result": "Expected result",
     "details_of_the_step": "Details of the step",
-    "close": "Close"
+    "close": "Close",
+    "filter": "Filter",
+    "clear_all": "Clear all",
+    "apply": "Apply",
+    "select_status": "Select status",
+    "please_save": "Please save changes",
+    "case_title_or_description": "Test case title or description",
+    "selected": "Selected",
+    "tags": "Tags",
+    "select_tags": "Select tags"
   },
   "Members": {
     "member_management": "Member Management",
@@ -316,7 +371,10 @@
     "user_name_or_email": "User name or email",
     "close": "Close",
     "add": "Add",
-    "are_you_sure": "Are you sure you want to delete member?"
+    "are_you_sure": "Are you sure you want to delete member?",
+    "member_added": "Member added",
+    "role_changed": "Member role changed",
+    "member_deleted": "Member deleted"
   },
   "Settings": {
     "project_management": "Project Management",
@@ -330,6 +388,21 @@
     "delete_project": "Delete Project",
     "delete": "Delete",
     "close": "Close",
-    "are_you_sure": "Are you sure you want to delete the project?"
+    "are_you_sure": "Are you sure you want to delete the project?",
+    "tag_management": "Tag Management",
+    "tag_name": "Tag Name",
+    "add_tag": "Add Tag",
+    "no_tags_available": "No tags available",
+    "delete_tag": "Delete Tag",
+    "are_you_sure_delete_tag": "Are you sure you want to delete this tag?",
+    "tag_created": "Tag created successfully.",
+    "tag_updated": "Tag updated successfully.",
+    "tag_deleted": "Tag deleted successfully.",
+    "tag_error_empty": "Tag name cannot be empty.",
+    "tag_error_min_length": "Tag name must be at least 3 characters long.",
+    "tag_error_max_length": "Tag name cannot exceed 20 characters.",
+    "tag_error_create": "Failed to create tag. Please try again.",
+    "tag_error_update": "Failed to update tag. Please try again.",
+    "tag_error_delete": "Failed to delete tag. Please try again."
   }
 }

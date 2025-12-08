@@ -15,6 +15,9 @@ import {
   DropdownItem,
   addToast,
   Badge,
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
 } from '@heroui/react';
 import {
   Save,
@@ -29,6 +32,7 @@ import {
   FileJson,
   ChevronRight,
   Folder,
+  Filter,
 } from 'lucide-react';
 import { useTheme } from 'next-themes';
 import { NodeApi, Tree } from 'react-arborist';
@@ -44,6 +48,7 @@ import {
 import { fetchFolders } from '../../folders/foldersControl';
 import RunProgressChart from './RunPregressDonutChart';
 import TestCaseSelector from './TestCaseSelector';
+import TestRunFilter from './TestRunFilter';
 import { useRouter } from '@/src/i18n/routing';
 import { testRunStatus } from '@/config/selection';
 import { RunType, RunStatusCountType, RunMessages } from '@/types/run';
@@ -102,6 +107,9 @@ export default function RunEditor({
   const [isNameInvalid] = useState<boolean>(false);
   const [isUpdating, setIsUpdating] = useState<boolean>(false);
   const [isDirty, setIsDirty] = useState(false);
+  const [searchFilter, setSearchFilter] = useState('');
+  const [statusFilter, setStatusFilter] = useState<number[]>([]);
+  const [tagFilter, setTagFilter] = useState<number[]>([]);
   const router = useRouter();
   useFormGuard(isDirty, messages.areYouSureLeave);
 
@@ -111,8 +119,15 @@ export default function RunEditor({
     setRunStatusCounts(statusCounts);
   };
 
-  const initTestCases = async () => {
-    const casesData = await fetchProjectCases(tokenContext.token.access_token, Number(projectId));
+  const initTestCases = async (search?: string, status?: string[], tag?: string[]) => {
+    const casesData = await fetchProjectCases(
+      tokenContext.token.access_token,
+      Number(projectId),
+      Number(runId),
+      search,
+      status,
+      tag
+    );
     casesData.forEach((testCase: CaseType) => {
       if (testCase.RunCases && testCase.RunCases.length > 0) {
         testCase.RunCases[0].editState = 'notChanged';
@@ -192,11 +207,35 @@ export default function RunEditor({
     await initTestCases();
 
     addToast({
-      title: 'Info',
+      title: 'Success',
+      color: 'success',
       description: messages.updatedTestRun,
     });
     setIsUpdating(false);
     setIsDirty(false);
+  };
+
+  // **************************************************************************
+  // Filter
+  // **************************************************************************
+  const [showFilter, setShowFilter] = useState(false);
+  const [activeFilterNum, setActiveFilterNum] = useState(0);
+
+  const onFilterChange = async (search: string, status: number[], tag: number[]) => {
+    if (isDirty) {
+      addToast({
+        title: 'Error',
+        color: 'danger',
+        description: messages.pleaseSave,
+      });
+      return;
+    }
+
+    setSearchFilter(search);
+    setStatusFilter(status);
+    setTagFilter(tag);
+    setActiveFilterNum((search ? 1 : 0) + (status.length > 0 ? 1 : 0) + (tag.length > 0 ? 1 : 0));
+    await initTestCases(search, status.map(String), tag.map(String));
   };
 
   return (
@@ -216,6 +255,41 @@ export default function RunEditor({
           <h3 className="font-bold ms-2">{testRun.name}</h3>
         </div>
         <div className="flex items-center">
+          <Popover placement="bottom" isOpen={showFilter} onOpenChange={(open) => setShowFilter(open)}>
+            <Badge
+              color="danger"
+              content={activeFilterNum}
+              isInvisible={activeFilterNum === 0}
+              shape="circle"
+              placement="top-left"
+            >
+              <PopoverTrigger>
+                <Button
+                  startContent={<Filter size={16} />}
+                  endContent={<ChevronDown size={16} />}
+                  size="sm"
+                  variant="bordered"
+                  className="me-2"
+                >
+                  {messages.filter}
+                </Button>
+              </PopoverTrigger>
+            </Badge>
+            <PopoverContent>
+              <TestRunFilter
+                messages={messages}
+                testRunCaseStatusMessages={testRunCaseStatusMessages}
+                activeSearchFilter={searchFilter}
+                activeStatusFilters={statusFilter}
+                activeTagFilters={tagFilter}
+                projectId={projectId}
+                onFilterChange={(newTitleFilter, newStatusFilters, newTagFilters) => {
+                  setShowFilter(false);
+                  onFilterChange(newTitleFilter, newStatusFilters, newTagFilters);
+                }}
+              />
+            </PopoverContent>
+          </Popover>
           <Dropdown placement="bottom-end">
             <DropdownTrigger>
               <Button

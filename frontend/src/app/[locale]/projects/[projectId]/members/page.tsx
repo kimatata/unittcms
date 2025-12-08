@@ -30,6 +30,9 @@ export default function Page({ params }: { params: { projectId: string; locale: 
     close: t('close'),
     add: t('add'),
     areYouSure: t('are_you_sure'),
+    memberAdded: t('member_added'),
+    roleChanged: t('role_changed'),
+    memberDeleted: t('member_deleted'),
   };
 
   return (

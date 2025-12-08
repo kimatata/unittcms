@@ -14,11 +14,13 @@ import {
   Checkbox,
   Card,
   CardBody,
+  Chip,
 } from '@heroui/react';
 import {
   Plus,
   MoreVertical,
   Trash,
+  FileUp,
   FileDown,
   ChevronUp,
   ChevronDown,
@@ -44,11 +46,13 @@ type Props = {
   onCreateCase: () => void;
   onDeleteCase: (caseId: number) => void;
   onDeleteCases: (caseIds: number[]) => void;
+  onShowImportDialog: () => void;
   onExportCases: (type: string) => void;
-  onFilterChange: (query: string, priorities: number[], types: number[]) => void;
-  activeTitleFilter: string;
+  onFilterChange: (query: string, priorities: number[], types: number[], tag: number[]) => void;
+  activeSearchFilter: string;
   activePriorityFilters: number[];
   activeTypeFilters: number[];
+  activeTagFilters: number[];
   messages: CasesMessages;
   priorityMessages: PriorityMessages;
   testTypeMessages: TestTypeMessages;
@@ -62,11 +66,13 @@ export default function TestCaseTable({
   onCreateCase,
   onDeleteCase,
   onDeleteCases,
+  onShowImportDialog,
   onExportCases,
   onFilterChange,
-  activeTitleFilter,
+  activeSearchFilter,
   activePriorityFilters,
   activeTypeFilters,
+  activeTagFilters,
   messages,
   priorityMessages,
   testTypeMessages,
@@ -81,6 +87,7 @@ export default function TestCaseTable({
     { name: messages.id, uid: 'id', sortable: true },
     { name: messages.title, uid: 'title', sortable: true },
     { name: messages.priority, uid: 'priority', sortable: true },
+    { name: messages.tags, uid: 'tags' },
     { name: messages.actions, uid: 'actions' },
   ];
 
@@ -101,12 +108,23 @@ export default function TestCaseTable({
             >
               {highlightSearchTerm({
                 text: cellValue as string,
-                searchTerm: activeTitleFilter,
+                searchTerm: activeSearchFilter,
               })}
             </Link>
           );
         case 'priority':
           return <TestCasePriority priorityValue={cellValue as number} priorityMessages={priorityMessages} />;
+
+        case 'tags':
+          return (
+            <div className="space-x-2">
+              {testCase.Tags?.map((tag) => (
+                <Chip size="sm" key={tag.id}>
+                  {tag.name}
+                </Chip>
+              ))}
+            </div>
+          );
         case 'actions':
           return (
             <Dropdown>
@@ -132,14 +150,15 @@ export default function TestCaseTable({
       }
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [activeTitleFilter]
+    [activeSearchFilter]
   );
 
   // **************************************************************************
   // filter test case
   // **************************************************************************
   const [showFilter, setShowFilter] = useState(false);
-  const activeFilterNum = (activeTitleFilter ? 1 : 0) + activePriorityFilters.length + activeTypeFilters.length;
+  const activeFilterNum =
+    (activeSearchFilter ? 1 : 0) + activePriorityFilters.length + activeTypeFilters.length + activeTagFilters.length;
 
   // **************************************************************************
   // select test case
@@ -302,12 +321,14 @@ export default function TestCaseTable({
                   messages={messages}
                   priorityMessages={priorityMessages}
                   testTypeMessages={testTypeMessages}
-                  activeTitleFilter={activeTitleFilter}
+                  activeSearchFilter={activeSearchFilter}
                   activePriorityFilters={activePriorityFilters}
                   activeTypeFilters={activeTypeFilters}
-                  onFilterChange={(newTitleFilter, newPriorityFilters, newTypeFilters) => {
+                  activeTagFilters={activeTagFilters}
+                  projectId={projectId}
+                  onFilterChange={(newTitleFilter, newPriorityFilters, newTypeFilters, newTagFilters) => {
                     setShowFilter(false);
-                    onFilterChange(newTitleFilter, newPriorityFilters, newTypeFilters);
+                    onFilterChange(newTitleFilter, newPriorityFilters, newTypeFilters, newTagFilters);
                   }}
                 />
               </PopoverContent>
@@ -337,6 +358,15 @@ export default function TestCaseTable({
                 </DropdownItem>
               </DropdownMenu>
             </Dropdown>
+            <Button
+              startContent={<FileUp size={16} />}
+              size="sm"
+              variant="bordered"
+              className="me-2"
+              onPress={onShowImportDialog}
+            >
+              {messages.import}
+            </Button>
             <Button
               startContent={<Plus size={16} />}
               size="sm"
