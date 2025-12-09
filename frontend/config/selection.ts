@@ -13,6 +13,7 @@ const locales: LocaleType[] = [
   { code: 'en', name: 'English' },
   { code: 'ja', name: '日本語' },
   { code: 'pt-BR', name: 'Português' },
+  { code: 'zh-CN', name: '简体中文' },
 ];
 
 // The status of each test run
