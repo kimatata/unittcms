@@ -2,6 +2,8 @@ import { describe, it, expect } from 'vitest';
 import en from './en.json';
 import ja from './ja.json';
 import ptBR from './pt-BR.json';
+import zhCN from './zh-CN.json';
+import de from './de.json';
 
 function getAllKeys(obj: unknown, prefix = ''): string[] {
   if (typeof obj !== 'object' || obj === null) return [];
@@ -19,6 +21,8 @@ describe('Locale message keys consistency', () => {
     { name: 'en', data: en },
     { name: 'ja', data: ja },
     { name: 'pt-BR', data: ptBR },
+    { name: 'zh-CN', data: zhCN },
+    { name: 'de', data: de },
   ];
 
   const base = locales[0];
