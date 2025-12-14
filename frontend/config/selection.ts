@@ -9,10 +9,17 @@ const memberRoles: MemberRoleType[] = [{ uid: 'manager' }, { uid: 'developer' },
 
 const categoricalPalette = ['#fba91e', '#6ea56c', '#3ac6e1', '#feda2f', '#f15f47', '#244470', '#9c80bb', '#f595a6'];
 
+/**
+ * Locales are grouped by script: Latin-based locales first, followed by CJK.
+ * Within Latin-based group, entries are sorted lexicographically by their BCP 47 codes.
+ * This matches common UI patterns.
+ */
 const locales: LocaleType[] = [
+  { code: 'de', name: 'Deutsch' },
   { code: 'en', name: 'English' },
-  { code: 'ja', name: '日本語' },
   { code: 'pt-BR', name: 'Português' },
+  { code: 'zh-CN', name: '简体中文' },
+  { code: 'ja', name: '日本語' },
 ];
 
 // The status of each test run
