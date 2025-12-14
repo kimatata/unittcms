@@ -11,8 +11,8 @@ const categoricalPalette = ['#fba91e', '#6ea56c', '#3ac6e1', '#feda2f', '#f15f47
 
 /**
  * Locales are grouped by script: Latin-based locales first, followed by CJK.
- * Within each group, entries are sorted lexicographically by their BCP 47 codes.
- * This matches common UI patterns where non-Latin scripts are listed after Latin ones.
+ * Within Latin-based group, entries are sorted lexicographically by their BCP 47 codes.
+ * This matches common UI patterns.
  */
 const locales: LocaleType[] = [
   { code: 'de', name: 'Deutsch' },
