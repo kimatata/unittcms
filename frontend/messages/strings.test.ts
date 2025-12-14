@@ -1,9 +1,9 @@
 import { describe, it, expect } from 'vitest';
+import de from './de.json';
 import en from './en.json';
-import ja from './ja.json';
 import ptBR from './pt-BR.json';
 import zhCN from './zh-CN.json';
-import de from './de.json';
+import ja from './ja.json';
 
 function getAllKeys(obj: unknown, prefix = ''): string[] {
   if (typeof obj !== 'object' || obj === null) return [];
@@ -25,7 +25,8 @@ describe('Locale message keys consistency', () => {
     { name: 'ja', data: ja },
   ];
 
-  const base = locales[0];
+  const base = locales.find((locale) => locale.name === 'en');
+  if (!base) throw new Error('Base locale not found');
   const baseKeys = getAllKeys(base.data);
 
   for (const locale of locales.slice(1)) {
