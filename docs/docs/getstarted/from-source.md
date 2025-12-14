@@ -8,7 +8,7 @@ While using Docker is the recommended and easiest way to run UnitTCMS, this chap
 
 :::info[Prerequisite]
 
-Prerequisite: v20 or higher node must be installed.
+Prerequisite: v22 or higher node must be installed.
 
 :::
 

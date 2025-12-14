@@ -18,11 +18,11 @@ function getAllKeys(obj: unknown, prefix = ''): string[] {
 
 describe('Locale message keys consistency', () => {
   const locales = [
+    { name: 'de', data: de },
     { name: 'en', data: en },
-    { name: 'ja', data: ja },
     { name: 'pt-BR', data: ptBR },
     { name: 'zh-CN', data: zhCN },
-    { name: 'de', data: de },
+    { name: 'ja', data: ja },
   ];
 
   const base = locales[0];
