@@ -83,10 +83,10 @@ Support team development by adding or removing members from projects. You can as
 
 UnitTCMS currently supports the following languages:
 
+- German (de)
 - English (en)
-- Japanese (ja)
 - Portuguese (pt-BR)
 - Chinese (zh-CN)
-- German (de)
+- Japanese (ja)
 
 If you would like to add support for another language, feel free to submit a pull request. For reference, you can see how Portuguese was added in [PR #260](https://github.com/kimatata/unittcms/pull/260).
