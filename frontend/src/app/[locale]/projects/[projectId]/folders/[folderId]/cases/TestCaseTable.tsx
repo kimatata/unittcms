@@ -97,7 +97,7 @@ export default function TestCaseTable({
 
       switch (columnKey) {
         case 'id':
-          return <span>{cellValue as number}</span>;
+          return <span>TC-{cellValue as number}</span>;
         case 'title':
           return (
             <Link
