@@ -11,7 +11,9 @@
     "e2e": "playwright test",
     "report": "playwright show-report",
     "lint": "eslint",
-    "lint:fix": "eslint --fix"
+    "lint:fix": "eslint --fix",
+    "start-backend": "cd backend && npm run start",
+    "start-frontend": "cd frontend && npm run dev"
   },
   "devDependencies": {
     "@next/eslint-plugin-next": "^15.3.0",
