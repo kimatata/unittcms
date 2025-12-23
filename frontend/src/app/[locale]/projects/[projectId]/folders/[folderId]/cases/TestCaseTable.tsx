@@ -117,9 +117,15 @@ export default function TestCaseTable({
                 })}
               </Link>
               {isInDifferentFolder && testCase.Folder && (
-                <Chip size="sm" variant="flat" className="text-xs">
-                  {testCase.Folder.name}
-                </Chip>
+                <Link
+                  href={`/projects/${projectId}/folders/${testCase.folderId}/cases`}
+                  locale={locale}
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <Chip size="sm" variant="flat" className="text-xs cursor-pointer hover:opacity-80">
+                    {testCase.Folder.name}
+                  </Chip>
+                </Link>
               )}
             </div>
           );
