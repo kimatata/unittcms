@@ -197,6 +197,7 @@ export default function CasesPane({
     <>
       <TestCaseTable
         projectId={projectId}
+        folderId={folderId}
         isDisabled={!context.isProjectDeveloper(Number(projectId))}
         cases={cases}
         onCreateCase={() => setIsCaseDialogOpen(true)}

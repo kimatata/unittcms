@@ -17,6 +17,10 @@ type CaseType = {
     id: number;
     name: string;
   }[];
+  Folder?: {
+    id: number;
+    name: string;
+  };
 };
 
 type CaseStepType = {

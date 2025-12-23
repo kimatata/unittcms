@@ -3,6 +3,7 @@ const router = express.Router();
 import { DataTypes, Op } from 'sequelize';
 import defineCase from '../../models/cases.js';
 import defineTag from '../../models/tags.js';
+import defineFolder from '../../models/folders.js';
 
 import authMiddleware from '../../middleware/auth.js';
 import visibilityMiddleware from '../../middleware/verifyVisible.js';
@@ -12,9 +13,29 @@ export default function (sequelize) {
   const { verifyProjectVisibleFromFolderId } = visibilityMiddleware(sequelize);
   const Case = defineCase(sequelize, DataTypes);
   const Tags = defineTag(sequelize, DataTypes);
+  const Folder = defineFolder(sequelize, DataTypes);
 
   Case.belongsToMany(Tags, { through: 'caseTags', foreignKey: 'caseId', otherKey: 'tagId' });
   Tags.belongsToMany(Case, { through: 'caseTags', foreignKey: 'tagId', otherKey: 'caseId' });
+  Case.belongsTo(Folder, { foreignKey: 'folderId' });
+
+  async function getAllChildFolderIds(parentFolderId) {
+    if (!parentFolderId) {
+      return [];
+    }
+
+    const folderIds = [parentFolderId];
+    const childFolders = await Folder.findAll({
+      where: { parentFolderId: parentFolderId },
+    });
+
+    for (const child of childFolders) {
+      const nestedIds = await getAllChildFolderIds(child.id);
+      folderIds.push(...nestedIds);
+    }
+
+    return folderIds;
+  }
 
   router.get('/', verifySignedIn, verifyProjectVisibleFromFolderId, async (req, res) => {
     const { folderId, search, priority, type, tag } = req.query;
@@ -24,8 +45,9 @@ export default function (sequelize) {
     }
 
     try {
+      const allFolderIds = await getAllChildFolderIds(Number(folderId));
       const whereClause = {
-        folderId: folderId,
+        folderId: { [Op.in]: allFolderIds },
       };
 
       if (search) {
@@ -81,9 +103,15 @@ export default function (sequelize) {
         }
       }
 
+      const folderInclude = {
+        model: Folder,
+        attributes: ['id', 'name'],
+        required: false,
+      };
+
       const cases = await Case.findAll({
         where: whereClause,
-        include: [tagInclude],
+        include: [tagInclude, folderInclude],
       });
       res.json(cases);
     } catch (error) {
