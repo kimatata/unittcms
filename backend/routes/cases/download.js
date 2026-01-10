@@ -7,6 +7,7 @@ import defineStep from '../../models/steps.js';
 import defineFolder from '../../models/folders.js';
 import authMiddleware from '../../middleware/auth.js';
 import visibilityMiddleware from '../../middleware/verifyVisible.js';
+import { contentDisposition, toSafeFileName } from '../../config/contentDisposition.js';
 import { testRunStatus, priorities, testTypes, automationStatus, templates } from '../../config/enums.js';
 
 export default function (sequelize) {
@@ -31,6 +32,16 @@ export default function (sequelize) {
     }
 
     try {
+      const folder = await Folder.findByPk(folderId);
+      if (!folder) {
+        return res.status(404).send('Folder not found');
+      }
+
+      const folderName = toSafeFileName(folder.name);
+      const filename = `${folderName}.${type}`;
+      res.setHeader('Access-Control-Expose-Headers', 'Content-Disposition');
+      res.setHeader('Content-Disposition', contentDisposition(filename));
+
       const cases = await Case.findAll({
         attributes: { exclude: ['createdAt', 'updatedAt', 'caseSteps'] },
         include: [
@@ -74,7 +85,6 @@ export default function (sequelize) {
         });
 
         res.setHeader('Content-Type', 'text/csv; charset=utf-8');
-        res.setHeader('Content-Disposition', `attachment; filename=cases_folder_${folderId}.csv`);
         return res.send(csv);
       }
 
