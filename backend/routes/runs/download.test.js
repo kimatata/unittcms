@@ -156,7 +156,7 @@ describe('GET /download/:runId with type=csv', () => {
 
     expect(response.status).toBe(200);
     expect(response.headers['content-type']).toBe('text/csv; charset=utf-8');
-    expect(response.headers['content-disposition']).toBe('attachment; filename=run_1.csv');
+    expect(response.headers['content-disposition']).toContain('attachment; filename="Test Run.csv"');
 
     const csvContent = response.text;
 

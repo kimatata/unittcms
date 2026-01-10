@@ -34,7 +34,13 @@ vi.mock('../../middleware/verifyVisible.js', () => ({
   }),
 }));
 
-// mock defineCase
+const mockFolder = {
+  findByPk: vi.fn(),
+};
+vi.mock('../../models/folders.js', () => ({
+  default: () => mockFolder,
+}));
+
 const mockCase = {
   findAll: vi.fn(),
   belongsToMany: vi.fn(),
@@ -66,6 +72,8 @@ describe('GET /download with type=csv', () => {
   });
 
   it('should return CSV with human-readable labels for state, priority, type, automationStatus, and template', async () => {
+    mockFolder.findByPk.mockResolvedValue({ id: 1, name: 'Test Folder' });
+
     mockCase.findAll.mockResolvedValue([
       {
         id: 1,
@@ -112,7 +120,7 @@ describe('GET /download with type=csv', () => {
 
     expect(response.status).toBe(200);
     expect(response.headers['content-type']).toBe('text/csv; charset=utf-8');
-    expect(response.headers['content-disposition']).toBe('attachment; filename=cases_folder_1.csv');
+    expect(response.headers['content-disposition']).toContain('attachment; filename="Test Folder.csv"');
 
     const csvContent = response.text;
 

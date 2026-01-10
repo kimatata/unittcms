@@ -1,3 +1,4 @@
+import { getFilenameFromContentDisposition } from '@/utils/request';
 import { logError } from '@/utils/errorHandler';
 import { CaseType } from '@/types/case';
 import { RunType, RunCaseType } from '@/types/run';
@@ -149,11 +150,14 @@ async function exportRun(jwt: string, runId: number, type: string) {
       throw new Error(`HTTP error! Status: ${response.status}`);
     }
 
+    const disposition = response.headers.get('content-disposition');
+    const filename = getFilenameFromContentDisposition(disposition) ?? `cases.${type}`;
+
     const blob = await response.blob();
     const objectUrl = window.URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = objectUrl;
-    a.download = `run_${runId}.${type}`;
+    a.download = filename;
     document.body.appendChild(a);
     a.click();
     a.remove();

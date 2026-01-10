@@ -10,6 +10,7 @@ import defineFolder from '../../models/folders.js';
 import defineTag from '../../models/tags.js';
 import authMiddleware from '../../middleware/auth.js';
 import visibilityMiddleware from '../../middleware/verifyVisible.js';
+import { contentDisposition, toSafeFileName } from '../../config/contentDisposition.js';
 import { testRunCaseStatus, testRunStatus, priorities, testTypes, automationStatus } from '../../config/enums.js';
 
 export default function (sequelize) {
@@ -39,6 +40,11 @@ export default function (sequelize) {
       if (!run) {
         return res.status(404).send('Run not found');
       }
+
+      const runName = toSafeFileName(run.name);
+      const filename = `${runName}.${type}`;
+      res.setHeader('Access-Control-Expose-Headers', 'Content-Disposition');
+      res.setHeader('Content-Disposition', contentDisposition(filename));
 
       const runCases = await RunCase.findAll({
         where: { runId },
@@ -107,7 +113,6 @@ export default function (sequelize) {
         const xmlString = xml.end({ prettyPrint: true });
 
         res.setHeader('Content-Type', 'application/xml');
-        res.setHeader('Content-Disposition', `attachment; filename=run_${runId}.xml`);
         return res.send(xmlString);
       } else if (type === 'json') {
         return res.json(runCases);
@@ -129,7 +134,6 @@ export default function (sequelize) {
         });
 
         res.setHeader('Content-Type', 'text/csv; charset=utf-8');
-        res.setHeader('Content-Disposition', `attachment; filename=run_${runId}.csv`);
         return res.send(csv);
       }
 

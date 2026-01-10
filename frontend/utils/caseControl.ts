@@ -1,3 +1,4 @@
+import { getFilenameFromContentDisposition } from '@/utils/request';
 import { logError } from '@/utils/errorHandler';
 import Config from '@/config/config';
 const apiServer = Config.apiServer;
@@ -221,11 +222,14 @@ async function exportCases(jwt: string, folderId: number, type: string) {
       throw new Error(`HTTP error! Status: ${response.status}`);
     }
 
+    const disposition = response.headers.get('content-disposition');
+    const filename = getFilenameFromContentDisposition(disposition) ?? `cases.${type}`;
+
     const blob = await response.blob();
     const objectUrl = window.URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = objectUrl;
-    a.download = `folder_${folderId}.${type}`;
+    a.download = filename;
     document.body.appendChild(a);
     a.click();
     a.remove();
