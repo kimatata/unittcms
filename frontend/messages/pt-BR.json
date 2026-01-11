@@ -353,7 +353,8 @@
     "case_title_or_description": "Título ou descrição do caso de teste",
     "selected": "Selecionado",
     "tags": "Tags",
-    "select_tags": "Selecionar tags"
+    "select_tags": "Selecionar tags",
+    "no_case_selected": "Nenhum caso de teste selecionado"
   },
   "Members": {
     "member_management": "Gerenciamento de Membros",

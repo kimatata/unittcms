@@ -353,7 +353,8 @@
     "case_title_or_description": "测试用例标题或描述",
     "selected": "已选择",
     "tags": "标签",
-    "select_tags": "选择标签"
+    "select_tags": "选择标签",
+    "no_case_selected": "未选择测试用例"
   },
   "Members": {
     "member_management": "成员管理",

@@ -502,6 +502,9 @@ export default function RunEditor({
           </div>
           <div className="w-9/12">
             <TestCaseSelector
+              projectId={projectId}
+              runId={runId}
+              locale={locale}
               cases={filteredTestCases}
               isDisabled={!tokenContext.isProjectReporter(Number(projectId))}
               selectedKeys={selectedKeys}

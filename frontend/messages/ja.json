@@ -353,7 +353,8 @@
     "case_title_or_description": "テストケースのタイトルまたは説明",
     "selected": "選択済み",
     "tags": "タグ",
-    "select_tags": "タグを選択"
+    "select_tags": "タグを選択",
+    "no_case_selected": "テストケースが選択されていません"
   },
   "Members": {
     "member_management": "メンバー管理",

@@ -15,9 +15,9 @@ import {
   SortDescriptor,
   Chip,
 } from '@heroui/react';
-import { ChevronDown, MoveDiagonal, MoreVertical, CopyPlus, CopyMinus } from 'lucide-react';
-import TestCaseDetailDialog from './TestCaseDetailDialog';
+import { ChevronDown, MoreVertical, CopyPlus, CopyMinus } from 'lucide-react';
 import RunCaseStatus from './RunCaseStatus';
+import { Link, NextUiLinkClasses } from '@/src/i18n/routing';
 import { testRunCaseStatus } from '@/config/selection';
 import { CaseType } from '@/types/case';
 import { RunMessages } from '@/types/run';
@@ -27,6 +27,9 @@ import { TestTypeMessages } from '@/types/testType';
 import { TestRunCaseStatusMessages } from '@/types/status';
 
 type Props = {
+  projectId: string;
+  runId: string;
+  locale: string;
   cases: CaseType[];
   isDisabled: boolean;
   selectedKeys: Selection;
@@ -41,6 +44,9 @@ type Props = {
 };
 
 export default function TestCaseSelector({
+  projectId,
+  runId,
+  locale,
   cases,
   isDisabled,
   selectedKeys,
@@ -50,7 +56,6 @@ export default function TestCaseSelector({
   onExcludeCase,
   messages,
   testRunCaseStatusMessages,
-  testTypeMessages,
   priorityMessages,
 }: Props) {
   const headerColumns = [
@@ -115,15 +120,15 @@ export default function TestCaseSelector({
     switch (columnKey) {
       case 'title':
         return (
-          <Button
-            size="sm"
-            variant="light"
-            className="group"
-            endContent={<MoveDiagonal size={12} className="text-transparent group-hover:text-inherit" />}
-            onPress={() => showTestCaseDetailDialog(testCase.id)}
-          >
-            {cellValue as string}
-          </Button>
+          <div className={isIncluded ? '' : notIncludedCaseClass}>
+            <Link
+              href={`/projects/${projectId}/runs/${runId}/cases/${testCase.id}`}
+              locale={locale}
+              className={NextUiLinkClasses}
+            >
+              {cellValue as string}
+            </Link>
+          </div>
         );
       case 'priority':
         return (
@@ -238,17 +243,6 @@ export default function TestCaseSelector({
     onSelectionChange(keys);
   };
 
-  // Test Case Detail
-  const [isTestCaseDetailDialogOpen, setIsTestCaseDetailDialogOpen] = useState(false);
-  const [showingTestCaseId, setShowingTestCaseId] = useState<number>(0);
-  const showTestCaseDetailDialog = (showTestCaseId: number) => {
-    setIsTestCaseDetailDialogOpen(true);
-    setShowingTestCaseId(showTestCaseId);
-  };
-  const hideTestCaseDetailDialog = () => {
-    setIsTestCaseDetailDialogOpen(false);
-  };
-
   return (
     <>
       <Table
@@ -283,15 +277,6 @@ export default function TestCaseSelector({
           ))}
         </TableBody>
       </Table>
-
-      <TestCaseDetailDialog
-        isOpen={isTestCaseDetailDialogOpen}
-        caseId={showingTestCaseId}
-        onCancel={hideTestCaseDetailDialog}
-        messages={messages}
-        priorityMessages={priorityMessages}
-        testTypeMessages={testTypeMessages}
-      />
     </>
   );
 }

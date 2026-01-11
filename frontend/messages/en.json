@@ -353,7 +353,8 @@
     "case_title_or_description": "Test case title or description",
     "selected": "Selected",
     "tags": "Tags",
-    "select_tags": "Select tags"
+    "select_tags": "Select tags",
+    "no_case_selected": "No test case selected"
   },
   "Members": {
     "member_management": "Member Management",
