@@ -61,7 +61,7 @@ export default function TestCaseDetailPane({
   } else if (testCase) {
     return (
       <div className="flex w-full flex-col p-3">
-        <Tabs aria-label="Options">
+        <Tabs aria-label="Options" size="sm">
           <Tab key="caseDetail" title="Case Detail">
             <CaseDetail
               projectId={projectId}

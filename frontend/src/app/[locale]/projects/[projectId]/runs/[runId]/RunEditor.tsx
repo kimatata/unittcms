@@ -111,7 +111,9 @@ export default function RunEditor({
   const [statusFilter, setStatusFilter] = useState<number[]>([]);
   const [tagFilter, setTagFilter] = useState<number[]>([]);
   const router = useRouter();
-  useFormGuard(isDirty, messages.areYouSureLeave);
+
+  // not show warning when navigating to test case detail page
+  useFormGuard(isDirty, messages.areYouSureLeave, [`/projects/${projectId}/runs/${runId}/cases/\\d+`]);
 
   const fetchRunAndStatusCount = async () => {
     const { run, statusCounts } = await fetchRun(tokenContext.token.access_token, Number(runId));

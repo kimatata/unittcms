@@ -1,9 +1,22 @@
 import { useEffect } from 'react';
 
-export const useFormGuard = (isDirty: boolean, confirmText: string) => {
+export const useFormGuard = (isDirty: boolean, confirmText: string, ignorePaths?: string[]) => {
   useEffect(() => {
     const handleClick = (event: MouseEvent) => {
-      if (isDirty && event.target instanceof Element && event.target.closest('a:not([target="_blank"]')) {
+      if (!isDirty) return;
+
+      if (event.target instanceof Element) {
+        const anchor = event.target.closest('a:not([target="_blank"])');
+        if (!anchor) return;
+
+        const href = anchor.getAttribute('href');
+        if (!href) return;
+
+        // do not show confirm for ignored paths
+        if (ignorePaths && ignorePaths.some((path) => href.match(path))) {
+          return;
+        }
+
         if (!window.confirm(confirmText)) {
           event.preventDefault();
           event.stopPropagation();
@@ -25,5 +38,5 @@ export const useFormGuard = (isDirty: boolean, confirmText: string) => {
       window.removeEventListener('beforeunload', handleBeforeUnload);
       window.removeEventListener('click', handleClick, true);
     };
-  }, [confirmText, isDirty]);
+  }, [confirmText, isDirty, ignorePaths]);
 };
