@@ -1,5 +1,5 @@
 import { useTranslations } from 'next-intl';
-import TestCaseDetail from './TestCaseDetail';
+import DetailPane from './DetailPane';
 import type { RunDetailMessages } from '@/types/run';
 import type { PriorityMessages } from '@/types/priority';
 import type { TestTypeMessages } from '@/types/testType';
@@ -22,25 +22,6 @@ export default function Page({
     expectedResult: t('expected_result'),
     detailsOfTheStep: t('details_of_the_step'),
   } as unknown as RunDetailMessages;
-
-  // const rst = useTranslations('RunStatus');
-  // const runStatusMessages: RunStatusMessages = {
-  //   new: rst('new'),
-  //   inProgress: rst('inProgress'),
-  //   underReview: rst('underReview'),
-  //   rejected: rst('rejected'),
-  //   done: rst('done'),
-  //   closed: rst('closed'),
-  // };
-
-  // const rcst = useTranslations('RunCaseStatus');
-  // const testRunCaseStatusMessages: TestRunCaseStatusMessages = {
-  //   untested: rcst('untested'),
-  //   passed: rcst('passed'),
-  //   failed: rcst('failed'),
-  //   retest: rcst('retest'),
-  //   skipped: rcst('skipped'),
-  // };
 
   const pt = useTranslations('Priority');
   const priorityMessages: PriorityMessages = {
@@ -68,7 +49,7 @@ export default function Page({
   };
 
   return (
-    <TestCaseDetail
+    <DetailPane
       projectId={params.projectId}
       runId={params.runId}
       caseId={params.caseId}
