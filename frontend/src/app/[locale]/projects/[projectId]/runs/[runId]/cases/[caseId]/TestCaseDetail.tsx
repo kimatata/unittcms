@@ -1,8 +1,7 @@
 'use client';
 
 import { useEffect, useState, useContext } from 'react';
-import { Card, CardBody, Divider, Textarea, Chip, Button } from '@heroui/react';
-import { ExternalLink } from 'lucide-react';
+import { Divider, Textarea, Chip } from '@heroui/react';
 import { TokenContext } from '@/utils/TokenProvider';
 import { fetchCase } from '@/utils/caseControl';
 import { logError } from '@/utils/errorHandler';
@@ -71,134 +70,99 @@ export default function TestCaseDetailPane({
     fetchDataEffect();
   }, [context, caseId]);
 
-  if (!caseId || caseId <= 0) {
-    return (
-      <div className="h-full p-4">
-        <Card shadow="none" className="h-full bg-neutral-50 dark:bg-neutral-800">
-          <CardBody className="text-default-500">{messages.selectTestCase}</CardBody>
-        </Card>
-      </div>
-    );
-  }
-
   return (
     <div className="h-full p-4">
-      <Card shadow="none" className="h-full overflow-auto bg-neutral-50 dark:bg-neutral-800">
-        <CardBody className="space-y-4">
-          <div className="flex items-start justify-between gap-3">
-            <div>
-              <div className="text-xs text-default-500">#{testCase.id}</div>
-              <h3 className="text-lg font-bold">{testCase.title}</h3>
-            </div>
+      <div className="">
+        <Link
+          href={`/projects/${projectId}/folders/${testCase.folderId}/cases/${testCase.id}`}
+          locale={locale}
+          className={NextUiLinkClasses + ' text-xl font-bold'}
+        >
+          #{testCase.id} {testCase.title}
+        </Link>
+      </div>
 
-            {testCase.folderId > 0 && (
-              <Link
-                href={`/projects/${projectId}/folders/${testCase.folderId}/cases/${testCase.id}`}
-                locale={locale}
-                className={NextUiLinkClasses}
-              >
-                <Button size="sm" variant="bordered" startContent={<ExternalLink size={16} />}>
-                  Open
-                </Button>
-              </Link>
-            )}
+      <Divider />
+
+      <div>
+        <p className="font-bold mt-2">{messages.description}</p>
+        <div className="text-default-700 dark:text-default-200 whitespace-pre-wrap">
+          {isFetching ? messages.updating : testCase.description || '-'}
+        </div>
+      </div>
+
+      <div className="flex gap-6">
+        <div className="min-w-40">
+          <p className="font-bold">{messages.priority}</p>
+          <TestCasePriority priorityValue={testCase.priority} priorityMessages={priorityMessages} />
+        </div>
+
+        <div className="min-w-40">
+          <p className="font-bold">{messages.type}</p>
+          <div>{testTypeMessages[testTypes[testCase.type].uid]}</div>
+        </div>
+      </div>
+
+      <div>
+        <p className="font-bold">{messages.tags}</p>
+        <div className="flex gap-1 flex-wrap mt-1">
+          {testCase.Tags && testCase.Tags.length > 0 ? (
+            testCase.Tags.map((tag) => (
+              <Chip key={tag.id} size="sm" variant="flat">
+                {tag.name}
+              </Chip>
+            ))
+          ) : (
+            <span>-</span>
+          )}
+        </div>
+      </div>
+
+      <Divider />
+
+      {templates[testCase.template].uid === 'text' ? (
+        <>
+          <p className="font-bold mt-2">{messages.testDetail}</p>
+          <div className="flex gap-2 my-2">
+            <div className="w-1/2">
+              <Textarea
+                isReadOnly
+                size="sm"
+                variant="flat"
+                label={messages.preconditions}
+                value={testCase.preConditions}
+              />
+            </div>
+            <div className="w-1/2">
+              <Textarea
+                isReadOnly
+                size="sm"
+                variant="flat"
+                label={messages.expectedResult}
+                value={testCase.expectedResults}
+              />
+            </div>
           </div>
-
-          <Divider />
-
-          <div>
-            <p className="font-bold mt-2">{messages.description}</p>
-            <div className="text-default-700 dark:text-default-200 whitespace-pre-wrap">
-              {isFetching ? messages.updating : testCase.description || '-'}
-            </div>
-          </div>
-
-          <div className="flex gap-6">
-            <div className="min-w-40">
-              <p className="font-bold">{messages.priority}</p>
-              <TestCasePriority priorityValue={testCase.priority} priorityMessages={priorityMessages} />
-            </div>
-
-            <div className="min-w-40">
-              <p className="font-bold">{messages.type}</p>
-              <div>{testTypeMessages[testTypes[testCase.type].uid]}</div>
-            </div>
-          </div>
-
-          <div>
-            <p className="font-bold">{messages.tags}</p>
-            <div className="flex gap-1 flex-wrap mt-1">
-              {testCase.Tags && testCase.Tags.length > 0 ? (
-                testCase.Tags.map((tag) => (
-                  <Chip key={tag.id} size="sm" variant="flat">
-                    {tag.name}
-                  </Chip>
-                ))
-              ) : (
-                <span>-</span>
-              )}
-            </div>
-          </div>
-
-          <Divider />
-
-          {templates[testCase.template].uid === 'text' ? (
-            <>
-              <p className="font-bold mt-2">{messages.testDetail}</p>
-              <div className="flex gap-2 my-2">
+        </>
+      ) : (
+        <>
+          <p className="font-bold mt-2">{messages.steps}</p>
+          {testCase.Steps && testCase.Steps.length > 0 ? (
+            testCase.Steps.map((step) => (
+              <div key={step.id} className="flex gap-2 my-2">
                 <div className="w-1/2">
-                  <Textarea
-                    isReadOnly
-                    size="sm"
-                    variant="flat"
-                    label={messages.preconditions}
-                    value={testCase.preConditions}
-                  />
+                  <Textarea isReadOnly size="sm" variant="flat" label={messages.detailsOfTheStep} value={step.step} />
                 </div>
                 <div className="w-1/2">
-                  <Textarea
-                    isReadOnly
-                    size="sm"
-                    variant="flat"
-                    label={messages.expectedResult}
-                    value={testCase.expectedResults}
-                  />
+                  <Textarea isReadOnly size="sm" variant="flat" label={messages.expectedResult} value={step.result} />
                 </div>
               </div>
-            </>
+            ))
           ) : (
-            <>
-              <p className="font-bold mt-2">{messages.steps}</p>
-              {testCase.Steps && testCase.Steps.length > 0 ? (
-                testCase.Steps.map((step) => (
-                  <div key={step.id} className="flex gap-2 my-2">
-                    <div className="w-1/2">
-                      <Textarea
-                        isReadOnly
-                        size="sm"
-                        variant="flat"
-                        label={messages.detailsOfTheStep}
-                        value={step.step}
-                      />
-                    </div>
-                    <div className="w-1/2">
-                      <Textarea
-                        isReadOnly
-                        size="sm"
-                        variant="flat"
-                        label={messages.expectedResult}
-                        value={step.result}
-                      />
-                    </div>
-                  </div>
-                ))
-              ) : (
-                <span>-</span>
-              )}
-            </>
+            <span>-</span>
           )}
-        </CardBody>
-      </Card>
+        </>
+      )}
     </div>
   );
 }
