@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState, useContext } from 'react';
-import { Divider, Textarea, Chip } from '@heroui/react';
+import { Divider, Textarea, Chip, Button } from '@heroui/react';
 import { TokenContext } from '@/utils/TokenProvider';
 import { fetchCase } from '@/utils/caseControl';
 import { logError } from '@/utils/errorHandler';
@@ -16,7 +16,7 @@ import { Link, NextUiLinkClasses } from '@/src/i18n/routing';
 type Props = {
   projectId: string;
   locale: string;
-  caseId: number;
+  caseId: string;
   messages: RunMessages;
   testTypeMessages: TestTypeMessages;
   priorityMessages: PriorityMessages;
@@ -70,40 +70,38 @@ export default function TestCaseDetailPane({
     fetchDataEffect();
   }, [context, caseId]);
 
+  if (isFetching) {
+    return <div>loading...</div>;
+  }
+
   return (
-    <div className="h-full p-4">
-      <div className="">
+    <div className="h-full p-4 text-default-500">
+      <div className="mb-4">
         <Link
           href={`/projects/${projectId}/folders/${testCase.folderId}/cases/${testCase.id}`}
           locale={locale}
-          className={NextUiLinkClasses + ' text-xl font-bold'}
+          className={`${NextUiLinkClasses}`}
         >
           #{testCase.id} {testCase.title}
         </Link>
       </div>
 
-      <Divider />
-
-      <div>
-        <p className="font-bold mt-2">{messages.description}</p>
-        <div className="text-default-700 dark:text-default-200 whitespace-pre-wrap">
-          {isFetching ? messages.updating : testCase.description || '-'}
-        </div>
+      <div className="mb-4">
+        <p className="font-bold">{messages.description}</p>
+        <div>{testCase.description}</div>
       </div>
 
-      <div className="flex gap-6">
-        <div className="min-w-40">
-          <p className="font-bold">{messages.priority}</p>
-          <TestCasePriority priorityValue={testCase.priority} priorityMessages={priorityMessages} />
-        </div>
-
-        <div className="min-w-40">
-          <p className="font-bold">{messages.type}</p>
-          <div>{testTypeMessages[testTypes[testCase.type].uid]}</div>
-        </div>
+      <div className="mb-4">
+        <p className="font-bold">{messages.priority}</p>
+        <TestCasePriority priorityValue={testCase.priority} priorityMessages={priorityMessages} />
       </div>
 
-      <div>
+      <div className="mb-4">
+        <p className="font-bold">{messages.type}</p>
+        <div>{testTypeMessages[testTypes[testCase.type].uid]}</div>
+      </div>
+
+      <div className="mb-4">
         <p className="font-bold">{messages.tags}</p>
         <div className="flex gap-1 flex-wrap mt-1">
           {testCase.Tags && testCase.Tags.length > 0 ? (
@@ -117,8 +115,6 @@ export default function TestCaseDetailPane({
           )}
         </div>
       </div>
-
-      <Divider />
 
       {templates[testCase.template].uid === 'text' ? (
         <>

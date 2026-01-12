@@ -1,5 +1,6 @@
 import { useTranslations } from 'next-intl';
 import RunEditor from './RunEditor';
+import ResizablePanes from '@/components/ResizablePane';
 import { RunMessages } from '@/types/run';
 import { PriorityMessages } from '@/types/priority';
 import { RunStatusMessages, TestRunCaseStatusMessages } from '@/types/status';
@@ -97,8 +98,8 @@ export default function RunLayout({
   };
 
   return (
-    <div className="flex">
-      <div className="w-2/3 border-r-1 dark:border-neutral-700">
+    <ResizablePanes
+      leftPane={
         <RunEditor
           projectId={projectId}
           runId={runId}
@@ -109,8 +110,8 @@ export default function RunLayout({
           testTypeMessages={testTypeMessages}
           locale={locale}
         />
-      </div>
-      <div className="w-1/3">{children}</div>
-    </div>
+      }
+      rightPane={children}
+    />
   );
 }

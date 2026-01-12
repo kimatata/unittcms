@@ -1,8 +1,7 @@
 import { useTranslations } from 'next-intl';
 import TestCaseDetail from './TestCaseDetail';
-import type { RunMessages } from '@/types/run';
+import type { RunDetailMessages } from '@/types/run';
 import type { PriorityMessages } from '@/types/priority';
-// import type { RunStatusMessages, TestRunCaseStatusMessages } from '@/types/status';
 import type { TestTypeMessages } from '@/types/testType';
 
 export default function Page({
@@ -12,42 +11,17 @@ export default function Page({
 }) {
   const t = useTranslations('Run');
   const messages = {
-    backToRuns: t('back_to_runs'),
-    updating: t('updating'),
-    update: t('update'),
-    updatedTestRun: t('updated_test_run'),
-    export: t('export'),
-    progress: t('progress'),
-    refresh: t('refresh'),
-    id: t('id'),
     title: t('title'),
-    pleaseEnter: t('please_enter'),
     description: t('description'),
     priority: t('priority'),
-    actions: t('actions'),
-    status: t('status'),
-    selectTestCase: t('select_test_case'),
-    testCaseSelection: t('test_case_selection'),
-    includeInRun: t('include_in_run'),
-    excludeFromRun: t('exclude_from_run'),
-    noCasesFound: t('no_cases_found'),
-    areYouSureLeave: t('are_you_sure_leave'),
+    type: t('type'),
+    tags: t('tags'),
     testDetail: t('test_detail'),
     steps: t('steps'),
     preconditions: t('preconditions'),
     expectedResult: t('expected_result'),
     detailsOfTheStep: t('details_of_the_step'),
-    close: t('close'),
-    filter: t('filter'),
-    clearAll: t('clear_all'),
-    apply: t('apply'),
-    selectStatus: t('select_status'),
-    pleaseSave: t('please_save'),
-    caseTitleOrDescription: t('case_title_or_description'),
-    selected: t('selected'),
-    tags: t('tags'),
-    selectTags: t('select_tags'),
-  } as unknown as RunMessages;
+  } as unknown as RunDetailMessages;
 
   // const rst = useTranslations('RunStatus');
   // const runStatusMessages: RunStatusMessages = {
