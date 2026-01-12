@@ -9,7 +9,7 @@ import { TokenContext } from '@/utils/TokenProvider';
 import { fetchCase } from '@/utils/caseControl';
 import { logError } from '@/utils/errorHandler';
 import type { CaseType, StepType } from '@/types/case';
-import type { RunMessages } from '@/types/run';
+import type { RunDetailMessages } from '@/types/run';
 import type { PriorityMessages } from '@/types/priority';
 import type { TestTypeMessages } from '@/types/testType';
 
@@ -17,7 +17,7 @@ type Props = {
   projectId: string;
   locale: string;
   caseId: string;
-  messages: RunMessages;
+  messages: RunDetailMessages;
   testTypeMessages: TestTypeMessages;
   priorityMessages: PriorityMessages;
 };
@@ -57,8 +57,8 @@ export default function TestCaseDetailPane({
   }, [context, caseId]);
 
   if (isFetching || !testCase) {
-    <div>loading...</div>;
-  } else if (testCase) {
+    return <div>loading...</div>;
+  } else {
     return (
       <div className="flex w-full flex-col p-3">
         <Tabs aria-label="Options" size="sm">

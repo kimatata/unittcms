@@ -7,12 +7,12 @@ type Props = {
 };
 
 export default function ResizablePanes({ leftPane, rightPane }: Props) {
-  const [leftWidth, setLeftWidth] = useState(70); // デフォルト70%
+  const [leftWidth, setLeftWidth] = useState(70); // default 70%
   const [isDragging, setIsDragging] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
 
-  const minLeftWidth = 40; // 左パネルの最小幅 40%
-  const minRightWidth = 15; // 右パネルの最小幅 15%
+  const minLeftWidth = 40; // left panel min width 40%
+  const minRightWidth = 15; // right panel min width 15%
 
   const handleMouseDown = () => {
     setIsDragging(true);
@@ -25,7 +25,7 @@ export default function ResizablePanes({ leftPane, rightPane }: Props) {
       const containerRect = containerRef.current.getBoundingClientRect();
       const newLeftWidth = ((e.clientX - containerRect.left) / containerRect.width) * 100;
 
-      // 最小幅と最大幅を考慮
+      // Clamp the width between min and max
       const maxLeftWidth = 100 - minRightWidth;
       const clampedWidth = Math.max(minLeftWidth, Math.min(maxLeftWidth, newLeftWidth));
 
@@ -58,6 +58,7 @@ export default function ResizablePanes({ leftPane, rightPane }: Props) {
 
       <div
         className="w-1 cursor-col-resize hover:bg-primary/50 active:bg-primary transition-colors"
+        role="separator"
         onMouseDown={handleMouseDown}
         style={{ flexShrink: 0 }}
       />

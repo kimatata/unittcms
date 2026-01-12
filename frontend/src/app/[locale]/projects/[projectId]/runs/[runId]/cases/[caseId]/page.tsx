@@ -10,7 +10,7 @@ export default function Page({
   params: { projectId: string; runId: string; caseId: string; locale: string };
 }) {
   const t = useTranslations('Run');
-  const messages = {
+  const messages: RunDetailMessages = {
     title: t('title'),
     description: t('description'),
     priority: t('priority'),
@@ -21,7 +21,7 @@ export default function Page({
     preconditions: t('preconditions'),
     expectedResult: t('expected_result'),
     detailsOfTheStep: t('details_of_the_step'),
-  } as unknown as RunDetailMessages;
+  };
 
   const pt = useTranslations('Priority');
   const priorityMessages: PriorityMessages = {
@@ -51,7 +51,6 @@ export default function Page({
   return (
     <DetailPane
       projectId={params.projectId}
-      runId={params.runId}
       caseId={params.caseId}
       locale={params.locale}
       messages={messages}

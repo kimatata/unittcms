@@ -3,7 +3,7 @@
 import { Textarea, Chip } from '@heroui/react';
 import { templates, testTypes } from '@/config/selection';
 import type { CaseType } from '@/types/case';
-import type { RunMessages } from '@/types/run';
+import type { RunDetailMessages } from '@/types/run';
 import type { PriorityMessages } from '@/types/priority';
 import type { TestTypeMessages } from '@/types/testType';
 import TestCasePriority from '@/components/TestCasePriority';
@@ -13,7 +13,7 @@ type Props = {
   projectId: string;
   testCase: CaseType;
   locale: string;
-  messages: RunMessages;
+  messages: RunDetailMessages;
   testTypeMessages: TestTypeMessages;
   priorityMessages: PriorityMessages;
 };

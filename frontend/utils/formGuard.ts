@@ -13,7 +13,7 @@ export const useFormGuard = (isDirty: boolean, confirmText: string, ignorePaths?
         if (!href) return;
 
         // do not show confirm for ignored paths
-        if (ignorePaths && ignorePaths.some((path) => href.match(path))) {
+        if (ignorePaths && ignorePaths.some((path) => href.includes(path))) {
           return;
         }
 
