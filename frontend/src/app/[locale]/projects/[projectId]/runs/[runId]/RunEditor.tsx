@@ -156,7 +156,7 @@ export default function RunEditor({
 
     fetchDataEffect();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [tokenContext]);
+  }, []);
 
   useEffect(() => {
     function onFilter() {
