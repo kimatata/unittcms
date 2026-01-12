@@ -136,7 +136,10 @@ export default function RunEditor({
     setTestCases(casesData);
   };
 
+  const isSignedIn = tokenContext.isSignedIn();
   useEffect(() => {
+    if (!isSignedIn) return;
+
     async function fetchDataEffect() {
       if (!tokenContext.isSignedIn()) {
         return;
@@ -156,7 +159,7 @@ export default function RunEditor({
 
     fetchDataEffect();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [isSignedIn]);
 
   useEffect(() => {
     function onFilter() {
