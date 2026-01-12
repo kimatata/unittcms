@@ -111,7 +111,6 @@ export default function TestCaseSelector({
 
     return isIncluded;
   };
-
   const renderCell = (testCase: CaseType, columnKey: string): ReactNode => {
     const cellValue = testCase[columnKey as keyof CaseType];
     const isIncluded = isCaseIncluded(testCase);
@@ -125,6 +124,7 @@ export default function TestCaseSelector({
               href={`/projects/${projectId}/runs/${runId}/cases/${testCase.id}`}
               locale={locale}
               className={NextUiLinkClasses}
+              onPointerDown={(e) => e.stopPropagation()}
             >
               {cellValue as string}
             </Link>
