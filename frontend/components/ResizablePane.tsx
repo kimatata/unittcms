@@ -51,7 +51,7 @@ export default function ResizablePanes({
       document.removeEventListener('mousemove', handleMouseMove);
       document.removeEventListener('mouseup', handleMouseUp);
     };
-  }, [isDragging]);
+  }, [isDragging, minLeftWidth, minRightWidth]);
 
   return (
     <div ref={containerRef} className="flex h-full" style={{ userSelect: isDragging ? 'none' : 'auto' }}>
