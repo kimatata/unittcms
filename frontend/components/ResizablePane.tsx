@@ -4,15 +4,21 @@ import { useState, useRef, useEffect, ReactNode } from 'react';
 type Props = {
   leftPane: ReactNode;
   rightPane: ReactNode;
+  minLeftWidth?: number;
+  minRightWidth?: number;
+  defaultLeftWidth?: number;
 };
 
-export default function ResizablePanes({ leftPane, rightPane }: Props) {
-  const [leftWidth, setLeftWidth] = useState(70); // default 70%
+export default function ResizablePanes({
+  leftPane,
+  rightPane,
+  minLeftWidth = 40,
+  minRightWidth = 15,
+  defaultLeftWidth = 70,
+}: Props) {
+  const [leftWidth, setLeftWidth] = useState(defaultLeftWidth); // default 70%
   const [isDragging, setIsDragging] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
-
-  const minLeftWidth = 40; // left panel min width 40%
-  const minRightWidth = 15; // right panel min width 15%
 
   const handleMouseDown = () => {
     setIsDragging(true);

@@ -1,5 +1,6 @@
 import { useTranslations } from 'next-intl';
 import FoldersPane from './FoldersPane';
+import ResizablePanes from '@/components/ResizablePane';
 
 export default function FoldersLayout({
   children,
@@ -25,9 +26,12 @@ export default function FoldersLayout({
   };
 
   return (
-    <div className="flex w-full">
-      <FoldersPane projectId={params.projectId} messages={messages} locale={params.locale} />
-      <div className="flex-grow w-full">{children}</div>
-    </div>
+    <ResizablePanes
+      minLeftWidth={15}
+      minRightWidth={40}
+      defaultLeftWidth={20}
+      leftPane={<FoldersPane projectId={params.projectId} messages={messages} locale={params.locale} />}
+      rightPane={children}
+    />
   );
 }
