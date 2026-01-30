@@ -505,7 +505,7 @@ export default function RunEditor({
               )}
             </Tree>
           </div>
-          <div className="w-9/12">
+          <div className="w-9/12 overflow-x-auto">
             <TestCaseSelector
               projectId={projectId}
               runId={runId}
