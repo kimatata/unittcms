@@ -1,11 +1,15 @@
 'use client';
-import { useState, useContext, useRef } from 'react';
-import { Button, Input, Card, CardHeader, CardBody, addToast, CardFooter } from '@heroui/react';
+import { useState, useContext, useRef, useEffect } from 'react';
+import { Button, Input, Card, CardHeader, CardBody, addToast, CardFooter, Select, SelectItem } from '@heroui/react';
+import { Globe } from 'lucide-react';
 import { TokenContext } from '@/utils/TokenProvider';
-import { updateUsername, updatePassword, uploadAvatar, deleteAvatar } from '@/utils/usersControl';
+import { updateUsername, updatePassword, uploadAvatar, deleteAvatar, updateLocale } from '@/utils/usersControl';
 import { LocaleCodeType } from '@/types/locale';
 import { logError } from '@/utils/errorHandler';
 import UserAvatar from '@/components/UserAvatar';
+import { useRouter, usePathname } from '@/src/i18n/routing';
+import { locales } from '@/config/selection';
+import { LocaleType } from '@/types/locale';
 
 type ProfileSettingsPageMessages = {
   profileSettings: string;
@@ -19,6 +23,9 @@ type ProfileSettingsPageMessages = {
   confirmNewPassword: string;
   updatePassword: string;
   passwordUpdated: string;
+  changeLocale: string;
+  updateLocale: string;
+  localeUpdated: string;
   changeAvatar: string;
   uploadAvatar: string;
   removeAvatar: string;
@@ -31,6 +38,7 @@ type ProfileSettingsPageMessages = {
   invalidPassword: string;
   passwordNotMatch: string;
   usernameEmpty: string;
+  invalidLocale: string;
 };
 
 type Props = {
@@ -40,14 +48,26 @@ type Props = {
 
 export default function ProfileSettingsPage({ messages }: Props) {
   const context = useContext(TokenContext);
+
+  const router = useRouter();
+  const pathname = usePathname();
+
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [username, setUsername] = useState('');
   const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [locale, setLocale] = useState<LocaleCodeType>('en');
   const [isUpdatingUsername, setIsUpdatingUsername] = useState(false);
   const [isUpdatingPassword, setIsUpdatingPassword] = useState(false);
+  const [isUpdatingLocale, setIsUpdatingLocale] = useState(false);
   const [isUploadingAvatar, setIsUploadingAvatar] = useState(false);
+
+  useEffect(() => {
+    if (context.token?.user?.locale) {
+      setLocale(context.token.user.locale);
+    }
+  }, [context.token?.user?.locale]);
 
   const handleUsernameUpdate = async () => {
     if (!username.trim()) {
@@ -149,6 +169,52 @@ export default function ProfileSettingsPage({ messages }: Props) {
       setIsUpdatingPassword(false);
     }
   };
+
+  const handleLocaleUpdate = async () => {
+    if (!locale.trim() && locales.some((l) => l.code === locale)) {
+      addToast({
+        title: 'Warning',
+        color: 'warning',
+        description: messages.invalidLocale,
+      });
+      return;
+    }
+
+    setIsUpdatingLocale(true);
+    try {
+      const result = await updateLocale(context.token.access_token, locale);
+      if (result && result.user) {
+        // refresh locale
+        const newToken = { ...context.token };
+        if (newToken.user) {
+          newToken.user.locale = result.user.locale;
+        }
+        context.setToken(newToken);
+        context.storeTokenToLocalStorage(newToken);
+
+        addToast({
+          title: 'Success',
+          color: 'success',
+          description: messages.localeUpdated,
+        });
+        setLocale(result.user.locale);
+        changeLocale(result.user.locale);
+      }
+    } catch (error) {
+      logError('Error updating locale:', error);
+      addToast({
+        title: 'Error',
+        color: 'danger',
+        description: messages.updateError,
+      });
+    } finally {
+      setIsUpdatingLocale(false);
+    }
+  };
+
+  async function changeLocale(nextLocale: LocaleCodeType) {
+    router.push(pathname, { locale: nextLocale });
+  }
 
   const handleAvatarUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -329,6 +395,46 @@ export default function ProfileSettingsPage({ messages }: Props) {
             isDisabled={!currentPassword || !newPassword || !confirmPassword}
           >
             {messages.updatePassword}
+          </Button>
+        </CardFooter>
+      </Card>
+
+      {/* Change Locale */}
+      <Card className="mb-6">
+        <CardHeader>
+          <Globe size={16} />
+          <h2 className="text-large font-semibold ml-2">{messages.changeLocale}</h2>
+        </CardHeader>
+        <CardBody>
+          <form>
+            <div className="space-y-4">
+              <Select<LocaleType>
+                fullWidth
+                aria-label="change locale"
+                selectedKeys={[locale]}
+                disabledKeys={[locale]}
+                onSelectionChange={(value) => {
+                  const selectedLocale = locales.find((locale) => locale.code === value.currentKey);
+                  if (!selectedLocale) return;
+                  setLocale(selectedLocale.code);
+                }}
+              >
+                {locales.map((locale) => (
+                  <SelectItem key={locale.code}>{locale.name}</SelectItem>
+                ))}
+              </Select>
+            </div>
+          </form>
+        </CardBody>
+        <CardFooter className="flex justify-end">
+          <Button
+            color="primary"
+            onPress={handleLocaleUpdate}
+            isLoading={isUpdatingLocale}
+            isDisabled={locale === context.token?.user?.locale}
+            size="sm"
+          >
+            {messages.updateLocale}
           </Button>
         </CardFooter>
       </Card>

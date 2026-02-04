@@ -22,6 +22,11 @@ function defineUser(sequelize, DataTypes) {
       avatarPath: {
         type: DataTypes.STRING,
       },
+      locale: {
+        type: DataTypes.STRING,
+        allowNull: true,
+        length: 20,
+      },
     },
     { underscored: true }
   );

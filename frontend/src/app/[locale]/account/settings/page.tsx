@@ -17,6 +17,9 @@ export default function Page({ params }: PageType) {
     confirmNewPassword: t('confirm_new_password'),
     updatePassword: t('update_password'),
     passwordUpdated: t('password_updated'),
+    changeLocale: t('change_locale'),
+    updateLocale: t('update_locale'),
+    localeUpdated: t('locale_updated'),
     changeAvatar: t('change_avatar'),
     uploadAvatar: t('upload_avatar'),
     removeAvatar: t('remove_avatar'),
@@ -29,6 +32,7 @@ export default function Page({ params }: PageType) {
     invalidPassword: t('invalid_password'),
     passwordNotMatch: t('password_not_match'),
     usernameEmpty: t('username_empty'),
+    invalidLocale: t('invalid_locale'),
   };
 
   return <ProfileSettingsPage messages={messages} locale={params.locale as LocaleCodeType} />;

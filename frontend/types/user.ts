@@ -8,6 +8,7 @@ export type UserType = {
   username: string;
   role: number;
   avatarPath: string | null;
+  locale?: LocaleCodeType;
 };
 
 export type TokenProps = {

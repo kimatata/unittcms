@@ -219,6 +219,36 @@ async function adminResetPassword(jwt: string, userId: number, newPassword: stri
   }
 }
 
+async function updateLocale(jwt: string, locale: string) {
+  const updateData = {
+    locale,
+  };
+
+  const fetchOptions = {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${jwt}`,
+    },
+    body: JSON.stringify(updateData),
+  };
+
+  const url = `${apiServer}/users/locale`;
+
+  try {
+    const response = await fetch(url, fetchOptions);
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(errorText || `HTTP error! Status: ${response.status}`);
+    }
+    const data = await response.json();
+    return data;
+  } catch (error: unknown) {
+    logError('Error updating locale:', error);
+    throw error;
+  }
+}
+
 export {
   findUser,
   searchUsers,
@@ -228,4 +258,5 @@ export {
   uploadAvatar,
   deleteAvatar,
   adminResetPassword,
+  updateLocale,
 };

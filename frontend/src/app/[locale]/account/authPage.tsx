@@ -83,14 +83,14 @@ export default function AuthPage({ isSignup, messages, locale }: Props) {
 
     context.setToken(token);
     context.storeTokenToLocalStorage(token);
-    router.push('/account', { locale: locale });
+    router.push('/account', { locale: token.user?.locale ?? locale });
   };
 
   const handleSignInAsGuest = async () => {
     const token = await signInAsGuest();
     context.setToken(token);
     context.storeTokenToLocalStorage(token);
-    router.push('/account', { locale: locale });
+    router.push('/account', { locale: token.user?.locale ?? locale });
   };
 
   return (
