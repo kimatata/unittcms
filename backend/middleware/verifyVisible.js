@@ -17,8 +17,8 @@ export default function verifyVisibleMiddleware(sequelize) {
       return res.status(400).json({ error: 'projectId is required' });
     }
 
-    const isVisible = await isVisible(projectId, req.userId);
-    if (isVisible) {
+    const visible = await isVisible(projectId, req.userId);
+    if (visible) {
       next();
       return;
     }
@@ -45,8 +45,8 @@ export default function verifyVisibleMiddleware(sequelize) {
       return res.status(404).send('failed to find projectId');
     }
 
-    const isVisible = await isVisible(projectId, req.userId);
-    if (isVisible) {
+    const visible = await isVisible(projectId, req.userId);
+    if (visible) {
       next();
       return;
     }
@@ -81,8 +81,8 @@ export default function verifyVisibleMiddleware(sequelize) {
       return res.status(404).send('failed to find projectId');
     }
 
-    const isVisible = await isVisible(projectId, req.userId);
-    if (isVisible) {
+    const visible = await isVisible(projectId, req.userId);
+    if (visible) {
       next();
       return;
     }
@@ -109,8 +109,8 @@ export default function verifyVisibleMiddleware(sequelize) {
       return res.status(404).send('failed to find projectId');
     }
 
-    const isVisible = await isVisible(projectId, req.userId);
-    if (isVisible) {
+    const visible = await isVisible(projectId, req.userId);
+    if (visible) {
       next();
       return;
     }
@@ -153,8 +153,8 @@ export default function verifyVisibleMiddleware(sequelize) {
         return res.status(404).send('failed to find projectId');
       }
 
-      const isVisible = await isVisible(projectId, req.userId);
-      if (isVisible) {
+      const visible = await isVisible(projectId, req.userId);
+      if (visible) {
         next();
         return;
       }
