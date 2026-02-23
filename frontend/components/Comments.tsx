@@ -85,7 +85,10 @@ export default function Comments({ projectId, commentableType, commentableId, me
 
     setIsSubmitting(true);
     try {
-      await updateComment(context.token.access_token, id, editContent);
+      const updated = await updateComment(context.token.access_token, id, editContent);
+      if (!updated) {
+        throw new Error('Failed to update comment');
+      }
       setComments(comments.map((c) => (c.id === id ? { ...c, content: editContent } : c)));
       setEditingId(null);
       setEditContent('');

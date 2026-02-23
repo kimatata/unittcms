@@ -43,10 +43,18 @@ export default function CommentItem({
               </div>
               {canEdit && (
                 <div className="flex gap-2">
-                  <Button isIconOnly size="sm" variant="light" onPress={onStartEdit} isDisabled={isSubmitting}>
+                  <Button
+                    aria-label="Edit Comment"
+                    isIconOnly
+                    size="sm"
+                    variant="light"
+                    onPress={onStartEdit}
+                    isDisabled={isSubmitting}
+                  >
                     <Edit2 size={16} />
                   </Button>
                   <Button
+                    aria-label="Delete Comment"
                     isIconOnly
                     size="sm"
                     variant="light"

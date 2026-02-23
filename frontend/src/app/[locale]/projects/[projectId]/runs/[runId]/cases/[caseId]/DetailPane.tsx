@@ -1,8 +1,8 @@
 'use client';
 import { useEffect, useState, useContext } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { Tabs, Tab } from '@heroui/react';
 import CaseDetail from './CaseDetail';
-import { usePathname } from '@/src/i18n/routing';
 import Comments from '@/components/Comments';
 import History from '@/components/History';
 import { TokenContext } from '@/utils/TokenProvider';
@@ -12,7 +12,7 @@ import type { CaseType, StepType } from '@/types/case';
 import type { RunCaseType, RunDetailMessages } from '@/types/run';
 import type { PriorityMessages } from '@/types/priority';
 import type { TestTypeMessages } from '@/types/testType';
-import { CommentMessages } from '@/types/comment';
+import type { CommentMessages } from '@/types/comment';
 
 type Props = {
   projectId: string;
@@ -36,7 +36,7 @@ export default function TestCaseDetailPane({
   commentMessages,
 }: Props) {
   const context = useContext(TokenContext);
-  const pathname = usePathname();
+  const searchParams = useSearchParams();
   const [selectedTab, setSelectedTab] = useState('caseDetail');
   const [isFetching, setIsFetching] = useState(false);
   const [testCase, setTestCase] = useState<CaseType | null>(null);
@@ -44,7 +44,6 @@ export default function TestCaseDetailPane({
 
   useEffect(() => {
     // if the url has ?tab=comments, then select the comments tab
-    const searchParams = new URLSearchParams(window.location.search);
     const tab = searchParams.get('tab');
     if (tab === 'comments') {
       setSelectedTab('comments');
@@ -53,7 +52,7 @@ export default function TestCaseDetailPane({
     } else {
       setSelectedTab('caseDetail');
     }
-  }, [pathname]);
+  }, [searchParams]);
 
   useEffect(() => {
     async function fetchDataEffect() {

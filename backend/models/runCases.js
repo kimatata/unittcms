@@ -24,7 +24,7 @@ function defineRunCase(sequelize, DataTypes) {
       onDelete: 'CASCADE',
     });
     RunCase.hasMany(models.Comment, {
-      foreignKey: 'runCaseId',
+      foreignKey: 'commentableId',
       onDelete: 'CASCADE',
     });
   };

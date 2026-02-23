@@ -64,7 +64,7 @@ export default function TestCaseSelector({
     { name: messages.priority, uid: 'priority', sortable: true },
     { name: messages.tags, uid: 'tags', sortable: false },
     { name: messages.status, uid: 'runStatus', sortable: true },
-    { name: messages.comments || 'Comments', uid: 'comments', sortable: false },
+    { name: messages.comments, uid: 'comments', sortable: false },
     { name: messages.actions, uid: 'actions' },
   ];
 

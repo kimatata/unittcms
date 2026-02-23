@@ -101,8 +101,8 @@ export async function deleteComment(jwt: string, commentId: number): Promise<voi
     if (!response.ok) {
       throw new Error(`HTTP error! Status: ${response.status}`);
     }
-    const data = await response.json();
-    return data || null;
+    await response.json();
+    return;
   } catch (error: unknown) {
     logError('Error deleting comments:', error);
     return;

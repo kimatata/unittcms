@@ -115,7 +115,9 @@ export default function (sequelize) {
                 'status',
                 [
                   sequelize.literal(
-                    "(SELECT COUNT(*) FROM comments WHERE comments.commentableType = 'RunCase' AND comments.commentableId = RunCases.id)"
+                    '(SELECT COUNT(*) FROM `comments` WHERE `comments`.`commentableType` = ' +
+                      sequelize.escape('RunCase') +
+                      ' AND `comments`.`commentableId` = `RunCases`.`id`)'
                   ),
                   'commentCount',
                 ],
