@@ -224,51 +224,53 @@ export default function HeaderNavbarMenu({ messages, locale }: Props) {
               />
             </Listbox>
           ) : (
-            <Listbox
-              aria-label="Account links"
-              itemClasses={{
-                base: 'h-10 text-large',
-              }}
-            >
-              <ListboxItem
-                key="signin"
-                startContent={<ArrowRightToLine size={16} />}
-                title={messages.signIn}
-                onPress={() => {
-                  router.push('/account/signin', { locale: locale });
-                  setIsMenuOpen(false);
+            <>
+              <Listbox
+                aria-label="Account links"
+                itemClasses={{
+                  base: 'h-10 text-large',
                 }}
-              />
-              <ListboxItem
-                key="signup"
-                title={messages.signUp}
-                startContent={<PenTool size={16} />}
-                onPress={() => {
-                  router.push('/account/signup', { locale: locale });
-                  setIsMenuOpen(false);
+              >
+                <ListboxItem
+                  key="signin"
+                  startContent={<ArrowRightToLine size={16} />}
+                  title={messages.signIn}
+                  onPress={() => {
+                    router.push('/account/signin', { locale: locale });
+                    setIsMenuOpen(false);
+                  }}
+                />
+                <ListboxItem
+                  key="signup"
+                  title={messages.signUp}
+                  startContent={<PenTool size={16} />}
+                  onPress={() => {
+                    router.push('/account/signup', { locale: locale });
+                    setIsMenuOpen(false);
+                  }}
+                />
+              </Listbox>
+              <p className="font-bold">{messages.languages}</p>
+              <Listbox
+                aria-label="Language links"
+                itemClasses={{
+                  base: 'h-10 text-large',
                 }}
-              />
-            </Listbox>
+              >
+                {locales.map((entry) => (
+                  <ListboxItem
+                    key={entry.code}
+                    startContent={<Globe size={16} />}
+                    title={entry.name}
+                    onPress={() => {
+                      changeLocale(entry.code);
+                      setIsMenuOpen(false);
+                    }}
+                  />
+                ))}
+              </Listbox>
+            </>
           )}
-          <p className="font-bold">{messages.languages}</p>
-          <Listbox
-            aria-label="Language links"
-            itemClasses={{
-              base: 'h-10 text-large',
-            }}
-          >
-            {locales.map((entry) => (
-              <ListboxItem
-                key={entry.code}
-                startContent={<Globe size={16} />}
-                title={entry.name}
-                onPress={() => {
-                  changeLocale(entry.code);
-                  setIsMenuOpen(false);
-                }}
-              />
-            ))}
-          </Listbox>
         </div>
       </NavbarMenu>
     </Navbar>

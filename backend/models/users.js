@@ -23,9 +23,8 @@ function defineUser(sequelize, DataTypes) {
         type: DataTypes.STRING,
       },
       locale: {
-        type: DataTypes.STRING,
+        type: DataTypes.STRING(20),
         allowNull: true,
-        length: 20,
       },
     },
     { underscored: true }

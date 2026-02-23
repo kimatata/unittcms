@@ -16,7 +16,7 @@ export default function DropdownLanguage({ locale, onChangeLocale }: Props) {
           {locales.find((entry) => entry.code === locale)?.name || locale}
         </Button>
       </DropdownTrigger>
-      <DropdownMenu aria-label="lacales">
+      <DropdownMenu aria-label="locales">
         {locales.map((entry) => (
           <DropdownItem key={entry.code} onPress={() => onChangeLocale(entry.code)}>
             {entry.name}

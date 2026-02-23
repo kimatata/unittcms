@@ -26,7 +26,7 @@ export default function (sequelize) {
 
       // Return updated user without password
       const updatedUser = await User.findByPk(userId, {
-        attributes: ['id', 'email', 'username', 'role', 'avatarPath'],
+        attributes: ['id', 'email', 'username', 'role', 'avatarPath', 'locale'],
       });
 
       res.json({ user: updatedUser });

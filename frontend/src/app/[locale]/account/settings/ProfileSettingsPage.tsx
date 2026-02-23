@@ -1,5 +1,5 @@
 'use client';
-import { useState, useContext, useRef, useEffect } from 'react';
+import { useState, useContext, useRef } from 'react';
 import { Button, Input, Card, CardHeader, CardBody, addToast, CardFooter, Select, SelectItem } from '@heroui/react';
 import { Globe } from 'lucide-react';
 import { TokenContext } from '@/utils/TokenProvider';
@@ -46,7 +46,7 @@ type Props = {
   locale: LocaleCodeType;
 };
 
-export default function ProfileSettingsPage({ messages }: Props) {
+export default function ProfileSettingsPage({ messages, locale: defaultLocale }: Props) {
   const context = useContext(TokenContext);
 
   const router = useRouter();
@@ -57,17 +57,11 @@ export default function ProfileSettingsPage({ messages }: Props) {
   const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-  const [locale, setLocale] = useState<LocaleCodeType>('en');
+  const [locale, setLocale] = useState<LocaleCodeType>(context.token?.user?.locale ?? defaultLocale);
   const [isUpdatingUsername, setIsUpdatingUsername] = useState(false);
   const [isUpdatingPassword, setIsUpdatingPassword] = useState(false);
   const [isUpdatingLocale, setIsUpdatingLocale] = useState(false);
   const [isUploadingAvatar, setIsUploadingAvatar] = useState(false);
-
-  useEffect(() => {
-    if (context.token?.user?.locale) {
-      setLocale(context.token.user.locale);
-    }
-  }, [context.token?.user?.locale]);
 
   const handleUsernameUpdate = async () => {
     if (!username.trim()) {
@@ -171,7 +165,7 @@ export default function ProfileSettingsPage({ messages }: Props) {
   };
 
   const handleLocaleUpdate = async () => {
-    if (!locale.trim() && locales.some((l) => l.code === locale)) {
+    if (!locales.some((l) => l.code === locale)) {
       addToast({
         title: 'Warning',
         color: 'warning',
@@ -197,8 +191,9 @@ export default function ProfileSettingsPage({ messages }: Props) {
           color: 'success',
           description: messages.localeUpdated,
         });
-        setLocale(result.user.locale);
-        changeLocale(result.user.locale);
+        const nextLocale = result.user.locale ?? locale;
+        setLocale(nextLocale);
+        changeLocale(nextLocale);
       }
     } catch (error) {
       logError('Error updating locale:', error);

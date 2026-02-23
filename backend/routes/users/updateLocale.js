@@ -19,15 +19,17 @@ export default function (sequelize) {
       }
 
       const { locale } = req.body;
-      if (!locale || locale.trim().length === 0) {
+
+      const normalizedLocale = typeof locale === 'string' ? locale.trim() : '';
+      if (!normalizedLocale || normalizedLocale.length === 0) {
         return res.status(400).send('Locale is required');
       }
 
-      if (!SUPPORTED_LOCALES.includes(locale)) {
+      if (!SUPPORTED_LOCALES.includes(normalizedLocale)) {
         return res.status(400).send('Invalid locale');
       }
 
-      await user.update({ locale: locale.trim() });
+      await user.update({ locale: normalizedLocale });
 
       const updatedUser = await User.findByPk(userId, {
         attributes: ['id', 'email', 'username', 'role', 'avatarPath', 'locale'],

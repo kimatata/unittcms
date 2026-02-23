@@ -1,8 +1,7 @@
 export async function up(queryInterface, Sequelize) {
   await queryInterface.addColumn('users', 'locale', {
-    type: Sequelize.STRING,
+    type: Sequelize.STRING(20),
     allowNull: true,
-    length: 20,
   });
 }
 
