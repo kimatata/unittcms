@@ -30,6 +30,7 @@ export default function AuthPage({ isSignup, messages, locale }: Props) {
     username: '',
     role: roles.findIndex((entry) => entry.uid === 'user'),
     avatarPath: '',
+    locale: null,
   });
   const [confirmPassword, setConfirmPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState('');

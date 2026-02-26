@@ -43,6 +43,7 @@ export default function SettingsPage({ projectId, messages, projectDialogMessage
     avatarPath: '',
     role: -1,
     username: '',
+    locale: null,
   });
 
   useEffect(() => {
