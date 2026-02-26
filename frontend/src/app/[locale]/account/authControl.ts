@@ -60,6 +60,7 @@ async function signInAsGuest() {
     username: 'Guest',
     role: roles.findIndex((entry) => entry.uid === 'user'),
     avatarPath: '',
+    locale: null,
   };
   const token = await signUp(guestUser);
   return token;
