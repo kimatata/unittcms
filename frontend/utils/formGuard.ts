@@ -1,5 +1,16 @@
 import { useEffect } from 'react';
 
+export const isIgnoredPath = (href: string, ignorePaths?: string[]): boolean => {
+  if (!ignorePaths) return false;
+  return ignorePaths.some((path) => {
+    try {
+      return new RegExp(path).test(href);
+    } catch {
+      return false;
+    }
+  });
+};
+
 export const useFormGuard = (isDirty: boolean, confirmText: string, ignorePaths?: string[]) => {
   useEffect(() => {
     const handleClick = (event: MouseEvent) => {
@@ -13,7 +24,7 @@ export const useFormGuard = (isDirty: boolean, confirmText: string, ignorePaths?
         if (!href) return;
 
         // do not show confirm for ignored paths
-        if (ignorePaths && ignorePaths.some((path) => href.includes(path))) {
+        if (isIgnoredPath(href, ignorePaths)) {
           return;
         }
 
