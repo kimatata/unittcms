@@ -17,6 +17,9 @@ export default defineConfig({
     ],
   },
   resolve: {
-    alias: [{ find: '@', replacement: resolve(__dirname, './frontend') }],
+    alias: [
+      { find: '@', replacement: resolve(__dirname, './frontend') },
+      { find: 'react', replacement: resolve(__dirname, 'frontend/node_modules/react') },
+    ],
   },
 });
