@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 
-export const isIgnoredPath = (href: string, compiledPatterns: RegExp[]): boolean => {
+const isIgnoredPath = (href: string, compiledPatterns: RegExp[]): boolean => {
   return compiledPatterns.some((regex) => regex.test(href));
 };
 

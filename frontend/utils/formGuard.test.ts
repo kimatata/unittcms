@@ -82,7 +82,7 @@ describe('useFormGuard', () => {
   });
 
   describe('UnitTCMS use case', () => {
-    it('does not show confirm when navigationg to case detail page of test run', () => {
+    it('does not show confirm when navigating to case detail page of test run', () => {
       const projectId = '1';
       const runId = '2';
       useFormGuard(true, 'Leave?', [`/projects/${projectId}/runs/${runId}/cases/\\d+`]);
@@ -91,7 +91,7 @@ describe('useFormGuard', () => {
       expect(confirmSpy).not.toHaveBeenCalled();
     });
 
-    it('shows confirm when navigationg to test cases page', () => {
+    it('shows confirm when navigating to test cases page', () => {
       const projectId = '1';
       const runId = '2';
       useFormGuard(true, 'Leave?', [`/projects/${projectId}/runs/${runId}/cases/\\d+`]);
