@@ -15,6 +15,7 @@ describe('useFormGuard', () => {
   let confirmSpy: ReturnType<typeof vi.spyOn>;
 
   beforeEach(() => {
+    // @ts-expect-error - we will mock confirm
     confirmSpy = vi.spyOn(window, 'confirm');
     cleanupFn = undefined;
   });
