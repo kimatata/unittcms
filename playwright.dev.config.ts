@@ -2,11 +2,10 @@ import { defineConfig, devices } from '@playwright/test';
 
 /**
  * Playwright config for non-Docker E2E tests.
- * Starts the backend (port 8001) and frontend (port 8000) servers automatically.
  *
  * Before running, ensure:
- *   - backend is built: cd backend && npm run build && npm run migrate
- *   - frontend is built: cd frontend && NEXT_PUBLIC_BACKEND_ORIGIN=http://localhost:8001 npm run build
+ *   - npm install is run in the root, backend, and frontend directories
+ *   - playwright is installed: npx playwright install --with-deps
  *
  * Then run: npm run e2e:dev
  */
@@ -29,6 +28,7 @@ export default defineConfig({
 
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: 'on-first-retry',
+    video: 'retain-on-failure',
   },
 
   /* Configure projects for major browsers */
@@ -37,13 +37,11 @@ export default defineConfig({
       name: 'chromium',
       use: { ...devices['Desktop Chrome'] },
     },
-
     {
       name: 'firefox',
       use: { ...devices['Desktop Firefox'] },
       testIgnore: '**/first-user-signup.spec.ts',
     },
-
     {
       name: 'webkit',
       use: { ...devices['Desktop Safari'] },
@@ -54,12 +52,15 @@ export default defineConfig({
   /* Start backend and frontend servers before running tests */
   webServer: [
     {
-      command: 'cd backend && node dist/index.js',
+      command: 'cd backend && npm run build && npm run migrate && npm run start',
       url: 'http://localhost:8001',
       reuseExistingServer: !process.env.CI,
     },
     {
-      command: 'cd frontend && npm run start',
+      command: 'cd frontend && npm run build && npm run start',
+      env: {
+        NEXT_PUBLIC_BACKEND_ORIGIN: 'http://localhost:8001',
+      },
       url: 'http://localhost:8000',
       reuseExistingServer: !process.env.CI,
     },
