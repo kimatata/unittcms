@@ -4,7 +4,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "start": "npm run build && node --env-file=.env dist/index.js",
+    "start": "npm run build && node dist/index.js",
     "dev": "tsoa spec-and-routes && concurrently \"nodemon --config nodemon-tsoa.json\" \"nodemon index.ts\"",
     "build": "tsoa spec-and-routes && tsc",
     "migrate": "sequelize db:migrate",

@@ -9,6 +9,7 @@
     "test": "vitest",
     "coverage": "vitest run --coverage",
     "e2e": "playwright test",
+    "e2e:dev": "playwright test --config playwright.dev.config.ts",
     "report": "playwright show-report",
     "lint": "eslint",
     "lint:fix": "eslint --fix"

@@ -5,6 +5,9 @@ on:
     branches: [ "main"]
   workflow_dispatch:
 
+permissions:
+  contents: read
+
 jobs:
   e2e:
     runs-on: ubuntu-latest
@@ -38,6 +41,57 @@ jobs:
         if: always()
         with:
           name: e2e-report
+          path: |
+            playwright-report/
+            playwright-screenshots/
+
+  e2e-dev:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install root dependencies
+        run: npm install
+
+      - name: Install backend dependencies
+        run: npm install
+        working-directory: backend
+
+      - name: Build backend
+        run: npm run build
+        working-directory: backend
+
+      - name: Run database migrations
+        run: npm run migrate
+        working-directory: backend
+
+      - name: Install frontend dependencies
+        run: npm install
+        working-directory: frontend
+
+      - name: Build frontend
+        run: npm run build
+        env:
+          NEXT_PUBLIC_BACKEND_ORIGIN: http://localhost:8001
+        working-directory: frontend
+
+      - name: Install Playwright
+        run: npx playwright install --with-deps
+
+      - name: Run E2E tests (dev mode)
+        run: npm run e2e:dev
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: e2e-dev-report
           path: |
             playwright-report/
             playwright-screenshots/
