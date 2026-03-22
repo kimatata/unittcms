@@ -52,7 +52,7 @@ export default defineConfig({
   /* Start backend and frontend servers before running tests */
   webServer: [
     {
-      command: 'cd backend && npm run migrate && npx tsx index.ts',
+      command: 'cd backend && npm run migrate && npm run start',
       url: 'http://localhost:8001',
       reuseExistingServer: !process.env.CI,
       timeout: 120000,
