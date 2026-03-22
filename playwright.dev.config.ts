@@ -61,6 +61,7 @@ export default defineConfig({
       },
       url: 'http://localhost:8001',
       reuseExistingServer: !process.env.CI,
+      timeout: 120000,
     },
     {
       command: 'cd frontend && npm run build && npm run start',
@@ -69,6 +70,7 @@ export default defineConfig({
       },
       url: 'http://localhost:8000',
       reuseExistingServer: !process.env.CI,
+      timeout: 120000,
     },
   ],
 });
