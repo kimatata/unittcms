@@ -39,8 +39,9 @@ const swaggerPath = path.join(__dirname, 'public/swagger.json');
 const swaggerDocument = JSON.parse(readFileSync(swaggerPath, 'utf8'));
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
-// init sequelize
-const databasePath = process.env.DATABASE_PATH ?? path.resolve(__dirname, 'database/database.sqlite');
+// __dirname is backend/ in dev (ts-node) and backend/dist/ in production (compiled)
+const backendDir = path.basename(__dirname) === 'dist' ? path.resolve(__dirname, '..') : __dirname;
+const databasePath = process.env.DATABASE_PATH ?? path.resolve(backendDir, 'database/database.sqlite');
 export const sequelize = new Sequelize({
   dialect: 'sqlite',
   storage: databasePath,
