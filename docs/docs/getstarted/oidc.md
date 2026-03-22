@@ -8,7 +8,7 @@ UnitTCMS supports OpenID Connect (OIDC) authentication, allowing users to sign i
 
 ## Overview
 
-When OIDC is configured, a "Login with SSO" button will appear on the signin page. Users can authenticate through your OIDC provider, and upon successful authentication, a JWT token will be generated just like normal email/password login.
+When OIDC is configured, a "Sign in with SSO" button will appear on the sign-in page. Users can authenticate through your OIDC provider, and upon successful authentication, a JWT token will be generated just like normal email/password login.
 
 ## Configuration
 
