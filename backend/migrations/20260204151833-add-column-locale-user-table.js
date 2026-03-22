@@ -5,6 +5,6 @@ export async function up(queryInterface, Sequelize) {
   });
 }
 
-export async function down() {
-  // SQLite does not support dropping columns
+export async function down(queryInterface) {
+  await queryInterface.sequelize.query('ALTER TABLE "users" DROP COLUMN "locale"');
 }
