@@ -1,4 +1,7 @@
+import path from 'path';
+import { fileURLToPath } from 'url';
 import { defineConfig, devices } from '@playwright/test';
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 /**
  * Playwright config for non-Docker E2E tests.
@@ -53,6 +56,9 @@ export default defineConfig({
   webServer: [
     {
       command: 'cd backend && npm run build && npm run migrate && npm run start',
+      env: {
+        DATABASE_PATH: path.resolve(__dirname, 'backend/database/database.sqlite'),
+      },
       url: 'http://localhost:8001',
       reuseExistingServer: !process.env.CI,
     },

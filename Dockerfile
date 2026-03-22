@@ -57,6 +57,7 @@ ENV NODE_ENV=production
 ENV PORT=8000
 ENV FRONTEND_ORIGIN=http://localhost:8000
 ENV API_PATH=/api
+ENV DATABASE_PATH=/app/backend/database/database.sqlite
 
 # Create a non-root user
 RUN addgroup --system --gid 1001 nodejs
