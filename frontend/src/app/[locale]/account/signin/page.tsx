@@ -1,8 +1,8 @@
 import { getTranslations } from 'next-intl/server';
-import { useTranslations } from 'next-intl';
 import AuthPage from '../authPage';
 import { PageType } from '@/types/base';
 import { LocaleCodeType } from '@/types/locale';
+import { fetchSSOEnabled } from '@/utils/ssoAvailable';
 
 export async function generateMetadata({ params: { locale } }: { params: { locale: LocaleCodeType } }) {
   const t = await getTranslations({ locale, namespace: 'Auth' });
@@ -12,13 +12,16 @@ export async function generateMetadata({ params: { locale } }: { params: { local
   };
 }
 
-export default function Page({ params }: PageType) {
-  const t = useTranslations('Auth');
+export default async function Page({ params }: PageType) {
+  const ssoEnabled = await fetchSSOEnabled();
+  const t = await getTranslations('Auth');
   const messages = {
     title: t('signin'),
     linkTitle: t('or_signup'),
     submitTitle: t('signin'),
     signInAsGuest: t('signin_as_guest'),
+    signInWithSso: t('signin_with_sso'),
+    or: t('or_sso'),
     email: t('email'),
     username: t('username'),
     password: t('password'),
@@ -35,7 +38,7 @@ export default function Page({ params }: PageType) {
   };
   return (
     <>
-      <AuthPage isSignup={false} messages={messages} locale={params.locale as LocaleCodeType} />
+      <AuthPage isSignup={false} messages={messages} locale={params.locale as LocaleCodeType} ssoEnabled={ssoEnabled} />
     </>
   );
 }

@@ -31,6 +31,8 @@ export default function (sequelize) {
       });
       const expiresAt = Date.now() + 3600 * 1000 * 24; // expire date(ms)
 
+      user.password = undefined;
+
       res.status(200).json({ access_token: accessToken, expires_at: expiresAt, user });
     } catch (error) {
       console.error(error);

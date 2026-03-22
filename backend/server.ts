@@ -63,6 +63,8 @@ import usersUpdateAvatarRoute from './routes/users/updateAvatar.js';
 import usersUpdateRoleRoute from './routes/users/updateRole.js';
 import signUpRoute from './routes/users/signup.js';
 import signInRoute from './routes/users/signin.js';
+import oidcRoute from './routes/users/oidc.js';
+app.use('/users', oidcRoute(sequelize)); // OIDC must be before other routes
 app.use('/users', usersIndexRoute(sequelize));
 app.use('/users', usersFindRoute(sequelize));
 app.use('/users', usersSearchRoute(sequelize));
