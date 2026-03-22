@@ -1,6 +1,6 @@
 {
   "watch": ["**/*.ts", "models/**/*.js", "routes/**/*.js"],
   "ignore": ["dist", "node_modules", "controllers/**/*.ts"],
-  "exec": "node --loader ts-node/esm --no-warnings=ExperimentalWarning",
+  "exec": "node --env-file-if-exists=.env --loader ts-node/esm --no-warnings=ExperimentalWarning",
   "ext": "ts,js"
 }
