@@ -66,10 +66,16 @@ export default function (sequelize) {
         return res.status(400).json({ error: 'folderId is required' });
       }
 
-      const workbook = XLSX.read(req.file.buffer, { type: 'buffer' });
-      const sheetName = workbook.SheetNames[0];
-      const worksheet = workbook.Sheets[sheetName];
-      const jsonData = XLSX.utils.sheet_to_json(worksheet);
+      let jsonData;
+      try {
+        const workbook = XLSX.read(req.file.buffer, { type: 'buffer' });
+        const sheetName = workbook.SheetNames[0];
+        const worksheet = workbook.Sheets[sheetName];
+        jsonData = XLSX.utils.sheet_to_json(worksheet);
+      } catch (error) {
+        console.error(error);
+        return res.status(400).json({ error: 'Invalid Excel file' });
+      }
 
       for (const [index, row] of jsonData.entries()) {
         const errorMessage = _getRowValidationError(row, index);

@@ -83,13 +83,6 @@ describe('Test case import strict validation', () => {
       expect(res.body.error).toContain('Medium');
     });
 
-    it('should return 400 for "Medium" (wrong casing)', async () => {
-      const res = await postImport([{ ...validRow, priority: 'Medium' }]);
-      expect(res.status).toBe(400);
-      expect(res.body.error).toContain('invalid priority');
-      expect(res.body.error).toContain('Medium');
-    });
-
     it('should return 400 for "HIGH" (all caps)', async () => {
       const res = await postImport([{ ...validRow, priority: 'HIGH' }]);
       expect(res.status).toBe(400);
