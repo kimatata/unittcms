@@ -40,7 +40,7 @@ const swaggerDocument = JSON.parse(readFileSync(swaggerPath, 'utf8'));
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 // init sequelize
-const databasePath = process.env.DATABASE_PATH ?? path.resolve(process.cwd(), 'database/database.sqlite');
+const databasePath = process.env.DATABASE_PATH ?? path.resolve(__dirname, 'database/database.sqlite');
 export const sequelize = new Sequelize({
   dialect: 'sqlite',
   storage: databasePath,
