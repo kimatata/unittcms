@@ -55,7 +55,7 @@ export default defineConfig({
   /* Start backend and frontend servers before running tests */
   webServer: [
     {
-      command: 'cd backend && npm run build && npm run migrate && npm run start',
+      command: 'cd backend && npm run build && npm run migrate && node dist/index.js',
       env: {
         DATABASE_PATH: path.resolve(__dirname, 'backend/database/database.sqlite'),
       },
