@@ -4,15 +4,12 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "start": "node dist/index.js",
+    "start": "node --env-file=.env dist/index.js",
     "dev": "tsoa spec-and-routes && concurrently \"nodemon --config nodemon-tsoa.json\" \"nodemon index.ts\"",
     "build": "tsoa spec-and-routes && tsc && mkdir -p dist/public && cp public/swagger.json dist/public/",
     "migrate": "sequelize db:migrate",
     "seed": "sequelize db:seed:all",
     "drop": "sequelize db:migrate:undo:all"
-  },
-  "engines": {
-    "node": ">=20.11.0"
   },
   "author": "",
   "license": "ISC",

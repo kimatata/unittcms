@@ -4,6 +4,12 @@ sidebar_position: 2
 
 # Backend
 
+## Build Typescript code
+
+```bash
+npm run build
+```
+
 ## Set up database
 
 ```bash

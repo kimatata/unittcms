@@ -28,6 +28,8 @@ services:
       - PORT=8000
       - SECRET_KEY=your_secret_key_here
       - IS_DEMO=false # set to true to seed the database
+      - API_PATH=/api
+      - DATABASE_PATH=/app/backend/database/database.sqlite
     // highlight-end
     volumes:
       - db-data:/app/backend/database
