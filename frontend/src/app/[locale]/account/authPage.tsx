@@ -203,14 +203,19 @@ export default function AuthPage({ isSignup, messages, locale, ssoEnabled }: Pro
 
             {!isSignup && ssoEnabled && (
               <>
-
                 <div className="relative flex items-center my-3">
                   <div className="flex-grow border-t border-default-200" />
                   <span className="mx-4 flex-shrink text-sm text-default-400">{messages.or}</span>
                   <div className="flex-grow border-t border-default-200" />
                 </div>
 
-                <Button color="primary" variant="bordered" onPress={handleSSOLogin} className="w-full mt-3" startContent={<OpenIdIcon />}>
+                <Button
+                  color="primary"
+                  variant="bordered"
+                  onPress={handleSSOLogin}
+                  className="w-full mt-3"
+                  startContent={<OpenIdIcon />}
+                >
                   {messages.signInWithSso}
                 </Button>
               </>

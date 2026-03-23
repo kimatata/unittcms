@@ -16,7 +16,7 @@ export default function (sequelize) {
       return res.status(400).send('userId is required');
     }
 
-    const { newRole } = req.body;
+    const { newRole } = req.body ?? {};
     if (newRole === undefined || newRole === null) {
       return res.status(400).send('newRole is required');
     }

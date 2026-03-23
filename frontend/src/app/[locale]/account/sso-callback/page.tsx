@@ -29,8 +29,7 @@ export default function SSOCallbackPage() {
       console.error('Error processing SSO callback:', error);
       router.replace('/account/signin');
     }
-  }, []);
+  }, [context, router, searchParams]);
 
   return <></>;
-
 }
