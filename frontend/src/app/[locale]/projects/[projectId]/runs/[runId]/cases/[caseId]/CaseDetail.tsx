@@ -98,7 +98,13 @@ export default function CaseDetail({
             testCase.Steps.map((step) => (
               <div key={step.id} className="flex gap-2 my-2">
                 <div className="w-1/2">
-                  <Textarea isReadOnly size="sm" variant="flat" label={messages.detailsOfTheStep} value={step.step} />
+                  <Textarea
+                    isReadOnly
+                    size="sm"
+                    variant="flat"
+                    label={`${messages.detailsOfTheStep} ${step.caseSteps.stepNo}`}
+                    value={step.step}
+                  />
                 </div>
                 <div className="w-1/2">
                   <Textarea isReadOnly size="sm" variant="flat" label={messages.expectedResult} value={step.result} />
