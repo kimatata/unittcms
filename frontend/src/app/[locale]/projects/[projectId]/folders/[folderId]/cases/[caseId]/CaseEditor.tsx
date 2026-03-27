@@ -463,6 +463,17 @@ export default function CaseEditor({
                 messages={messages}
               />
             )}
+
+            <Textarea
+              size="sm"
+              variant="bordered"
+              label={messages.overallExpectedResult}
+              value={testCase.expectedResults}
+              onValueChange={(changeValue) => {
+                setTestCase({ ...testCase, expectedResults: changeValue });
+              }}
+              className="mt-3"
+            />
           </div>
         )}
 

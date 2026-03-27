@@ -79,6 +79,7 @@ type RunMessages = {
   steps: string;
   preconditions: string;
   expectedResult: string;
+  overallExpectedResult: string;
   detailsOfTheStep: string;
   close: string;
   filter: string;
@@ -111,6 +112,7 @@ type RunDetailMessages = {
   steps: string;
   preconditions: string;
   expectedResult: string;
+  overallExpectedResult: string;
   detailsOfTheStep: string;
   caseDetail: string;
   comments: string;
