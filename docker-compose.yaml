@@ -11,6 +11,7 @@ services:
       - PORT=8000
       - SECRET_KEY=your_secret_key_here
       - BCRYPT_ROUNDS=10 # optional: bcrypt cost factor for password hashing (default: 10)
+      - MAX_REQUEST_BODY_SIZE=100kb # optional: maximum JSON request body size (default: 100kb)
       - IS_DEMO=false # set to true to seed the database
       - API_PATH=${API_PATH:-/api}
     volumes:
