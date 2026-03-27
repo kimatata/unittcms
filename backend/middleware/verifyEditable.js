@@ -1,5 +1,6 @@
 import { DataTypes } from 'sequelize';
-import { memberRoles } from '../routes/users/authSettings.js';
+import { roles, memberRoles } from '../routes/users/authSettings.js';
+import defineUser from '../models/users.js';
 import defineMember from '../models/members.js';
 import defineProject from '../models/projects.js';
 import defineFolder from '../models/folders.js';
@@ -12,7 +13,20 @@ export default function verifyEditableMiddleware(sequelize) {
    * Verify user has project
    * (have to be called after verifySignedIn() middleware)
    */
+  async function isAdmin(userId) {
+    const User = defineUser(sequelize, DataTypes);
+    const user = await User.findByPk(userId);
+    if (!user) return false;
+    const adminRoleIndex = roles.findIndex((entry) => entry.uid === 'administrator');
+    return user.role === adminRoleIndex;
+  }
+
   async function verifyProjectOwner(req, res, next) {
+    if (await isAdmin(req.userId)) {
+      next();
+      return;
+    }
+
     const Project = defineProject(sequelize, DataTypes);
 
     const projectId = req.params.projectId;
@@ -47,6 +61,11 @@ export default function verifyEditableMiddleware(sequelize) {
     const project = await Project.findByPk(projectId);
     if (!project) {
       return res.status(404).send('Project not found');
+    }
+
+    if (await isAdmin(req.userId)) {
+      next();
+      return;
     }
 
     if (project.userId === req.userId) {
@@ -161,6 +180,10 @@ export default function verifyEditableMiddleware(sequelize) {
   }
 
   async function isDeveloper(projectId, userId) {
+    if (await isAdmin(userId)) {
+      return true;
+    }
+
     const Project = defineProject(sequelize, DataTypes);
     const Member = defineMember(sequelize, DataTypes);
     Project.hasMany(Member, { foreignKey: 'projectId' });
@@ -294,6 +317,10 @@ export default function verifyEditableMiddleware(sequelize) {
   }
 
   async function isReporter(projectId, userId) {
+    if (await isAdmin(userId)) {
+      return true;
+    }
+
     const Project = defineProject(sequelize, DataTypes);
     const Member = defineMember(sequelize, DataTypes);
     Project.hasMany(Member, { foreignKey: 'projectId' });
