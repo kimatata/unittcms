@@ -1,7 +1,8 @@
 'use client';
 import { useState, useEffect, useContext, ChangeEvent, DragEvent } from 'react';
-import { Input, Textarea, Select, SelectItem, Button, Divider, Tooltip, addToast, Badge } from '@heroui/react';
+import { Input, Select, SelectItem, Button, Divider, Tooltip, addToast, Badge } from '@heroui/react';
 import { Save, Plus, ArrowLeft, Circle } from 'lucide-react';
+import MarkdownEditor from '@/components/MarkdownEditor';
 import CaseStepsEditor from './CaseStepsEditor';
 import CaseAttachmentsEditor from './CaseAttachmentsEditor';
 import { updateSteps } from './stepControl';
@@ -322,16 +323,15 @@ export default function CaseEditor({
           className="mt-3"
         />
 
-        <Textarea
-          size="sm"
-          variant="bordered"
+        <MarkdownEditor
           label={messages.description}
           placeholder={messages.testCaseDescription}
           value={testCase.description}
+          isDisabled={!tokenContext.isProjectDeveloper(Number(projectId))}
           onValueChange={(changeValue) => {
+            setIsDirty(true);
             setTestCase({ ...testCase, description: changeValue });
           }}
-          className="mt-3"
         />
 
         <CaseTagsEditor
@@ -414,28 +414,29 @@ export default function CaseEditor({
         {templates[testCase.template].uid === 'text' ? (
           <div>
             <h6 className="font-bold">{messages.testDetail}</h6>
-            <div className="flex">
-              <Textarea
-                size="sm"
-                variant="bordered"
-                label={messages.preconditions}
-                value={testCase.preConditions}
-                onValueChange={(changeValue) => {
-                  setTestCase({ ...testCase, preConditions: changeValue });
-                }}
-                className="mt-3 pe-1"
-              />
-
-              <Textarea
-                size="sm"
-                variant="bordered"
-                label={messages.expectedResult}
-                value={testCase.expectedResults}
-                onValueChange={(changeValue) => {
-                  setTestCase({ ...testCase, expectedResults: changeValue });
-                }}
-                className="mt-3 ps-1"
-              />
+            <div className="flex gap-2">
+              <div className="flex-1">
+                <MarkdownEditor
+                  label={messages.preconditions}
+                  value={testCase.preConditions}
+                  isDisabled={!tokenContext.isProjectDeveloper(Number(projectId))}
+                  onValueChange={(changeValue) => {
+                    setIsDirty(true);
+                    setTestCase({ ...testCase, preConditions: changeValue });
+                  }}
+                />
+              </div>
+              <div className="flex-1">
+                <MarkdownEditor
+                  label={messages.expectedResult}
+                  value={testCase.expectedResults}
+                  isDisabled={!tokenContext.isProjectDeveloper(Number(projectId))}
+                  onValueChange={(changeValue) => {
+                    setIsDirty(true);
+                    setTestCase({ ...testCase, expectedResults: changeValue });
+                  }}
+                />
+              </div>
             </div>
           </div>
         ) : (
