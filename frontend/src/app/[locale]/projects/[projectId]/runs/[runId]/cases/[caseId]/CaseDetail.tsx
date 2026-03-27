@@ -93,6 +93,15 @@ export default function CaseDetail({
                 </div>
               </div>
             ))}
+          <div className="my-2">
+            <Textarea
+              isReadOnly
+              size="sm"
+              variant="flat"
+              label={messages.overallExpectedResult}
+              value={testCase.expectedResults}
+            />
+          </div>
         </>
       )}
     </div>

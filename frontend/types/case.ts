@@ -125,6 +125,7 @@ type CaseMessages = {
   testDetail: string;
   preconditions: string;
   expectedResult: string;
+  overallExpectedResult: string;
   step: string;
   text: string;
   steps: string;

@@ -30,6 +30,7 @@ export default function Page({
     testDetail: t('test_detail'),
     preconditions: t('preconditions'),
     expectedResult: t('expected_result'),
+    overallExpectedResult: t('overall_expected_result'),
     step: t('step'),
     text: t('text'),
     steps: t('steps'),
