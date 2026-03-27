@@ -62,7 +62,7 @@ export default function ProjectsTable({ projects, messages, locale }: Props) {
               <Link href={`/projects/${project.id}/home`} locale={locale} className={NextUiLinkClasses}>
                 {cellValue as string}
               </Link>
-              <div className="text-xs text-default-500">
+              <div className="text-xs text-slate-500">
                 <div>{truncatedDetail}</div>
               </div>
             </div>
@@ -79,8 +79,8 @@ export default function ProjectsTable({ projects, messages, locale }: Props) {
 
   const classNames = useMemo(
     () => ({
-      wrapper: ['max-w-3xl'],
-      th: ['bg-transparent', 'text-default-500', 'border-b', 'border-divider'],
+      wrapper: ['max-w-3xl', 'shadow-none', 'rounded-none'],
+      th: ['bg-slate-50/80', 'text-slate-500', 'font-semibold', 'text-xs', 'uppercase', 'tracking-wider'],
       td: [
         // changing the rows border radius
         // first

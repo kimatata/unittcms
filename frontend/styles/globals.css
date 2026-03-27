@@ -1,3 +1,30 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap');
+
+@layer components {
+  .glass-panel {
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+  }
+
+  .spectrum-border-left {
+    border-left: 4px solid;
+    border-image: linear-gradient(to bottom, #006859, #652fe7) 1;
+  }
+
+  .glowing-progress {
+    box-shadow: 0 0 12px rgba(104, 250, 221, 0.4);
+  }
+
+  .bg-electric-gradient {
+    background: linear-gradient(135deg, #4953ac 0%, #652fe7 100%);
+  }
+
+  .btn-gradient-primary {
+    background: linear-gradient(135deg, #4953ac 0%, #929bfa 100%);
+    color: #f3f1ff;
+  }
+}

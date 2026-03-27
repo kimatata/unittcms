@@ -31,7 +31,7 @@ export default function MembersTable({ candidates, onAddPress, messages }: Props
           return cellValue;
         case 'add':
           return (
-            <Button color="primary" variant="faded" size="sm" onPress={() => onAddPress(candidate)}>
+            <Button className="bg-indigo-50 text-[#4953ac] font-semibold" variant="faded" size="sm" onPress={() => onAddPress(candidate)}>
               {messages.add}
             </Button>
           );
@@ -44,8 +44,8 @@ export default function MembersTable({ candidates, onAddPress, messages }: Props
 
   const classNames = useMemo(
     () => ({
-      wrapper: ['max-w-3xl'],
-      th: ['bg-transparent', 'text-default-500', 'border-b', 'border-divider'],
+      wrapper: ['max-w-3xl', 'shadow-none', 'rounded-none'],
+      th: ['bg-slate-50/80', 'text-slate-500', 'font-semibold', 'text-xs', 'uppercase', 'tracking-wider'],
       td: [
         // changing the rows border radius
         // first

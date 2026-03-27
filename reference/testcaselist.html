@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>UnitTCMS - Test Case Editor</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "surface-container-low": "#eef0fd",
+              "outline-variant": "#aaadb8",
+              "secondary-fixed": "#68fadd",
+              "on-secondary-fixed": "#00483d",
+              "on-primary": "#f3f1ff",
+              "surface-container": "#e5e8f6",
+              "on-secondary-container": "#005d4f",
+              "on-error": "#ffefef",
+              "surface-container-highest": "#d8dcec",
+              "outline": "#737681",
+              "primary-fixed-dim": "#858eec",
+              "error-dim": "#a70138",
+              "on-tertiary-container": "#370096",
+              "on-tertiary-fixed": "#1c0055",
+              "on-primary-fixed-variant": "#18217d",
+              "primary": "#4953ac",
+              "on-primary-container": "#0b1574",
+              "on-primary-fixed": "#000005",
+              "inverse-surface": "#0b0e16",
+              "primary-fixed": "#929bfa",
+              "surface-bright": "#f5f6ff",
+              "error-container": "#f74b6d",
+              "on-surface-variant": "#585b65",
+              "inverse-on-surface": "#9a9ca7",
+              "secondary-fixed-dim": "#56ebcf",
+              "on-error-container": "#510017",
+              "surface-dim": "#cfd4e5",
+              "surface-container-high": "#dee2f1",
+              "on-background": "#2b2f37",
+              "on-surface": "#2b2f37",
+              "surface-variant": "#d8dcec",
+              "secondary-dim": "#005a4d",
+              "on-secondary": "#c2ffef",
+              "tertiary-fixed-dim": "#ab93ff",
+              "tertiary-fixed": "#b8a3ff",
+              "primary-container": "#929bfa",
+              "background": "#f5f6ff",
+              "surface-container-lowest": "#ffffff",
+              "secondary": "#006859",
+              "surface": "#f5f6ff",
+              "tertiary-container": "#b8a3ff",
+              "secondary-container": "#68fadd",
+              "on-tertiary": "#f7f0ff",
+              "on-tertiary-fixed-variant": "#4000ad",
+              "surface-tint": "#4953ac",
+              "error": "#b41340",
+              "tertiary": "#652fe7",
+              "inverse-primary": "#929bfa",
+              "tertiary-dim": "#5819db",
+              "on-secondary-fixed-variant": "#006859",
+              "primary-dim": "#3d469f"
+            },
+            fontFamily: {
+              "headline": ["Manrope"],
+              "body": ["Manrope"],
+              "label": ["Manrope"]
+            },
+            borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .glass-panel {
+            backdrop-filter: blur(20px);
+        }
+        .spectrum-border-left {
+            border-left: 4px solid;
+            border-image: linear-gradient(to bottom, #006859, #652fe7) 1;
+        }
+        .glowing-progress {
+            box-shadow: 0 0 12px rgba(104, 250, 221, 0.4);
+        }
+    </style>
+</head>
+<body class="bg-background font-body text-on-background min-h-screen">
+<!-- SideNavBar -->
+<aside class="h-screen w-64 fixed left-0 top-0 z-40 bg-indigo-950/70 backdrop-blur-xl dark:bg-slate-950/80 flex flex-col p-4 gap-2 shadow-2xl shadow-indigo-900/20">
+<div class="mb-8 px-4">
+<h1 class="text-2xl font-extrabold text-white tracking-tighter">UnitTCMS</h1>
+<p class="text-indigo-300/60 text-xs font-manrope font-semibold tracking-wide uppercase">Electric Spectrum</p>
+</div>
+<nav class="flex-1 flex flex-col gap-2">
+<a class="flex items-center gap-3 px-4 py-3 text-indigo-200/70 hover:text-white transition-all hover:bg-white/10 rounded-xl" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="font-manrope font-semibold tracking-wide">Dashboard</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-white bg-gradient-to-r from-indigo-600 to-violet-500 rounded-xl shadow-lg shadow-indigo-500/30" href="#">
+<span class="material-symbols-outlined">inventory_2</span>
+<span class="font-manrope font-semibold tracking-wide">Test Suites</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-indigo-200/70 hover:text-white transition-all hover:bg-white/10 rounded-xl" href="#">
+<span class="material-symbols-outlined">play_circle</span>
+<span class="font-manrope font-semibold tracking-wide">Runs</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-indigo-200/70 hover:text-white transition-all hover:bg-white/10 rounded-xl" href="#">
+<span class="material-symbols-outlined">bug_report</span>
+<span class="font-manrope font-semibold tracking-wide">Defects</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-indigo-200/70 hover:text-white transition-all hover:bg-white/10 rounded-xl" href="#">
+<span class="material-symbols-outlined">monitoring</span>
+<span class="font-manrope font-semibold tracking-wide">Analytics</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-indigo-200/70 hover:text-white transition-all hover:bg-white/10 rounded-xl" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="font-manrope font-semibold tracking-wide">Settings</span>
+</a>
+</nav>
+<button class="mt-auto bg-gradient-to-br from-primary to-primary-container text-white py-4 px-6 rounded-xl font-bold flex items-center justify-center gap-2 hover:scale-[1.02] transition-transform active:scale-95 shadow-xl shadow-indigo-900/40">
+<span class="material-symbols-outlined">add</span>
+            New Test Run
+        </button>
+</aside>
+<!-- TopNavBar -->
+<header class="fixed top-0 right-0 w-[calc(100%-16rem)] h-16 z-30 bg-indigo-50/70 backdrop-blur-xl flex justify-between items-center px-8">
+<div class="flex items-center flex-1 max-w-xl">
+<div class="relative w-full group">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline">search</span>
+<input class="w-full bg-surface-container-highest/50 border-none rounded-full py-2 pl-10 focus:ring-2 focus:ring-violet-400 transition-all font-manrope text-sm" placeholder="Search test cases, suites, or requirements..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<button class="hover:bg-indigo-100/50 p-2 rounded-full transition-all text-indigo-600">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button class="hover:bg-indigo-100/50 p-2 rounded-full transition-all text-indigo-600">
+<span class="material-symbols-outlined">help</span>
+</button>
+<div class="h-8 w-8 rounded-full bg-gradient-to-tr from-indigo-500 to-violet-500 flex items-center justify-center text-white font-bold text-xs">JD</div>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="ml-64 pt-24 p-8 min-h-screen">
+<!-- Editor Header -->
+<div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-10">
+<div>
+<nav class="flex items-center gap-2 text-on-surface-variant text-sm font-label mb-2">
+<span class="hover:text-primary cursor-pointer">Projects</span>
+<span class="material-symbols-outlined text-xs">chevron_right</span>
+<span class="hover:text-primary cursor-pointer">Authentication Module</span>
+<span class="material-symbols-outlined text-xs">chevron_right</span>
+<span class="text-primary font-bold">TC-402</span>
+</nav>
+<h2 class="text-4xl font-extrabold text-on-primary-container tracking-tight">Signup Flow</h2>
+</div>
+<div class="flex items-center gap-3">
+<button class="px-6 py-3 bg-surface-container-highest text-on-surface font-bold rounded-xl hover:bg-surface-container-high transition-colors">Discard</button>
+<button class="px-8 py-3 bg-gradient-to-r from-primary to-primary-container text-on-primary font-bold rounded-xl shadow-lg shadow-primary/20 hover:scale-[1.02] active:scale-95 transition-all">Save Changes</button>
+</div>
+</div>
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+<!-- Left Column: Primary Editor -->
+<div class="lg:col-span-8 space-y-8">
+<!-- Core Details Section -->
+<section class="bg-surface-container-lowest rounded-2xl p-8 shadow-sm">
+<h3 class="text-xl font-bold mb-6 flex items-center gap-2 text-on-surface">
+<span class="material-symbols-outlined text-primary">edit_note</span>
+                        Test Definition
+                    </h3>
+<div class="space-y-6">
+<div class="group">
+<label class="block text-sm font-semibold text-on-surface-variant mb-2 px-1">Description</label>
+<textarea class="w-full bg-surface-container-highest border-transparent rounded-xl focus:bg-white focus:ring-2 focus:ring-tertiary/30 focus:border-tertiary transition-all font-medium text-on-surface p-4" placeholder="Describe the purpose of this test case..." rows="3">Validates the end-to-end user registration journey including email verification and initial profile setup for new users.</textarea>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<div>
+<label class="block text-sm font-semibold text-on-surface-variant mb-2 px-1">Priority</label>
+<div class="flex gap-2">
+<button class="flex-1 py-3 rounded-xl border-2 border-secondary-container bg-secondary-container/10 text-on-secondary-container font-bold text-sm flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-sm">keyboard_double_arrow_up</span>
+                                        High
+                                    </button>
+<button class="flex-1 py-3 rounded-xl border-2 border-transparent bg-surface-container-highest text-on-surface-variant font-bold text-sm hover:bg-surface-container-high transition-colors">Medium</button>
+<button class="flex-1 py-3 rounded-xl border-2 border-transparent bg-surface-container-highest text-on-surface-variant font-bold text-sm hover:bg-surface-container-high transition-colors">Low</button>
+</div>
+</div>
+<div>
+<label class="block text-sm font-semibold text-on-surface-variant mb-2 px-1">Type</label>
+<select class="w-full bg-surface-container-highest border-transparent rounded-xl focus:bg-white focus:ring-2 focus:ring-tertiary/30 focus:border-tertiary transition-all font-medium text-on-surface h-[48px] px-4">
+<option>Regression</option>
+<option>Smoke</option>
+<option>Sanity</option>
+</select>
+</div>
+</div>
+</div>
+</section>
+<!-- Step Definition Section -->
+<section class="bg-surface-container-lowest rounded-2xl p-8 shadow-sm overflow-hidden relative">
+<div class="spectrum-border-left absolute left-0 top-0 bottom-0 opacity-20"></div>
+<div class="flex justify-between items-center mb-8">
+<h3 class="text-xl font-bold flex items-center gap-2 text-on-surface">
+<span class="material-symbols-outlined text-tertiary">list_alt</span>
+                            Step Definition
+                        </h3>
+<button class="text-primary font-bold text-sm flex items-center gap-1 hover:underline">
+<span class="material-symbols-outlined text-sm">add_circle</span>
+                            Add Step
+                        </button>
+</div>
+<div class="space-y-4">
+<!-- Step 1 -->
+<div class="group bg-surface-container-low rounded-xl p-6 hover:shadow-md transition-shadow">
+<div class="flex items-start gap-4">
+<span class="w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold flex-shrink-0">1</span>
+<div class="flex-1 grid grid-cols-1 md:grid-cols-2 gap-6">
+<div>
+<div class="flex items-center gap-2 mb-2 text-xs font-bold text-tertiary uppercase tracking-wider">
+<span class="material-symbols-outlined text-sm">play_arrow</span>
+                                            Action
+                                        </div>
+<p class="text-on-surface font-medium">Navigate to /signup and enter valid credentials.</p>
+</div>
+<div>
+<div class="flex items-center gap-2 mb-2 text-xs font-bold text-secondary uppercase tracking-wider">
+<span class="material-symbols-outlined text-sm">verified</span>
+                                            Expected Result
+                                        </div>
+<p class="text-on-surface font-medium">System displays the verification pending screen.</p>
+</div>
+</div>
+<button class="opacity-0 group-hover:opacity-100 transition-opacity p-2 text-outline hover:text-error">
+<span class="material-symbols-outlined">delete</span>
+</button>
+</div>
+</div>
+<!-- Step 2 -->
+<div class="group bg-surface-container-low rounded-xl p-6 hover:shadow-md transition-shadow">
+<div class="flex items-start gap-4">
+<span class="w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold flex-shrink-0">2</span>
+<div class="flex-1 grid grid-cols-1 md:grid-cols-2 gap-6">
+<div>
+<div class="flex items-center gap-2 mb-2 text-xs font-bold text-tertiary uppercase tracking-wider">
+<span class="material-symbols-outlined text-sm">play_arrow</span>
+                                            Action
+                                        </div>
+<p class="text-on-surface font-medium">Click on the verification link sent to the user email.</p>
+</div>
+<div>
+<div class="flex items-center gap-2 mb-2 text-xs font-bold text-secondary uppercase tracking-wider">
+<span class="material-symbols-outlined text-sm">verified</span>
+                                            Expected Result
+                                        </div>
+<p class="text-on-surface font-medium">Account is activated and user is redirected to Dashboard.</p>
+</div>
+</div>
+<button class="opacity-0 group-hover:opacity-100 transition-opacity p-2 text-outline hover:text-error">
+<span class="material-symbols-outlined">delete</span>
+</button>
+</div>
+</div>
+</div>
+</section>
+</div>
+<!-- Right Column: Metadata & Analytics -->
+<div class="lg:col-span-4 space-y-8">
+<!-- Execution Health -->
+<section class="bg-indigo-950 text-white rounded-3xl p-8 relative overflow-hidden">
+<div class="absolute top-0 right-0 w-32 h-32 bg-secondary opacity-10 rounded-full -mr-16 -mt-16 blur-3xl"></div>
+<h3 class="text-lg font-bold mb-6 text-indigo-200">Execution Health</h3>
+<div class="flex items-end justify-between mb-2">
+<span class="text-4xl font-extrabold tracking-tighter">94%</span>
+<span class="text-secondary-fixed font-bold text-sm mb-1 flex items-center gap-1">
+<span class="material-symbols-outlined text-sm">trending_up</span>
+                            Stable
+                        </span>
+</div>
+<div class="w-full bg-white/10 h-3 rounded-full mb-8 overflow-hidden">
+<div class="bg-gradient-to-r from-secondary to-secondary-fixed h-full rounded-full glowing-progress" style="width: 94%"></div>
+</div>
+<div class="grid grid-cols-2 gap-4">
+<div class="bg-white/5 rounded-2xl p-4">
+<p class="text-indigo-300 text-xs font-bold uppercase mb-1">Avg Time</p>
+<p class="text-xl font-bold">12s</p>
+</div>
+<div class="bg-white/5 rounded-2xl p-4">
+<p class="text-indigo-300 text-xs font-bold uppercase mb-1">Fail Rate</p>
+<p class="text-xl font-bold">1.2%</p>
+</div>
+</div>
+</section>
+<!-- Metadata Info -->
+<section class="bg-surface-container-low rounded-2xl p-6 space-y-6">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-xl overflow-hidden shadow-lg border-2 border-white">
+<img class="w-full h-full object-cover" data-alt="professional portrait of a software engineer with glasses in a tech office setting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDYfpj2QBQUR0AcvyfuK22CzM9LYZthGluo8yinJwaHbbHxO2AVyTORlkRODT8ahZzNadEsDKflNWQ3F600NXRn-RH90FlBOyZBwfA9uPy8KbmzRicdh3BJcmC7nggPThWCvvERtWbfiZba64IN7Vxih0V_MjeeGunNQWtf8kpPY_czp1rSnbeGXaVfGIcEZAyje-fxll2PozbXZyamIniZvmqesXAvGfG-BOiHyUBVjmZC04p8YmAAApYZ_eIuo3yp5DUXX_uAk9Ac"/>
+</div>
+<div>
+<p class="text-xs font-bold text-on-surface-variant uppercase tracking-widest">Created By</p>
+<p class="font-bold text-on-surface">Alex Rivera</p>
+</div>
+</div>
+<div class="pt-4 border-t border-outline-variant/20 space-y-4">
+<div class="flex justify-between items-center text-sm">
+<span class="text-on-surface-variant font-medium">Last Modified</span>
+<span class="text-on-surface font-bold">2 hours ago</span>
+</div>
+<div class="flex justify-between items-center text-sm">
+<span class="text-on-surface-variant font-medium">Automation Status</span>
+<span class="bg-secondary-container text-on-secondary-container px-3 py-1 rounded-full font-bold text-xs uppercase tracking-tight">Active</span>
+</div>
+<div class="flex justify-between items-center text-sm">
+<span class="text-on-surface-variant font-medium">Browser Matrix</span>
+<div class="flex gap-1">
+<span class="material-symbols-outlined text-lg text-outline">language</span>
+<span class="material-symbols-outlined text-lg text-outline">devices</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Tags & Requirements -->
+<section class="bg-surface-container-lowest rounded-2xl p-6 shadow-sm">
+<h3 class="font-bold mb-4 text-on-surface">Requirements Mapping</h3>
+<div class="space-y-3">
+<div class="flex items-center gap-3 p-3 bg-surface-container-low rounded-xl border border-transparent hover:border-primary/20 transition-all cursor-pointer">
+<span class="material-symbols-outlined text-primary">link</span>
+<span class="text-sm font-bold text-on-surface">REQ-109: User Registration</span>
+</div>
+<div class="flex items-center gap-3 p-3 bg-surface-container-low rounded-xl border border-transparent hover:border-primary/20 transition-all cursor-pointer">
+<span class="material-symbols-outlined text-primary">link</span>
+<span class="text-sm font-bold text-on-surface">REQ-214: Security Auth</span>
+</div>
+</div>
+</section>
+</div>
+</div>
+</main>
+<!-- Contextual Floating Action -->
+<button class="fixed bottom-8 right-8 w-14 h-14 bg-gradient-to-tr from-tertiary to-tertiary-container text-white rounded-full shadow-2xl shadow-tertiary/40 flex items-center justify-center hover:scale-110 active:scale-90 transition-all z-50">
+<span class="material-symbols-outlined">comment</span>
+</button>
+</body></html>

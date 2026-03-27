@@ -195,25 +195,27 @@ export default function CasesPane({
 
   return (
     <>
-      <TestCaseTable
-        projectId={projectId}
-        isDisabled={!context.isProjectDeveloper(Number(projectId))}
-        cases={cases}
-        onCreateCase={() => setIsCaseDialogOpen(true)}
-        onDeleteCase={onDeleteCase}
-        onDeleteCases={onDeleteCases}
-        onShowImportDialog={() => setIsImportDialogOpen(true)}
-        onExportCases={onExportCases}
-        onFilterChange={handleFilterChange}
-        activeSearchFilter={searchFilter}
-        activePriorityFilters={priorityFilter}
-        activeTypeFilters={typeFilter}
-        activeTagFilters={tagFilter}
-        messages={messages}
-        priorityMessages={priorityMessages}
-        testTypeMessages={testTypeMessages}
-        locale={locale}
-      />
+      <div className="p-6">
+        <TestCaseTable
+          projectId={projectId}
+          isDisabled={!context.isProjectDeveloper(Number(projectId))}
+          cases={cases}
+          onCreateCase={() => setIsCaseDialogOpen(true)}
+          onDeleteCase={onDeleteCase}
+          onDeleteCases={onDeleteCases}
+          onShowImportDialog={() => setIsImportDialogOpen(true)}
+          onExportCases={onExportCases}
+          onFilterChange={handleFilterChange}
+          activeSearchFilter={searchFilter}
+          activePriorityFilters={priorityFilter}
+          activeTypeFilters={typeFilter}
+          activeTagFilters={tagFilter}
+          messages={messages}
+          priorityMessages={priorityMessages}
+          testTypeMessages={testTypeMessages}
+          locale={locale}
+        />
+      </div>
 
       <CaseDialog isOpen={isCaseDialogOpen} onCancel={closeDialog} onSubmit={onSubmit} messages={messages} />
 

@@ -1,6 +1,6 @@
 'use client';
 import { useState, useEffect, useContext, ChangeEvent, DragEvent } from 'react';
-import { Input, Textarea, Select, SelectItem, Button, Divider, Tooltip, addToast, Badge } from '@heroui/react';
+import { Input, Textarea, Select, SelectItem, Button, Tooltip, addToast, Badge } from '@heroui/react';
 import { Save, Plus, ArrowLeft, Circle } from 'lucide-react';
 import CaseStepsEditor from './CaseStepsEditor';
 import CaseAttachmentsEditor from './CaseAttachmentsEditor';
@@ -247,19 +247,18 @@ export default function CaseEditor({
 
   return (
     <>
-      <div className="border-b-1 dark:border-neutral-700 w-full p-3 flex items-center justify-between">
-        <div className="flex items-center">
+      <div className="w-full px-6 py-4 flex items-center justify-between bg-white/70 backdrop-blur-xl border-b border-indigo-100/30">
+        <div className="flex items-center gap-3">
           <Tooltip content={messages.backToCases} placement="left">
-            <Button
-              isIconOnly
-              size="sm"
-              className="rounded-full bg-neutral-50 dark:bg-neutral-600"
-              onPress={() => router.push(`/projects/${projectId}/folders/${folderId}/cases`, { locale: locale })}
+            <button
+              title={messages.backToCases}
+              className="p-2 text-slate-400 hover:text-[#4953ac] hover:bg-indigo-50 rounded-lg transition-all"
+              onClick={() => router.push(`/projects/${projectId}/folders/${folderId}/cases`, { locale: locale })}
             >
-              <ArrowLeft size={16} />
-            </Button>
+              <ArrowLeft size={18} />
+            </button>
           </Tooltip>
-          <h3 className="font-bold ms-2">{testCase.title}</h3>
+          <h2 className="text-2xl font-extrabold text-[#2b2f37] tracking-tight">{testCase.title}</h2>
         </div>
         <div className="flex items-center">
           <Button
@@ -270,7 +269,7 @@ export default function CaseEditor({
             }
             size="sm"
             isDisabled={!tokenContext.isProjectDeveloper(Number(projectId))}
-            color="primary"
+            className="bg-gradient-to-r from-[#4953ac] to-[#652fe7] text-white font-bold rounded-xl shadow-lg shadow-indigo-500/20 px-5"
             isLoading={isUpdating}
             onPress={async () => {
               setIsUpdating(true);
@@ -306,8 +305,8 @@ export default function CaseEditor({
         </div>
       </div>
 
-      <div className="p-5">
-        <h6 className="font-bold">{messages.basic}</h6>
+      <div className="p-6 mx-6 my-6 bg-white rounded-2xl shadow-sm">
+        <h6 className="font-bold text-[#2b2f37]">{messages.basic}</h6>
         <Input
           size="sm"
           type="text"
@@ -410,10 +409,10 @@ export default function CaseEditor({
           </Select>
         </div>
 
-        <Divider className="my-6" />
+        <div className="mt-8 pt-6 border-t border-slate-100">
         {templates[testCase.template].uid === 'text' ? (
           <div>
-            <h6 className="font-bold">{messages.testDetail}</h6>
+            <h6 className="font-bold text-[#2b2f37]">{messages.testDetail}</h6>
             <div className="flex">
               <Textarea
                 size="sm"
@@ -441,13 +440,13 @@ export default function CaseEditor({
         ) : (
           <div>
             <div className="flex items-center mb-3">
-              <h6 className="font-bold">{messages.steps}</h6>
+              <h6 className="font-bold text-[#2b2f37]">{messages.steps}</h6>
               <Button
                 startContent={<Plus size={16} />}
                 size="sm"
                 isDisabled={!tokenContext.isProjectDeveloper(Number(projectId))}
                 color="primary"
-                className="ms-3"
+                className="ms-3 bg-gradient-to-r from-[#4953ac] to-[#652fe7] text-white font-bold rounded-xl shadow-lg shadow-indigo-500/20"
                 onPress={() => onPlusClick(1)}
               >
                 {messages.newStep}
@@ -466,8 +465,9 @@ export default function CaseEditor({
           </div>
         )}
 
-        <Divider className="my-6" />
-        <h6 className="font-bold">{messages.attachments}</h6>
+        </div>
+        <div className="mt-8 pt-6 border-t border-slate-100">
+        <h6 className="font-bold text-[#2b2f37]">{messages.attachments}</h6>
         {testCase.Attachments && (
           <CaseAttachmentsEditor
             isDisabled={!tokenContext.isProjectDeveloper(Number(projectId))}
@@ -480,8 +480,7 @@ export default function CaseEditor({
             onFilesInput={handleInput}
             messages={messages}
           />
-        )}
-      </div>
+        )}        </div>      </div>
     </>
   );
 }
