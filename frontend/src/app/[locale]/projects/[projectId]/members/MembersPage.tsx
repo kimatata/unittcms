@@ -101,13 +101,13 @@ export default function MembersPage({ projectId, messages }: Props) {
   };
 
   return (
-    <div className="container mx-auto max-w-3xl pt-6 px-6 flex-grow">
+    <div className="container mx-auto max-w-3xl pt-10 px-8 flex-grow">
       <div className="w-full p-3 flex items-center justify-between">
-        <h3 className="font-bold">{messages.memberManagement}</h3>
+        <h3 className="font-extrabold text-2xl text-[#2b2f37] tracking-tight">{messages.memberManagement}</h3>
         <Button
           startContent={<Plus size={16} />}
           size="sm"
-          color="primary"
+          className="bg-gradient-to-r from-[#4953ac] to-[#652fe7] text-white font-bold rounded-xl shadow-lg shadow-indigo-500/20"
           isDisabled={!context.isProjectManager(Number(projectId))}
           onPress={() => setIsDialogOpen(true)}
         >

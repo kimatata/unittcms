@@ -148,9 +148,9 @@ export default function AdminPage({ messages, locale }: Props) {
 
   return (
     <>
-      <div className="container mx-auto max-w-3xl pt-16 px-6 flex-grow">
+      <div className="container mx-auto max-w-3xl pt-10 px-8 flex-grow">
         <div className="w-full p-3 flex items-center justify-between">
-          <h3 className="font-bold">{messages.userManagement}</h3>
+          <h3 className="font-extrabold text-2xl text-[#2b2f37] tracking-tight">{messages.userManagement}</h3>
         </div>
 
         <UsersTable

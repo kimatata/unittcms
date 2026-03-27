@@ -113,7 +113,7 @@ export default function TestRunFilter({
   return (
     <div className="p-3">
       <div className="mb-3 space-y-1">
-        <h3 className="text-default-500 text-small">{messages.caseTitleOrDescription}</h3>
+        <h3 className="text-slate-500 text-small">{messages.caseTitleOrDescription}</h3>
         <Input
           variant="bordered"
           classNames={{
@@ -131,7 +131,7 @@ export default function TestRunFilter({
       </div>
       <div className="mb-3 flex justify-between gap-2">
         <div className="flex-col space-y-1">
-          <h3 className="text-default-500 text-small">{messages.status}</h3>
+          <h3 className="text-slate-500 text-small">{messages.status}</h3>
           <Dropdown>
             <DropdownTrigger>
               <Button size="sm" variant="bordered" className="w-32" endContent={<ChevronDown size={16} />}>
@@ -161,7 +161,7 @@ export default function TestRunFilter({
         </div>
 
         <div className="flex-col space-y-1">
-          <h3 className="text-default-500 text-small">{messages.tags}</h3>
+          <h3 className="text-slate-500 text-small">{messages.tags}</h3>
           <Dropdown>
             <DropdownTrigger>
               <Button size="sm" variant="bordered" className="w-32" endContent={<ChevronDown size={16} />}>
@@ -191,7 +191,7 @@ export default function TestRunFilter({
         <Button className="me-2" size="sm" variant="light" onPress={handleClearFilter}>
           {messages.clearAll}
         </Button>
-        <Button size="sm" variant="solid" color="primary" onPress={handleApplyFilter}>
+        <Button size="sm" variant="solid" className="bg-gradient-to-r from-[#4953ac] to-[#652fe7] text-white font-bold rounded-xl shadow-lg shadow-indigo-500/20" onPress={handleApplyFilter}>
           {messages.apply}
         </Button>
       </div>

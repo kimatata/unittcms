@@ -195,7 +195,7 @@ export default function TestCaseSelector({
                 <span>{commentCount}</span>
               </Link>
             ) : (
-              <span className="text-default-400">-</span>
+              <span className="text-slate-400">-</span>
             )}
           </div>
         );
@@ -243,7 +243,7 @@ export default function TestCaseSelector({
   const classNames = useMemo(
     () => ({
       wrapper: ['min-w-3xl'],
-      th: ['bg-transparent', 'text-default-500', 'border-b', 'border-divider'],
+      th: ['bg-slate-50/80', 'text-slate-500', 'font-semibold', 'text-xs', 'uppercase', 'tracking-wider'],
       td: [
         // changing the rows border radius
         // first

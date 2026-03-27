@@ -1,6 +1,6 @@
 'use client';
 import { useState, useEffect } from 'react';
-import { Button, Tooltip } from '@heroui/react';
+import { Tooltip } from '@heroui/react';
 import {
   PanelLeftClose,
   PanelLeftOpen,
@@ -93,38 +93,47 @@ export default function Sidebar({ messages, locale }: Props) {
   ];
 
   return (
-    <div className="border-r-1 dark:border-neutral-700">
-      <div className="w-full flex justify-end">
+    <div
+      className={
+        isSideBarOpen
+          ? 'w-56 bg-indigo-950 flex flex-col min-h-[calc(100vh-64px)] transition-all duration-300 shrink-0 shadow-xl shadow-indigo-900/30'
+          : 'w-16 bg-indigo-950 flex flex-col min-h-[calc(100vh-64px)] transition-all duration-300 shrink-0 shadow-xl shadow-indigo-900/30'
+      }
+    >
+      <div className="flex justify-end p-2 pt-3">
         <Tooltip content={messages.toggleSidebar} placement="right">
-          <Button size="lg" isIconOnly variant="light" onPress={() => setIsSideBarOpen(!isSideBarOpen)}>
+          <button
+            className="p-2 text-indigo-300 hover:text-white hover:bg-white/10 rounded-lg transition-all"
+            onClick={() => setIsSideBarOpen(!isSideBarOpen)}
+          >
             {isSideBarOpen ? (
               <PanelLeftClose strokeWidth={TOGGLE_ICON_STROKE_WIDTH} size={TOGGLE_ICON_SIZE} />
             ) : (
               <PanelLeftOpen strokeWidth={TOGGLE_ICON_STROKE_WIDTH} size={TOGGLE_ICON_SIZE} />
             )}
-          </Button>
+          </button>
         </Tooltip>
       </div>
 
-      <div className="border-t-1 dark:border-neutral-700">
-        {tabItems.map((itr) => (
-          <div key={itr.key}>
-            <Tooltip hidden={isSideBarOpen} content={itr.text} placement="right">
-              <Button
-                size="lg"
-                isIconOnly={!isSideBarOpen}
-                startContent={itr.startContent}
-                isDisabled={itr.key === currentKey}
-                variant="light"
-                className={isSideBarOpen ? 'w-full justify-start' : ''}
-                onPress={() => handleClick(itr.key)}
-              >
-                {isSideBarOpen ? itr.text : ''}
-              </Button>
-            </Tooltip>
-          </div>
+      <nav className="flex-1 flex flex-col gap-1 px-2 pt-1">
+        {tabItems.map((item) => (
+          <Tooltip key={item.key} isDisabled={isSideBarOpen} content={item.text} placement="right">
+            <button
+              className={`flex items-center gap-3 px-3 py-3 rounded-xl transition-all duration-200 w-full text-left ${
+                currentKey === item.key
+                  ? 'text-white bg-gradient-to-r from-indigo-600 to-violet-500 shadow-lg shadow-indigo-500/30'
+                  : 'text-indigo-200/70 hover:text-white hover:bg-white/10'
+              } ${!isSideBarOpen ? 'justify-center' : ''}`}
+              onClick={() => handleClick(item.key)}
+            >
+              <span className="shrink-0">{item.startContent}</span>
+              {isSideBarOpen && (
+                <span className="font-semibold tracking-wide text-sm">{item.text}</span>
+              )}
+            </button>
+          </Tooltip>
         ))}
-      </div>
+      </nav>
     </div>
   );
 }

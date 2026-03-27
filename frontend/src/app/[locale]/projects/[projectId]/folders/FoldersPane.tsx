@@ -132,12 +132,11 @@ export default function FoldersPane({ projectId, messages, locale }: Props) {
 
   return (
     <>
-      <div className="min-h-[calc(100vh-64px)] border-r-1 dark:border-neutral-700">
+      <div className="min-h-[calc(100vh-64px)] border-r border-slate-100">
         <Button
           startContent={<Plus size={16} />}
           size="sm"
-          variant="bordered"
-          className="m-2"
+          className="m-2 bg-indigo-50 text-[#4953ac] font-semibold"
           isDisabled={!context.isProjectDeveloper(Number(projectId))}
           onPress={() => openDialogForCreate()}
         >
