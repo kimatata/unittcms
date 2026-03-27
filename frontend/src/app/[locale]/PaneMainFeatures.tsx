@@ -9,40 +9,40 @@ export default function MainTitle() {
     {
       title: t('oss_title'),
       detail: t('oss_detail'),
-      icon: <Scale size={24} color="#52e280" />,
+      icon: <Scale size={24} color="#4953ac" />,
     },
     {
       title: t('organize_title'),
       detail: t('organize_detail'),
-      icon: <Folder size={24} color="#52e280" />,
+      icon: <Folder size={24} color="#4953ac" />,
     },
     {
       title: t('usability_title'),
       detail: t('usability_detail'),
-      icon: <Check size={24} color="#52e280" />,
+      icon: <Check size={24} color="#4953ac" />,
     },
     {
       title: t('universal_title'),
       detail: t('universal_detail'),
-      icon: <Globe size={24} color="#52e280" />,
+      icon: <Globe size={24} color="#4953ac" />,
     },
   ];
 
   return (
     <>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         {features.map((feature) => (
-          <Card key={feature.title} className="max-w-[300px] min-h-[180px]">
+          <Card key={feature.title} className="max-w-[300px] min-h-[180px] bg-white rounded-2xl shadow-sm border-none">
             <CardHeader className="flex gap-3">
               <div>
-                <Avatar className="bg-green-100" showFallback src="" fallback={feature.icon} />
+                <Avatar className="bg-indigo-50" showFallback src="" fallback={feature.icon} />
               </div>
               <div className="flex flex-col">
-                <h4 className="font-bold text-large">{feature.title}</h4>
+                <h4 className="font-bold text-large text-[#2b2f37]">{feature.title}</h4>
               </div>
             </CardHeader>
             <CardBody className="pt-0">
-              <p className="text-default-500">{feature.detail}</p>
+              <p className="text-slate-500">{feature.detail}</p>
             </CardBody>
           </Card>
         ))}

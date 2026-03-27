@@ -85,7 +85,7 @@ export default function RunDialog({ isOpen, editingRun, onCancel, onSubmit, mess
       }}
     >
       <ModalContent>
-        <ModalHeader className="flex flex-col gap-1">{messages.run}</ModalHeader>
+        <ModalHeader className="flex flex-col gap-1 font-extrabold text-[#2b2f37]">{messages.run}</ModalHeader>
         <ModalBody>
           <Input
             type="text"
@@ -117,7 +117,7 @@ export default function RunDialog({ isOpen, editingRun, onCancel, onSubmit, mess
           <Button variant="light" onPress={onCancel}>
             {messages.close}
           </Button>
-          <Button color="primary" onPress={validate}>
+          <Button className="bg-gradient-to-r from-[#4953ac] to-[#652fe7] text-white font-bold rounded-xl shadow-lg shadow-indigo-500/20" onPress={validate}>
             {editingRun && editingRun.createdAt ? messages.update : messages.create}
           </Button>
         </ModalFooter>

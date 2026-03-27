@@ -77,7 +77,7 @@ export default function CaseDialog({
       }}
     >
       <ModalContent>
-        <ModalHeader className="flex flex-col gap-1">{messages.selectAction}</ModalHeader>
+        <ModalHeader className="flex flex-col gap-1 font-extrabold text-[#2b2f37]">{messages.selectAction}</ModalHeader>
         <ModalBody>
           <p>
             {testCaseIds.length} {messages.casesSelected}
@@ -92,7 +92,7 @@ export default function CaseDialog({
                 {messages.close}
               </Button>
               <Button
-                color="primary"
+                className="bg-gradient-to-r from-[#4953ac] to-[#652fe7] text-white font-bold rounded-xl shadow-lg shadow-indigo-500/20"
                 size="sm"
                 onPress={handleClone}
                 startContent={<Copy size={16} />}
@@ -101,7 +101,7 @@ export default function CaseDialog({
                 {messages.clone}
               </Button>
               <Button
-                color="primary"
+                className="bg-gradient-to-r from-[#4953ac] to-[#652fe7] text-white font-bold rounded-xl shadow-lg shadow-indigo-500/20"
                 size="sm"
                 onPress={handleMove}
                 startContent={<Forward size={16} />}

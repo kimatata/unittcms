@@ -96,15 +96,15 @@ export default function RunsPage({ projectId, locale, messages }: Props) {
   };
 
   return (
-    <div className="container mx-auto max-w-3xl pt-6 px-6 flex-grow">
-      <div className="w-full p-3 flex items-center justify-between">
-        <h3 className="font-bold">{messages.runList}</h3>
+    <div className="mx-auto max-w-5xl pt-10 px-8 flex-grow">
+      <div className="w-full pb-6 flex items-center justify-between">
+        <h1 className="text-4xl font-extrabold text-[#2b2f37] tracking-tight">{messages.runList}</h1>
         <div>
           <Button
             startContent={<Plus size={16} />}
             size="sm"
             isDisabled={!context.isProjectReporter(Number(projectId))}
-            color="primary"
+            className="bg-gradient-to-r from-[#4953ac] to-[#652fe7] text-white font-bold rounded-xl shadow-lg shadow-indigo-500/20 px-5"
             onPress={openDialogForCreate}
           >
             {messages.newRun}
@@ -112,14 +112,16 @@ export default function RunsPage({ projectId, locale, messages }: Props) {
         </div>
       </div>
 
-      <RunsTable
-        projectId={projectId}
-        isDisabled={!context.isProjectReporter(Number(projectId))}
-        runs={runs}
-        onDeleteRun={onDeleteClick}
-        messages={messages}
-        locale={locale}
-      />
+      <div className="bg-white rounded-2xl shadow-sm overflow-hidden">
+        <RunsTable
+          projectId={projectId}
+          isDisabled={!context.isProjectReporter(Number(projectId))}
+          runs={runs}
+          onDeleteRun={onDeleteClick}
+          messages={messages}
+          locale={locale}
+        />
+      </div>
 
       <RunDialog
         isOpen={isRunDialogOpen}

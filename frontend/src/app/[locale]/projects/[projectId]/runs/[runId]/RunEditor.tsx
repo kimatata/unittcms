@@ -7,7 +7,6 @@ import {
   Select,
   SelectItem,
   Tooltip,
-  Divider,
   Selection,
   DropdownTrigger,
   Dropdown,
@@ -245,19 +244,19 @@ export default function RunEditor({
 
   return (
     <>
-      <div className="border-b-1 dark:border-neutral-700 w-full p-3 flex items-center justify-between">
+      <div className="border-b border-slate-100 w-full p-3 flex items-center justify-between">
         <div className="flex items-center">
           <Tooltip content={messages.backToRuns}>
             <Button
               isIconOnly
               size="sm"
-              className="rounded-full bg-neutral-50 dark:bg-neutral-600"
+              className="rounded-full bg-indigo-50 text-[#4953ac]"
               onPress={() => router.push(`/projects/${projectId}/runs`, { locale: locale })}
             >
               <ArrowLeft size={16} />
             </Button>
           </Tooltip>
-          <h3 className="font-bold ms-2">{testRun.name}</h3>
+          <h3 className="font-extrabold text-[#2b2f37] ms-2">{testRun.name}</h3>
         </div>
         <div className="flex items-center">
           <Popover placement="bottom" isOpen={showFilter} onOpenChange={(open) => setShowFilter(open)}>
@@ -339,7 +338,7 @@ export default function RunEditor({
             }
             size="sm"
             isDisabled={!tokenContext.isProjectReporter(Number(projectId))}
-            color="primary"
+            className="bg-gradient-to-r from-[#4953ac] to-[#652fe7] text-white font-bold rounded-xl shadow-lg shadow-indigo-500/20"
             isLoading={isUpdating}
             onPress={onSave}
           >
@@ -348,12 +347,12 @@ export default function RunEditor({
         </div>
       </div>
 
-      <div className="container mx-auto max-w-5xl pt-6 px-6 flex-grow">
+      <div className="container mx-auto max-w-5xl pt-10 px-8 flex-grow">
         <div className="flex">
           <div>
             <div className="w-96 h-72">
               <div className="flex items-center">
-                <h4 className="font-bold">{messages.progress}</h4>
+                <h4 className="font-extrabold text-[#2b2f37]">{messages.progress}</h4>
                 <Tooltip content={messages.refresh}>
                   <Button
                     isIconOnly
@@ -422,9 +421,9 @@ export default function RunEditor({
           </div>
         </div>
 
-        <Divider className="my-6" />
+        <div className="my-6 border-t border-slate-100" />
         <div className="flex items-center justify-between">
-          <h6 className="h-8 font-bold">{messages.selectTestCase}</h6>
+          <h6 className="h-8 font-extrabold text-[#2b2f37]">{messages.selectTestCase}</h6>
           <div>
             {(selectedKeys === 'all' || selectedKeys.size > 0) && (
               <Dropdown>
@@ -432,7 +431,7 @@ export default function RunEditor({
                   <Button
                     size="sm"
                     isDisabled={!tokenContext.isProjectReporter(Number(projectId))}
-                    color="primary"
+                    className="bg-gradient-to-r from-[#4953ac] to-[#652fe7] text-white font-bold rounded-xl shadow-lg shadow-indigo-500/20"
                     endContent={<ChevronDown size={16} />}
                   >
                     {messages.testCaseSelection}
@@ -459,8 +458,8 @@ export default function RunEditor({
           </div>
         </div>
 
-        <div className="mt-3 flex rounded-small border-2 dark:border-neutral-700 mb-12">
-          <div className="w-3/12 border-r-1 dark:border-neutral-700">
+        <div className="mt-3 flex rounded-2xl border border-slate-100 mb-12">
+          <div className="w-3/12 border-r border-slate-100">
             <Tree
               data={treeData}
               className="w-full"

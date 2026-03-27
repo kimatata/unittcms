@@ -27,7 +27,7 @@ export default function CaseDetail({
   priorityMessages,
 }: Props) {
   return (
-    <div className="h-full p-4 text-default-500">
+    <div className="h-full p-4 text-slate-500">
       <div className="mb-4">
         <Link
           href={`/projects/${projectId}/folders/${testCase.folderId}/cases/${testCase.id}`}

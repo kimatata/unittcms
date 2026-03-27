@@ -79,7 +79,7 @@ export default function TestCaseTable({
   locale,
 }: Props) {
   const heroUITableClasses = table();
-  const thClassNames = 'bg-transparent text-default-500 border-b border-divider';
+  const thClassNames = 'bg-slate-50/80 text-slate-500 font-semibold text-xs uppercase tracking-wider';
   const tdClassNames =
     '!py-1 group-data-[first=true]:first:before:rounded-none group-data-[first=true]:last:before:rounded-none group-data-[middle=true]:before:rounded-none group-data-[last=true]:first:before:rounded-none group-data-[last=true]:last:before:rounded-none';
 
@@ -279,9 +279,9 @@ export default function TestCaseTable({
 
   return (
     <>
-      <div className="border-b-1 dark:border-neutral-700 w-full ">
-        <div className="flex items-center justify-between p-3 ">
-          <h3 className="font-bold">{messages.testCaseList}</h3>
+      <div className="w-full bg-white rounded-t-2xl">
+        <div className="flex items-center justify-between px-6 py-5">
+          <h2 className="text-2xl font-extrabold text-[#2b2f37] tracking-tight">{messages.testCaseList}</h2>
           <div className="flex items-center">
             {((selectedKeys !== 'all' && selectedKeys.size > 0) || selectedKeys === 'all') && (
               <Button
@@ -371,7 +371,7 @@ export default function TestCaseTable({
               startContent={<Plus size={16} />}
               size="sm"
               isDisabled={isDisabled}
-              color="primary"
+              className="bg-gradient-to-r from-[#4953ac] to-[#652fe7] text-white font-bold rounded-xl shadow-lg shadow-indigo-500/20 px-5"
               onPress={onCreateCase}
             >
               {messages.newTestCase}
@@ -380,7 +380,7 @@ export default function TestCaseTable({
         </div>
       </div>
 
-      <div>
+      <div className="bg-white rounded-b-2xl shadow-sm overflow-hidden border-t border-slate-100">
         <table className={heroUITableClasses.table()}>
           <thead className={heroUITableClasses.thead()}>
             <tr className={heroUITableClasses.tr()}>

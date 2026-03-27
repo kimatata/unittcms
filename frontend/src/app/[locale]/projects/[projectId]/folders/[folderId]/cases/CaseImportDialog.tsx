@@ -65,10 +65,10 @@ export default function CaseImportDialog({ isOpen, folderId, isDisabled, onImpor
       }}
     >
       <ModalContent>
-        <ModalHeader className="flex flex-col gap-1">{messages.importCases}</ModalHeader>
+        <ModalHeader className="flex flex-col gap-1 font-extrabold text-[#2b2f37]">{messages.importCases}</ModalHeader>
         <ModalBody>
           <div className="flex items-center justify-center w-full">
-            <div className={`mt-1 text-neutral-500 dark:text-neutral-400 text-sm rounded`}>
+            <div className={`mt-1 text-slate-500 text-sm rounded`}>
               <div>{messages.importAvailable}</div>
               <a href="/template/unittcms-import-template-v1.1.xlsx" download className="text-tiny underline">
                 {messages.downloadTemplate}
@@ -88,15 +88,15 @@ export default function CaseImportDialog({ isOpen, folderId, isDisabled, onImpor
           >
             <label
               htmlFor="dropzone-file"
-              className={`flex flex-col items-center justify-center w-full h-32 border-2 border-neutral-200 border-dashed rounded-lg  bg-neutral-50 dark:hover:bg-bray-800 dark:bg-neutral-700 hover:bg-neutral-100 dark:border-neutral-600 dark:hover:border-neutral-500 dark:hover:bg-neutral-600 ${isDisabled ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'}`}
+              className={`flex flex-col items-center justify-center w-full h-32 border-2 border-slate-200 border-dashed rounded-2xl bg-slate-50 hover:bg-indigo-50/50 ${isDisabled ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'}`}
             >
               <div className="flex flex-col items-center justify-center pt-5 pb-6">
                 <ArrowUpFromLine />
-                <p className="mb-2 text-sm text-neutral-500 dark:text-neutral-400">
+                <p className="mb-2 text-sm text-slate-500">
                   <span className="font-semibold">{messages.clickToUpload}</span>
                   <span>{messages.orDragAndDrop}</span>
                 </p>
-                <p className="text-xs text-neutral-500 dark:text-neutral-400">{messages.maxFileSize}: 50 MB</p>
+                <p className="text-xs text-slate-500">{messages.maxFileSize}: 50 MB</p>
               </div>
               <input
                 id="dropzone-file"

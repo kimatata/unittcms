@@ -96,15 +96,15 @@ export default function AuthPage({ isSignup, messages, locale }: Props) {
 
   return (
     <div className="h-[calc(100vh-64px)] flex flex-col justify-around">
-      <Card className="w-[380px] md:w-[480px]">
+      <Card className="w-[380px] md:w-[480px] bg-white rounded-2xl shadow-sm border-none">
         <CardHeader className="px-4 pt-4 pb-0 flex justify-between">
-          <h4 className="font-bold text-large">{messages.title}</h4>
+          <h4 className="font-extrabold text-xl text-[#2b2f37] tracking-tight">{messages.title}</h4>
           <Button
             as={Link}
             href={isSignup ? '/account/signin' : '/account/signup'}
             locale={locale}
-            color="primary"
             variant="light"
+            className="text-[#4953ac] font-semibold"
             endContent={<ChevronRight size={16} />}
           >
             {messages.linkTitle}
@@ -180,7 +180,7 @@ export default function AuthPage({ isSignup, messages, locale }: Props) {
             {isDemoSite && <div className="my-3 text-default-600">{messages.demoPageWarning}</div>}
 
             <div className="flex justify-end items-center mt-3">
-              <Button color="primary" onPress={validate}>
+              <Button className="bg-gradient-to-r from-[#4953ac] to-[#652fe7] text-white font-bold rounded-xl shadow-lg shadow-indigo-500/20" onPress={validate}>
                 {messages.submitTitle}
               </Button>
               {!isSignup && isDemoSite && (
