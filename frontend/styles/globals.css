@@ -28,3 +28,62 @@
     color: #f3f1ff;
   }
 }
+
+/* Dark mode overrides for hardcoded Electric Spectrum light colors */
+@layer base {
+  .dark {
+    /* Headings: hardcoded #2b2f37 → light in dark mode */
+    color-scheme: dark;
+  }
+
+  /* Override hardcoded bg-white cards/panels in dark mode */
+  .dark .bg-white {
+    background-color: rgb(38 38 38) !important; /* neutral-800 */
+  }
+
+  /* Override hardcoded bg-[#f5f6ff] page backgrounds */
+  .dark .bg-\[\#f5f6ff\] {
+    background-color: rgb(23 23 23) !important; /* neutral-900 */
+  }
+
+  /* Override hardcoded text-[#2b2f37] headings */
+  .dark .text-\[\#2b2f37\] {
+    color: rgb(229 229 229) !important; /* neutral-200 */
+  }
+
+  /* Override slate backgrounds for table headers */
+  .dark .bg-slate-50\/80 {
+    background-color: rgb(38 38 38 / 0.8) !important;
+  }
+
+  .dark .bg-slate-50 {
+    background-color: rgb(38 38 38) !important;
+  }
+
+  /* Override hardcoded text colors for readability */
+  .dark .text-slate-700 {
+    color: rgb(212 212 212) !important; /* neutral-300 */
+  }
+
+  .dark .text-slate-600 {
+    color: rgb(163 163 163) !important; /* neutral-400 */
+  }
+
+  .dark .text-slate-500 {
+    color: rgb(163 163 163) !important;
+  }
+
+  /* Override indigo-50 soft buttons */
+  .dark .bg-indigo-50 {
+    background-color: rgb(55 48 107) !important;
+  }
+
+  /* Borders */
+  .dark .border-slate-100 {
+    border-color: rgb(64 64 64) !important; /* neutral-700 */
+  }
+
+  .dark .border-indigo-100\/50 {
+    border-color: rgb(64 64 64 / 0.5) !important;
+  }
+}
