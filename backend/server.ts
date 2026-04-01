@@ -46,7 +46,19 @@ export const sequelize = new Sequelize({
   dialect: 'sqlite',
   storage: databasePath,
   logging: false,
+  dialectOptions: {
+    busyTimeout: 5000,
+  },
+  pool: {
+    max: 1,
+    min: 0,
+    acquire: 10000,
+    idle: 10000,
+  },
 });
+
+// Enable WAL mode for better concurrent read/write performance
+sequelize.query('PRAGMA journal_mode=WAL;').catch(() => {});
 
 // Register TSOA-generated routes (TypeScript controllers)
 RegisterRoutes(app);
