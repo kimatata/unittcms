@@ -482,15 +482,14 @@ export default function CaseEditor({
               />
             )}
 
-            <Textarea
-              size="sm"
-              variant="bordered"
+            <MarkdownEditor
               label={messages.overallExpectedResult}
               value={testCase.expectedResults}
+              isDisabled={!tokenContext.isProjectDeveloper(Number(projectId))}
               onValueChange={(changeValue) => {
+                setIsDirty(true);
                 setTestCase({ ...testCase, expectedResults: changeValue });
               }}
-              className="mt-3"
             />
           </div>
         )}
