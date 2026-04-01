@@ -1,5 +1,5 @@
 'use client';
-import { useState, useEffect, useContext } from 'react';
+import { useState, useEffect, useContext, useRef, useCallback } from 'react';
 import { Button } from '@heroui/react';
 import { Plus } from 'lucide-react';
 import { Tree } from 'react-arborist';
@@ -91,6 +91,22 @@ export default function FoldersPane({ projectId, messages, locale }: Props) {
     setIsFolderDialogOpen(true);
   };
 
+  const treeContainerRef = useRef<HTMLDivElement>(null);
+  const [treeHeight, setTreeHeight] = useState(500);
+
+  const updateTreeHeight = useCallback(() => {
+    if (treeContainerRef.current) {
+      setTreeHeight(treeContainerRef.current.clientHeight);
+    }
+  }, []);
+
+  useEffect(() => {
+    updateTreeHeight();
+    const observer = new ResizeObserver(updateTreeHeight);
+    if (treeContainerRef.current) observer.observe(treeContainerRef.current);
+    return () => observer.disconnect();
+  }, [updateTreeHeight]);
+
   const [isDeleteConfirmDialogOpen, setIsDeleteConfirmDialogOpen] = useState(false);
   const [deleteFolderId, setDeleteFolderId] = useState<number | null>(null);
 
@@ -132,7 +148,7 @@ export default function FoldersPane({ projectId, messages, locale }: Props) {
 
   return (
     <>
-      <div className="min-h-[calc(100vh-64px)] border-r border-slate-100">
+      <div className="h-full flex flex-col border-r border-slate-100">
         <Button
           startContent={<Plus size={16} />}
           size="sm"
@@ -143,6 +159,7 @@ export default function FoldersPane({ projectId, messages, locale }: Props) {
           {messages.newFolder}
         </Button>
 
+        <div ref={treeContainerRef} className="flex-1 overflow-hidden">
         {treeData.length > 0 && (
           <Tree
             data={treeData}
@@ -154,6 +171,7 @@ export default function FoldersPane({ projectId, messages, locale }: Props) {
             paddingBottom={20}
             padding={20}
             width="100%"
+            height={treeHeight}
             openByDefault={false}
             disableDrop={true}
             disableDrag={true}
@@ -174,6 +192,7 @@ export default function FoldersPane({ projectId, messages, locale }: Props) {
             )}
           </Tree>
         )}
+        </div>
       </div>
 
       <FolderDialog

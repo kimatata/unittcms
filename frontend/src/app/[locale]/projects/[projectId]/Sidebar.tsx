@@ -96,8 +96,8 @@ export default function Sidebar({ messages, locale }: Props) {
     <div
       className={
         isSideBarOpen
-          ? 'w-56 bg-indigo-950 flex flex-col min-h-[calc(100vh-64px)] transition-all duration-300 shrink-0 shadow-xl shadow-indigo-900/30'
-          : 'w-16 bg-indigo-950 flex flex-col min-h-[calc(100vh-64px)] transition-all duration-300 shrink-0 shadow-xl shadow-indigo-900/30'
+          ? 'w-56 bg-indigo-950 flex flex-col h-full transition-all duration-300 shrink-0 shadow-xl shadow-indigo-900/30'
+          : 'w-16 bg-indigo-950 flex flex-col h-full transition-all duration-300 shrink-0 shadow-xl shadow-indigo-900/30'
       }
     >
       <div className="flex justify-end p-2 pt-3">

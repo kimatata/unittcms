@@ -21,10 +21,10 @@ export default function SidebarLayout({
 
   return (
     <>
-      <div className="flex min-h-[calc(100vh-64px)]">
+      <div className="flex h-[calc(100vh-64px)]">
         <Sidebar messages={messages} locale={locale} />
-        <div className="flex w-full bg-[#f5f6ff]">
-          <div className="flex-grow">{children}</div>
+        <div className="flex w-full bg-[#f5f6ff] dark:bg-neutral-900 overflow-hidden">
+          <div className="flex-grow overflow-auto">{children}</div>
         </div>
       </div>
     </>

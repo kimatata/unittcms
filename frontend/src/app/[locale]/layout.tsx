@@ -45,7 +45,7 @@ export default function RootLayout({
   return (
     <html lang={locale} suppressHydrationWarning>
       <head />
-      <body className={clsx('min-h-screen bg-[#f5f6ff] font-sans antialiased', fontSans.variable)}>
+      <body className={clsx('min-h-screen bg-[#f5f6ff] dark:bg-neutral-900 font-sans antialiased', fontSans.variable)}>
         <Providers
           themeProps={{ attribute: 'class', defaultTheme: 'light' }}
           tokenProps={{ toastMessages: toastMessages, locale: locale }}

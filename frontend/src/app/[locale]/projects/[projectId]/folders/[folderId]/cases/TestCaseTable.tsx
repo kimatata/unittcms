@@ -81,7 +81,7 @@ export default function TestCaseTable({
   const heroUITableClasses = table();
   const thClassNames = 'bg-slate-50/80 text-slate-500 font-semibold text-xs uppercase tracking-wider';
   const tdClassNames =
-    '!py-1 group-data-[first=true]:first:before:rounded-none group-data-[first=true]:last:before:rounded-none group-data-[middle=true]:before:rounded-none group-data-[last=true]:first:before:rounded-none group-data-[last=true]:last:before:rounded-none';
+    '!py-1 text-slate-700 group-data-[first=true]:first:before:rounded-none group-data-[first=true]:last:before:rounded-none group-data-[middle=true]:before:rounded-none group-data-[last=true]:first:before:rounded-none group-data-[last=true]:last:before:rounded-none';
 
   const headerColumns = [
     { name: messages.id, uid: 'id', sortable: true },
