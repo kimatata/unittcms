@@ -36,6 +36,9 @@ vi.mock('../../models/steps.js', () => ({ default: () => mockStep }));
 const mockCaseStep = { create: vi.fn() };
 vi.mock('../../models/caseSteps.js', () => ({ default: () => mockCaseStep }));
 
+const mockFolder = { findByPk: vi.fn((id) => ({ id, projectId: 1 })) };
+vi.mock('../../models/folders.js', () => ({ default: () => mockFolder }));
+
 const FAKE_XLSX_BUFFER = Buffer.from('fake');
 const XLSX_CONTENT_TYPE = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
 
