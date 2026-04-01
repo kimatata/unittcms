@@ -99,7 +99,7 @@ export default function TestCaseSelector({
     });
   }, [sortDescriptor, cases]);
 
-  const notIncludedCaseClass = 'text-neutral-200 dark:text-neutral-600';
+  const notIncludedCaseClass = 'text-slate-300 dark:text-neutral-600';
 
   const isCaseIncluded = (testCase: CaseType) => {
     let isIncluded = false;
@@ -243,8 +243,10 @@ export default function TestCaseSelector({
   const classNames = useMemo(
     () => ({
       wrapper: ['min-w-3xl'],
-      th: ['bg-slate-50/80', 'text-slate-500', 'font-semibold', 'text-xs', 'uppercase', 'tracking-wider'],
+      th: ['bg-slate-50/80', 'dark:bg-neutral-800', 'text-slate-500', 'dark:text-neutral-400', 'font-semibold', 'text-xs', 'uppercase', 'tracking-wider'],
       td: [
+        'text-slate-700',
+        'dark:text-neutral-300',
         // changing the rows border radius
         // first
         'group-data-[first=true]:first:before:rounded-none',
