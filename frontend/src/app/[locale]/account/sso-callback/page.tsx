@@ -1,21 +1,24 @@
 'use client';
 
-import { useContext, useLayoutEffect } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useContext, useEffect } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { TokenContext } from '@/utils/TokenProvider';
+import { LocaleCodeType } from '@/types/locale';
+import { useRouter } from '@/src/i18n/routing';
 
-export default function SSOCallbackPage() {
+export default function SSOCallbackPage({ params: { locale } }: { params: { locale: LocaleCodeType } }) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const context = useContext(TokenContext);
 
-  useLayoutEffect(() => {
+  // This needs to be evaluated only once
+  useEffect(() => {
     try {
       const tokenParam = searchParams.get('token');
 
       if (!tokenParam) {
         console.error('No token provided in callback');
-        router.replace('/account/signin');
+        router.replace(`/account/signin`, { locale: locale });
         return;
       }
 
@@ -24,12 +27,15 @@ export default function SSOCallbackPage() {
       context.setToken(tokenData);
       context.storeTokenToLocalStorage(tokenData);
 
-      router.replace('/projects');
+      const userLocale = tokenData.user.locale ?? locale;
+
+      router.replace(`/projects`, { locale: userLocale });
     } catch (error) {
       console.error('Error processing SSO callback:', error);
-      router.replace('/account/signin');
+      router.replace(`/account/signin`, { locale: locale });
     }
-  }, [context, router, searchParams]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return <></>;
 }

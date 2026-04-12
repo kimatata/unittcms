@@ -16,12 +16,12 @@ OIDC authentication is configured through environment variables. You need to pro
 
 ### Environment Variables
 
-| Variable | Description | Example                                       |
-|----------|-------------|-----------------------------------------------|
-| `OIDC_ISSUER` | The issuer base URL of your OIDC provider | `https://your-keycloak.com/realms/your-realm` |
-| `OIDC_CLIENT_ID` | The client ID from your OIDC provider | `unittcms-client`                             |
-| `OIDC_CLIENT_SECRET` | The client secret from your OIDC provider | `your-secret-here`                            |
-| `OIDC_CALLBACK_URL` | The backend callback URL where OIDC will redirect | `http://localhost:8001/users/oidc/callback`   |
+| Variable | Description                                 | Example                                       |
+|----------|---------------------------------------------|-----------------------------------------------|
+| `OIDC_ISSUER` | The issuer base URL of your OIDC provider   | `https://your-keycloak.com/realms/your-realm` |
+| `OIDC_CLIENT_ID` | The client ID from your OIDC provider       | `unittcms-client`                             |
+| `OIDC_CLIENT_SECRET` | The client secret from your OIDC provider   | `your-secret-here`                            |
+| `FRONTEND_ORIGIN` | FQDN or IP address where UnitTCMS is hosted | `https://my.domain.tld`                       |
 
 :::info
 All four environment variables must be set for OIDC authentication to be enabled. If any variable is missing, the SSO button will not appear.
@@ -42,17 +42,17 @@ services:
       - PORT=8000
       - SECRET_KEY=your_secret_key_here
       // highlight-start
+      - FRONTEND_ORIGIN=http://localhost:8000
       - OIDC_ISSUER=https://your-keycloak.com/realms/your-realm
       - OIDC_CLIENT_ID=unittcms-client
       - OIDC_CLIENT_SECRET=your-client-secret
-      - OIDC_CALLBACK_URL=http://localhost:8000/users/oidc/callback
       // highlight-end
     volumes:
       - db-data:/app/backend/database
 ```
 
 :::warning
-Make sure to update the `OIDC_CALLBACK_URL` to match your deployment URL in production.
+Make sure to update the `FRONTEND_ORIGIN` to match your deployment URL in production.
 :::
 
 ## From Source Setup
@@ -68,7 +68,6 @@ SECRET_KEY=your-secret-key
 OIDC_ISSUER=https://your-keycloak.com/realms/your-realm
 OIDC_CLIENT_ID=unittcms-client
 OIDC_CLIENT_SECRET=your-client-secret
-OIDC_CALLBACK_URL=http://localhost:3001/users/oidc/callback
 ```
 
 ## OIDC Provider Setup
@@ -80,7 +79,7 @@ You need to configure your OIDC provider to allow authentication from UnitTCMS. 
 1. **Client Type**: Confidential
 2. **Protocol**: OpenID Connect
 3. **Grant Type**: Authorization Code
-4. **Valid Redirect URIs**: `http://localhost:3001/users/oidc/callback` (update for production)
+4. **Valid Redirect URIs**: `http://localhost:8001/users/oidc/callback` (update for production)
 5. **Scopes**: `openid`, `profile`, `email`
 
 ### Example: Keycloak
@@ -92,7 +91,7 @@ You need to configure your OIDC provider to allow authentication from UnitTCMS. 
    - **Client ID**: `unittcms-client`
    - **Client Protocol**: `openid-connect`
    - **Access Type**: `confidential`
-   - **Valid Redirect URIs**: `http://localhost:3001/users/oidc/callback`
+   - **Valid Redirect URIs**: `http://localhost:8001/users/oidc/callback`
 5. Click **Save**
 6. Go to the **Credentials** tab and copy the **Client Secret**
 7. Ensure the following scopes are enabled:

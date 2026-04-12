@@ -1,5 +1,5 @@
 'use client';
-import { createContext, useState, useEffect } from 'react';
+import { createContext, useState, useEffect, useCallback } from 'react';
 import { addToast } from '@heroui/react';
 import {
   isSignedIn as tokenIsSinedIn,
@@ -88,8 +88,8 @@ const TokenProvider = ({ toastMessages, locale, children }: TokenProps) => {
     return tokenIsProjectReporter(projectRoles, projectId);
   };
 
-  async function refreshProjectRoles() {
-    if (!hasRestoreFinished || !token || !token.access_token) {
+  const refreshProjectRoles = useCallback(async () => {
+    if (!hasRestoreFinished || !token?.access_token) {
       return;
     }
 
@@ -99,7 +99,7 @@ const TokenProvider = ({ toastMessages, locale, children }: TokenProps) => {
     } catch (error: unknown) {
       logError('Error fetching project roles', error);
     }
-  }
+  }, [hasRestoreFinished, token?.access_token]);
 
   const tokenContext = {
     token,
@@ -161,8 +161,7 @@ const TokenProvider = ({ toastMessages, locale, children }: TokenProps) => {
 
   useEffect(() => {
     refreshProjectRoles();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [hasRestoreFinished, token]);
+  }, [refreshProjectRoles]);
 
   return <TokenContext.Provider value={tokenContext}>{children}</TokenContext.Provider>;
 };
