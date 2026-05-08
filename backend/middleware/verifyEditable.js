@@ -6,6 +6,7 @@ import defineFolder from '../models/folders.js';
 import defineCase from '../models/cases.js';
 import defineRun from '../models/runs.js';
 import defineRunCase from '../models/runCases.js';
+import defineCiRepositoryConfig from '../models/ciRepositoryConfig.js';
 
 export default function verifyEditableMiddleware(sequelize) {
   /**
@@ -331,6 +332,49 @@ export default function verifyEditableMiddleware(sequelize) {
     return false;
   }
 
+  /**
+   * Verify user is manager of the project by CI config id
+   * (have to be called after verifySignedIn() middleware)
+   */
+  async function verifyProjectManagerFromCiConfigId(req, res, next) {
+    const CiRepositoryConfig = defineCiRepositoryConfig(sequelize, DataTypes);
+    const Project = defineProject(sequelize, DataTypes);
+
+    const configId = req.params.configId || req.query.configId;
+    if (!configId) {
+      return res.status(400).json({ error: 'configId is required' });
+    }
+
+    const config = await CiRepositoryConfig.findByPk(configId);
+    if (!config) {
+      return res.status(404).send('CI configuration not found');
+    }
+
+    const project = await Project.findByPk(config.projectId);
+    if (!project) {
+      return res.status(404).send('Project not found');
+    }
+
+    if (project.userId === req.userId) {
+      next();
+      return;
+    }
+
+    const Member = defineMember(sequelize, DataTypes);
+    const member = await Member.findOne({
+      where: { userId: req.userId, projectId: config.projectId },
+    });
+    if (member) {
+      const managerRoleIndex = memberRoles.findIndex((entry) => entry.uid === 'manager');
+      if (member.role === managerRoleIndex) {
+        next();
+        return;
+      }
+    }
+
+    return res.status(403).json({ error: 'Forbidden' });
+  }
+
   return {
     verifyProjectOwner,
     verifyProjectManagerFromProjectId,
@@ -340,5 +384,6 @@ export default function verifyEditableMiddleware(sequelize) {
     verifyProjectReporterFromProjectId,
     verifyProjectReporterFromRunId,
     verifyProjectReporterFromCommentableId,
+    verifyProjectManagerFromCiConfigId,
   };
 }
