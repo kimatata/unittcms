@@ -1,5 +1,5 @@
 export async function up(queryInterface, Sequelize) {
-  await queryInterface.createTable('ci_pipeline_jobs', {
+  await queryInterface.createTable('ciPipelineJobs', {
     id: {
       type: Sequelize.INTEGER,
       primaryKey: true,
@@ -9,7 +9,7 @@ export async function up(queryInterface, Sequelize) {
       type: Sequelize.INTEGER,
       allowNull: false,
       references: {
-        model: 'ci_pipeline_runs',
+        model: 'ciPipelineRuns',
         key: 'id',
       },
       onUpdate: 'CASCADE',
@@ -57,12 +57,12 @@ export async function up(queryInterface, Sequelize) {
     },
   });
 
-  await queryInterface.addIndex('ci_pipeline_jobs', ['pipelineRunId', 'externalId'], {
+  await queryInterface.addIndex('ciPipelineJobs', ['pipelineRunId', 'externalId'], {
     name: 'idx_pipeline_jobs_run_external',
     unique: true,
   });
 }
 
 export async function down(queryInterface) {
-  await queryInterface.dropTable('ci_pipeline_jobs');
+  await queryInterface.dropTable('ciPipelineJobs');
 }

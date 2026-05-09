@@ -1,5 +1,5 @@
 export async function up(queryInterface, Sequelize) {
-  await queryInterface.createTable('ci_pipeline_runs', {
+  await queryInterface.createTable('ciPipelineRuns', {
     id: {
       type: Sequelize.INTEGER,
       primaryKey: true,
@@ -9,7 +9,7 @@ export async function up(queryInterface, Sequelize) {
       type: Sequelize.INTEGER,
       allowNull: false,
       references: {
-        model: 'ci_repository_configs',
+        model: 'ciRepositoryConfigs',
         key: 'id',
       },
       onUpdate: 'CASCADE',
@@ -69,16 +69,16 @@ export async function up(queryInterface, Sequelize) {
     },
   });
 
-  await queryInterface.addIndex('ci_pipeline_runs', ['configId', 'externalId'], {
+  await queryInterface.addIndex('ciPipelineRuns', ['configId', 'externalId'], {
     name: 'idx_pipeline_runs_config_external',
     unique: true,
   });
 
-  await queryInterface.addIndex('ci_pipeline_runs', ['configId', 'startedAt'], {
+  await queryInterface.addIndex('ciPipelineRuns', ['configId', 'startedAt'], {
     name: 'idx_pipeline_runs_config_started',
   });
 }
 
 export async function down(queryInterface) {
-  await queryInterface.dropTable('ci_pipeline_runs');
+  await queryInterface.dropTable('ciPipelineRuns');
 }

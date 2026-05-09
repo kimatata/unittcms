@@ -1,35 +1,31 @@
 function defineCiRepositoryConfig(sequelize, DataTypes) {
-  const CiRepositoryConfig = sequelize.define(
-    'CiRepositoryConfig',
-    {
-      projectId: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-      },
-      provider: {
-        type: DataTypes.STRING,
-        allowNull: false,
-      },
-      repoOwner: {
-        type: DataTypes.STRING,
-        allowNull: false,
-      },
-      repoName: {
-        type: DataTypes.STRING,
-        allowNull: false,
-      },
-      accessToken: {
-        type: DataTypes.STRING,
-        allowNull: true,
-      },
-      enabled: {
-        type: DataTypes.BOOLEAN,
-        allowNull: false,
-        defaultValue: true,
-      },
+  const CiRepositoryConfig = sequelize.define('CiRepositoryConfig', {
+    projectId: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
     },
-    { tableName: 'ci_repository_configs' }
-  );
+    provider: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    repoOwner: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    repoName: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    accessToken: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    enabled: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+      defaultValue: true,
+    },
+  });
 
   CiRepositoryConfig.associate = (models) => {
     CiRepositoryConfig.belongsTo(models.Project, { foreignKey: 'projectId', onDelete: 'CASCADE' });

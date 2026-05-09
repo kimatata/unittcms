@@ -1,5 +1,5 @@
 export async function up(queryInterface, Sequelize) {
-  await queryInterface.createTable('ci_junit_imports', {
+  await queryInterface.createTable('ciJUnitImports', {
     id: {
       type: Sequelize.INTEGER,
       primaryKey: true,
@@ -33,13 +33,18 @@ export async function up(queryInterface, Sequelize) {
       type: Sequelize.INTEGER,
       allowNull: true,
       references: {
-        model: 'ci_pipeline_jobs',
+        model: 'ciPipelineJobs',
         key: 'id',
       },
       onUpdate: 'CASCADE',
       onDelete: 'SET NULL',
     },
     matched: {
+      type: Sequelize.INTEGER,
+      allowNull: false,
+      defaultValue: 0,
+    },
+    created: {
       type: Sequelize.INTEGER,
       allowNull: false,
       defaultValue: 0,
@@ -64,11 +69,11 @@ export async function up(queryInterface, Sequelize) {
     },
   });
 
-  await queryInterface.addIndex('ci_junit_imports', ['projectId'], {
+  await queryInterface.addIndex('ciJUnitImports', ['projectId'], {
     name: 'idx_junit_imports_project',
   });
 }
 
 export async function down(queryInterface) {
-  await queryInterface.dropTable('ci_junit_imports');
+  await queryInterface.dropTable('ciJUnitImports');
 }
