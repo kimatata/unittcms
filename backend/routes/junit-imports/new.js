@@ -3,6 +3,7 @@ import express from 'express';
 const router = express.Router();
 import multer from 'multer';
 import { DataTypes } from 'sequelize';
+import AdmZip from 'adm-zip';
 import defineRun from '../../models/runs.js';
 import defineRunCase from '../../models/runCases.js';
 import defineCase from '../../models/cases.js';
@@ -16,15 +17,13 @@ import editableMiddleware from '../../middleware/verifyEditable.js';
 import { parseJUnit } from '../../services/junitParser.js';
 import { decrypt } from '../../services/crypto.js';
 import { downloadRunArtifacts } from '../../services/ciProviders/githubActions.js';
-import AdmZip from 'adm-zip';
 
-// Default values for auto-created cases
 const CASE_DEFAULTS = {
   state: 0,
-  priority: 2,      // medium
-  type: 0,          // other
-  automationStatus: 1, // automation-not-required
-  template: 0,      // text
+  priority: 2,
+  type: 0,
+  automationStatus: 1,
+  template: 0,
   description: null,
   preConditions: null,
   expectedResults: null,
@@ -79,10 +78,7 @@ async function getOrCreateFolder(Folder, projectId, name, parentFolderId, cache,
     transaction,
   });
   if (!folder) {
-    folder = await Folder.create(
-      { name, projectId, parentFolderId: parentFolderId ?? null },
-      { transaction }
-    );
+    folder = await Folder.create({ name, projectId, parentFolderId: parentFolderId ?? null }, { transaction });
   }
   cache.set(cacheKey, folder.id);
   return folder.id;
@@ -99,7 +95,10 @@ async function processTestcases(sequelize, projectId, testcases, transaction) {
   let skipped = 0;
 
   for (const tc of testcases) {
-    if (!tc.title) { skipped++; continue; }
+    if (!tc.title) {
+      skipped++;
+      continue;
+    }
 
     // Resolve target folderId
     let folderId;
@@ -119,10 +118,7 @@ async function processTestcases(sequelize, projectId, testcases, transaction) {
     if (caseRecord) {
       matched++;
     } else {
-      caseRecord = await Case.create(
-        { ...CASE_DEFAULTS, title: tc.title, folderId },
-        { transaction }
-      );
+      caseRecord = await Case.create({ ...CASE_DEFAULTS, title: tc.title, folderId }, { transaction });
       created++;
     }
 
@@ -132,7 +128,10 @@ async function processTestcases(sequelize, projectId, testcases, transaction) {
   return { runCases, matched, created, skipped };
 }
 
-async function buildAndSaveImport(sequelize, { projectId, suiteName, testcases, pipelineRunId, pipelineJobId, source }) {
+async function buildAndSaveImport(
+  sequelize,
+  { projectId, suiteName, testcases, pipelineRunId, pipelineJobId, source }
+) {
   const Run = defineRun(sequelize, DataTypes);
   const RunCase = defineRunCase(sequelize, DataTypes);
   const CiJunitImport = defineCiJunitImport(sequelize, DataTypes);
@@ -143,9 +142,7 @@ async function buildAndSaveImport(sequelize, { projectId, suiteName, testcases, 
       { transaction: t }
     );
 
-    const { runCases, matched, created, skipped } = await processTestcases(
-      sequelize, projectId, testcases, t
-    );
+    const { runCases, matched, created, skipped } = await processTestcases(sequelize, projectId, testcases, t);
 
     const total = testcases.length;
 
@@ -192,7 +189,7 @@ export default function (sequelize) {
       }
 
       try {
-        // Fluxo A: upload direto
+        // Flow A: upload direto
         if (hasFile) {
           let parsed;
           try {
@@ -213,7 +210,7 @@ export default function (sequelize) {
           return res.status(201).json(result);
         }
 
-        // Fluxo B: via pipeline job
+        // Flow B: via pipeline work
         const CiPipelineJob = defineCiPipelineJob(sequelize, DataTypes);
         const CiPipelineRun = defineCiPipelineRun(sequelize, DataTypes);
         const CiRepositoryConfig = defineCiRepositoryConfig(sequelize, DataTypes);
@@ -249,7 +246,11 @@ export default function (sequelize) {
 
         const parsedResults = [];
         for (const xmlStr of xmlStrings) {
-          try { parsedResults.push(parseJUnit(xmlStr)); } catch { /* skip invalid */ }
+          try {
+            parsedResults.push(parseJUnit(xmlStr));
+          } catch {
+            /* skip invalid */
+          }
         }
 
         if (parsedResults.length === 0) {

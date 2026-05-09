@@ -6,7 +6,10 @@ import { Sequelize } from 'sequelize';
 let allowManager = true;
 vi.mock('../../middleware/auth.js', () => ({
   default: () => ({
-    verifySignedIn: vi.fn((req, res, next) => { req.userId = 1; next(); }),
+    verifySignedIn: vi.fn((req, res, next) => {
+      req.userId = 1;
+      next();
+    }),
   }),
 }));
 vi.mock('../../middleware/verifyEditable.js', () => ({
@@ -45,11 +48,11 @@ vi.mock('adm-zip', () => ({
   })),
 }));
 
-import junitImportNewRoute from './new.js';
+import AdmZip from 'adm-zip';
 import { parseJUnit } from '../../services/junitParser.js';
 import { decrypt } from '../../services/crypto.js';
 import { downloadRunArtifacts } from '../../services/ciProviders/githubActions.js';
-import AdmZip from 'adm-zip';
+import junitImportNewRoute from './new.js';
 
 const XML_BUFFER = Buffer.from('<testsuite name="Suite"><testcase name="A > B > test one"/></testsuite>');
 
@@ -98,9 +101,7 @@ describe('POST /junit-imports — Fluxo A (upload direto)', () => {
 
   it('returns 201 with matched + created counts', async () => {
     // first case exists (matched), second is new (created)
-    mockCase.findOne
-      .mockResolvedValueOnce({ id: 42 })
-      .mockResolvedValueOnce(null);
+    mockCase.findOne.mockResolvedValueOnce({ id: 42 }).mockResolvedValueOnce(null);
 
     const res = await request(app)
       .post('/junit-imports?projectId=5')
@@ -170,7 +171,9 @@ describe('POST /junit-imports — Fluxo A (upload direto)', () => {
   });
 
   it('returns 400 for invalid XML', async () => {
-    parseJUnit.mockImplementation(() => { throw new Error('Invalid JUnit XML format'); });
+    parseJUnit.mockImplementation(() => {
+      throw new Error('Invalid JUnit XML format');
+    });
 
     const res = await request(app)
       .post('/junit-imports?projectId=5')
@@ -215,7 +218,13 @@ describe('POST /junit-imports — Fluxo B (via pipeline job)', () => {
 
     mockPipelineJob.findByPk.mockResolvedValue({ id: 7, pipelineRunId: 3 });
     mockPipelineRun.findByPk.mockResolvedValue({ id: 3, configId: 1, externalId: '9999', name: 'CI' });
-    mockConfig.findByPk.mockResolvedValue({ id: 1, projectId: 5, repoOwner: 'org', repoName: 'repo', accessToken: 'enc' });
+    mockConfig.findByPk.mockResolvedValue({
+      id: 1,
+      projectId: 5,
+      repoOwner: 'org',
+      repoName: 'repo',
+      accessToken: 'enc',
+    });
     decrypt.mockReturnValue('ghp_token');
     downloadRunArtifacts.mockResolvedValue([Buffer.from('fake-zip')]);
 
@@ -230,9 +239,7 @@ describe('POST /junit-imports — Fluxo B (via pipeline job)', () => {
     });
 
     mockFolder.findOne.mockResolvedValue(null);
-    mockFolder.create
-      .mockResolvedValueOnce({ id: 20 })
-      .mockResolvedValueOnce({ id: 21 });
+    mockFolder.create.mockResolvedValueOnce({ id: 20 }).mockResolvedValueOnce({ id: 21 });
     mockCase.findOne.mockResolvedValue(null);
     mockCase.create.mockResolvedValue({ id: 55 });
     mockRun.create.mockResolvedValue({ id: 100 });
@@ -241,16 +248,11 @@ describe('POST /junit-imports — Fluxo B (via pipeline job)', () => {
   });
 
   it('returns 201 with created count on successful pipeline import', async () => {
-    const res = await request(app)
-      .post('/junit-imports?projectId=5')
-      .send({ pipelineJobId: '7' });
+    const res = await request(app).post('/junit-imports?projectId=5').send({ pipelineJobId: '7' });
 
     expect(res.status).toBe(201);
     expect(res.body).toMatchObject({ runId: 100, matched: 0, created: 1, total: 1 });
-    expect(mockRun.create).toHaveBeenCalledWith(
-      expect.objectContaining({ pipelineRunId: 3 }),
-      expect.anything()
-    );
+    expect(mockRun.create).toHaveBeenCalledWith(expect.objectContaining({ pipelineRunId: 3 }), expect.anything());
     expect(mockJunitImport.create).toHaveBeenCalledWith(
       expect.objectContaining({ source: 'pipeline_job', pipelineJobId: '7' }),
       expect.anything()
@@ -264,7 +266,13 @@ describe('POST /junit-imports — Fluxo B (via pipeline job)', () => {
   });
 
   it('returns 403 when job belongs to a different project', async () => {
-    mockConfig.findByPk.mockResolvedValue({ id: 1, projectId: 99, repoOwner: 'org', repoName: 'repo', accessToken: 'enc' });
+    mockConfig.findByPk.mockResolvedValue({
+      id: 1,
+      projectId: 99,
+      repoOwner: 'org',
+      repoName: 'repo',
+      accessToken: 'enc',
+    });
     const res = await request(app).post('/junit-imports?projectId=5').send({ pipelineJobId: '7' });
     expect(res.status).toBe(403);
   });
