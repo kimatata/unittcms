@@ -204,11 +204,13 @@ import ciConfigsNewRoute from './routes/ci-configs/new.js';
 import ciConfigsEditRoute from './routes/ci-configs/edit.js';
 import ciConfigsDeleteRoute from './routes/ci-configs/delete.js';
 import ciConfigsSyncRoute from './routes/ci-configs/sync.js';
+import ciConfigsPingRoute from './routes/ci-configs/ping.js';
 app.use('/ci-configs', ciConfigsIndexRoute(sequelize));
 app.use('/ci-configs', ciConfigsNewRoute(sequelize));
 app.use('/ci-configs', ciConfigsEditRoute(sequelize));
 app.use('/ci-configs', ciConfigsDeleteRoute(sequelize));
 app.use('/ci-configs', ciConfigsSyncRoute(sequelize));
+app.use('/ci-configs', ciConfigsPingRoute(sequelize));
 
 // "/pipeline-runs"
 import pipelineRunsIndexRoute from './routes/pipeline-runs/index.js';

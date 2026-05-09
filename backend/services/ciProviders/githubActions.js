@@ -156,6 +156,11 @@ export async function listJobsForRun(token, repoOwner, repoName, runExternalId) 
   return jobs;
 }
 
+export async function verifyConnection(token, repoOwner, repoName) {
+  const data = await githubFetch(`${GITHUB_API_BASE}/repos/${repoOwner}/${repoName}`, token);
+  return { repoFullName: data.full_name };
+}
+
 export async function downloadRunArtifacts(token, repoOwner, repoName, runExternalId) {
   const url = `${GITHUB_API_BASE}/repos/${repoOwner}/${repoName}/actions/runs/${runExternalId}/artifacts`;
   const data = await githubFetch(url, token);
