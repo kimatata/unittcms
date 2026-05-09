@@ -11,3 +11,4 @@ database.sqlite
 /.idea/
 .claude/
 specs/
+CLAUDE.md
