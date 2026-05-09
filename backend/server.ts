@@ -220,6 +220,12 @@ app.use('/pipeline-runs', pipelineRunsShowRoute(sequelize));
 import pipelineJobsIndexRoute from './routes/pipeline-jobs/index.js';
 app.use('/pipeline-jobs', pipelineJobsIndexRoute(sequelize));
 
+// "/junit-imports"
+import junitImportsIndexRoute from './routes/junit-imports/index.js';
+import junitImportsNewRoute from './routes/junit-imports/new.js';
+app.use('/junit-imports', junitImportsIndexRoute(sequelize));
+app.use('/junit-imports', junitImportsNewRoute(sequelize));
+
 if (!process.env.SECRET_KEY) {
   console.log(
     "[Warning]: Default key is used for token generation. Please set the environment variable 'SECRET_KEY'`."
