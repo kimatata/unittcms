@@ -6,7 +6,10 @@ import junitImportsIndexRoute from './index.js';
 
 vi.mock('../../middleware/auth.js', () => ({
   default: () => ({
-    verifySignedIn: vi.fn((req, res, next) => { req.userId = 1; next(); }),
+    verifySignedIn: vi.fn((req, res, next) => {
+      req.userId = 1;
+      next();
+    }),
   }),
 }));
 let allowVisible = true;
@@ -43,8 +46,30 @@ describe('GET /junit-imports', () => {
 
   it('returns list of imports ordered by createdAt DESC', async () => {
     const rows = [
-      { id: 2, runId: 10, projectId: 5, source: 'upload', pipelineJobId: null, matched: 3, skipped: 1, total: 4, createdAt: '2026-05-09T11:00:00Z', updatedAt: '2026-05-09T11:00:00Z' },
-      { id: 1, runId: 9, projectId: 5, source: 'pipeline_job', pipelineJobId: 7, matched: 5, skipped: 0, total: 5, createdAt: '2026-05-09T10:00:00Z', updatedAt: '2026-05-09T10:00:00Z' },
+      {
+        id: 2,
+        runId: 10,
+        projectId: 5,
+        source: 'upload',
+        pipelineJobId: null,
+        matched: 3,
+        skipped: 1,
+        total: 4,
+        createdAt: '2026-05-09T11:00:00Z',
+        updatedAt: '2026-05-09T11:00:00Z',
+      },
+      {
+        id: 1,
+        runId: 9,
+        projectId: 5,
+        source: 'pipeline_job',
+        pipelineJobId: 7,
+        matched: 5,
+        skipped: 0,
+        total: 5,
+        createdAt: '2026-05-09T10:00:00Z',
+        updatedAt: '2026-05-09T10:00:00Z',
+      },
     ];
     mockImport.findAll.mockResolvedValue(rows);
 

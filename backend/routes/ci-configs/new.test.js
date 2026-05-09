@@ -6,7 +6,10 @@ import ciConfigsNewRoute from './new.js';
 
 vi.mock('../../middleware/auth.js', () => ({
   default: () => ({
-    verifySignedIn: vi.fn((req, res, next) => { req.userId = 1; next(); }),
+    verifySignedIn: vi.fn((req, res, next) => {
+      req.userId = 1;
+      next();
+    }),
   }),
 }));
 vi.mock('../../middleware/verifyEditable.js', () => ({
@@ -24,7 +27,18 @@ const mockConfig = { create: vi.fn() };
 vi.mock('../../models/ciRepositoryConfig.js', () => ({ default: () => mockConfig }));
 
 function makeCreatedConfig(overrides = {}) {
-  const data = { id: 1, projectId: '5', provider: 'github_actions', repoOwner: 'org', repoName: 'repo', enabled: true, accessToken: 'encrypted:token', createdAt: new Date(), updatedAt: new Date(), ...overrides };
+  const data = {
+    id: 1,
+    projectId: '5',
+    provider: 'github_actions',
+    repoOwner: 'org',
+    repoName: 'repo',
+    enabled: true,
+    accessToken: 'encrypted:token',
+    createdAt: new Date(),
+    updatedAt: new Date(),
+    ...overrides,
+  };
   return { toJSON: () => ({ ...data }) };
 }
 
@@ -50,9 +64,11 @@ describe('POST /ci-configs', () => {
     expect(res.body.hasToken).toBe(true);
     expect(res.body.accessToken).toBeUndefined();
     expect(mockEncrypt).toHaveBeenCalledWith('ghp_token');
-    expect(mockConfig.create).toHaveBeenCalledWith(expect.objectContaining({
-      accessToken: 'encrypted:ghp_token',
-    }));
+    expect(mockConfig.create).toHaveBeenCalledWith(
+      expect.objectContaining({
+        accessToken: 'encrypted:ghp_token',
+      })
+    );
   });
 
   it('creates config without token and returns hasToken: false', async () => {
@@ -67,16 +83,16 @@ describe('POST /ci-configs', () => {
   });
 
   it('returns 400 if required fields are missing', async () => {
-    const res = await request(app)
-      .post('/ci-configs?projectId=5')
-      .send({ provider: 'github_actions' });
+    const res = await request(app).post('/ci-configs?projectId=5').send({ provider: 'github_actions' });
     expect(res.status).toBe(400);
     expect(res.body.error).toContain('required');
   });
 
   it('returns 500 with clear message if SECRET_KEY missing', async () => {
     vi.spyOn(console, 'error').mockImplementation(() => {});
-    mockEncrypt.mockImplementation(() => { throw new Error('SECRET_KEY environment variable is required'); });
+    mockEncrypt.mockImplementation(() => {
+      throw new Error('SECRET_KEY environment variable is required');
+    });
 
     const res = await request(app)
       .post('/ci-configs?projectId=5')

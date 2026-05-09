@@ -6,7 +6,10 @@ import pipelineJobsIndexRoute from './index.js';
 
 vi.mock('../../middleware/auth.js', () => ({
   default: () => ({
-    verifySignedIn: vi.fn((req, res, next) => { req.userId = 1; next(); }),
+    verifySignedIn: vi.fn((req, res, next) => {
+      req.userId = 1;
+      next();
+    }),
   }),
 }));
 vi.mock('../../middleware/verifyVisible.js', () => ({
@@ -46,9 +49,7 @@ describe('GET /pipeline-jobs', () => {
 
     expect(res.status).toBe(200);
     expect(res.body).toHaveLength(2);
-    expect(mockJobModel.findAll).toHaveBeenCalledWith(
-      expect.objectContaining({ order: [['startedAt', 'ASC']] })
-    );
+    expect(mockJobModel.findAll).toHaveBeenCalledWith(expect.objectContaining({ order: [['startedAt', 'ASC']] }));
   });
 
   it('returns empty array when no jobs', async () => {

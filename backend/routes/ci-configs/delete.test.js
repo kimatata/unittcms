@@ -6,7 +6,10 @@ import ciConfigsDeleteRoute from './delete.js';
 
 vi.mock('../../middleware/auth.js', () => ({
   default: () => ({
-    verifySignedIn: vi.fn((req, res, next) => { req.userId = 1; next(); }),
+    verifySignedIn: vi.fn((req, res, next) => {
+      req.userId = 1;
+      next();
+    }),
   }),
 }));
 vi.mock('../../middleware/verifyEditable.js', () => ({

@@ -6,7 +6,10 @@ import ciConfigsEditRoute from './edit.js';
 
 vi.mock('../../middleware/auth.js', () => ({
   default: () => ({
-    verifySignedIn: vi.fn((req, res, next) => { req.userId = 1; next(); }),
+    verifySignedIn: vi.fn((req, res, next) => {
+      req.userId = 1;
+      next();
+    }),
   }),
 }));
 vi.mock('../../middleware/verifyEditable.js', () => ({
@@ -22,10 +25,23 @@ const mockConfig = { findByPk: vi.fn() };
 vi.mock('../../models/ciRepositoryConfig.js', () => ({ default: () => mockConfig }));
 
 function makeExistingConfig(overrides = {}) {
-  const data = { id: 1, projectId: 5, provider: 'github_actions', repoOwner: 'org', repoName: 'repo', enabled: true, accessToken: 'old_encrypted', createdAt: new Date(), updatedAt: new Date(), ...overrides };
+  const data = {
+    id: 1,
+    projectId: 5,
+    provider: 'github_actions',
+    repoOwner: 'org',
+    repoName: 'repo',
+    enabled: true,
+    accessToken: 'old_encrypted',
+    createdAt: new Date(),
+    updatedAt: new Date(),
+    ...overrides,
+  };
   return {
     toJSON: () => ({ ...data }),
-    update: vi.fn(async (updates) => { Object.assign(data, updates); }),
+    update: vi.fn(async (updates) => {
+      Object.assign(data, updates);
+    }),
   };
 }
 
@@ -71,7 +87,9 @@ describe('PUT /ci-configs/:configId', () => {
   it('returns 500 with clear message if SECRET_KEY missing during token update', async () => {
     vi.spyOn(console, 'error').mockImplementation(() => {});
     mockConfig.findByPk.mockResolvedValue(makeExistingConfig());
-    mockEncrypt.mockImplementation(() => { throw new Error('SECRET_KEY environment variable is required'); });
+    mockEncrypt.mockImplementation(() => {
+      throw new Error('SECRET_KEY environment variable is required');
+    });
 
     const res = await request(app).put('/ci-configs/1').send({ accessToken: 'new_token' });
     expect(res.status).toBe(500);

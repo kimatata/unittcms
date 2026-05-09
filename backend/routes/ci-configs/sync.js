@@ -41,7 +41,9 @@ export default function (sequelize) {
         token = decrypt(config.accessToken);
       } catch (err) {
         console.error(err);
-        return res.status(500).json({ error: 'Server configuration error: SECRET_KEY is required for token decryption' });
+        return res
+          .status(500)
+          .json({ error: 'Server configuration error: SECRET_KEY is required for token decryption' });
       }
 
       const provider = getProvider(config.provider);

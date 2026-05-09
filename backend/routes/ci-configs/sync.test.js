@@ -6,7 +6,10 @@ import ciConfigsSyncRoute from './sync.js';
 
 vi.mock('../../middleware/auth.js', () => ({
   default: () => ({
-    verifySignedIn: vi.fn((req, res, next) => { req.userId = 1; next(); }),
+    verifySignedIn: vi.fn((req, res, next) => {
+      req.userId = 1;
+      next();
+    }),
   }),
 }));
 vi.mock('../../middleware/verifyEditable.js', () => ({
@@ -177,7 +180,9 @@ describe('POST /ci-configs/:configId/sync', () => {
   it('returns 500 if decrypt throws due to missing SECRET_KEY', async () => {
     vi.spyOn(console, 'error').mockImplementation(() => {});
     mockConfigModel.findByPk.mockResolvedValue(makeConfig());
-    mockDecrypt.mockImplementation(() => { throw new Error('SECRET_KEY environment variable is required'); });
+    mockDecrypt.mockImplementation(() => {
+      throw new Error('SECRET_KEY environment variable is required');
+    });
 
     const res = await request(app).post('/ci-configs/1/sync');
     expect(res.status).toBe(500);

@@ -6,7 +6,10 @@ import ciConfigsIndexRoute from './index.js';
 
 vi.mock('../../middleware/auth.js', () => ({
   default: () => ({
-    verifySignedIn: vi.fn((req, res, next) => { req.userId = 1; next(); }),
+    verifySignedIn: vi.fn((req, res, next) => {
+      req.userId = 1;
+      next();
+    }),
   }),
 }));
 vi.mock('../../middleware/verifyVisible.js', () => ({
@@ -19,7 +22,18 @@ const mockConfig = { findAll: vi.fn() };
 vi.mock('../../models/ciRepositoryConfig.js', () => ({ default: () => mockConfig }));
 
 function makeConfig(overrides = {}) {
-  const data = { id: 1, projectId: 5, provider: 'github_actions', repoOwner: 'org', repoName: 'repo', enabled: true, accessToken: 'enc_token', createdAt: new Date(), updatedAt: new Date(), ...overrides };
+  const data = {
+    id: 1,
+    projectId: 5,
+    provider: 'github_actions',
+    repoOwner: 'org',
+    repoName: 'repo',
+    enabled: true,
+    accessToken: 'enc_token',
+    createdAt: new Date(),
+    updatedAt: new Date(),
+    ...overrides,
+  };
   return { toJSON: () => ({ ...data }) };
 }
 

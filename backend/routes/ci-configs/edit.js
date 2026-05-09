@@ -38,7 +38,9 @@ export default function (sequelize) {
           updates.accessToken = encrypt(accessToken);
         } catch (err) {
           console.error(err);
-          return res.status(500).json({ error: 'Server configuration error: SECRET_KEY is required for token storage' });
+          return res
+            .status(500)
+            .json({ error: 'Server configuration error: SECRET_KEY is required for token storage' });
         }
       }
 

@@ -6,7 +6,10 @@ import pipelineRunsShowRoute from './show.js';
 
 vi.mock('../../middleware/auth.js', () => ({
   default: () => ({
-    verifySignedIn: vi.fn((req, res, next) => { req.userId = 1; next(); }),
+    verifySignedIn: vi.fn((req, res, next) => {
+      req.userId = 1;
+      next();
+    }),
   }),
 }));
 vi.mock('../../middleware/verifyVisible.js', () => ({
@@ -47,9 +50,12 @@ describe('GET /pipeline-runs/:runId', () => {
     expect(res.status).toBe(200);
     expect(res.body.id).toBe(10);
     expect(res.body.jobs).toHaveLength(1);
-    expect(mockRunModel.findByPk).toHaveBeenCalledWith('10', expect.objectContaining({
-      include: [expect.objectContaining({ as: 'jobs' })],
-    }));
+    expect(mockRunModel.findByPk).toHaveBeenCalledWith(
+      '10',
+      expect.objectContaining({
+        include: [expect.objectContaining({ as: 'jobs' })],
+      })
+    );
   });
 
   it('returns 404 if run not found', async () => {
