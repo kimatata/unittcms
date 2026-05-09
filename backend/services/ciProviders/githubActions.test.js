@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { listRuns, listJobsForRun } from './githubActions.js';
+import { listRuns, listJobsForRun, downloadRunArtifacts } from './githubActions.js';
 
 const mockFetch = vi.fn();
 vi.stubGlobal('fetch', mockFetch);
@@ -9,6 +9,16 @@ function makeResponse(body, status = 200) {
     ok: status >= 200 && status < 300,
     status,
     json: async () => body,
+    arrayBuffer: async () => new ArrayBuffer(0),
+  };
+}
+
+function makeBinaryResponse(buffer, status = 200) {
+  return {
+    ok: status >= 200 && status < 300,
+    status,
+    json: async () => ({}),
+    arrayBuffer: async () => buffer,
   };
 }
 
@@ -171,5 +181,42 @@ describe('listJobsForRun', () => {
     mockFetch.mockResolvedValueOnce(makeResponse({ jobs: [] }));
     const jobs = await listJobsForRun(TOKEN, OWNER, REPO, '123');
     expect(jobs).toHaveLength(0);
+  });
+});
+
+describe('downloadRunArtifacts', () => {
+  beforeEach(() => vi.clearAllMocks());
+
+  it('returns array of Buffers for each artifact', async () => {
+    const fakeZip = new ArrayBuffer(8);
+    mockFetch
+      .mockResolvedValueOnce(makeResponse({ artifacts: [{ id: 10 }, { id: 20 }] }))
+      .mockResolvedValueOnce(makeBinaryResponse(fakeZip))
+      .mockResolvedValueOnce(makeBinaryResponse(fakeZip));
+
+    const buffers = await downloadRunArtifacts(TOKEN, OWNER, REPO, '999');
+
+    expect(buffers).toHaveLength(2);
+    expect(buffers[0]).toBeInstanceOf(Buffer);
+  });
+
+  it('returns empty array when no artifacts exist', async () => {
+    mockFetch.mockResolvedValueOnce(makeResponse({ artifacts: [] }));
+    const buffers = await downloadRunArtifacts(TOKEN, OWNER, REPO, '999');
+    expect(buffers).toHaveLength(0);
+  });
+
+  it('throws with statusCode 401 on GitHub 401 when listing artifacts', async () => {
+    mockFetch.mockResolvedValueOnce(makeResponse({}, 401));
+    await expect(downloadRunArtifacts(TOKEN, OWNER, REPO, '999')).rejects.toMatchObject({
+      statusCode: 401,
+    });
+  });
+
+  it('throws with statusCode 429 on GitHub rate limit', async () => {
+    mockFetch.mockResolvedValueOnce(makeResponse({}, 429));
+    await expect(downloadRunArtifacts(TOKEN, OWNER, REPO, '999')).rejects.toMatchObject({
+      statusCode: 429,
+    });
   });
 });

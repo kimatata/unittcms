@@ -1,5 +1,39 @@
 const GITHUB_API_BASE = 'https://api.github.com';
 
+async function githubFetchBinary(url, token) {
+  const res = await fetch(url, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+      Accept: 'application/vnd.github+json',
+      'X-GitHub-Api-Version': '2022-11-28',
+    },
+    redirect: 'follow',
+  });
+
+  if (res.status === 401) {
+    const err = new Error('GitHub authentication failed. Check the access token.');
+    err.statusCode = 401;
+    throw err;
+  }
+  if (res.status === 403) {
+    const err = new Error('GitHub access denied. The token may lack required permissions.');
+    err.statusCode = 403;
+    throw err;
+  }
+  if (res.status === 429) {
+    const err = new Error('GitHub API rate limit exceeded. Try again later.');
+    err.statusCode = 429;
+    throw err;
+  }
+  if (!res.ok) {
+    const err = new Error(`GitHub API error: ${res.status}`);
+    err.statusCode = res.status;
+    throw err;
+  }
+
+  return Buffer.from(await res.arrayBuffer());
+}
+
 const STATUS_MAP = {
   in_progress: 'running',
   completed: 'completed',
@@ -120,4 +154,20 @@ export async function listJobsForRun(token, repoOwner, repoName, runExternalId) 
   }
 
   return jobs;
+}
+
+export async function downloadRunArtifacts(token, repoOwner, repoName, runExternalId) {
+  const url = `${GITHUB_API_BASE}/repos/${repoOwner}/${repoName}/actions/runs/${runExternalId}/artifacts`;
+  const data = await githubFetch(url, token);
+
+  if (!data.artifacts || data.artifacts.length === 0) return [];
+
+  const buffers = [];
+  for (const artifact of data.artifacts) {
+    const zipUrl = `${GITHUB_API_BASE}/repos/${repoOwner}/${repoName}/actions/artifacts/${artifact.id}/zip`;
+    const buffer = await githubFetchBinary(zipUrl, token);
+    buffers.push(buffer);
+  }
+
+  return buffers;
 }
