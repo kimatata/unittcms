@@ -179,7 +179,9 @@
     "name": "名称",
     "detail": "详情",
     "last_update": "最后更新",
-    "no_projects_found": "未找到项目"
+    "no_projects_found": "未找到项目",
+    "actions": "操作",
+    "edit_project": "编辑项目"
   },
   "Project": {
     "project": "项目",

@@ -6,7 +6,7 @@ import ProjectsTable from './ProjectsTable';
 import { TokenContext } from '@/utils/TokenProvider';
 import { ProjectDialogMessages, ProjectType, ProjectsMessages } from '@/types/project';
 import ProjectDialog from '@/components/ProjectDialog';
-import { fetchProjects, createProject } from '@/utils/projectsControl';
+import { fetchProjects, createProject, updateProject } from '@/utils/projectsControl';
 import { LocaleCodeType } from '@/types/locale';
 import { logError } from '@/utils/errorHandler';
 
@@ -44,17 +44,25 @@ export default function ProjectsPage({ messages, projectDialogMessages, locale }
     setEditingProject(null);
   };
 
+  const openDialogForEdit = (project: ProjectType) => {
+    setEditingProject(project);
+    setIsProjectDialogOpen(true);
+  };
+
   const closeDialog = () => {
     setIsProjectDialogOpen(false);
     setEditingProject(null);
   };
 
   const onSubmit = async (name: string, detail: string, isPublic: boolean) => {
-    const newProject = await createProject(context.token.access_token, name, detail, isPublic);
-    setProjects([...projects, newProject]);
-
-    // refresh project roles
-    context.refreshProjectRoles();
+    if (editingProject) {
+      const updatedProject = await updateProject(context.token.access_token, editingProject.id, name, detail, isPublic);
+      setProjects(projects.map((p) => (p.id === updatedProject.id ? updatedProject : p)));
+    } else {
+      const newProject = await createProject(context.token.access_token, name, detail, isPublic);
+      setProjects([...projects, newProject]);
+      context.refreshProjectRoles();
+    }
     closeDialog();
   };
 
@@ -69,7 +77,13 @@ export default function ProjectsPage({ messages, projectDialogMessages, locale }
         </div>
       </div>
 
-      <ProjectsTable projects={projects} messages={messages} locale={locale} />
+      <ProjectsTable
+        projects={projects}
+        messages={messages}
+        locale={locale}
+        onEditProject={openDialogForEdit}
+        isProjectOwner={context.isProjectOwner}
+      />
 
       <ProjectDialog
         isOpen={isProjectDialogOpen}

@@ -1,5 +1,19 @@
 import { useState, useMemo, useCallback, ReactNode } from 'react';
-import { Table, TableHeader, TableColumn, TableBody, TableRow, TableCell, SortDescriptor } from '@heroui/react';
+import {
+  Table,
+  TableHeader,
+  TableColumn,
+  TableBody,
+  TableRow,
+  TableCell,
+  SortDescriptor,
+  Button,
+  Dropdown,
+  DropdownTrigger,
+  DropdownMenu,
+  DropdownItem,
+} from '@heroui/react';
+import { MoreVertical } from 'lucide-react';
 import dayjs from 'dayjs';
 import { Link, NextUiLinkClasses } from '@/src/i18n/routing';
 import { ProjectType, ProjectsMessages } from '@/types/project';
@@ -10,14 +24,17 @@ type Props = {
   projects: ProjectType[];
   messages: ProjectsMessages;
   locale: LocaleCodeType;
+  onEditProject: (project: ProjectType) => void;
+  isProjectOwner: (projectId: number) => boolean;
 };
 
-export default function ProjectsTable({ projects, messages, locale }: Props) {
+export default function ProjectsTable({ projects, messages, locale, onEditProject, isProjectOwner }: Props) {
   const headerColumns = [
     { name: messages.id, uid: 'id', sortable: true },
     { name: messages.publicity, uid: 'isPublic', sortable: true },
     { name: messages.name, uid: 'name', sortable: true },
     { name: messages.lastUpdate, uid: 'updatedAt', sortable: true },
+    { name: messages.actions, uid: 'actions', sortable: false },
   ];
 
   const [sortDescriptor, setSortDescriptor] = useState<SortDescriptor>({
@@ -70,11 +87,29 @@ export default function ProjectsTable({ projects, messages, locale }: Props) {
         }
         case 'updatedAt':
           return <span>{dayjs(cellValue as number).format('YYYY/MM/DD HH:mm')}</span>;
+        case 'actions':
+          return (
+            <Dropdown>
+              <DropdownTrigger>
+                <Button isIconOnly radius="full" size="sm" variant="light">
+                  <MoreVertical size={16} />
+                </Button>
+              </DropdownTrigger>
+              <DropdownMenu
+                aria-label="project actions"
+                disabledKeys={isProjectOwner(project.id) ? [] : ['edit']}
+              >
+                <DropdownItem key="edit" onPress={() => onEditProject(project)}>
+                  {messages.editProject}
+                </DropdownItem>
+              </DropdownMenu>
+            </Dropdown>
+          );
         default:
           return cellValue as string;
       }
     },
-    [locale, messages.private, messages.public]
+    [locale, messages.private, messages.public, messages.editProject, isProjectOwner, onEditProject]
   );
 
   const classNames = useMemo(

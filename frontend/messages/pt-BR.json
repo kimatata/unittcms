@@ -179,7 +179,9 @@
     "name": "Nome",
     "detail": "Detalhe",
     "last_update": "Última atualização",
-    "no_projects_found": "Nenhum projeto encontrado"
+    "no_projects_found": "Nenhum projeto encontrado",
+    "actions": "Ações",
+    "edit_project": "Editar Projeto"
   },
   "Project": {
     "project": "Projeto",

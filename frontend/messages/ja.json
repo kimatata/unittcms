@@ -179,7 +179,9 @@
     "name": "名前",
     "detail": "詳細",
     "last_update": "最終更新",
-    "no_projects_found": "プロジェクトがありません"
+    "no_projects_found": "プロジェクトがありません",
+    "actions": "アクション",
+    "edit_project": "プロジェクトを編集"
   },
   "Project": {
     "project": "プロジェクト",

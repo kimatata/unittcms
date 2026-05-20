@@ -37,6 +37,8 @@ export type ProjectsMessages = {
   detail: string;
   lastUpdate: string;
   noProjectsFound: string;
+  actions: string;
+  editProject: string;
 };
 
 export type ProjectMessages = {

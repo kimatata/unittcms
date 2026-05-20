@@ -17,6 +17,8 @@ export default function Page({ params }: PageType) {
     detail: t('detail'),
     lastUpdate: t('last_update'),
     noProjectsFound: t('no_projects_found'),
+    actions: t('actions'),
+    editProject: t('edit_project'),
   };
 
   const pt = useTranslations('ProjectDialog');
