@@ -56,6 +56,7 @@ import { CaseType } from '@/types/case';
 import { TreeNodeData } from '@/types/folder';
 import { TokenContext } from '@/utils/TokenProvider';
 import { useFormGuard } from '@/utils/formGuard';
+import { useRunContext } from './RunContext';
 import { PriorityMessages } from '@/types/priority';
 import { RunStatusMessages, TestRunCaseStatusMessages } from '@/types/status';
 import { TestTypeMessages } from '@/types/testType';
@@ -96,6 +97,7 @@ export default function RunEditor({
   locale,
 }: Props) {
   const tokenContext = useContext(TokenContext);
+  const { setIncludedCases } = useRunContext();
   const { theme } = useTheme();
   const [testRun, setTestRun] = useState<RunType>(defaultTestRun);
   const [treeData, setTreeData] = useState<TreeNodeData[]>([]);
@@ -177,6 +179,13 @@ export default function RunEditor({
 
     onFilter();
   }, [selectedFolder, testCases]);
+
+  useEffect(() => {
+    const included = testCases.filter(
+      (tc) => tc.RunCases && tc.RunCases.length > 0 && tc.RunCases[0].editState !== 'deleted'
+    );
+    setIncludedCases(included);
+  }, [testCases, setIncludedCases]);
 
   const handleChangeStatus = async (changeCaseId: number, newStatus: number) => {
     setIsDirty(true);

@@ -23,12 +23,14 @@ type Props = {
   projectId: string;
   isDisabled: boolean;
   runs: RunType[];
+  onEditRun: (runId: number) => void;
+  onRenameRun: (run: RunType) => void;
   onDeleteRun: (runId: number) => void;
   messages: RunsMessages;
   locale: LocaleCodeType;
 };
 
-export default function RunsTable({ projectId, isDisabled, runs, onDeleteRun, messages, locale }: Props) {
+export default function RunsTable({ projectId, isDisabled, runs, onEditRun, onRenameRun, onDeleteRun, messages, locale }: Props) {
   const [disabledKeys, setDisabledKeys] = useState<string[]>([]);
   useEffect(() => {
     if (isDisabled) {
@@ -95,6 +97,12 @@ export default function RunsTable({ projectId, isDisabled, runs, onDeleteRun, me
               </Button>
             </DropdownTrigger>
             <DropdownMenu aria-label="run actions" disabledKeys={disabledKeys}>
+              <DropdownItem key="edit" onPress={() => onEditRun(run.id)}>
+                {messages.editRun}
+              </DropdownItem>
+              <DropdownItem key="rename" onPress={() => onRenameRun(run)}>
+                {messages.renameRun}
+              </DropdownItem>
               <DropdownItem className="text-danger" key="delete" onPress={() => onDeleteRun(run.id)}>
                 {messages.deleteRun}
               </DropdownItem>

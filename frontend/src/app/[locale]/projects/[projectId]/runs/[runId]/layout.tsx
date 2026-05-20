@@ -1,6 +1,7 @@
 import { useTranslations } from 'next-intl';
 import RunEditor from './RunEditor';
 import ResizablePanes from '@/components/ResizablePane';
+import { RunContextProvider } from './RunContext';
 import { RunMessages } from '@/types/run';
 import { PriorityMessages } from '@/types/priority';
 import { RunStatusMessages, TestRunCaseStatusMessages } from '@/types/status';
@@ -99,20 +100,22 @@ export default function RunLayout({
   };
 
   return (
-    <ResizablePanes
-      leftPane={
-        <RunEditor
-          projectId={projectId}
-          runId={runId}
-          messages={messages}
-          runStatusMessages={runStatusMessages}
-          testRunCaseStatusMessages={testRunCaseStatusMessages}
-          priorityMessages={priorityMessages}
-          testTypeMessages={testTypeMessages}
-          locale={locale}
-        />
-      }
-      rightPane={children}
-    />
+    <RunContextProvider labels={{ selected: messages.selected, noCasesFound: messages.noCasesFound }}>
+      <ResizablePanes
+        leftPane={
+          <RunEditor
+            projectId={projectId}
+            runId={runId}
+            messages={messages}
+            runStatusMessages={runStatusMessages}
+            testRunCaseStatusMessages={testRunCaseStatusMessages}
+            priorityMessages={priorityMessages}
+            testTypeMessages={testTypeMessages}
+            locale={locale}
+          />
+        }
+        rightPane={children}
+      />
+    </RunContextProvider>
   );
 }

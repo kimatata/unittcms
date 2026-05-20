@@ -307,6 +307,7 @@
     "run": "运行",
     "new_run": "新建运行",
     "edit_run": "编辑运行",
+    "rename_run": "重命名运行",
     "delete_run": "删除运行",
     "id": "ID",
     "name": "名称",

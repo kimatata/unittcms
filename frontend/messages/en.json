@@ -307,6 +307,7 @@
     "run": "Run",
     "new_run": "New Run",
     "edit_run": "Edit Run",
+    "rename_run": "Rename Run",
     "delete_run": "Delete Run",
     "id": "ID",
     "name": "Name",

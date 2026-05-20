@@ -10,6 +10,7 @@ import DeleteConfirmDialog from '@/components/DeleteConfirmDialog';
 import { TokenContext } from '@/utils/TokenProvider';
 import { LocaleCodeType } from '@/types/locale';
 import { logError } from '@/utils/errorHandler';
+import { useRouter } from '@/src/i18n/routing';
 
 type Props = {
   projectId: string;
@@ -30,6 +31,7 @@ const defaultRun = {
 
 export default function RunsPage({ projectId, locale, messages }: Props) {
   const context = useContext(TokenContext);
+  const router = useRouter();
   const [runs, setRuns] = useState<RunType[]>([]);
 
   // run dialog
@@ -38,6 +40,15 @@ export default function RunsPage({ projectId, locale, messages }: Props) {
   const openDialogForCreate = () => {
     setIsRunDialogOpen(true);
     setEditingRun(defaultRun);
+  };
+
+  const openDialogForRename = (run: RunType) => {
+    setEditingRun(run);
+    setIsRunDialogOpen(true);
+  };
+
+  const handleEditRun = (runId: number) => {
+    router.push(`/projects/${projectId}/runs/${runId}`, { locale });
   };
 
   const closeDialog = () => {
@@ -72,9 +83,9 @@ export default function RunsPage({ projectId, locale, messages }: Props) {
 
   const onSubmit = async (name: string, description: string) => {
     if (editingRun && editingRun.createdAt) {
-      const updatedRun: RunType = await updateRun(context.token.access_token, editingRun);
-      const updatedRuns = runs.map((run) => (run.id === updatedRun.id ? updatedRun : run));
-      setRuns(updatedRuns);
+      const runToUpdate = { ...editingRun, name, description };
+      const updatedRun: RunType = await updateRun(context.token.access_token, runToUpdate);
+      setRuns(runs.map((run) => (run.id === updatedRun.id ? updatedRun : run)));
     } else {
       const newRun = await createRun(context.token.access_token, Number(projectId), name, description);
       setRuns([...runs, newRun]);
@@ -116,6 +127,8 @@ export default function RunsPage({ projectId, locale, messages }: Props) {
         projectId={projectId}
         isDisabled={!context.isProjectReporter(Number(projectId))}
         runs={runs}
+        onEditRun={handleEditRun}
+        onRenameRun={openDialogForRename}
         onDeleteRun={onDeleteClick}
         messages={messages}
         locale={locale}

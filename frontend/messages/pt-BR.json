@@ -307,6 +307,7 @@
     "run": "Execução",
     "new_run": "Nova Execução",
     "edit_run": "Editar Execução",
+    "rename_run": "Renomear Execução",
     "delete_run": "Excluir Execução",
     "id": "ID",
     "name": "Nome",

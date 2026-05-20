@@ -307,6 +307,7 @@
     "run": "Testlauf",
     "new_run": "Neuer Testlauf",
     "edit_run": "Testlauf bearbeiten",
+    "rename_run": "Testlauf umbenennen",
     "delete_run": "Testlauf löschen",
     "id": "ID",
     "name": "Name",
