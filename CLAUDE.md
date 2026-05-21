@@ -16,6 +16,11 @@ docker-compose -f docker-compose.yaml up --build -d
 
 App available at: `http://localhost:8000/en/projects`
 
+> **Docker cache not picking up changes?** On Windows, Docker sometimes serves a fully cached build even after file edits. Force a clean rebuild:
+> ```powershell
+> docker-compose -f docker-compose.yaml build --no-cache && docker-compose -f docker-compose.yaml up -d
+> ```
+
 The frontend Next.js build output and the Express backend are combined in a single process by `entrypoint.js`. On startup, Sequelize migrations run automatically. Set `IS_DEMO=true` in `docker-compose.yaml` to seed sample data.
 
 Key env vars (in `docker-compose.yaml`):
@@ -36,6 +41,9 @@ unittcms/
 ├── Dockerfile         # Multi-stage: deps → build → runner
 └── docker-compose.yaml
 ```
+
+### Key features implemented
+- **Automation tab** (`/projects/:id/automation`) — connects a project to a GitLab or GitHub repo, generates Playwright/Cypress/pytest stub test files from the test case hierarchy, pushes via provider API. Config stored in `automationConfigs` table. Routes: `backend/routes/automationConfigs/`. Control: `frontend/utils/automationConfigControl.ts`.
 
 ### Request flow
 - All `/api/*` requests → Express backend
@@ -66,11 +74,21 @@ export default function(sequelize) {
 - `verifyEditable.js` — permission checks for edit operations
 
 **Models** (`backend/models/`): Sequelize model definitions, associations in `models/index.js`.
-Key models: `users`, `projects`, `folders`, `cases`, `runs`, `runCases`, `members`, `tags`, `caseTags`, `steps`, `comments`, `attachments`
+Key models: `users`, `projects`, `folders`, `cases`, `runs`, `runCases`, `members`, `tags`, `caseTags`, `steps`, `comments`, `attachments`, `automationConfigs`
 
 **Adding a new endpoint:**
 1. Create `backend/routes/<resource>/<action>.js`
 2. Register it in `backend/server.js`
+
+**Route registration gotcha**: register without `/api` prefix — `entrypoint.js` adds that at the proxy layer:
+```js
+// ✓ correct
+app.use('/my-resource', myRoute(sequelize));
+// ✗ wrong — results in /api/api/my-resource
+app.use('/api/my-resource', myRoute(sequelize));
+```
+
+**`router` scope**: `const router = express.Router()` is defined at module scope (outside the exported factory function). This is the established pattern — do not move it inside the function.
 
 ---
 
@@ -133,6 +151,7 @@ Key models: `users`, `projects`, `folders`, `cases`, `runs`, `runCases`, `member
 - Pattern: async function in `utils/*Control.ts` or co-located `*Control.ts`
 - **Exception**: runs control is co-located, not in `utils/`: `frontend/src/app/[locale]/projects/[projectId]/runs/runsControl.ts`
 - Error handling: `import { logError } from '@/utils/errorHandler'` — call `logError('context string', error)` in catch blocks
+- **Gotcha**: `Config.apiServer` already resolves to `/api`. Use `${Config.apiServer}/resource` — never `${Config.apiServer}/api/resource`.
 
 ### Notifications (addToast)
 `addToast` is a function exported by `@heroui/react`. Use it for success/error feedback after mutations:
@@ -242,5 +261,6 @@ E2E tests live in `e2e/` and cover full user workflows.
 | Add new page | Create `page.tsx` (server) + `FeaturePage.tsx` (client) under `[locale]/...` |
 | Add translation key | Edit all 5 `messages/*.json` files + the TypeScript type + `page.tsx` messages object |
 | See changes | `docker-compose -f docker-compose.yaml up --build -d` |
+| Force clean rebuild (cache miss) | `docker-compose -f docker-compose.yaml build --no-cache && docker-compose -f docker-compose.yaml up -d` |
 | View logs | `docker logs unittcms-unittcms-1 -f` |
 | Access container shell | `docker exec -it unittcms-unittcms-1 sh` |

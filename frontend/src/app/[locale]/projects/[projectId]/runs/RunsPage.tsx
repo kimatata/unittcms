@@ -51,6 +51,7 @@ export default function RunsPage({ projectId, locale, messages }: Props) {
     router.push(`/projects/${projectId}/runs/${runId}`, { locale });
   };
 
+
   const closeDialog = () => {
     setIsRunDialogOpen(false);
     setEditingRun(null);

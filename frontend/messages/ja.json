@@ -190,7 +190,45 @@
     "test_cases": "テストケース",
     "test_runs": "テストラン",
     "members": "メンバー",
-    "settings": "設定"
+    "settings": "設定",
+    "automation": "自動化"
+  },
+  "Automation": {
+    "automation": "自動化",
+    "gitlab_connection": "GitLab 接続",
+    "gitlab_url": "GitLab URL",
+    "gitlab_token": "個人アクセストークン",
+    "gitlab_namespace": "名前空間（オプション）",
+    "repo_config": "リポジトリ設定",
+    "repo_name": "リポジトリ名",
+    "automation_tool": "自動化ツール",
+    "automation_language": "言語",
+    "save_config": "設定を保存",
+    "generate_project": "自動化プロジェクトを生成",
+    "generating": "生成中...",
+    "repo_url": "リポジトリ URL",
+    "connected": "接続済み",
+    "not_connected": "未接続",
+    "tool_playwright": "Playwright",
+    "tool_cypress": "Cypress",
+    "tool_pytest": "pytest",
+    "lang_typescript": "TypeScript",
+    "lang_javascript": "JavaScript",
+    "lang_python": "Python",
+    "success_saved": "設定を保存しました",
+    "success_generated": "自動化プロジェクトを正常に生成しました",
+    "error_saved": "設定の保存に失敗しました",
+    "error_generated": "自動化プロジェクトの生成に失敗しました",
+    "open_repo": "リポジトリを開く",
+    "gitlab_url_placeholder": "https://gitlab.com",
+    "gitlab_token_placeholder": "glpat-xxxxxxxxxxxxxxxxxxxx",
+    "repo_name_placeholder": "my-automation-tests",
+    "provider": "Git プロバイダー",
+    "provider_gitlab": "GitLab",
+    "provider_github": "GitHub",
+    "instance_url": "インスタンス URL",
+    "github_url_placeholder": "https://github.com",
+    "github_token_placeholder": "ghp_xxxxxxxxxxxxxxxxxxxx"
   },
   "Home": {
     "home": "ホーム",
@@ -322,7 +360,8 @@
     "update": "更新",
     "please_enter": "テストラン名を入力してください",
     "are_you_sure": "テストランを削除してもよろしいですか?",
-    "delete": "削除"
+    "delete": "削除",
+    "execute_run": "テストランを実行"
   },
   "Run": {
     "back_to_runs": "テストラン一覧に戻る",
@@ -365,6 +404,17 @@
     "case_detail": "テストケース詳細",
     "comments": "コメント",
     "history": "履歴"
+  },
+  "Execute": {
+    "back_to_runs": "テストラン一覧に戻る",
+    "execute_run": "テストランを実行",
+    "save": "保存",
+    "saving": "保存中...",
+    "saved": "保存済み",
+    "no_cases": "このテストランにテストケースがありません。先にエディタでケースを追加してください。",
+    "progress": "進捗",
+    "keyboard_hint": "↑ ↓ ナビゲート · P = 合格 · F = 失敗 · R = 再テスト · S = スキップ · U = 未テスト",
+    "are_you_sure_leave": "ページを離れてもよろしいですか?"
   },
   "Comments": {
     "comments": "コメント",

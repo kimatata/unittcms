@@ -9,6 +9,7 @@ import {
   FlaskConical,
   UserRound,
   Settings,
+  Bot,
 } from 'lucide-react';
 import { usePathname, useRouter } from '@/src/i18n/routing';
 import useGetCurrentIds from '@/utils/useGetCurrentIds';
@@ -43,6 +44,8 @@ export default function Sidebar({ messages, locale }: Props) {
       router.push(`/projects/${projectId}/members`, { locale: locale });
     } else if (key === 'settings') {
       router.push(`/projects/${projectId}/settings`, { locale: locale });
+    } else if (key === 'automation') {
+      router.push(`/projects/${projectId}/automation`, { locale: locale });
     }
   };
 
@@ -58,6 +61,8 @@ export default function Sidebar({ messages, locale }: Props) {
         setCurrentKey('members');
       } else if (currentPath.includes('settings')) {
         setCurrentKey('settings');
+      } else if (currentPath.includes('automation')) {
+        setCurrentKey('automation');
       }
     };
 
@@ -89,6 +94,11 @@ export default function Sidebar({ messages, locale }: Props) {
       key: 'settings',
       text: messages.settings,
       startContent: <Settings strokeWidth={ICON_STROKE_WIDTH} size={ICON_SIZE} />,
+    },
+    {
+      key: 'automation',
+      text: messages.automation,
+      startContent: <Bot strokeWidth={ICON_STROKE_WIDTH} size={ICON_SIZE} />,
     },
   ];
 

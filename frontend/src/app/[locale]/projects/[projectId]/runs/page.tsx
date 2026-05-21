@@ -17,6 +17,7 @@ export default function Page({ params }: { params: { projectId: string; locale: 
     runList: t('run_list'),
     run: t('run'),
     editRun: t('edit_run'),
+    executeRun: t('execute_run'),
     renameRun: t('rename_run'),
     newRun: t('new_run'),
     deleteRun: t('delete_run'),

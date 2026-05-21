@@ -190,7 +190,45 @@
     "test_cases": "Casos de Teste",
     "test_runs": "Execuções de Teste",
     "members": "Membros",
-    "settings": "Configurações"
+    "settings": "Configurações",
+    "automation": "Automação"
+  },
+  "Automation": {
+    "automation": "Automação",
+    "gitlab_connection": "Conexão GitLab",
+    "gitlab_url": "URL do GitLab",
+    "gitlab_token": "Token de Acesso Pessoal",
+    "gitlab_namespace": "Namespace (opcional)",
+    "repo_config": "Configuração do Repositório",
+    "repo_name": "Nome do Repositório",
+    "automation_tool": "Ferramenta de Automação",
+    "automation_language": "Linguagem",
+    "save_config": "Salvar Configuração",
+    "generate_project": "Gerar Projeto de Automação",
+    "generating": "Gerando...",
+    "repo_url": "URL do Repositório",
+    "connected": "Conectado",
+    "not_connected": "Não conectado",
+    "tool_playwright": "Playwright",
+    "tool_cypress": "Cypress",
+    "tool_pytest": "pytest",
+    "lang_typescript": "TypeScript",
+    "lang_javascript": "JavaScript",
+    "lang_python": "Python",
+    "success_saved": "Configuração salva",
+    "success_generated": "Projeto de automação gerado com sucesso",
+    "error_saved": "Falha ao salvar configuração",
+    "error_generated": "Falha ao gerar projeto de automação",
+    "open_repo": "Abrir Repositório",
+    "gitlab_url_placeholder": "https://gitlab.com",
+    "gitlab_token_placeholder": "glpat-xxxxxxxxxxxxxxxxxxxx",
+    "repo_name_placeholder": "meus-testes-automatizados",
+    "provider": "Provedor Git",
+    "provider_gitlab": "GitLab",
+    "provider_github": "GitHub",
+    "instance_url": "URL da Instância",
+    "github_url_placeholder": "https://github.com",
+    "github_token_placeholder": "ghp_xxxxxxxxxxxxxxxxxxxx"
   },
   "Home": {
     "home": "Início",
@@ -322,7 +360,8 @@
     "update": "Atualizar",
     "please_enter": "Por favor, insira o nome da execução",
     "are_you_sure": "Tem certeza de que deseja excluir a execução?",
-    "delete": "Excluir"
+    "delete": "Excluir",
+    "execute_run": "Executar"
   },
   "Run": {
     "back_to_runs": "Voltar para as execuções de teste",
@@ -365,6 +404,17 @@
     "case_detail": "Detalhe do caso de teste",
     "comments": "Comentários",
     "history": "Histórico"
+  },
+  "Execute": {
+    "back_to_runs": "Voltar para as execuções",
+    "execute_run": "Executar",
+    "save": "Salvar",
+    "saving": "Salvando...",
+    "saved": "Salvo",
+    "no_cases": "Nenhum caso de teste nesta execução. Adicione casos no editor primeiro.",
+    "progress": "Progresso",
+    "keyboard_hint": "↑ ↓ navegar · P = Passou · F = Falhou · R = Retestar · S = Pulou · U = Não testado",
+    "are_you_sure_leave": "Tem certeza de que deseja sair da página?"
   },
   "Comments": {
     "comments": "Comentários",

@@ -190,7 +190,45 @@
     "test_cases": "Test Cases",
     "test_runs": "Test Runs",
     "members": "Members",
-    "settings": "Settings"
+    "settings": "Settings",
+    "automation": "Automation"
+  },
+  "Automation": {
+    "automation": "Automation",
+    "gitlab_connection": "GitLab Connection",
+    "gitlab_url": "GitLab URL",
+    "gitlab_token": "Personal Access Token",
+    "gitlab_namespace": "Namespace (optional)",
+    "repo_config": "Repository Configuration",
+    "repo_name": "Repository Name",
+    "automation_tool": "Automation Tool",
+    "automation_language": "Language",
+    "save_config": "Save Configuration",
+    "generate_project": "Generate Automation Project",
+    "generating": "Generating...",
+    "repo_url": "Repository URL",
+    "connected": "Connected",
+    "not_connected": "Not connected",
+    "tool_playwright": "Playwright",
+    "tool_cypress": "Cypress",
+    "tool_pytest": "pytest",
+    "lang_typescript": "TypeScript",
+    "lang_javascript": "JavaScript",
+    "lang_python": "Python",
+    "success_saved": "Configuration saved",
+    "success_generated": "Automation project generated successfully",
+    "error_saved": "Failed to save configuration",
+    "error_generated": "Failed to generate automation project",
+    "open_repo": "Open Repository",
+    "gitlab_url_placeholder": "https://gitlab.com",
+    "gitlab_token_placeholder": "glpat-xxxxxxxxxxxxxxxxxxxx",
+    "repo_name_placeholder": "my-automation-tests",
+    "provider": "Git Provider",
+    "provider_gitlab": "GitLab",
+    "provider_github": "GitHub",
+    "instance_url": "Instance URL",
+    "github_url_placeholder": "https://github.com",
+    "github_token_placeholder": "ghp_xxxxxxxxxxxxxxxxxxxx"
   },
   "Home": {
     "home": "Home",
@@ -322,7 +360,8 @@
     "update": "Update",
     "please_enter": "Please enter run name",
     "are_you_sure": "Are you sure you want to delete the run?",
-    "delete": "Delete"
+    "delete": "Delete",
+    "execute_run": "Execute Run"
   },
   "Run": {
     "back_to_runs": "Back to test runs",
@@ -365,6 +404,17 @@
     "case_detail": "Test case detail",
     "comments": "Comments",
     "history": "History"
+  },
+  "Execute": {
+    "back_to_runs": "Back to runs",
+    "execute_run": "Execute Run",
+    "save": "Save",
+    "saving": "Saving...",
+    "saved": "Saved",
+    "no_cases": "No test cases in this run. Add cases from the run editor first.",
+    "progress": "Progress",
+    "keyboard_hint": "↑ ↓ navigate · P = Pass · F = Fail · R = Retest · S = Skip · U = Untested",
+    "are_you_sure_leave": "Are you sure you want to leave the page?"
   },
   "Comments": {
     "comments": "Comments",

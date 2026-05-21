@@ -190,7 +190,45 @@
     "test_cases": "测试用例",
     "test_runs": "测试运行",
     "members": "成员",
-    "settings": "设置"
+    "settings": "设置",
+    "automation": "自动化"
+  },
+  "Automation": {
+    "automation": "自动化",
+    "gitlab_connection": "GitLab 连接",
+    "gitlab_url": "GitLab 地址",
+    "gitlab_token": "个人访问令牌",
+    "gitlab_namespace": "命名空间（可选）",
+    "repo_config": "仓库配置",
+    "repo_name": "仓库名称",
+    "automation_tool": "自动化工具",
+    "automation_language": "语言",
+    "save_config": "保存配置",
+    "generate_project": "生成自动化项目",
+    "generating": "生成中...",
+    "repo_url": "仓库地址",
+    "connected": "已连接",
+    "not_connected": "未连接",
+    "tool_playwright": "Playwright",
+    "tool_cypress": "Cypress",
+    "tool_pytest": "pytest",
+    "lang_typescript": "TypeScript",
+    "lang_javascript": "JavaScript",
+    "lang_python": "Python",
+    "success_saved": "配置已保存",
+    "success_generated": "自动化项目生成成功",
+    "error_saved": "保存配置失败",
+    "error_generated": "生成自动化项目失败",
+    "open_repo": "打开仓库",
+    "gitlab_url_placeholder": "https://gitlab.com",
+    "gitlab_token_placeholder": "glpat-xxxxxxxxxxxxxxxxxxxx",
+    "repo_name_placeholder": "my-automation-tests",
+    "provider": "Git 提供商",
+    "provider_gitlab": "GitLab",
+    "provider_github": "GitHub",
+    "instance_url": "实例地址",
+    "github_url_placeholder": "https://github.com",
+    "github_token_placeholder": "ghp_xxxxxxxxxxxxxxxxxxxx"
   },
   "Home": {
     "home": "首页",
@@ -322,7 +360,8 @@
     "update": "更新",
     "please_enter": "请输入运行名称",
     "are_you_sure": "您确定要删除该测试运行吗？",
-    "delete": "删除"
+    "delete": "删除",
+    "execute_run": "执行测试运行"
   },
   "Run": {
     "back_to_runs": "返回测试运行列表",
@@ -365,6 +404,17 @@
     "case_detail": "测试用例详情",
     "comments": "评论",
     "history": "历史"
+  },
+  "Execute": {
+    "back_to_runs": "返回测试运行列表",
+    "execute_run": "执行测试运行",
+    "save": "保存",
+    "saving": "保存中...",
+    "saved": "已保存",
+    "no_cases": "此测试运行中没有测试用例。请先在编辑器中添加用例。",
+    "progress": "进度",
+    "keyboard_hint": "↑ ↓ 导航 · P = 通过 · F = 失败 · R = 重测 · S = 跳过 · U = 未测试",
+    "are_you_sure_leave": "确定要离开此页面吗？"
   },
   "Comments": {
     "comments": "评论",

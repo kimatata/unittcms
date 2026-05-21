@@ -190,7 +190,45 @@
     "test_cases": "Testfälle",
     "test_runs": "Testläufe",
     "members": "Mitglieder",
-    "settings": "Einstellungen"
+    "settings": "Einstellungen",
+    "automation": "Automatisierung"
+  },
+  "Automation": {
+    "automation": "Automatisierung",
+    "gitlab_connection": "GitLab-Verbindung",
+    "gitlab_url": "GitLab-URL",
+    "gitlab_token": "Persönliches Zugriffstoken",
+    "gitlab_namespace": "Namensraum (optional)",
+    "repo_config": "Repository-Konfiguration",
+    "repo_name": "Repository-Name",
+    "automation_tool": "Automatisierungswerkzeug",
+    "automation_language": "Sprache",
+    "save_config": "Konfiguration speichern",
+    "generate_project": "Automatisierungsprojekt erstellen",
+    "generating": "Wird erstellt...",
+    "repo_url": "Repository-URL",
+    "connected": "Verbunden",
+    "not_connected": "Nicht verbunden",
+    "tool_playwright": "Playwright",
+    "tool_cypress": "Cypress",
+    "tool_pytest": "pytest",
+    "lang_typescript": "TypeScript",
+    "lang_javascript": "JavaScript",
+    "lang_python": "Python",
+    "success_saved": "Konfiguration gespeichert",
+    "success_generated": "Automatisierungsprojekt erfolgreich erstellt",
+    "error_saved": "Konfiguration konnte nicht gespeichert werden",
+    "error_generated": "Automatisierungsprojekt konnte nicht erstellt werden",
+    "open_repo": "Repository öffnen",
+    "gitlab_url_placeholder": "https://gitlab.com",
+    "gitlab_token_placeholder": "glpat-xxxxxxxxxxxxxxxxxxxx",
+    "repo_name_placeholder": "meine-automatisierungstests",
+    "provider": "Git-Anbieter",
+    "provider_gitlab": "GitLab",
+    "provider_github": "GitHub",
+    "instance_url": "Instanz-URL",
+    "github_url_placeholder": "https://github.com",
+    "github_token_placeholder": "ghp_xxxxxxxxxxxxxxxxxxxx"
   },
   "Home": {
     "home": "Startseite",
@@ -322,7 +360,8 @@
     "update": "Aktualisieren",
     "please_enter": "Bitte Name des Testlaufs eingeben",
     "are_you_sure": "Möchtest du den Testlauf wirklich löschen?",
-    "delete": "Löschen"
+    "delete": "Löschen",
+    "execute_run": "Testlauf ausführen"
   },
   "Run": {
     "back_to_runs": "Zurück zu Testläufen",
@@ -365,6 +404,17 @@
     "case_detail": "Testfall-Details",
     "comments": "Kommentare",
     "history": "Verlauf"
+  },
+  "Execute": {
+    "back_to_runs": "Zurück zu Testläufen",
+    "execute_run": "Testlauf ausführen",
+    "save": "Speichern",
+    "saving": "Wird gespeichert...",
+    "saved": "Gespeichert",
+    "no_cases": "Keine Testfälle in diesem Testlauf. Füge zuerst Testfälle im Editor hinzu.",
+    "progress": "Fortschritt",
+    "keyboard_hint": "↑ ↓ navigieren · P = Bestanden · F = Fehlgeschlagen · R = Wiederholen · S = Übersprungen · U = Nicht getestet",
+    "are_you_sure_leave": "Möchtest du die Seite wirklich verlassen?"
   },
   "Comments": {
     "comments": "Kommentare",

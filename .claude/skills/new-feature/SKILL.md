@@ -40,8 +40,10 @@ export default function (sequelize) {
 ```js
 import newRoute from './routes/<resource>/<verb>.js';
 // ...
-app.use('/api/<resource>', newRoute(sequelize));
+app.use('/<resource>', newRoute(sequelize));
 ```
+
+> `entrypoint.js` proxies all `/api/*` traffic to Express — do NOT add `/api` here or the route becomes `/api/api/<resource>`.
 
 **Auth middleware options:**
 - `verifySignedIn` — any logged-in user

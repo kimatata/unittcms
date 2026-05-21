@@ -191,6 +191,16 @@ app.use('/comments', commentsDeleteRoute(sequelize));
 import homeIndexRoute from './routes/home/index.js';
 app.use('/home', homeIndexRoute(sequelize));
 
+// "/automation-configs"
+import automationConfigsShowRoute from './routes/automationConfigs/show.js';
+import automationConfigsNewRoute from './routes/automationConfigs/new.js';
+import automationConfigsEditRoute from './routes/automationConfigs/edit.js';
+import automationConfigsGenerateRoute from './routes/automationConfigs/generate.js';
+app.use('/automation-configs', automationConfigsShowRoute(sequelize));
+app.use('/automation-configs', automationConfigsNewRoute(sequelize));
+app.use('/automation-configs', automationConfigsEditRoute(sequelize));
+app.use('/automation-configs', automationConfigsGenerateRoute(sequelize));
+
 if (!process.env.SECRET_KEY) {
   console.log(
     "[Warning]: Default key is used for token generation. Please set the environment variable 'SECRET_KEY'`."

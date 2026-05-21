@@ -1,7 +1,7 @@
 import { useTranslations } from 'next-intl';
-import RunEditor from './RunEditor';
+import RunEditor from '../RunEditor';
 import ResizablePanes from '@/components/ResizablePane';
-import { RunContextProvider } from './RunContext';
+import { RunContextProvider } from '../RunContext';
 import { RunMessages } from '@/types/run';
 import { PriorityMessages } from '@/types/priority';
 import { RunStatusMessages, TestRunCaseStatusMessages } from '@/types/status';

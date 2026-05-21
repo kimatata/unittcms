@@ -35,6 +35,7 @@ type RunsMessages = {
   run: string;
   newRun: string;
   editRun: string;
+  executeRun: string;
   renameRun: string;
   deleteRun: string;
   id: string;
@@ -51,6 +52,18 @@ type RunsMessages = {
   noRunsFound: string;
   areYouSure: string;
   delete: string;
+};
+
+type ExecuteMessages = {
+  backToRuns: string;
+  executeRun: string;
+  save: string;
+  saving: string;
+  saved: string;
+  noCases: string;
+  progress: string;
+  keyboardHint: string;
+  areYouSureLeave: string;
 };
 
 type RunMessages = {
@@ -117,4 +130,5 @@ export type {
   RunsMessages,
   RunMessages,
   RunDetailMessages,
+  ExecuteMessages,
 };

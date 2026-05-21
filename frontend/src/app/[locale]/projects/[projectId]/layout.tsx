@@ -17,6 +17,7 @@ export default function SidebarLayout({
     testRuns: t('test_runs'),
     members: t('members'),
     settings: t('settings'),
+    automation: t('automation'),
   };
 
   return (
