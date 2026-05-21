@@ -61,6 +61,7 @@ Control files live in `frontend/utils/<resource>Control.ts`.
 import Config from '@/config/config';
 import { logError } from '@/utils/errorHandler';
 
+// Config.apiServer already resolves to "/api" — do NOT add "/api" again
 async function updateThing(jwt: string, thingId: number, name: string) {
   try {
     const response = await fetch(`${Config.apiServer}/<resource>/${thingId}`, {
