@@ -228,7 +228,21 @@
     "provider_github": "GitHub",
     "instance_url": "Instanz-URL",
     "github_url_placeholder": "https://github.com",
-    "github_token_placeholder": "ghp_xxxxxxxxxxxxxxxxxxxx"
+    "github_token_placeholder": "ghp_xxxxxxxxxxxxxxxxxxxx",
+    "ci_section": "CI / Testläufe",
+    "run_tests": "Tests ausführen",
+    "triggering": "Wird ausgelöst...",
+    "ci_status": "Letzter Lauf",
+    "run_status_queued": "In Warteschlange",
+    "run_status_in_progress": "Läuft",
+    "run_status_success": "Bestanden",
+    "run_status_failure": "Fehlgeschlagen",
+    "run_status_cancelled": "Abgebrochen",
+    "run_status_none": "Noch keine Läufe",
+    "view_run": "Lauf anzeigen",
+    "success_triggered": "Testlauf erfolgreich ausgelöst",
+    "error_triggered": "Testlauf konnte nicht ausgelöst werden",
+    "refresh_status": "Status aktualisieren"
   },
   "Home": {
     "home": "Startseite",

@@ -228,7 +228,21 @@
     "provider_github": "GitHub",
     "instance_url": "实例地址",
     "github_url_placeholder": "https://github.com",
-    "github_token_placeholder": "ghp_xxxxxxxxxxxxxxxxxxxx"
+    "github_token_placeholder": "ghp_xxxxxxxxxxxxxxxxxxxx",
+    "ci_section": "CI / 测试运行",
+    "run_tests": "运行测试",
+    "triggering": "触发中...",
+    "ci_status": "最近运行",
+    "run_status_queued": "排队中",
+    "run_status_in_progress": "运行中",
+    "run_status_success": "通过",
+    "run_status_failure": "失败",
+    "run_status_cancelled": "已取消",
+    "run_status_none": "暂无运行记录",
+    "view_run": "查看运行",
+    "success_triggered": "测试运行已成功触发",
+    "error_triggered": "触发测试运行失败",
+    "refresh_status": "刷新状态"
   },
   "Home": {
     "home": "首页",

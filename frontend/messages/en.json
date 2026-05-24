@@ -228,7 +228,21 @@
     "provider_github": "GitHub",
     "instance_url": "Instance URL",
     "github_url_placeholder": "https://github.com",
-    "github_token_placeholder": "ghp_xxxxxxxxxxxxxxxxxxxx"
+    "github_token_placeholder": "ghp_xxxxxxxxxxxxxxxxxxxx",
+    "ci_section": "CI / Test Runs",
+    "run_tests": "Run Tests",
+    "triggering": "Triggering...",
+    "ci_status": "Last Run",
+    "run_status_queued": "Queued",
+    "run_status_in_progress": "Running",
+    "run_status_success": "Passing",
+    "run_status_failure": "Failing",
+    "run_status_cancelled": "Cancelled",
+    "run_status_none": "No runs yet",
+    "view_run": "View Run",
+    "success_triggered": "Test run triggered successfully",
+    "error_triggered": "Failed to trigger test run",
+    "refresh_status": "Refresh Status"
   },
   "Home": {
     "home": "Home",

@@ -103,4 +103,18 @@ export type AutomationMessages = {
   instanceUrl: string;
   githubUrlPlaceholder: string;
   githubTokenPlaceholder: string;
+  ciSection: string;
+  runTests: string;
+  triggering: string;
+  ciStatus: string;
+  runStatusQueued: string;
+  runStatusInProgress: string;
+  runStatusSuccess: string;
+  runStatusFailure: string;
+  runStatusCancelled: string;
+  runStatusNone: string;
+  viewRun: string;
+  successTriggered: string;
+  errorTriggered: string;
+  refreshStatus: string;
 };

@@ -228,7 +228,21 @@
     "provider_github": "GitHub",
     "instance_url": "URL da Instância",
     "github_url_placeholder": "https://github.com",
-    "github_token_placeholder": "ghp_xxxxxxxxxxxxxxxxxxxx"
+    "github_token_placeholder": "ghp_xxxxxxxxxxxxxxxxxxxx",
+    "ci_section": "CI / Execuções de Teste",
+    "run_tests": "Executar Testes",
+    "triggering": "Disparando...",
+    "ci_status": "Última Execução",
+    "run_status_queued": "Na Fila",
+    "run_status_in_progress": "Executando",
+    "run_status_success": "Aprovado",
+    "run_status_failure": "Falhou",
+    "run_status_cancelled": "Cancelado",
+    "run_status_none": "Nenhuma execução ainda",
+    "view_run": "Ver Execução",
+    "success_triggered": "Execução de teste disparada com sucesso",
+    "error_triggered": "Falha ao disparar execução de teste",
+    "refresh_status": "Atualizar Status"
   },
   "Home": {
     "home": "Início",

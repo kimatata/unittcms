@@ -228,7 +228,21 @@
     "provider_github": "GitHub",
     "instance_url": "インスタンス URL",
     "github_url_placeholder": "https://github.com",
-    "github_token_placeholder": "ghp_xxxxxxxxxxxxxxxxxxxx"
+    "github_token_placeholder": "ghp_xxxxxxxxxxxxxxxxxxxx",
+    "ci_section": "CI / テスト実行",
+    "run_tests": "テストを実行",
+    "triggering": "起動中...",
+    "ci_status": "最終実行",
+    "run_status_queued": "キュー中",
+    "run_status_in_progress": "実行中",
+    "run_status_success": "成功",
+    "run_status_failure": "失敗",
+    "run_status_cancelled": "キャンセル済み",
+    "run_status_none": "実行なし",
+    "view_run": "実行を表示",
+    "success_triggered": "テスト実行が正常に開始されました",
+    "error_triggered": "テスト実行の開始に失敗しました",
+    "refresh_status": "ステータスを更新"
   },
   "Home": {
     "home": "ホーム",

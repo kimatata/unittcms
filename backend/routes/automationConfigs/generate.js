@@ -186,8 +186,42 @@ print(f"UnitTCMS sync: {data['updated']} cases updated (commit {commit_sha[:7]})
 `;
 }
 
-function buildTemplateFiles(tool, language, projectName, folderTree) {
+function buildCIWorkflow(tool, language, provider) {
+  if (provider === 'github') {
+    const syncStep =
+      tool === 'pytest'
+        ? `      - name: Sync status to UnitTCMS\n        if: always()\n        env:\n          UNITTCMS_URL: \${{ secrets.UNITTCMS_URL }}\n          UNITTCMS_TOKEN: \${{ secrets.UNITTCMS_TOKEN }}\n          UNITTCMS_PROJECT_ID: \${{ secrets.UNITTCMS_PROJECT_ID }}\n        run: python scripts/unittcms_sync.py`
+        : `      - name: Sync status to UnitTCMS\n        if: always()\n        env:\n          UNITTCMS_URL: \${{ secrets.UNITTCMS_URL }}\n          UNITTCMS_TOKEN: \${{ secrets.UNITTCMS_TOKEN }}\n          UNITTCMS_PROJECT_ID: \${{ secrets.UNITTCMS_PROJECT_ID }}\n        run: npm run sync`;
+
+    if (tool === 'pytest') {
+      return {
+        path: '.github/workflows/tests.yml',
+        content: `name: Tests\n\non:\n  push:\n    branches: [main]\n  pull_request:\n  workflow_dispatch:\n\njobs:\n  test:\n    runs-on: ubuntu-latest\n    steps:\n      - uses: actions/checkout@v4\n      - uses: actions/setup-python@v5\n        with:\n          python-version: '3.11'\n      - run: pip install -r requirements.txt\n      - run: playwright install --with-deps chromium\n      - run: pytest\n${syncStep}\n`,
+      };
+    }
+    return {
+      path: '.github/workflows/tests.yml',
+      content: `name: Tests\n\non:\n  push:\n    branches: [main]\n  pull_request:\n  workflow_dispatch:\n\njobs:\n  test:\n    runs-on: ubuntu-latest\n    steps:\n      - uses: actions/checkout@v4\n      - uses: actions/setup-node@v4\n        with:\n          node-version: '20'\n          cache: 'npm'\n      - run: npm ci\n      - run: npx playwright install --with-deps chromium\n      - run: npm test\n${syncStep}\n`,
+    };
+  }
+
+  // GitLab CI
+  const syncScript = tool === 'pytest' ? 'python scripts/unittcms_sync.py' : 'npm run sync';
+  const setupScript =
+    tool === 'pytest'
+      ? 'pip install -r requirements.txt && playwright install --with-deps chromium'
+      : 'npm ci && npx playwright install --with-deps chromium';
+  const testScript = tool === 'pytest' ? 'pytest' : 'npm test';
+  return {
+    path: '.gitlab-ci.yml',
+    content: `stages:\n  - test\n\nvariables:\n  UNITTCMS_URL: \"\"\n  UNITTCMS_TOKEN: \"\"\n  UNITTCMS_PROJECT_ID: \"\"\n\ntest:\n  stage: test\n  image: ${tool === 'pytest' ? 'python:3.11' : 'mcr.microsoft.com/playwright:v1.44.0-jammy'}\n  script:\n    - ${setupScript}\n    - ${testScript}\n  after_script:\n    - ${syncScript}\n`,
+  };
+}
+
+function buildTemplateFiles(tool, language, projectName, folderTree, provider) {
   const files = [];
+  const ciFile = buildCIWorkflow(tool, language, provider);
+  if (ciFile) files.push(ciFile);
 
   if (tool === 'playwright' && language === 'typescript') {
     files.push({
@@ -439,7 +473,7 @@ export default function (sequelize) {
       const folders = await Folder.findAll({ where: { projectId }, raw: true });
       const cases = await Case.findAll({ where: { folderId: folders.map((f) => f.id) }, raw: true });
       const folderTree = buildFolderTree(folders, cases);
-      const files = buildTemplateFiles(automationTool, automationLanguage, projectName, folderTree);
+      const files = buildTemplateFiles(automationTool, automationLanguage, projectName, folderTree, provider);
 
       const isGitlab = !provider || provider === 'gitlab';
       const baseUrl = gitlabUrl || (isGitlab ? 'https://gitlab.com' : 'https://github.com');

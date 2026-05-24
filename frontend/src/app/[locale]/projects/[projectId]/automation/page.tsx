@@ -40,6 +40,20 @@ export default function Page({ params: { projectId } }: { params: { projectId: s
     instanceUrl: t('instance_url'),
     githubUrlPlaceholder: t('github_url_placeholder'),
     githubTokenPlaceholder: t('github_token_placeholder'),
+    ciSection: t('ci_section'),
+    runTests: t('run_tests'),
+    triggering: t('triggering'),
+    ciStatus: t('ci_status'),
+    runStatusQueued: t('run_status_queued'),
+    runStatusInProgress: t('run_status_in_progress'),
+    runStatusSuccess: t('run_status_success'),
+    runStatusFailure: t('run_status_failure'),
+    runStatusCancelled: t('run_status_cancelled'),
+    runStatusNone: t('run_status_none'),
+    viewRun: t('view_run'),
+    successTriggered: t('success_triggered'),
+    errorTriggered: t('error_triggered'),
+    refreshStatus: t('refresh_status'),
   };
 
   return <AutomationPage projectId={projectId} messages={messages} />;
