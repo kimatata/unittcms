@@ -91,6 +91,14 @@ export type RunStatus = {
   commitSha: string | null;
 };
 
+export async function repairAutomationProject(jwt: string, id: number): Promise<void> {
+  const res = await fetch(`${Config.apiServer}/automation-configs/${id}/repair`, {
+    method: 'POST',
+    headers: { Authorization: `Bearer ${jwt}` },
+  });
+  if (!res.ok) throw new Error(await res.text());
+}
+
 export async function fetchRunStatus(jwt: string, id: number): Promise<RunStatus> {
   const res = await fetch(`${Config.apiServer}/automation-configs/${id}/run-status`, {
     headers: { Authorization: `Bearer ${jwt}` },

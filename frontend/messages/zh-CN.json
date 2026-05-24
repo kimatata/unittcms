@@ -242,7 +242,11 @@
     "view_run": "查看运行",
     "success_triggered": "测试运行已成功触发",
     "error_triggered": "触发测试运行失败",
-    "refresh_status": "刷新状态"
+    "refresh_status": "刷新状态",
+    "repair_core_files": "修复核心文件",
+    "repairing": "修复中...",
+    "success_repaired": "核心文件已修复并推送到仓库",
+    "error_repaired": "修复核心文件失败"
   },
   "Home": {
     "home": "首页",

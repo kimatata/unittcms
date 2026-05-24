@@ -242,7 +242,11 @@
     "view_run": "Ver Execução",
     "success_triggered": "Execução de teste disparada com sucesso",
     "error_triggered": "Falha ao disparar execução de teste",
-    "refresh_status": "Atualizar Status"
+    "refresh_status": "Atualizar Status",
+    "repair_core_files": "Reparar Arquivos Principais",
+    "repairing": "Reparando...",
+    "success_repaired": "Arquivos principais reparados e enviados ao repositório",
+    "error_repaired": "Falha ao reparar arquivos principais"
   },
   "Home": {
     "home": "Início",

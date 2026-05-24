@@ -2,7 +2,7 @@
 import { useState, useEffect, useContext, useCallback } from 'react';
 import { Button, Input, Select, SelectItem, Chip, Link, Divider } from '@heroui/react';
 import { addToast } from '@heroui/react';
-import { ExternalLink, RefreshCw, Play } from 'lucide-react';
+import { ExternalLink, RefreshCw, Play, Wrench } from 'lucide-react';
 import { TokenContext } from '@/utils/TokenProvider';
 import { AutomationConfigType, AutomationMessages } from '@/types/project';
 import {
@@ -11,6 +11,7 @@ import {
   updateAutomationConfig,
   generateAutomationProject,
   triggerAutomationRun,
+  repairAutomationProject,
   fetchRunStatus,
   RunStatus,
 } from '@/utils/automationConfigControl';
@@ -53,6 +54,7 @@ export default function AutomationPage({ projectId, messages }: Props) {
   const [isSaving, setIsSaving] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
   const [isTriggering, setIsTriggering] = useState(false);
+  const [isRepairing, setIsRepairing] = useState(false);
   const [runStatus, setRunStatus] = useState<RunStatus | null>(null);
   const [isFetchingStatus, setIsFetchingStatus] = useState(false);
 
@@ -170,6 +172,20 @@ export default function AutomationPage({ projectId, messages }: Props) {
       addToast({ title: messages.errorTriggered, color: 'danger' });
     } finally {
       setIsTriggering(false);
+    }
+  };
+
+  const handleRepair = async () => {
+    if (!config) return;
+    setIsRepairing(true);
+    try {
+      await repairAutomationProject(context.token.access_token, config.id);
+      addToast({ title: messages.successRepaired, color: 'success' });
+    } catch (error) {
+      logError('AutomationPage repair', error);
+      addToast({ title: messages.errorRepaired, color: 'danger' });
+    } finally {
+      setIsRepairing(false);
     }
   };
 
@@ -376,6 +392,17 @@ export default function AutomationPage({ projectId, messages }: Props) {
                 onPress={() => config && loadRunStatus(config)}
               >
                 {messages.refreshStatus}
+              </Button>
+              <Button
+                size="sm"
+                variant="flat"
+                color="warning"
+                startContent={!isRepairing ? <Wrench size={14} /> : undefined}
+                isLoading={isRepairing}
+                isDisabled={!config}
+                onPress={handleRepair}
+              >
+                {isRepairing ? messages.repairing : messages.repairCoreFiles}
               </Button>
             </div>
           </div>

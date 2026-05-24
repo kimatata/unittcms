@@ -3,13 +3,7 @@ const router = express.Router();
 import { DataTypes } from 'sequelize';
 import defineAutomationConfig from '../../models/automationConfigs.js';
 import authMiddleware from '../../middleware/auth.js';
-
-function slugify(name) {
-  return name
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/^-|-$/g, '');
-}
+import { repairConfig } from './repair.js';
 
 async function ghRequest(method, url, token, body) {
   const res = await fetch(url, {
@@ -28,12 +22,22 @@ async function ghRequest(method, url, token, body) {
   return text ? JSON.parse(text) : null;
 }
 
+async function dispatchWorkflow(token, owner, repoSlug) {
+  await ghRequest(
+    'POST',
+    `https://api.github.com/repos/${owner}/${repoSlug}/actions/workflows/tests.yml/dispatches`,
+    token,
+    { ref: 'main' }
+  );
+}
+
 export default function (sequelize) {
   const { verifySignedIn } = authMiddleware(sequelize);
   const AutomationConfig = defineAutomationConfig(sequelize, DataTypes);
 
   // POST /api/automation-configs/:id/trigger
   // Dispatches the tests.yml workflow via GitHub workflow_dispatch.
+  // If the workflow file is missing (404), auto-repairs core files first then retries.
   router.post('/:id/trigger', verifySignedIn, async (req, res) => {
     try {
       const config = await AutomationConfig.findByPk(req.params.id);
@@ -45,14 +49,22 @@ export default function (sequelize) {
       const { gitlabToken: token } = config;
       const [owner, repoSlug] = config.repoUrl.replace('https://github.com/', '').split('/');
 
-      await ghRequest(
-        'POST',
-        `https://api.github.com/repos/${owner}/${repoSlug}/actions/workflows/tests.yml/dispatches`,
-        token,
-        { ref: 'main' }
-      );
+      try {
+        await dispatchWorkflow(token, owner, repoSlug);
+      } catch (err) {
+        // Workflow file missing — push core files and retry once
+        if (err.message.includes('404')) {
+          console.log(`[trigger] workflow not found, auto-repairing core files for ${owner}/${repoSlug}`);
+          await repairConfig(config);
+          // GitHub needs a moment to register the new workflow file
+          await new Promise((resolve) => setTimeout(resolve, 3000));
+          await dispatchWorkflow(token, owner, repoSlug);
+          return res.json({ triggered: true, autoRepaired: true });
+        }
+        throw err;
+      }
 
-      res.json({ triggered: true });
+      res.json({ triggered: true, autoRepaired: false });
     } catch (error) {
       console.error(error);
       res.status(500).send(error.message || 'Internal Server Error');

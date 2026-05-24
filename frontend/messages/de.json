@@ -242,7 +242,11 @@
     "view_run": "Lauf anzeigen",
     "success_triggered": "Testlauf erfolgreich ausgelöst",
     "error_triggered": "Testlauf konnte nicht ausgelöst werden",
-    "refresh_status": "Status aktualisieren"
+    "refresh_status": "Status aktualisieren",
+    "repair_core_files": "Kerndateien reparieren",
+    "repairing": "Wird repariert...",
+    "success_repaired": "Kerndateien repariert und ins Repository gepusht",
+    "error_repaired": "Kerndateien konnten nicht repariert werden"
   },
   "Home": {
     "home": "Startseite",

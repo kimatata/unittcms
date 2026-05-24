@@ -199,6 +199,7 @@ import automationConfigsGenerateRoute from './routes/automationConfigs/generate.
 import automationConfigsSyncStatusRoute from './routes/automationConfigs/syncStatus.js';
 import automationConfigsTriggerRoute from './routes/automationConfigs/trigger.js';
 import automationConfigsRunStatusRoute from './routes/automationConfigs/runStatus.js';
+import automationConfigsRepairRoute from './routes/automationConfigs/repair.js';
 app.use('/automation-configs', automationConfigsShowRoute(sequelize));
 app.use('/automation-configs', automationConfigsNewRoute(sequelize));
 app.use('/automation-configs', automationConfigsEditRoute(sequelize));
@@ -206,6 +207,7 @@ app.use('/automation-configs', automationConfigsGenerateRoute(sequelize));
 app.use('/automation-configs', automationConfigsSyncStatusRoute(sequelize));
 app.use('/automation-configs', automationConfigsTriggerRoute(sequelize));
 app.use('/automation-configs', automationConfigsRunStatusRoute(sequelize));
+app.use('/automation-configs', automationConfigsRepairRoute(sequelize));
 
 if (!process.env.SECRET_KEY) {
   console.log(

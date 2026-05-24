@@ -242,7 +242,11 @@
     "view_run": "実行を表示",
     "success_triggered": "テスト実行が正常に開始されました",
     "error_triggered": "テスト実行の開始に失敗しました",
-    "refresh_status": "ステータスを更新"
+    "refresh_status": "ステータスを更新",
+    "repair_core_files": "コアファイルを修復",
+    "repairing": "修復中...",
+    "success_repaired": "コアファイルを修復してリポジトリにプッシュしました",
+    "error_repaired": "コアファイルの修復に失敗しました"
   },
   "Home": {
     "home": "ホーム",

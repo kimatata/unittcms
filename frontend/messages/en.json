@@ -242,7 +242,11 @@
     "view_run": "View Run",
     "success_triggered": "Test run triggered successfully",
     "error_triggered": "Failed to trigger test run",
-    "refresh_status": "Refresh Status"
+    "refresh_status": "Refresh Status",
+    "repair_core_files": "Repair Core Files",
+    "repairing": "Repairing...",
+    "success_repaired": "Core files repaired and pushed to repo",
+    "error_repaired": "Failed to repair core files"
   },
   "Home": {
     "home": "Home",

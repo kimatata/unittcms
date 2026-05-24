@@ -54,6 +54,10 @@ export default function Page({ params: { projectId } }: { params: { projectId: s
     successTriggered: t('success_triggered'),
     errorTriggered: t('error_triggered'),
     refreshStatus: t('refresh_status'),
+    repairCoreFiles: t('repair_core_files'),
+    repairing: t('repairing'),
+    successRepaired: t('success_repaired'),
+    errorRepaired: t('error_repaired'),
   };
 
   return <AutomationPage projectId={projectId} messages={messages} />;

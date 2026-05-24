@@ -117,4 +117,8 @@ export type AutomationMessages = {
   successTriggered: string;
   errorTriggered: string;
   refreshStatus: string;
+  repairCoreFiles: string;
+  repairing: string;
+  successRepaired: string;
+  errorRepaired: string;
 };
