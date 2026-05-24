@@ -10,6 +10,7 @@ import {
   UserRound,
   Settings,
   Bot,
+  Plug,
 } from 'lucide-react';
 import { usePathname, useRouter } from '@/src/i18n/routing';
 import useGetCurrentIds from '@/utils/useGetCurrentIds';
@@ -46,6 +47,8 @@ export default function Sidebar({ messages, locale }: Props) {
       router.push(`/projects/${projectId}/settings`, { locale: locale });
     } else if (key === 'automation') {
       router.push(`/projects/${projectId}/automation`, { locale: locale });
+    } else if (key === 'integrations') {
+      router.push(`/projects/${projectId}/integrations`, { locale: locale });
     }
   };
 
@@ -63,6 +66,8 @@ export default function Sidebar({ messages, locale }: Props) {
         setCurrentKey('settings');
       } else if (currentPath.includes('automation')) {
         setCurrentKey('automation');
+      } else if (currentPath.includes('integrations')) {
+        setCurrentKey('integrations');
       }
     };
 
@@ -99,6 +104,11 @@ export default function Sidebar({ messages, locale }: Props) {
       key: 'automation',
       text: messages.automation,
       startContent: <Bot strokeWidth={ICON_STROKE_WIDTH} size={ICON_SIZE} />,
+    },
+    {
+      key: 'integrations',
+      text: messages.integrations,
+      startContent: <Plug strokeWidth={ICON_STROKE_WIDTH} size={ICON_SIZE} />,
     },
   ];
 

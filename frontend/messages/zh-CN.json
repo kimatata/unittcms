@@ -191,7 +191,8 @@
     "test_runs": "测试运行",
     "members": "成员",
     "settings": "设置",
-    "automation": "自动化"
+    "automation": "自动化",
+    "integrations": "集成"
   },
   "Automation": {
     "automation": "自动化",
@@ -246,7 +247,44 @@
     "repair_core_files": "修复核心文件",
     "repairing": "修复中...",
     "success_repaired": "核心文件已修复并推送到仓库",
-    "error_repaired": "修复核心文件失败"
+    "error_repaired": "修复核心文件失败",
+    "config_section": "配置",
+    "hide_config": "隐藏配置",
+    "show_config": "显示配置",
+    "errors_section": "测试失败",
+    "fetch_errors": "获取错误",
+    "fetching_errors": "获取中...",
+    "no_errors_found": "未检测到错误。运行失败后点击获取错误。",
+    "fix_with_ai": "用 AI 修复",
+    "fixing": "修复中...",
+    "fix_success": "修复已应用并提交",
+    "fix_error": "AI 修复应用失败",
+    "view_commit": "查看提交",
+    "auto_fix_running": "自动修复进行中 — AI 正在自动修复失败",
+    "no_anthropic_key": "请在集成标签中添加 Anthropic API 密钥以启用 AI 修复"
+  },
+  "Integrations": {
+    "integrations": "集成",
+    "ai_providers": "AI 提供商",
+    "anthropic": "Anthropic",
+    "anthropic_description": "用于使用 Claude AI 自动修复自动化失败",
+    "api_key": "API 密钥",
+    "api_key_placeholder": "sk-ant-api03-...",
+    "save_key": "保存密钥",
+    "saving": "保存中...",
+    "delete_key": "删除",
+    "no_integrations": "未配置集成",
+    "success_saved": "集成保存成功",
+    "error_saved": "集成保存失败",
+    "success_deleted": "集成已删除",
+    "error_deleted": "集成删除失败",
+    "connected": "已连接",
+    "not_configured": "未配置",
+    "close": "关闭",
+    "delete": "删除",
+    "are_you_sure": "确定要删除此集成吗？",
+    "edit": "编辑",
+    "cancel": "取消"
   },
   "Home": {
     "home": "首页",
@@ -497,6 +535,11 @@
     "tag_error_max_length": "标签名称不能超过 20 个字符。",
     "tag_error_create": "标签创建失败，请重试。",
     "tag_error_update": "标签更新失败，请重试。",
-    "tag_error_delete": "标签删除失败，请重试。"
+    "tag_error_delete": "标签删除失败，请重试。",
+    "automation_settings": "自动化设置",
+    "auto_fix_enabled": "失败时自动修复",
+    "auto_fix_description": "当测试运行失败时自动应用 AI 修复（需要 Anthropic API 密钥）",
+    "auto_fix_updated": "自动修复设置已更新",
+    "auto_fix_update_error": "更新自动修复设置失败"
   }
 }

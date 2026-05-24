@@ -49,6 +49,11 @@ function defineAutomationConfig(sequelize, DataTypes) {
       allowNull: false,
       defaultValue: 'gitlab',
     },
+    autoFixEnabled: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+      defaultValue: false,
+    },
   });
 
   AutomationConfig.associate = (models) => {

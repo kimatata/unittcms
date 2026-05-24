@@ -4,6 +4,7 @@ import SettingsPage from './SettingsPage';
 import { LocaleCodeType } from '@/types/locale';
 import { ProjectDialogMessages } from '@/types/project';
 import { SettingsMessages } from '@/types/settings';
+import { AutomationMessages } from '@/types/project';
 
 export async function generateMetadata({ params: { locale } }: { params: { locale: LocaleCodeType } }) {
   const t = await getTranslations({ locale, namespace: 'Settings' });
@@ -43,6 +44,11 @@ export default function Page({ params }: { params: { projectId: string; locale: 
     tagErrorCreate: t('tag_error_create'),
     tagErrorUpdate: t('tag_error_update'),
     tagErrorDelete: t('tag_error_delete'),
+    automationSettings: t('automation_settings'),
+    autoFixEnabled: t('auto_fix_enabled'),
+    autoFixDescription: t('auto_fix_description'),
+    autoFixUpdated: t('auto_fix_updated'),
+    autoFixUpdateError: t('auto_fix_update_error'),
   };
 
   const pt = useTranslations('ProjectDialog');

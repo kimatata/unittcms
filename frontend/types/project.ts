@@ -49,6 +49,7 @@ export type ProjectMessages = {
   members: string;
   settings: string;
   automation: string;
+  integrations: string;
 };
 
 export type AutomationConfigType = {
@@ -63,6 +64,7 @@ export type AutomationConfigType = {
   repoId: number | null;
   automationTool: string;
   automationLanguage: string;
+  autoFixEnabled: boolean;
   createdAt: string;
   updatedAt: string;
 };
@@ -121,4 +123,18 @@ export type AutomationMessages = {
   repairing: string;
   successRepaired: string;
   errorRepaired: string;
+  configSection: string;
+  hideConfig: string;
+  showConfig: string;
+  errorsSection: string;
+  fetchErrors: string;
+  fetchingErrors: string;
+  noErrorsFound: string;
+  fixWithAi: string;
+  fixing: string;
+  fixSuccess: string;
+  fixError: string;
+  viewCommit: string;
+  autoFixRunning: string;
+  noAnthropicKey: string;
 };

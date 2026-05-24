@@ -191,7 +191,8 @@
     "test_runs": "Execuções de Teste",
     "members": "Membros",
     "settings": "Configurações",
-    "automation": "Automação"
+    "automation": "Automação",
+    "integrations": "Integrações"
   },
   "Automation": {
     "automation": "Automação",
@@ -246,7 +247,44 @@
     "repair_core_files": "Reparar Arquivos Principais",
     "repairing": "Reparando...",
     "success_repaired": "Arquivos principais reparados e enviados ao repositório",
-    "error_repaired": "Falha ao reparar arquivos principais"
+    "error_repaired": "Falha ao reparar arquivos principais",
+    "config_section": "Configuração",
+    "hide_config": "Ocultar Configuração",
+    "show_config": "Mostrar Configuração",
+    "errors_section": "Falhas de Teste",
+    "fetch_errors": "Buscar Erros",
+    "fetching_errors": "Buscando...",
+    "no_errors_found": "Nenhum erro detectado. Clique em Buscar Erros após uma execução com falha.",
+    "fix_with_ai": "Corrigir com IA",
+    "fixing": "Corrigindo...",
+    "fix_success": "Correção aplicada e commitada",
+    "fix_error": "Falha ao aplicar correção da IA",
+    "view_commit": "Ver Commit",
+    "auto_fix_running": "Correção automática em andamento — IA está corrigindo falhas automaticamente",
+    "no_anthropic_key": "Adicione uma chave de API Anthropic na aba Integrações para habilitar correções com IA"
+  },
+  "Integrations": {
+    "integrations": "Integrações",
+    "ai_providers": "Provedores de IA",
+    "anthropic": "Anthropic",
+    "anthropic_description": "Usado para corrigir automaticamente falhas de automação com Claude IA",
+    "api_key": "Chave de API",
+    "api_key_placeholder": "sk-ant-api03-...",
+    "save_key": "Salvar Chave",
+    "saving": "Salvando...",
+    "delete_key": "Excluir",
+    "no_integrations": "Nenhuma integração configurada",
+    "success_saved": "Integração salva com sucesso",
+    "error_saved": "Falha ao salvar integração",
+    "success_deleted": "Integração excluída",
+    "error_deleted": "Falha ao excluir integração",
+    "connected": "Conectado",
+    "not_configured": "Não configurado",
+    "close": "Fechar",
+    "delete": "Excluir",
+    "are_you_sure": "Tem certeza que deseja excluir esta integração?",
+    "edit": "Editar",
+    "cancel": "Cancelar"
   },
   "Home": {
     "home": "Início",
@@ -497,6 +535,11 @@
     "tag_error_max_length": "O nome da tag não pode exceder 20 caracteres.",
     "tag_error_create": "Falha ao criar tag. Por favor, tente novamente.",
     "tag_error_update": "Falha ao atualizar tag. Por favor, tente novamente.",
-    "tag_error_delete": "Falha ao excluir tag. Por favor, tente novamente."
+    "tag_error_delete": "Falha ao excluir tag. Por favor, tente novamente.",
+    "automation_settings": "Configurações de Automação",
+    "auto_fix_enabled": "Correção automática em caso de falha",
+    "auto_fix_description": "Aplicar automaticamente correções de IA quando execuções de teste falharem (requer chave de API Anthropic)",
+    "auto_fix_updated": "Configuração de correção automática atualizada",
+    "auto_fix_update_error": "Falha ao atualizar configuração de correção automática"
   }
 }

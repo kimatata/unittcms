@@ -18,6 +18,7 @@ export default function SidebarLayout({
     members: t('members'),
     settings: t('settings'),
     automation: t('automation'),
+    integrations: t('integrations'),
   };
 
   return (

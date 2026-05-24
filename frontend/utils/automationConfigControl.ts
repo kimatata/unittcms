@@ -106,3 +106,54 @@ export async function fetchRunStatus(jwt: string, id: number): Promise<RunStatus
   if (!res.ok) throw new Error(await res.text());
   return res.json();
 }
+
+export type RunError = {
+  id: string;
+  jobId: number;
+  jobName: string;
+  testName: string;
+  filePath: string | null;
+  errorText: string;
+};
+
+export async function fetchRunErrors(jwt: string, id: number): Promise<RunError[]> {
+  const res = await fetch(`${Config.apiServer}/automation-configs/${id}/run-errors`, {
+    headers: { Authorization: `Bearer ${jwt}` },
+  });
+  if (!res.ok) throw new Error(await res.text());
+  return res.json();
+}
+
+export async function fixRunError(
+  jwt: string,
+  id: number,
+  error: RunError
+): Promise<{ commitUrl: string | null }> {
+  const res = await fetch(`${Config.apiServer}/automation-configs/${id}/fix-error`, {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${jwt}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      filePath: error.filePath,
+      testName: error.testName,
+      errorText: error.errorText,
+    }),
+  });
+  if (!res.ok) throw new Error(await res.text());
+  return res.json();
+}
+
+export async function updateAutoFixEnabled(jwt: string, id: number, autoFixEnabled: boolean): Promise<AutomationConfigType> {
+  const res = await fetch(`${Config.apiServer}/automation-configs/${id}`, {
+    method: 'PUT',
+    headers: {
+      Authorization: `Bearer ${jwt}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ autoFixEnabled }),
+  });
+  if (!res.ok) throw new Error(await res.text());
+  return res.json();
+}

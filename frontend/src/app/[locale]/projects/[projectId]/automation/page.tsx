@@ -58,6 +58,20 @@ export default function Page({ params: { projectId } }: { params: { projectId: s
     repairing: t('repairing'),
     successRepaired: t('success_repaired'),
     errorRepaired: t('error_repaired'),
+    configSection: t('config_section'),
+    hideConfig: t('hide_config'),
+    showConfig: t('show_config'),
+    errorsSection: t('errors_section'),
+    fetchErrors: t('fetch_errors'),
+    fetchingErrors: t('fetching_errors'),
+    noErrorsFound: t('no_errors_found'),
+    fixWithAi: t('fix_with_ai'),
+    fixing: t('fixing'),
+    fixSuccess: t('fix_success'),
+    fixError: t('fix_error'),
+    viewCommit: t('view_commit'),
+    autoFixRunning: t('auto_fix_running'),
+    noAnthropicKey: t('no_anthropic_key'),
   };
 
   return <AutomationPage projectId={projectId} messages={messages} />;

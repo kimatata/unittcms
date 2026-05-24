@@ -2,7 +2,17 @@
 import { useState, useEffect, useRef, useContext, useCallback } from 'react';
 import { Button, Input, Select, SelectItem, Chip, Link, Divider } from '@heroui/react';
 import { addToast } from '@heroui/react';
-import { ExternalLink, RefreshCw, Play, Wrench } from 'lucide-react';
+import {
+  ExternalLink,
+  RefreshCw,
+  Play,
+  Wrench,
+  ChevronDown,
+  ChevronUp,
+  AlertTriangle,
+  CheckCircle,
+  Loader,
+} from 'lucide-react';
 import { TokenContext } from '@/utils/TokenProvider';
 import { AutomationConfigType, AutomationMessages } from '@/types/project';
 import {
@@ -13,7 +23,10 @@ import {
   triggerAutomationRun,
   repairAutomationProject,
   fetchRunStatus,
+  fetchRunErrors,
+  fixRunError,
   RunStatus,
+  RunError,
 } from '@/utils/automationConfigControl';
 import { logError } from '@/utils/errorHandler';
 
@@ -40,6 +53,8 @@ const LANGUAGE_BY_TOOL: Record<string, { key: string; label: string }[]> = {
   pytest: [{ key: 'python', label: 'langPython' }],
 };
 
+type ErrorFixState = Record<string, 'idle' | 'fixing' | 'fixed' | 'error'>;
+
 export default function AutomationPage({ projectId, messages }: Props) {
   const context = useContext(TokenContext);
 
@@ -58,6 +73,18 @@ export default function AutomationPage({ projectId, messages }: Props) {
   const [runStatus, setRunStatus] = useState<RunStatus | null>(null);
   const [isFetchingStatus, setIsFetchingStatus] = useState(false);
 
+  // collapsible config form
+  const [isConfigExpanded, setIsConfigExpanded] = useState(true);
+
+  // error list
+  const [runErrors, setRunErrors] = useState<RunError[]>([]);
+  const [isFetchingErrors, setIsFetchingErrors] = useState(false);
+  const [errorFixState, setErrorFixState] = useState<ErrorFixState>({});
+  const [commitUrls, setCommitUrls] = useState<Record<string, string>>({});
+
+  // track previous run status to detect failure transitions
+  const prevConclusionRef = useRef<string | null>(null);
+
   const loadRunStatus = useCallback(
     async (cfg: AutomationConfigType) => {
       if (cfg.provider !== 'github' || !cfg.repoUrl) return;
@@ -69,6 +96,24 @@ export default function AutomationPage({ projectId, messages }: Props) {
         logError('AutomationPage runStatus', error);
       } finally {
         setIsFetchingStatus(false);
+      }
+    },
+    [context]
+  );
+
+  const loadRunErrors = useCallback(
+    async (cfg: AutomationConfigType) => {
+      setIsFetchingErrors(true);
+      setRunErrors([]);
+      setErrorFixState({});
+      setCommitUrls({});
+      try {
+        const errors = await fetchRunErrors(context.token.access_token, cfg.id);
+        setRunErrors(errors);
+      } catch (error) {
+        logError('AutomationPage fetchErrors', error);
+      } finally {
+        setIsFetchingErrors(false);
       }
     },
     [context]
@@ -88,6 +133,8 @@ export default function AutomationPage({ projectId, messages }: Props) {
           setRepoName(data.repoName ?? '');
           setAutomationTool(data.automationTool);
           setAutomationLanguage(data.automationLanguage);
+          // Collapse config section if already connected
+          if (data.repoUrl) setIsConfigExpanded(false);
           await loadRunStatus(data);
         }
       } catch (error) {
@@ -97,7 +144,7 @@ export default function AutomationPage({ projectId, messages }: Props) {
     load();
   }, [context, projectId, loadRunStatus]);
 
-  // Auto-poll while a run is active. Interval clears itself when the run completes.
+  // Auto-poll while a run is active
   const pollRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   useEffect(() => {
@@ -121,6 +168,50 @@ export default function AutomationPage({ projectId, messages }: Props) {
       }
     };
   }, [runStatus?.status, config, loadRunStatus]);
+
+  // When a run transitions to failure, load errors (and auto-fix if enabled)
+  useEffect(() => {
+    const prev = prevConclusionRef.current;
+    const current = runStatus?.conclusion ?? null;
+
+    if (current === 'failure' && prev !== 'failure' && config) {
+      loadRunErrors(config);
+      if (config.autoFixEnabled) {
+        // auto-fix kicks off after errors are loaded — handled in the errors effect below
+      }
+    }
+    prevConclusionRef.current = current;
+  }, [runStatus?.conclusion, config, loadRunErrors]);
+
+  // Auto-fix: when errors are loaded and autoFixEnabled, fix them all
+  useEffect(() => {
+    if (!config?.autoFixEnabled || runErrors.length === 0) return;
+    // Only trigger auto-fix once (all errors in 'idle' state)
+    const allIdle = runErrors.every((e) => (errorFixState[e.id] ?? 'idle') === 'idle');
+    if (!allIdle) return;
+
+    runErrors.forEach((error) => {
+      handleFixError(error);
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [runErrors]);
+
+  const handleFixError = async (error: RunError) => {
+    if (!config) return;
+    setErrorFixState((prev) => ({ ...prev, [error.id]: 'fixing' }));
+    try {
+      const result = await fixRunError(context.token.access_token, config.id, error);
+      setErrorFixState((prev) => ({ ...prev, [error.id]: 'fixed' }));
+      if (result.commitUrl) {
+        setCommitUrls((prev) => ({ ...prev, [error.id]: result.commitUrl! }));
+      }
+      addToast({ title: messages.fixSuccess, color: 'success' });
+    } catch (error) {
+      logError('AutomationPage fixError', error);
+      setErrorFixState((prev) => ({ ...prev, [error.id]: 'error' }));
+      addToast({ title: messages.fixError, color: 'danger' });
+    }
+  };
 
   const handleProviderChange = (value: string) => {
     const p = value as 'gitlab' | 'github';
@@ -190,7 +281,8 @@ export default function AutomationPage({ projectId, messages }: Props) {
     try {
       await triggerAutomationRun(context.token.access_token, config.id);
       addToast({ title: messages.successTriggered, color: 'success' });
-      // Seed runStatus as queued so the polling effect activates immediately
+      setRunErrors([]);
+      setErrorFixState({});
       setRunStatus({ status: 'queued', conclusion: null, url: null, runAt: null, commitSha: null });
     } catch (error) {
       const msg = error instanceof Error ? error.message : String(error);
@@ -229,6 +321,7 @@ export default function AutomationPage({ projectId, messages }: Props) {
   const availableLanguages = LANGUAGE_BY_TOOL[automationTool] ?? LANGUAGE_BY_TOOL['playwright'];
   const urlPlaceholder = provider === 'github' ? messages.githubUrlPlaceholder : messages.gitlabUrlPlaceholder;
   const tokenPlaceholder = provider === 'github' ? messages.githubTokenPlaceholder : messages.gitlabTokenPlaceholder;
+  const showErrorPanel = runStatus?.conclusion === 'failure' && config?.provider === 'github';
 
   return (
     <div className="container mx-auto max-w-3xl pt-6 px-6 flex-grow">
@@ -242,7 +335,7 @@ export default function AutomationPage({ projectId, messages }: Props) {
 
       {/* repo status */}
       {config?.repoUrl && (
-        <div className="w-full px-3 mb-4">
+        <div className="w-full px-3 mb-2">
           <div className="flex items-center gap-2 text-sm">
             <span className="text-default-500">{messages.repoUrl}:</span>
             <Link href={config.repoUrl} isExternal showAnchorIcon size="sm">
@@ -252,123 +345,136 @@ export default function AutomationPage({ projectId, messages }: Props) {
         </div>
       )}
 
-      {/* provider selector */}
-      <div className="w-full p-3 flex flex-col gap-4">
-        <h4 className="font-semibold text-sm text-default-600 uppercase tracking-wide">{messages.gitlabConnection}</h4>
-
-        <Select
-          label={messages.provider}
-          selectedKeys={new Set([provider])}
-          onSelectionChange={(keys) => handleProviderChange(Array.from(keys)[0] as string)}
-          variant="bordered"
-          size="sm"
+      {/* collapsible config section */}
+      <div className="w-full">
+        <button
+          className="w-full px-3 py-2 flex items-center justify-between text-left hover:bg-default-100 rounded-lg transition-colors"
+          onClick={() => setIsConfigExpanded((v) => !v)}
         >
-          <SelectItem key="gitlab">{messages.providerGitlab}</SelectItem>
-          <SelectItem key="github">{messages.providerGithub}</SelectItem>
-        </Select>
+          <h4 className="font-semibold text-sm text-default-600 uppercase tracking-wide">
+            {messages.configSection}
+          </h4>
+          {isConfigExpanded ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+        </button>
 
-        <Input
-          label={messages.instanceUrl}
-          placeholder={urlPlaceholder}
-          value={instanceUrl}
-          onValueChange={setInstanceUrl}
-          variant="bordered"
-          size="sm"
-        />
+        {isConfigExpanded && (
+          <>
+            {/* provider selector */}
+            <div className="w-full p-3 flex flex-col gap-4">
+              <Select
+                label={messages.provider}
+                selectedKeys={new Set([provider])}
+                onSelectionChange={(keys) => handleProviderChange(Array.from(keys)[0] as string)}
+                variant="bordered"
+                size="sm"
+              >
+                <SelectItem key="gitlab">{messages.providerGitlab}</SelectItem>
+                <SelectItem key="github">{messages.providerGithub}</SelectItem>
+              </Select>
 
-        <Input
-          label={messages.gitlabToken}
-          placeholder={tokenPlaceholder}
-          value={gitlabToken}
-          onValueChange={setGitlabToken}
-          onFocus={() => { if (gitlabToken === '***') setGitlabToken(''); }}
-          type="password"
-          variant="bordered"
-          size="sm"
-        />
+              <Input
+                label={messages.instanceUrl}
+                placeholder={urlPlaceholder}
+                value={instanceUrl}
+                onValueChange={setInstanceUrl}
+                variant="bordered"
+                size="sm"
+              />
 
-        <Input
-          label={messages.gitlabNamespace}
-          placeholder={provider === 'github' ? 'username or org' : 'username or group/subgroup'}
-          value={gitlabNamespace}
-          onValueChange={setGitlabNamespace}
-          variant="bordered"
-          size="sm"
-        />
-      </div>
+              <Input
+                label={messages.gitlabToken}
+                placeholder={tokenPlaceholder}
+                value={gitlabToken}
+                onValueChange={setGitlabToken}
+                onFocus={() => { if (gitlabToken === '***') setGitlabToken(''); }}
+                type="password"
+                variant="bordered"
+                size="sm"
+              />
 
-      {/* repo configuration */}
-      <div className="w-full p-3 flex flex-col gap-4 mt-2">
-        <h4 className="font-semibold text-sm text-default-600 uppercase tracking-wide">{messages.repoConfig}</h4>
+              <Input
+                label={messages.gitlabNamespace}
+                placeholder={provider === 'github' ? 'username or org' : 'username or group/subgroup'}
+                value={gitlabNamespace}
+                onValueChange={setGitlabNamespace}
+                variant="bordered"
+                size="sm"
+              />
+            </div>
 
-        <Input
-          label={messages.repoName}
-          placeholder={messages.repoNamePlaceholder}
-          value={repoName}
-          onValueChange={setRepoName}
-          variant="bordered"
-          size="sm"
-        />
+            {/* repo configuration */}
+            <div className="w-full p-3 flex flex-col gap-4">
+              <Input
+                label={messages.repoName}
+                placeholder={messages.repoNamePlaceholder}
+                value={repoName}
+                onValueChange={setRepoName}
+                variant="bordered"
+                size="sm"
+              />
 
-        <Select
-          label={messages.automationTool}
-          selectedKeys={new Set([automationTool])}
-          onSelectionChange={(keys) => handleToolChange(Array.from(keys)[0] as string)}
-          variant="bordered"
-          size="sm"
-        >
-          {TOOL_OPTIONS.map((t) => (
-            <SelectItem key={t.key}>{messages[t.label as keyof AutomationMessages]}</SelectItem>
-          ))}
-        </Select>
+              <Select
+                label={messages.automationTool}
+                selectedKeys={new Set([automationTool])}
+                onSelectionChange={(keys) => handleToolChange(Array.from(keys)[0] as string)}
+                variant="bordered"
+                size="sm"
+              >
+                {TOOL_OPTIONS.map((t) => (
+                  <SelectItem key={t.key}>{messages[t.label as keyof AutomationMessages]}</SelectItem>
+                ))}
+              </Select>
 
-        <Select
-          label={messages.automationLanguage}
-          selectedKeys={new Set([automationLanguage])}
-          onSelectionChange={(keys) => setAutomationLanguage(Array.from(keys)[0] as string)}
-          variant="bordered"
-          size="sm"
-        >
-          {availableLanguages.map((l) => (
-            <SelectItem key={l.key}>{messages[l.label as keyof AutomationMessages]}</SelectItem>
-          ))}
-        </Select>
-      </div>
+              <Select
+                label={messages.automationLanguage}
+                selectedKeys={new Set([automationLanguage])}
+                onSelectionChange={(keys) => setAutomationLanguage(Array.from(keys)[0] as string)}
+                variant="bordered"
+                size="sm"
+              >
+                {availableLanguages.map((l) => (
+                  <SelectItem key={l.key}>{messages[l.label as keyof AutomationMessages]}</SelectItem>
+                ))}
+              </Select>
+            </div>
 
-      {/* actions */}
-      <div className="w-full p-3 flex flex-wrap gap-3 mt-2">
-        <Button
-          color="primary"
-          size="sm"
-          isLoading={isSaving}
-          isDisabled={!instanceUrl || !gitlabToken}
-          onPress={handleSave}
-        >
-          {messages.saveConfig}
-        </Button>
+            {/* actions */}
+            <div className="w-full p-3 flex flex-wrap gap-3">
+              <Button
+                color="primary"
+                size="sm"
+                isLoading={isSaving}
+                isDisabled={!instanceUrl || !gitlabToken}
+                onPress={handleSave}
+              >
+                {messages.saveConfig}
+              </Button>
 
-        <Button
-          color="secondary"
-          size="sm"
-          startContent={!isGenerating ? <RefreshCw size={14} /> : undefined}
-          isLoading={isGenerating}
-          isDisabled={!config || !repoName}
-          onPress={handleGenerate}
-        >
-          {isGenerating ? messages.generating : messages.generateProject}
-        </Button>
+              <Button
+                color="secondary"
+                size="sm"
+                startContent={!isGenerating ? <RefreshCw size={14} /> : undefined}
+                isLoading={isGenerating}
+                isDisabled={!config || !repoName}
+                onPress={handleGenerate}
+              >
+                {isGenerating ? messages.generating : messages.generateProject}
+              </Button>
 
-        {config?.repoUrl && (
-          <Button
-            as={Link}
-            href={config.repoUrl}
-            isExternal
-            size="sm"
-            variant="flat"
-            startContent={<ExternalLink size={14} />}
-          >
-            {messages.openRepo}
-          </Button>
+              {config?.repoUrl && (
+                <Button
+                  as={Link}
+                  href={config.repoUrl}
+                  isExternal
+                  size="sm"
+                  variant="flat"
+                  startContent={<ExternalLink size={14} />}
+                >
+                  {messages.openRepo}
+                </Button>
+              )}
+            </div>
+          </>
         )}
       </div>
 
@@ -431,6 +537,102 @@ export default function AutomationPage({ projectId, messages }: Props) {
               >
                 {isRepairing ? messages.repairing : messages.repairCoreFiles}
               </Button>
+            </div>
+          </div>
+        </>
+      )}
+
+      {/* Error panel — shown when last run failed */}
+      {showErrorPanel && (
+        <>
+          <Divider className="my-2" />
+          <div className="w-full p-3 flex flex-col gap-3 mt-2">
+            <div className="flex items-center justify-between">
+              <h4 className="font-semibold text-sm text-default-600 uppercase tracking-wide flex items-center gap-2">
+                <AlertTriangle size={14} className="text-danger" />
+                {messages.errorsSection}
+                {runErrors.length > 0 && (
+                  <Chip color="danger" variant="flat" size="sm">
+                    {runErrors.length}
+                  </Chip>
+                )}
+              </h4>
+              <Button
+                size="sm"
+                variant="flat"
+                startContent={!isFetchingErrors ? <RefreshCw size={14} /> : undefined}
+                isLoading={isFetchingErrors}
+                isDisabled={!config}
+                onPress={() => config && loadRunErrors(config)}
+              >
+                {isFetchingErrors ? messages.fetchingErrors : messages.fetchErrors}
+              </Button>
+            </div>
+
+            {config?.autoFixEnabled && runErrors.length > 0 && (
+              <p className="text-xs text-warning-600 flex items-center gap-1">
+                <Loader size={12} className="animate-spin" />
+                {messages.autoFixRunning}
+              </p>
+            )}
+
+            {runErrors.length === 0 && !isFetchingErrors && (
+              <p className="text-sm text-default-400">{messages.noErrorsFound}</p>
+            )}
+
+            <div className="flex flex-col gap-2">
+              {runErrors.map((error) => {
+                const state = errorFixState[error.id] ?? 'idle';
+                const commitUrl = commitUrls[error.id];
+
+                return (
+                  <div
+                    key={error.id}
+                    className="border-1 dark:border-neutral-700 rounded-lg p-3 flex flex-col gap-2"
+                  >
+                    <div className="flex items-start justify-between gap-2">
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-medium truncate">{error.testName}</p>
+                        {error.filePath && (
+                          <p className="text-xs text-default-400 font-mono">{error.filePath}</p>
+                        )}
+                      </div>
+                      <div className="flex items-center gap-2 shrink-0">
+                        {state === 'fixed' && (
+                          <Chip color="success" variant="flat" size="sm" startContent={<CheckCircle size={12} />}>
+                            Fixed
+                          </Chip>
+                        )}
+                        {state === 'error' && (
+                          <Chip color="danger" variant="flat" size="sm">
+                            Failed
+                          </Chip>
+                        )}
+                        {commitUrl && (
+                          <Link href={commitUrl} isExternal size="sm" showAnchorIcon>
+                            {messages.viewCommit}
+                          </Link>
+                        )}
+                        {state !== 'fixed' && (
+                          <Button
+                            size="sm"
+                            color="primary"
+                            variant="flat"
+                            isLoading={state === 'fixing'}
+                            isDisabled={state === 'fixing'}
+                            onPress={() => handleFixError(error)}
+                          >
+                            {state === 'fixing' ? messages.fixing : messages.fixWithAi}
+                          </Button>
+                        )}
+                      </div>
+                    </div>
+                    <pre className="text-xs text-default-500 bg-default-100 rounded p-2 overflow-x-auto whitespace-pre-wrap max-h-32">
+                      {error.errorText}
+                    </pre>
+                  </div>
+                );
+              })}
             </div>
           </div>
         </>

@@ -11,7 +11,7 @@ export default function (sequelize) {
   router.put('/:id', verifySignedIn, async (req, res) => {
     try {
       const { id } = req.params;
-      const { gitlabUrl, gitlabToken, gitlabNamespace, repoName, automationTool, automationLanguage, provider } = req.body;
+      const { gitlabUrl, gitlabToken, gitlabNamespace, repoName, automationTool, automationLanguage, provider, autoFixEnabled } = req.body;
 
       const config = await AutomationConfig.findByPk(id);
       if (!config) {
@@ -19,6 +19,7 @@ export default function (sequelize) {
       }
 
       const updates = { gitlabUrl, gitlabNamespace, repoName, automationTool, automationLanguage, provider };
+      if (autoFixEnabled !== undefined) updates.autoFixEnabled = autoFixEnabled;
       // only update token if a real value is provided (not the masked placeholder)
       if (gitlabToken && gitlabToken !== '***') {
         updates.gitlabToken = gitlabToken;

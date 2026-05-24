@@ -1,6 +1,7 @@
 'use client';
 import { useState, useEffect, useContext } from 'react';
-import { Button, Table, TableHeader, TableColumn, TableBody, TableRow, TableCell } from '@heroui/react';
+import { Button, Switch, Table, TableHeader, TableColumn, TableBody, TableRow, TableCell } from '@heroui/react';
+import { addToast } from '@heroui/react';
 import { Pencil, Trash } from 'lucide-react';
 import ProjectTagsManager from './ProjectTagsManager';
 import { SettingsMessages } from '@/types/settings';
@@ -14,6 +15,8 @@ import { UserType } from '@/types/user';
 import { findUser } from '@/utils/usersControl';
 import { logError } from '@/utils/errorHandler';
 import UserAvatar from '@/components/UserAvatar';
+import { fetchAutomationConfig, updateAutoFixEnabled } from '@/utils/automationConfigControl';
+import { AutomationConfigType } from '@/types/project';
 
 type Props = {
   projectId: string;
@@ -25,6 +28,7 @@ type Props = {
 export default function SettingsPage({ projectId, messages, projectDialogMessages, locale }: Props) {
   const context = useContext(TokenContext);
   const router = useRouter();
+  const [automationConfig, setAutomationConfig] = useState<AutomationConfigType | null>(null);
   const [project, setProject] = useState<ProjectType>({
     id: 0,
     name: '',
@@ -55,6 +59,8 @@ export default function SettingsPage({ projectId, messages, projectDialogMessage
       try {
         const data = await fetchProject(context.token.access_token, Number(projectId));
         setProject(data);
+        const aCfg = await fetchAutomationConfig(context.token.access_token, Number(projectId));
+        setAutomationConfig(aCfg);
 
         if (data.userId) {
           const ownerData = await findUser(context.token.access_token, data.userId);
@@ -69,6 +75,18 @@ export default function SettingsPage({ projectId, messages, projectDialogMessage
 
     fetchDataEffect();
   }, [context, projectId]);
+
+  const handleAutoFixToggle = async (enabled: boolean) => {
+    if (!automationConfig) return;
+    try {
+      const updated = await updateAutoFixEnabled(context.token.access_token, automationConfig.id, enabled);
+      setAutomationConfig(updated);
+      addToast({ title: messages.autoFixUpdated, color: 'success' });
+    } catch (error) {
+      logError('SettingsPage autoFix toggle', error);
+      addToast({ title: messages.autoFixUpdateError, color: 'danger' });
+    }
+  };
 
   // project dialog
   const [isProjectDialogOpen, setIsProjectDialogOpen] = useState(false);
@@ -152,6 +170,28 @@ export default function SettingsPage({ projectId, messages, projectDialogMessage
       <div className="w-full p-3">
         <ProjectTagsManager projectId={projectId} messages={messages} />
       </div>
+
+      {/* Automation Settings — only shown when a repo is connected */}
+      {automationConfig && (
+        <>
+          <div className="w-full p-3 flex items-center justify-between mt-4">
+            <h3 className="font-bold">{messages.automationSettings}</h3>
+          </div>
+          <div className="w-full p-3">
+            <div className="flex items-center justify-between gap-4 border-1 dark:border-neutral-700 rounded-lg p-4">
+              <div>
+                <p className="text-sm font-medium">{messages.autoFixEnabled}</p>
+                <p className="text-xs text-default-500">{messages.autoFixDescription}</p>
+              </div>
+              <Switch
+                isSelected={automationConfig.autoFixEnabled ?? false}
+                onValueChange={handleAutoFixToggle}
+                size="sm"
+              />
+            </div>
+          </div>
+        </>
+      )}
 
       <ProjectDialog
         isOpen={isProjectDialogOpen}

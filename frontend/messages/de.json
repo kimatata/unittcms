@@ -191,7 +191,8 @@
     "test_runs": "Testläufe",
     "members": "Mitglieder",
     "settings": "Einstellungen",
-    "automation": "Automatisierung"
+    "automation": "Automatisierung",
+    "integrations": "Integrationen"
   },
   "Automation": {
     "automation": "Automatisierung",
@@ -246,7 +247,44 @@
     "repair_core_files": "Kerndateien reparieren",
     "repairing": "Wird repariert...",
     "success_repaired": "Kerndateien repariert und ins Repository gepusht",
-    "error_repaired": "Kerndateien konnten nicht repariert werden"
+    "error_repaired": "Kerndateien konnten nicht repariert werden",
+    "config_section": "Konfiguration",
+    "hide_config": "Konfiguration verbergen",
+    "show_config": "Konfiguration anzeigen",
+    "errors_section": "Testfehler",
+    "fetch_errors": "Fehler abrufen",
+    "fetching_errors": "Wird abgerufen...",
+    "no_errors_found": "Keine Fehler erkannt. Klicke nach einem fehlgeschlagenen Lauf auf Fehler abrufen.",
+    "fix_with_ai": "Mit KI beheben",
+    "fixing": "Wird behoben...",
+    "fix_success": "Korrektur angewendet und committet",
+    "fix_error": "KI-Korrektur konnte nicht angewendet werden",
+    "view_commit": "Commit anzeigen",
+    "auto_fix_running": "Automatische Korrektur läuft — KI behebt Fehler automatisch",
+    "no_anthropic_key": "Füge einen Anthropic-API-Schlüssel im Reiter Integrationen hinzu, um KI-Korrekturen zu aktivieren"
+  },
+  "Integrations": {
+    "integrations": "Integrationen",
+    "ai_providers": "KI-Anbieter",
+    "anthropic": "Anthropic",
+    "anthropic_description": "Wird verwendet, um Automatisierungsfehler mit Claude KI zu beheben",
+    "api_key": "API-Schlüssel",
+    "api_key_placeholder": "sk-ant-api03-...",
+    "save_key": "Schlüssel speichern",
+    "saving": "Wird gespeichert...",
+    "delete_key": "Löschen",
+    "no_integrations": "Keine Integrationen konfiguriert",
+    "success_saved": "Integration erfolgreich gespeichert",
+    "error_saved": "Integration konnte nicht gespeichert werden",
+    "success_deleted": "Integration gelöscht",
+    "error_deleted": "Integration konnte nicht gelöscht werden",
+    "connected": "Verbunden",
+    "not_configured": "Nicht konfiguriert",
+    "close": "Schließen",
+    "delete": "Löschen",
+    "are_you_sure": "Bist du sicher, dass du diese Integration löschen möchtest?",
+    "edit": "Bearbeiten",
+    "cancel": "Abbrechen"
   },
   "Home": {
     "home": "Startseite",
@@ -497,6 +535,11 @@
     "tag_error_max_length": "Tag-Name darf nicht länger als 20 Zeichen sein.",
     "tag_error_create": "Tag konnte nicht erstellt werden. Bitte versuche es erneut.",
     "tag_error_update": "Tag konnte nicht aktualisiert werden. Bitte versuche es erneut.",
-    "tag_error_delete": "Tag konnte nicht gelöscht werden. Bitte versuche es erneut."
+    "tag_error_delete": "Tag konnte nicht gelöscht werden. Bitte versuche es erneut.",
+    "automation_settings": "Automatisierungseinstellungen",
+    "auto_fix_enabled": "Automatische Korrektur bei Fehlern",
+    "auto_fix_description": "KI-Korrekturen automatisch anwenden, wenn Testläufe fehlschlagen (erfordert Anthropic-API-Schlüssel)",
+    "auto_fix_updated": "Einstellung für automatische Korrektur aktualisiert",
+    "auto_fix_update_error": "Einstellung für automatische Korrektur konnte nicht aktualisiert werden"
   }
 }

@@ -191,7 +191,8 @@
     "test_runs": "Test Runs",
     "members": "Members",
     "settings": "Settings",
-    "automation": "Automation"
+    "automation": "Automation",
+    "integrations": "Integrations"
   },
   "Automation": {
     "automation": "Automation",
@@ -246,7 +247,44 @@
     "repair_core_files": "Repair Core Files",
     "repairing": "Repairing...",
     "success_repaired": "Core files repaired and pushed to repo",
-    "error_repaired": "Failed to repair core files"
+    "error_repaired": "Failed to repair core files",
+    "config_section": "Configuration",
+    "hide_config": "Hide Configuration",
+    "show_config": "Show Configuration",
+    "errors_section": "Test Failures",
+    "fetch_errors": "Fetch Errors",
+    "fetching_errors": "Fetching...",
+    "no_errors_found": "No errors detected. Click Fetch Errors after a failed run.",
+    "fix_with_ai": "Fix with AI",
+    "fixing": "Fixing...",
+    "fix_success": "Fix applied and committed",
+    "fix_error": "Failed to apply AI fix",
+    "view_commit": "View Commit",
+    "auto_fix_running": "Auto-fix in progress — AI is fixing failures automatically",
+    "no_anthropic_key": "Add an Anthropic API key in the Integrations tab to enable AI fixes"
+  },
+  "Integrations": {
+    "integrations": "Integrations",
+    "ai_providers": "AI Providers",
+    "anthropic": "Anthropic",
+    "anthropic_description": "Used for auto-fixing automation failures with Claude AI",
+    "api_key": "API Key",
+    "api_key_placeholder": "sk-ant-api03-...",
+    "save_key": "Save Key",
+    "saving": "Saving...",
+    "delete_key": "Delete",
+    "no_integrations": "No integrations configured",
+    "success_saved": "Integration saved successfully",
+    "error_saved": "Failed to save integration",
+    "success_deleted": "Integration deleted",
+    "error_deleted": "Failed to delete integration",
+    "connected": "Connected",
+    "not_configured": "Not configured",
+    "close": "Close",
+    "delete": "Delete",
+    "are_you_sure": "Are you sure you want to delete this integration?",
+    "edit": "Edit",
+    "cancel": "Cancel"
   },
   "Home": {
     "home": "Home",
@@ -497,6 +535,11 @@
     "tag_error_max_length": "Tag name cannot exceed 20 characters.",
     "tag_error_create": "Failed to create tag. Please try again.",
     "tag_error_update": "Failed to update tag. Please try again.",
-    "tag_error_delete": "Failed to delete tag. Please try again."
+    "tag_error_delete": "Failed to delete tag. Please try again.",
+    "automation_settings": "Automation Settings",
+    "auto_fix_enabled": "Auto-fix on failure",
+    "auto_fix_description": "Automatically apply AI fixes when test runs fail (requires Anthropic API key)",
+    "auto_fix_updated": "Auto-fix setting updated",
+    "auto_fix_update_error": "Failed to update auto-fix setting"
   }
 }

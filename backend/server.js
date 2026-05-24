@@ -200,6 +200,8 @@ import automationConfigsSyncStatusRoute from './routes/automationConfigs/syncSta
 import automationConfigsTriggerRoute from './routes/automationConfigs/trigger.js';
 import automationConfigsRunStatusRoute from './routes/automationConfigs/runStatus.js';
 import automationConfigsRepairRoute from './routes/automationConfigs/repair.js';
+import automationConfigsRunErrorsRoute from './routes/automationConfigs/runErrors.js';
+import automationConfigsFixErrorRoute from './routes/automationConfigs/fixError.js';
 app.use('/automation-configs', automationConfigsShowRoute(sequelize));
 app.use('/automation-configs', automationConfigsNewRoute(sequelize));
 app.use('/automation-configs', automationConfigsEditRoute(sequelize));
@@ -208,6 +210,16 @@ app.use('/automation-configs', automationConfigsSyncStatusRoute(sequelize));
 app.use('/automation-configs', automationConfigsTriggerRoute(sequelize));
 app.use('/automation-configs', automationConfigsRunStatusRoute(sequelize));
 app.use('/automation-configs', automationConfigsRepairRoute(sequelize));
+app.use('/automation-configs', automationConfigsRunErrorsRoute(sequelize));
+app.use('/automation-configs', automationConfigsFixErrorRoute(sequelize));
+
+// "/integration-configs"
+import integrationConfigsShowRoute from './routes/integrationConfigs/show.js';
+import integrationConfigsUpsertRoute from './routes/integrationConfigs/upsert.js';
+import integrationConfigsDestroyRoute from './routes/integrationConfigs/destroy.js';
+app.use('/integration-configs', integrationConfigsShowRoute(sequelize));
+app.use('/integration-configs', integrationConfigsUpsertRoute(sequelize));
+app.use('/integration-configs', integrationConfigsDestroyRoute(sequelize));
 
 if (!process.env.SECRET_KEY) {
   console.log(

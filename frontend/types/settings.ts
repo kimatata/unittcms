@@ -26,4 +26,9 @@ export type SettingsMessages = {
   tagErrorCreate: string;
   tagErrorUpdate: string;
   tagErrorDelete: string;
+  automationSettings: string;
+  autoFixEnabled: string;
+  autoFixDescription: string;
+  autoFixUpdated: string;
+  autoFixUpdateError: string;
 };

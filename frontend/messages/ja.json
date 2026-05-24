@@ -191,7 +191,8 @@
     "test_runs": "テストラン",
     "members": "メンバー",
     "settings": "設定",
-    "automation": "自動化"
+    "automation": "自動化",
+    "integrations": "インテグレーション"
   },
   "Automation": {
     "automation": "自動化",
@@ -246,7 +247,44 @@
     "repair_core_files": "コアファイルを修復",
     "repairing": "修復中...",
     "success_repaired": "コアファイルを修復してリポジトリにプッシュしました",
-    "error_repaired": "コアファイルの修復に失敗しました"
+    "error_repaired": "コアファイルの修復に失敗しました",
+    "config_section": "設定",
+    "hide_config": "設定を非表示",
+    "show_config": "設定を表示",
+    "errors_section": "テスト失敗",
+    "fetch_errors": "エラーを取得",
+    "fetching_errors": "取得中...",
+    "no_errors_found": "エラーは検出されていません。失敗したランの後に「エラーを取得」をクリックしてください。",
+    "fix_with_ai": "AIで修正",
+    "fixing": "修正中...",
+    "fix_success": "修正が適用されてコミットされました",
+    "fix_error": "AI修正の適用に失敗しました",
+    "view_commit": "コミットを表示",
+    "auto_fix_running": "自動修正中 — AIが自動的に失敗を修正しています",
+    "no_anthropic_key": "AI修正を有効にするにはインテグレーションタブでAnthropicのAPIキーを追加してください"
+  },
+  "Integrations": {
+    "integrations": "インテグレーション",
+    "ai_providers": "AIプロバイダー",
+    "anthropic": "Anthropic",
+    "anthropic_description": "Claude AIで自動化の失敗を自動修正するために使用",
+    "api_key": "APIキー",
+    "api_key_placeholder": "sk-ant-api03-...",
+    "save_key": "キーを保存",
+    "saving": "保存中...",
+    "delete_key": "削除",
+    "no_integrations": "インテグレーションが設定されていません",
+    "success_saved": "インテグレーションが正常に保存されました",
+    "error_saved": "インテグレーションの保存に失敗しました",
+    "success_deleted": "インテグレーションが削除されました",
+    "error_deleted": "インテグレーションの削除に失敗しました",
+    "connected": "接続済み",
+    "not_configured": "未設定",
+    "close": "閉じる",
+    "delete": "削除",
+    "are_you_sure": "このインテグレーションを削除してもよろしいですか？",
+    "edit": "編集",
+    "cancel": "キャンセル"
   },
   "Home": {
     "home": "ホーム",
@@ -497,6 +535,11 @@
     "tag_error_max_length": "タグ名は20文字を超えることはできません。",
     "tag_error_create": "タグの作成に失敗しました。もう一度お試しください。",
     "tag_error_update": "タグの更新に失敗しました。もう一度お試しください。",
-    "tag_error_delete": "タグの削除に失敗しました。もう一度お試しください。"
+    "tag_error_delete": "タグの削除に失敗しました。もう一度お試しください。",
+    "automation_settings": "自動化設定",
+    "auto_fix_enabled": "失敗時に自動修正",
+    "auto_fix_description": "テストランが失敗した際にAI修正を自動的に適用する（Anthropic APIキーが必要）",
+    "auto_fix_updated": "自動修正設定が更新されました",
+    "auto_fix_update_error": "自動修正設定の更新に失敗しました"
   }
 }
