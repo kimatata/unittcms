@@ -1,5 +1,5 @@
 'use client';
-import { useState, useEffect, useContext, useCallback } from 'react';
+import { useState, useEffect, useRef, useContext, useCallback } from 'react';
 import { Button, Input, Select, SelectItem, Chip, Link, Divider } from '@heroui/react';
 import { addToast } from '@heroui/react';
 import { ExternalLink, RefreshCw, Play, Wrench } from 'lucide-react';
@@ -97,6 +97,31 @@ export default function AutomationPage({ projectId, messages }: Props) {
     load();
   }, [context, projectId, loadRunStatus]);
 
+  // Auto-poll while a run is active. Interval clears itself when the run completes.
+  const pollRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
+  useEffect(() => {
+    const isActive = runStatus?.status === 'queued' || runStatus?.status === 'in_progress';
+
+    if (isActive && config) {
+      if (!pollRef.current) {
+        pollRef.current = setInterval(() => loadRunStatus(config), 10_000);
+      }
+    } else {
+      if (pollRef.current) {
+        clearInterval(pollRef.current);
+        pollRef.current = null;
+      }
+    }
+
+    return () => {
+      if (pollRef.current) {
+        clearInterval(pollRef.current);
+        pollRef.current = null;
+      }
+    };
+  }, [runStatus?.status, config, loadRunStatus]);
+
   const handleProviderChange = (value: string) => {
     const p = value as 'gitlab' | 'github';
     setProvider(p);
@@ -165,11 +190,12 @@ export default function AutomationPage({ projectId, messages }: Props) {
     try {
       await triggerAutomationRun(context.token.access_token, config.id);
       addToast({ title: messages.successTriggered, color: 'success' });
-      // poll once after a short delay so status updates
-      setTimeout(() => loadRunStatus(config), 3000);
+      // Seed runStatus as queued so the polling effect activates immediately
+      setRunStatus({ status: 'queued', conclusion: null, url: null, runAt: null, commitSha: null });
     } catch (error) {
+      const msg = error instanceof Error ? error.message : String(error);
       logError('AutomationPage trigger', error);
-      addToast({ title: messages.errorTriggered, color: 'danger' });
+      addToast({ title: messages.errorTriggered, description: msg, color: 'danger' });
     } finally {
       setIsTriggering(false);
     }
@@ -182,8 +208,9 @@ export default function AutomationPage({ projectId, messages }: Props) {
       await repairAutomationProject(context.token.access_token, config.id);
       addToast({ title: messages.successRepaired, color: 'success' });
     } catch (error) {
+      const msg = error instanceof Error ? error.message : String(error);
       logError('AutomationPage repair', error);
-      addToast({ title: messages.errorRepaired, color: 'danger' });
+      addToast({ title: messages.errorRepaired, description: msg, color: 'danger' });
     } finally {
       setIsRepairing(false);
     }
