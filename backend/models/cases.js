@@ -20,6 +20,23 @@ function defineCase(sequelize, DataTypes) {
       type: DataTypes.INTEGER,
       allowNull: false,
     },
+    codeStatus: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      defaultValue: 'none',
+    },
+    codeFilePath: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    codeLastSyncAt: {
+      type: DataTypes.DATE,
+      allowNull: true,
+    },
+    codeCommitSha: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
     description: {
       type: DataTypes.STRING,
       allowNull: true,

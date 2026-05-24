@@ -1,3 +1,5 @@
+type CodeStatus = 'none' | 'stub' | 'implemented' | 'stale';
+
 type CaseType = {
   id: number;
   title: string;
@@ -10,6 +12,10 @@ type CaseType = {
   preConditions: string;
   expectedResults: string;
   folderId: number;
+  codeStatus: CodeStatus;
+  codeFilePath: string | null;
+  codeLastSyncAt: string | null;
+  codeCommitSha: string | null;
   Steps?: StepType[];
   RunCases?: RunCaseType[];
   Attachments?: AttachmentType[];
@@ -151,4 +157,4 @@ type CaseMessages = {
   noTagsSelected: string;
 };
 
-export type { CaseType, StepType, AttachmentType, CasesMessages, CaseMessages };
+export type { CaseType, CodeStatus, StepType, AttachmentType, CasesMessages, CaseMessages };

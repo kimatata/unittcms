@@ -1,6 +1,6 @@
 'use client';
 import { useState, useEffect, useContext, ChangeEvent, DragEvent } from 'react';
-import { Input, Textarea, Select, SelectItem, Button, Divider, Tooltip, addToast, Badge } from '@heroui/react';
+import { Input, Textarea, Select, SelectItem, Button, Divider, Tooltip, addToast, Badge, Chip } from '@heroui/react';
 import { Save, Plus, ArrowLeft, Circle } from 'lucide-react';
 import CaseStepsEditor from './CaseStepsEditor';
 import CaseAttachmentsEditor from './CaseAttachmentsEditor';
@@ -12,11 +12,21 @@ import { priorities, testTypes, templates } from '@/config/selection';
 import { useRouter } from '@/src/i18n/routing';
 import { TokenContext } from '@/utils/TokenProvider';
 import { useFormGuard } from '@/utils/formGuard';
-import { CaseType, AttachmentType, CaseMessages, StepType } from '@/types/case';
+import { CaseType, CodeStatus, AttachmentType, CaseMessages, StepType } from '@/types/case';
 import { PriorityMessages } from '@/types/priority';
 import { TestTypeMessages } from '@/types/testType';
 import { logError } from '@/utils/errorHandler';
 import { updateCaseTags } from '@/utils/caseTagsControls';
+
+const CODE_STATUS_BADGE: Record<
+  CodeStatus,
+  { label: string; color: 'warning' | 'success' | 'danger' | 'default' } | null
+> = {
+  none: null,
+  stub: { label: 'STUB', color: 'warning' },
+  implemented: { label: 'AUTOMATED', color: 'success' },
+  stale: { label: 'STALE', color: 'danger' },
+};
 
 const defaultTestCase = {
   id: 0,
@@ -30,6 +40,10 @@ const defaultTestCase = {
   preConditions: '',
   expectedResults: '',
   folderId: 0,
+  codeStatus: 'none' as CodeStatus,
+  codeFilePath: null,
+  codeLastSyncAt: null,
+  codeCommitSha: null,
   Steps: [],
   Attachments: [],
   isIncluded: false,
@@ -260,6 +274,17 @@ export default function CaseEditor({
             </Button>
           </Tooltip>
           <h3 className="font-bold ms-2">{testCase.title}</h3>
+          {(() => {
+            const badge = CODE_STATUS_BADGE[testCase.codeStatus ?? 'none'];
+            if (!badge) return null;
+            return (
+              <Tooltip content={testCase.codeFilePath ?? badge.label} placement="right">
+                <Chip size="sm" color={badge.color} variant="flat" className="ms-2">
+                  {badge.label}
+                </Chip>
+              </Tooltip>
+            );
+          })()}
         </div>
         <div className="flex items-center">
           <Button

@@ -15,6 +15,7 @@ import {
   Card,
   CardBody,
   Chip,
+  Tooltip,
 } from '@heroui/react';
 import {
   Plus,
@@ -28,10 +29,20 @@ import {
   FileJson,
   FileSpreadsheet,
 } from 'lucide-react';
+
+const CODE_STATUS_BADGE: Record<
+  CodeStatus,
+  { label: string; color: 'warning' | 'success' | 'danger' | 'default' } | null
+> = {
+  none: null,
+  stub: { label: 'STUB', color: 'warning' },
+  implemented: { label: 'AUTOMATED', color: 'success' },
+  stale: { label: 'STALE', color: 'danger' },
+};
 import { table } from '@heroui/theme';
 import TestCaseFilter from './TestCaseFilter';
 import { Link, NextUiLinkClasses } from '@/src/i18n/routing';
-import { CaseType, CasesMessages } from '@/types/case';
+import { CaseType, CodeStatus, CasesMessages } from '@/types/case';
 import { PriorityMessages } from '@/types/priority';
 import { TestTypeMessages } from '@/types/testType';
 import TestCasePriority from '@/components/TestCasePriority';
@@ -98,20 +109,34 @@ export default function TestCaseTable({
       switch (columnKey) {
         case 'id':
           return <span>{cellValue as number}</span>;
-        case 'title':
+        case 'title': {
+          const badge = CODE_STATUS_BADGE[testCase.codeStatus ?? 'none'];
           return (
-            <Link
-              href={`/projects/${projectId}/folders/${testCase.folderId}/cases/${testCase.id}`}
-              locale={locale}
-              className={NextUiLinkClasses}
-              draggable="false"
-            >
-              {highlightSearchTerm({
-                text: cellValue as string,
-                searchTerm: activeSearchFilter,
-              })}
-            </Link>
+            <div className="flex items-center gap-2">
+              <Link
+                href={`/projects/${projectId}/folders/${testCase.folderId}/cases/${testCase.id}`}
+                locale={locale}
+                className={NextUiLinkClasses}
+                draggable="false"
+              >
+                {highlightSearchTerm({
+                  text: cellValue as string,
+                  searchTerm: activeSearchFilter,
+                })}
+              </Link>
+              {badge && (
+                <Tooltip
+                  content={testCase.codeFilePath ?? badge.label}
+                  placement="top"
+                >
+                  <Chip size="sm" color={badge.color} variant="flat">
+                    {badge.label}
+                  </Chip>
+                </Tooltip>
+              )}
+            </div>
           );
+        }
         case 'priority':
           return <TestCasePriority priorityValue={cellValue as number} priorityMessages={priorityMessages} />;
 

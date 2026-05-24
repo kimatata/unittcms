@@ -29,6 +29,7 @@ function generatePlaywrightTS(node, indentLevel = 0) {
   const lines = [];
   for (const c of node.cases) {
     lines.push(`${indent}test('${c.title.replace(/'/g, "\\'")}', async ({ page }) => {`);
+    lines.push(`${indent}  // @unittcms:caseId:${c.id}`);
     if (c.preConditions) lines.push(`${indent}  // Pre-conditions: ${c.preConditions}`);
     lines.push(`${indent}  // TODO: implement`);
     lines.push(`${indent}});`);
@@ -43,6 +44,148 @@ function generatePlaywrightTS(node, indentLevel = 0) {
   return lines.join('\n');
 }
 
+function buildNodeScannerScript() {
+  return `#!/usr/bin/env node
+/**
+ * UnitTCMS sync — scans test files for @unittcms:caseId annotations and
+ * reports implementation status back to UnitTCMS.
+ *
+ * Required env vars:
+ *   UNITTCMS_URL        e.g. http://localhost:8000
+ *   UNITTCMS_TOKEN      Bearer token for a UnitTCMS user
+ *   UNITTCMS_PROJECT_ID numeric project ID
+ *
+ * Run: node scripts/unittcms-sync.mjs
+ */
+import { readFileSync, readdirSync, statSync } from 'fs';
+import { join, relative } from 'path';
+import { execSync } from 'child_process';
+
+const { UNITTCMS_URL, UNITTCMS_TOKEN, UNITTCMS_PROJECT_ID } = process.env;
+if (!UNITTCMS_URL || !UNITTCMS_TOKEN || !UNITTCMS_PROJECT_ID) {
+  console.error('Missing env vars: UNITTCMS_URL, UNITTCMS_TOKEN, UNITTCMS_PROJECT_ID');
+  process.exit(1);
+}
+
+let commitSha = '';
+try { commitSha = execSync('git rev-parse HEAD').toString().trim(); } catch (_) {}
+
+function walk(dir, exts) {
+  const out = [];
+  for (const entry of readdirSync(dir)) {
+    const p = join(dir, entry);
+    if (statSync(p).isDirectory() && entry !== 'node_modules') out.push(...walk(p, exts));
+    else if (exts.some((e) => entry.endsWith(e))) out.push(p);
+  }
+  return out;
+}
+
+function isStub(lines, annotationIdx) {
+  const meaningful = lines
+    .slice(annotationIdx + 1)
+    .map((l) => l.trim())
+    .filter((l) => l && !l.startsWith('//') && l !== '});' && l !== '}');
+  return meaningful.length === 0;
+}
+
+const cases = [];
+const testDir = join(process.cwd(), 'tests');
+for (const file of walk(testDir, ['.spec.ts', '.spec.js'])) {
+  const lines = readFileSync(file, 'utf-8').split('\\n');
+  for (let i = 0; i < lines.length; i++) {
+    const m = lines[i].match(/\\/\\/ @unittcms:caseId:(\\d+)/);
+    if (m) {
+      cases.push({
+        caseId: parseInt(m[1], 10),
+        status: isStub(lines, i) ? 'stub' : 'implemented',
+        filePath: relative(process.cwd(), file),
+      });
+    }
+  }
+}
+
+const res = await fetch(\`\${UNITTCMS_URL}/api/automation-configs/sync-status\`, {
+  method: 'POST',
+  headers: { Authorization: \`Bearer \${UNITTCMS_TOKEN}\`, 'Content-Type': 'application/json' },
+  body: JSON.stringify({ projectId: UNITTCMS_PROJECT_ID, commitSha, cases }),
+});
+if (!res.ok) { console.error('Sync failed:', await res.text()); process.exit(1); }
+const data = await res.json();
+console.log(\`UnitTCMS sync: \${data.updated} cases updated (commit \${commitSha.slice(0, 7)})\`);
+`;
+}
+
+function buildPythonScannerScript() {
+  return `#!/usr/bin/env python3
+"""
+UnitTCMS sync -- scans pytest files for @pytest.mark.unittcms annotations and
+reports implementation status back to UnitTCMS.
+
+Required env vars:
+  UNITTCMS_URL        e.g. http://localhost:8000
+  UNITTCMS_TOKEN      Bearer token for a UnitTCMS user
+  UNITTCMS_PROJECT_ID numeric project ID
+
+Run: python scripts/unittcms_sync.py
+"""
+import os, re, subprocess, json
+from pathlib import Path
+import urllib.request
+
+UNITTCMS_URL = os.environ.get('UNITTCMS_URL', '')
+UNITTCMS_TOKEN = os.environ.get('UNITTCMS_TOKEN', '')
+UNITTCMS_PROJECT_ID = os.environ.get('UNITTCMS_PROJECT_ID', '')
+
+if not all([UNITTCMS_URL, UNITTCMS_TOKEN, UNITTCMS_PROJECT_ID]):
+    raise SystemExit('Missing env vars: UNITTCMS_URL, UNITTCMS_TOKEN, UNITTCMS_PROJECT_ID')
+
+try:
+    commit_sha = subprocess.check_output(['git', 'rev-parse', 'HEAD']).decode().strip()
+except Exception:
+    commit_sha = ''
+
+MARK_RE = re.compile(r'@pytest\\.mark\\.unittcms\\(case_id=(\\d+)\\)')
+
+def is_stub(lines, func_idx):
+    indent = len(lines[func_idx]) - len(lines[func_idx].lstrip())
+    for line in lines[func_idx + 1:]:
+        s = line.strip()
+        if not s or s.startswith('#'):
+            continue
+        if len(line) - len(line.lstrip()) <= indent:
+            break
+        if s != 'pass':
+            return False
+    return True
+
+root = Path.cwd()
+cases = []
+for pyfile in root.rglob('test_*.py'):
+    lines = pyfile.read_text().splitlines()
+    for i, line in enumerate(lines):
+        m = MARK_RE.search(line)
+        if m:
+            func_idx = next((j for j in range(i + 1, len(lines)) if lines[j].strip().startswith('def ')), None)
+            stub = is_stub(lines, func_idx) if func_idx is not None else True
+            cases.append({
+                'caseId': int(m.group(1)),
+                'status': 'stub' if stub else 'implemented',
+                'filePath': str(pyfile.relative_to(root)),
+            })
+
+body = json.dumps({'projectId': UNITTCMS_PROJECT_ID, 'commitSha': commit_sha, 'cases': cases}).encode()
+req = urllib.request.Request(
+    f'{UNITTCMS_URL}/api/automation-configs/sync-status',
+    data=body,
+    headers={'Authorization': f'Bearer {UNITTCMS_TOKEN}', 'Content-Type': 'application/json'},
+    method='POST',
+)
+with urllib.request.urlopen(req) as resp:
+    data = json.loads(resp.read())
+print(f"UnitTCMS sync: {data['updated']} cases updated (commit {commit_sha[:7]})")
+`;
+}
+
 function buildTemplateFiles(tool, language, projectName, folderTree) {
   const files = [];
 
@@ -53,13 +196,14 @@ function buildTemplateFiles(tool, language, projectName, folderTree) {
         {
           name: slugify(projectName),
           version: '1.0.0',
-          scripts: { test: 'playwright test', 'test:report': 'playwright show-report' },
+          scripts: { test: 'playwright test', 'test:report': 'playwright show-report', sync: 'node scripts/unittcms-sync.mjs' },
           devDependencies: { '@playwright/test': '^1.44.0', '@types/node': '^20.0.0', typescript: '^5.0.0' },
         },
         null,
         2
       ),
     });
+    files.push({ path: 'scripts/unittcms-sync.mjs', content: buildNodeScannerScript() });
     files.push({
       path: 'playwright.config.ts',
       content: `import { defineConfig, devices } from '@playwright/test';
@@ -94,11 +238,12 @@ export default defineConfig({
     files.push({
       path: 'package.json',
       content: JSON.stringify(
-        { name: slugify(projectName), version: '1.0.0', scripts: { test: 'playwright test', 'test:report': 'playwright show-report' }, devDependencies: { '@playwright/test': '^1.44.0' } },
+        { name: slugify(projectName), version: '1.0.0', scripts: { test: 'playwright test', 'test:report': 'playwright show-report', sync: 'node scripts/unittcms-sync.mjs' }, devDependencies: { '@playwright/test': '^1.44.0' } },
         null,
         2
       ),
     });
+    files.push({ path: 'scripts/unittcms-sync.mjs', content: buildNodeScannerScript() });
     files.push({
       path: 'playwright.config.js',
       content: `const { defineConfig, devices } = require('@playwright/test');\n\nmodule.exports = defineConfig({\n  testDir: './tests',\n  fullyParallel: true,\n  retries: process.env.CI ? 2 : 0,\n  reporter: 'html',\n  use: { baseURL: 'http://localhost:3000', trace: 'on-first-retry' },\n  projects: [{ name: 'chromium', use: { ...devices['Desktop Chrome'] } }],\n});\n`,
@@ -116,10 +261,12 @@ export default defineConfig({
     files.push({ path: 'conftest.py', content: `import pytest\n\n# Add shared fixtures here\n` });
     files.push({ path: 'requirements.txt', content: `pytest>=7.0\npytest-playwright>=0.4\nplaywright>=1.44\n` });
     files.push({ path: '.gitignore', content: `__pycache__/\n*.pyc\n.pytest_cache/\ntest-results/\n` });
+    files.push({ path: 'scripts/unittcms_sync.py', content: buildPythonScannerScript() });
     for (const folder of folderTree) {
       const slug = slugify(folder.name).replace(/-/g, '_');
       const lines = ['import pytest', ''];
       for (const c of folder.cases) {
+        lines.push(`@pytest.mark.unittcms(case_id=${c.id})`);
         lines.push(`def test_${slugify(c.title).replace(/-/g, '_')}(page):`);
         if (c.preConditions) lines.push(`    # Pre-conditions: ${c.preConditions}`);
         lines.push(`    # TODO: implement`);
