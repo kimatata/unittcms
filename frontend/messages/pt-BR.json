@@ -284,7 +284,18 @@
     "delete": "Excluir",
     "are_you_sure": "Tem certeza que deseja excluir esta integração?",
     "edit": "Editar",
-    "cancel": "Cancelar"
+    "cancel": "Cancelar",
+    "git_providers": "Provedores Git",
+    "github": "GitHub",
+    "github_description": "Conecte sua conta GitHub para habilitar automação",
+    "gitlab": "GitLab",
+    "gitlab_description": "Conecte sua conta GitLab para habilitar automação",
+    "token": "Token de Acesso Pessoal",
+    "github_token_placeholder": "ghp_xxxxxxxxxxxxxxxxxxxx",
+    "gitlab_token_placeholder": "glpat-xxxxxxxxxxxxxxxxxxxx",
+    "instance_url": "URL da Instância",
+    "namespace": "Usuário ou Organização",
+    "namespace_placeholder": "usuário ou org"
   },
   "Home": {
     "home": "Início",

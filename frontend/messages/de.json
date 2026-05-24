@@ -284,7 +284,18 @@
     "delete": "Löschen",
     "are_you_sure": "Bist du sicher, dass du diese Integration löschen möchtest?",
     "edit": "Bearbeiten",
-    "cancel": "Abbrechen"
+    "cancel": "Abbrechen",
+    "git_providers": "Git-Anbieter",
+    "github": "GitHub",
+    "github_description": "Verbinde dein GitHub-Konto, um Automatisierung zu aktivieren",
+    "gitlab": "GitLab",
+    "gitlab_description": "Verbinde dein GitLab-Konto, um Automatisierung zu aktivieren",
+    "token": "Persönliches Zugriffstoken",
+    "github_token_placeholder": "ghp_xxxxxxxxxxxxxxxxxxxx",
+    "gitlab_token_placeholder": "glpat-xxxxxxxxxxxxxxxxxxxx",
+    "instance_url": "Instanz-URL",
+    "namespace": "Benutzername oder Organisation",
+    "namespace_placeholder": "Benutzername oder Org"
   },
   "Home": {
     "home": "Startseite",

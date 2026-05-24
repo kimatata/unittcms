@@ -10,25 +10,30 @@ export default function (sequelize) {
 
   router.post('/upsert', verifySignedIn, async (req, res) => {
     try {
-      const { projectId, service, apiKey } = req.body;
+      const { projectId, service, apiKey, settings } = req.body;
       if (!projectId || !service || !apiKey) {
         return res.status(400).send('projectId, service, and apiKey are required');
       }
 
+      const settingsJson = settings ? JSON.stringify(settings) : null;
+
       const [config, created] = await IntegrationConfig.findOrCreate({
         where: { projectId, service },
-        defaults: { projectId, service, apiKey },
+        defaults: { projectId, service, apiKey, settings: settingsJson },
       });
 
       if (!created) {
-        // Only update if a real key was provided (not the masked placeholder)
+        const updates = { settings: settingsJson };
+        // Only update token if a real value was provided (not the masked placeholder)
         if (apiKey && !apiKey.startsWith('***')) {
-          await config.update({ apiKey });
+          updates.apiKey = apiKey;
         }
+        await config.update(updates);
       }
 
       const data = config.toJSON();
       data.apiKey = maskKey(data.apiKey);
+      data.settings = data.settings ? JSON.parse(data.settings) : null;
       res.json(data);
     } catch (error) {
       console.error(error);

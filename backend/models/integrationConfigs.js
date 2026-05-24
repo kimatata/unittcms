@@ -14,6 +14,10 @@ function defineIntegrationConfig(sequelize, DataTypes) {
       type: DataTypes.STRING,
       allowNull: false,
     },
+    settings: {
+      type: DataTypes.TEXT,
+      allowNull: true,
+    },
   });
 
   IntegrationConfig.associate = (models) => {

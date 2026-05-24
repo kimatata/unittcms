@@ -15,6 +15,7 @@ export default function (sequelize) {
       const masked = configs.map((c) => {
         const d = c.toJSON();
         d.apiKey = maskKey(d.apiKey);
+        d.settings = d.settings ? JSON.parse(d.settings) : null;
         return d;
       });
       res.json(masked);

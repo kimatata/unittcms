@@ -284,7 +284,18 @@
     "delete": "削除",
     "are_you_sure": "このインテグレーションを削除してもよろしいですか？",
     "edit": "編集",
-    "cancel": "キャンセル"
+    "cancel": "キャンセル",
+    "git_providers": "Gitプロバイダー",
+    "github": "GitHub",
+    "github_description": "自動化を有効にするためにGitHubアカウントを接続",
+    "gitlab": "GitLab",
+    "gitlab_description": "自動化を有効にするためにGitLabアカウントを接続",
+    "token": "個人アクセストークン",
+    "github_token_placeholder": "ghp_xxxxxxxxxxxxxxxxxxxx",
+    "gitlab_token_placeholder": "glpat-xxxxxxxxxxxxxxxxxxxx",
+    "instance_url": "インスタンスURL",
+    "namespace": "ユーザー名または組織",
+    "namespace_placeholder": "ユーザー名またはOrg"
   },
   "Home": {
     "home": "ホーム",

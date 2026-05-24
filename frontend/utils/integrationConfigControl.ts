@@ -19,7 +19,8 @@ export async function upsertIntegrationConfig(
   jwt: string,
   projectId: number,
   service: string,
-  apiKey: string
+  apiKey: string,
+  settings?: Record<string, string>
 ): Promise<IntegrationConfigType> {
   const res = await fetch(`${Config.apiServer}/integration-configs/upsert`, {
     method: 'POST',
@@ -27,7 +28,7 @@ export async function upsertIntegrationConfig(
       Authorization: `Bearer ${jwt}`,
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify({ projectId, service, apiKey }),
+    body: JSON.stringify({ projectId, service, apiKey, settings }),
   });
   if (!res.ok) throw new Error(await res.text());
   return res.json();

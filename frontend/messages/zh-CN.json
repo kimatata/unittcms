@@ -284,7 +284,18 @@
     "delete": "删除",
     "are_you_sure": "确定要删除此集成吗？",
     "edit": "编辑",
-    "cancel": "取消"
+    "cancel": "取消",
+    "git_providers": "Git 提供商",
+    "github": "GitHub",
+    "github_description": "连接您的 GitHub 帐户以启用自动化",
+    "gitlab": "GitLab",
+    "gitlab_description": "连接您的 GitLab 帐户以启用自动化",
+    "token": "个人访问令牌",
+    "github_token_placeholder": "ghp_xxxxxxxxxxxxxxxxxxxx",
+    "gitlab_token_placeholder": "glpat-xxxxxxxxxxxxxxxxxxxx",
+    "instance_url": "实例 URL",
+    "namespace": "用户名或组织",
+    "namespace_placeholder": "用户名或 org"
   },
   "Home": {
     "home": "首页",

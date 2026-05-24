@@ -284,7 +284,18 @@
     "delete": "Delete",
     "are_you_sure": "Are you sure you want to delete this integration?",
     "edit": "Edit",
-    "cancel": "Cancel"
+    "cancel": "Cancel",
+    "git_providers": "Git Providers",
+    "github": "GitHub",
+    "github_description": "Connect your GitHub account to enable automation",
+    "gitlab": "GitLab",
+    "gitlab_description": "Connect your GitLab account to enable automation",
+    "token": "Personal Access Token",
+    "github_token_placeholder": "ghp_xxxxxxxxxxxxxxxxxxxx",
+    "gitlab_token_placeholder": "glpat-xxxxxxxxxxxxxxxxxxxx",
+    "instance_url": "Instance URL",
+    "namespace": "Username or Organization",
+    "namespace_placeholder": "username or org"
   },
   "Home": {
     "home": "Home",

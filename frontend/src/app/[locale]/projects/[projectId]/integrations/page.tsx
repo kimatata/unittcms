@@ -26,6 +26,17 @@ export default function Page({ params }: { params: { projectId: string } }) {
     areYouSure: t('are_you_sure'),
     edit: t('edit'),
     cancel: t('cancel'),
+    gitProviders: t('git_providers'),
+    github: t('github'),
+    githubDescription: t('github_description'),
+    gitlab: t('gitlab'),
+    gitlabDescription: t('gitlab_description'),
+    token: t('token'),
+    githubTokenPlaceholder: t('github_token_placeholder'),
+    gitlabTokenPlaceholder: t('gitlab_token_placeholder'),
+    instanceUrl: t('instance_url'),
+    namespace: t('namespace'),
+    namespacePlaceholder: t('namespace_placeholder'),
   };
 
   return <IntegrationsPage projectId={params.projectId} messages={messages} />;

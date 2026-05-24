@@ -3,6 +3,7 @@ export type IntegrationConfigType = {
   projectId: number;
   service: string;
   apiKey: string;
+  settings: Record<string, string> | null;
   createdAt: string;
   updatedAt: string;
 };
@@ -29,4 +30,15 @@ export type IntegrationsMessages = {
   areYouSure: string;
   edit: string;
   cancel: string;
+  gitProviders: string;
+  github: string;
+  githubDescription: string;
+  gitlab: string;
+  gitlabDescription: string;
+  token: string;
+  githubTokenPlaceholder: string;
+  gitlabTokenPlaceholder: string;
+  instanceUrl: string;
+  namespace: string;
+  namespacePlaceholder: string;
 };
