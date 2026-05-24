@@ -206,8 +206,8 @@ export default function AutomationPage({ projectId, messages }: Props) {
         setCommitUrls((prev) => ({ ...prev, [error.id]: result.commitUrl! }));
       }
       addToast({ title: messages.fixSuccess, color: 'success' });
-    } catch (error) {
-      logError('AutomationPage fixError', error);
+    } catch (err) {
+      logError('AutomationPage fixError', err);
       setErrorFixState((prev) => ({ ...prev, [error.id]: 'error' }));
       addToast({ title: messages.fixError, color: 'danger' });
     }
