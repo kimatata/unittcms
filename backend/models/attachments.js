@@ -12,12 +12,10 @@ function defineAttachment(sequelize, DataTypes) {
       type: DataTypes.STRING,
       allowNull: false,
     },
-  });
+  }, { tableName: 'attachments' });
 
   Attachment.associate = (models) => {
-    Attachment.belongsToMany(models.Case, {
-      through: 'caseAttachments',
-    });
+    Attachment.belongsToMany(models.Case, { through: models.CaseAttachment, foreignKey: 'attachmentId', otherKey: 'caseId' });
   };
 
   return Attachment;

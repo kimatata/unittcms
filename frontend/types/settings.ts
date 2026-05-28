@@ -31,4 +31,8 @@ export type SettingsMessages = {
   autoFixDescription: string;
   autoFixUpdated: string;
   autoFixUpdateError: string;
+  deleteAutomationProject: string;
+  deleteAutomationProjectConfirm: string;
+  deleteAutomationProjectSuccess: string;
+  deleteAutomationProjectError: string;
 };

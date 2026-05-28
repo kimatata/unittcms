@@ -1,13 +1,10 @@
 import express from 'express';
 import bcrypt from 'bcrypt';
-import { DataTypes } from 'sequelize';
-import defineUser from '../../models/users.js';
 import authMiddleware from '../../middleware/auth.js';
 const router = express.Router();
 
-export default function (sequelize) {
-  const { verifySignedIn } = authMiddleware(sequelize);
-  const User = defineUser(sequelize, DataTypes);
+export default function (db) {
+  const { verifySignedIn } = authMiddleware(db);
 
   // Change user password
   router.put('/password', verifySignedIn, async (req, res) => {
@@ -23,7 +20,7 @@ export default function (sequelize) {
         return res.status(400).send('New password must be at least 8 characters');
       }
 
-      const user = await User.findByPk(userId);
+      const user = await db.repos.users.findByPk(userId);
       if (!user) {
         return res.status(404).send('User not found');
       }

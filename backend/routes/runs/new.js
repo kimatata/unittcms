@@ -1,14 +1,11 @@
 import express from 'express';
 const router = express.Router();
-import { DataTypes } from 'sequelize';
-import defineRun from '../../models/runs.js';
 import authMiddleware from '../../middleware/auth.js';
 import editableMiddleware from '../../middleware/verifyEditable.js';
 
-export default function (sequelize) {
-  const { verifySignedIn } = authMiddleware(sequelize);
-  const { verifyProjectReporterFromProjectId } = editableMiddleware(sequelize);
-  const Run = defineRun(sequelize, DataTypes);
+export default function (db) {
+  const { verifySignedIn } = authMiddleware(db);
+  const { verifyProjectReporterFromProjectId } = editableMiddleware(db);
 
   router.post('/', verifySignedIn, verifyProjectReporterFromProjectId, async (req, res) => {
     try {
@@ -18,7 +15,7 @@ export default function (sequelize) {
         return res.status(400).json({ error: 'Name and projectId are required' });
       }
 
-      const newRun = await Run.create({
+      const newRun = await db.repos.runs.create({
         name,
         configurations,
         description,

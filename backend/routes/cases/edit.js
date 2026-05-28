@@ -1,14 +1,12 @@
 import express from 'express';
 const router = express.Router();
-import { DataTypes } from 'sequelize';
-import defineCase from '../../models/cases.js';
 import authMiddleware from '../../middleware/auth.js';
 import editableMiddleware from '../../middleware/verifyEditable.js';
 
-export default function (sequelize) {
-  const { verifySignedIn } = authMiddleware(sequelize);
-  const { verifyProjectDeveloperFromCaseId } = editableMiddleware(sequelize);
-  const Case = defineCase(sequelize, DataTypes);
+export default function (db) {
+  const { verifySignedIn } = authMiddleware(db);
+  const { verifyProjectDeveloperFromCaseId } = editableMiddleware(db);
+  const Case = db.repos.cases;
 
   router.put('/:caseId', verifySignedIn, verifyProjectDeveloperFromCaseId, async (req, res) => {
     const caseId = req.params.caseId;

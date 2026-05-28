@@ -196,11 +196,6 @@
   },
   "Automation": {
     "automation": "Automatisierung",
-    "gitlab_connection": "GitLab-Verbindung",
-    "gitlab_url": "GitLab-URL",
-    "gitlab_token": "Persönliches Zugriffstoken",
-    "gitlab_namespace": "Namensraum (optional)",
-    "repo_config": "Repository-Konfiguration",
     "repo_name": "Repository-Name",
     "automation_tool": "Automatisierungswerkzeug",
     "automation_language": "Sprache",
@@ -221,15 +216,10 @@
     "error_saved": "Konfiguration konnte nicht gespeichert werden",
     "error_generated": "Automatisierungsprojekt konnte nicht erstellt werden",
     "open_repo": "Repository öffnen",
-    "gitlab_url_placeholder": "https://gitlab.com",
-    "gitlab_token_placeholder": "glpat-xxxxxxxxxxxxxxxxxxxx",
     "repo_name_placeholder": "meine-automatisierungstests",
     "provider": "Git-Anbieter",
     "provider_gitlab": "GitLab",
     "provider_github": "GitHub",
-    "instance_url": "Instanz-URL",
-    "github_url_placeholder": "https://github.com",
-    "github_token_placeholder": "ghp_xxxxxxxxxxxxxxxxxxxx",
     "ci_section": "CI / Testläufe",
     "run_tests": "Tests ausführen",
     "triggering": "Wird ausgelöst...",
@@ -248,9 +238,6 @@
     "repairing": "Wird repariert...",
     "success_repaired": "Kerndateien repariert und ins Repository gepusht",
     "error_repaired": "Kerndateien konnten nicht repariert werden",
-    "config_section": "Konfiguration",
-    "hide_config": "Konfiguration verbergen",
-    "show_config": "Konfiguration anzeigen",
     "errors_section": "Testfehler",
     "fetch_errors": "Fehler abrufen",
     "fetching_errors": "Wird abgerufen...",
@@ -261,7 +248,16 @@
     "fix_error": "KI-Korrektur konnte nicht angewendet werden",
     "view_commit": "Commit anzeigen",
     "auto_fix_running": "Automatische Korrektur läuft — KI behebt Fehler automatisch",
-    "no_anthropic_key": "Füge einen Anthropic-API-Schlüssel im Reiter Integrationen hinzu, um KI-Korrekturen zu aktivieren"
+    "no_anthropic_key": "Füge einen Anthropic-API-Schlüssel im Reiter Integrationen hinzu, um KI-Korrekturen zu aktivieren",
+    "implemented_section": "Implementierte Tests",
+    "implemented_count": "{count} von {total} Tests implementiert",
+    "no_implemented_tests": "Noch keine implementierten Tests. Führe das Automatisierungsprojekt aus und synchronisiere es.",
+    "run_mode_all": "Alle ausführen",
+    "run_mode_select": "Tests auswählen",
+    "run_mode_test_run": "Von Test-Run",
+    "run_selected_count": "{count} Ausgewählte ausführen",
+    "select_test_run_placeholder": "Test-Run auswählen",
+    "implemented_count_in_run": "{count} Tests implementiert"
   },
   "Integrations": {
     "integrations": "Integrationen",
@@ -551,6 +547,10 @@
     "auto_fix_enabled": "Automatische Korrektur bei Fehlern",
     "auto_fix_description": "KI-Korrekturen automatisch anwenden, wenn Testläufe fehlschlagen (erfordert Anthropic-API-Schlüssel)",
     "auto_fix_updated": "Einstellung für automatische Korrektur aktualisiert",
-    "auto_fix_update_error": "Einstellung für automatische Korrektur konnte nicht aktualisiert werden"
+    "auto_fix_update_error": "Einstellung für automatische Korrektur konnte nicht aktualisiert werden",
+    "delete_automation_project": "Automatisierungsprojekt löschen",
+    "delete_automation_project_confirm": "Das Remote-Repository wird dauerhaft gelöscht und die Automatisierungseinrichtung zurückgesetzt. Die Integrationsverbindungseinstellungen bleiben erhalten.",
+    "delete_automation_project_success": "Automatisierungsprojekt erfolgreich gelöscht",
+    "delete_automation_project_error": "Automatisierungsprojekt konnte nicht gelöscht werden"
   }
 }

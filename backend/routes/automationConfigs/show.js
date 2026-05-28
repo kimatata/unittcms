@@ -1,21 +1,17 @@
 import express from 'express';
 const router = express.Router();
-import { DataTypes } from 'sequelize';
-import defineAutomationConfig from '../../models/automationConfigs.js';
 import authMiddleware from '../../middleware/auth.js';
 
-export default function (sequelize) {
-  const { verifySignedIn } = authMiddleware(sequelize);
-  const AutomationConfig = defineAutomationConfig(sequelize, DataTypes);
+export default function (db) {
+  const { verifySignedIn } = authMiddleware(db);
 
   router.get('/project/:projectId', verifySignedIn, async (req, res) => {
     try {
       const { projectId } = req.params;
-      const config = await AutomationConfig.findOne({ where: { projectId } });
+      const config = await db.repos.automationConfigs.findOne({ where: { projectId } });
       if (!config) {
         return res.status(404).send('Not found');
       }
-      // mask token in response
       const data = config.toJSON();
       data.gitlabToken = data.gitlabToken ? '***' : '';
       res.json(data);

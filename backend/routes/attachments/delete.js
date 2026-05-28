@@ -3,18 +3,16 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import express from 'express';
 const router = express.Router();
-import { DataTypes } from 'sequelize';
-import defineAttachment from '../../models/attachments.js';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-export default function (sequelize) {
-  const Attachment = defineAttachment(sequelize, DataTypes);
+export default function (db) {
+  const Attachment = db.repos.attachments;
 
   // TODO middleware to verify user permission to delete attachment
   router.delete('/:attachmentId', async (req, res) => {
     const attachmentId = req.params.attachmentId;
-    const t = await sequelize.transaction();
+    const t = await db.sequelize.transaction();
 
     try {
       const attachment = await Attachment.findByPk(attachmentId);

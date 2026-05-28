@@ -1,12 +1,9 @@
 import express from 'express';
 const router = express.Router();
-import { DataTypes } from 'sequelize';
-import defineComment from '../../models/comments.js';
 import authMiddleware from '../../middleware/auth.js';
 
-export default function (sequelize) {
-  const { verifySignedIn } = authMiddleware(sequelize);
-  const Comment = defineComment(sequelize, DataTypes);
+export default function (db) {
+  const { verifySignedIn } = authMiddleware(db);
 
   router.delete('/:commentId', verifySignedIn, async (req, res) => {
     const commentId = req.params.commentId;
@@ -16,7 +13,7 @@ export default function (sequelize) {
     }
 
     try {
-      const comment = await Comment.findByPk(commentId);
+      const comment = await db.repos.comments.findByPk(commentId);
       if (!comment) {
         return res.status(404).json({ error: 'Comment not found' });
       }

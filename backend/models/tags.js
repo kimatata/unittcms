@@ -13,19 +13,11 @@ function defineTag(sequelize, DataTypes) {
       },
       onDelete: 'CASCADE',
     },
-  });
+  }, { tableName: 'tags' });
 
   Tags.associate = (models) => {
-    Tags.belongsTo(models.Project, {
-      foreignKey: 'projectId',
-      onDelete: 'CASCADE',
-    });
-
-    Tags.belongsToMany(models.Case, {
-      through: 'caseTags',
-      foreignKey: 'tagId',
-      otherKey: 'caseId',
-    });
+    Tags.belongsTo(models.Project, { foreignKey: 'projectId', onDelete: 'CASCADE' });
+    Tags.belongsToMany(models.Case, { through: models.caseTags, foreignKey: 'tagId', otherKey: 'caseId' });
   };
 
   return Tags;

@@ -1,14 +1,12 @@
 import express from 'express';
 const router = express.Router();
-import { DataTypes } from 'sequelize';
-import defineRunCase from '../../models/runCases.js';
 import authMiddleware from '../../middleware/auth.js';
 import visibilityMiddleware from '../../middleware/verifyVisible.js';
 
-export default function (sequelize) {
-  const { verifySignedIn } = authMiddleware(sequelize);
-  const { verifyProjectVisibleFromRunId } = visibilityMiddleware(sequelize);
-  const RunCase = defineRunCase(sequelize, DataTypes);
+export default function (db) {
+  const { verifySignedIn } = authMiddleware(db);
+  const { verifyProjectVisibleFromRunId } = visibilityMiddleware(db);
+  const RunCase = db.repos.runCases;
 
   router.get('/', verifySignedIn, verifyProjectVisibleFromRunId, async (req, res) => {
     const { runId } = req.query;

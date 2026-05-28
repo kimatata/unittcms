@@ -3,16 +3,13 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import multer from 'multer';
 import express from 'express';
-import { DataTypes } from 'sequelize';
-import defineUser from '../../models/users.js';
 import authMiddleware from '../../middleware/auth.js';
 const router = express.Router();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-export default function (sequelize) {
-  const { verifySignedIn } = authMiddleware(sequelize);
-  const User = defineUser(sequelize, DataTypes);
+export default function (db) {
+  const { verifySignedIn } = authMiddleware(db);
 
   // Create avatars folder if it does not exist
   const avatarDir = path.join(__dirname, '../../public/uploads/avatars');
@@ -58,7 +55,7 @@ export default function (sequelize) {
         return res.status(400).json({ error: 'No file uploaded' });
       }
 
-      const user = await User.findByPk(userId);
+      const user = await db.repos.users.findByPk(userId);
       if (!user) {
         // Delete uploaded file if user not found
         fs.unlinkSync(file.path);
@@ -83,7 +80,7 @@ export default function (sequelize) {
       await user.update({ avatarPath });
 
       // Return updated user without password
-      const updatedUser = await User.findByPk(userId, {
+      const updatedUser = await db.repos.users.findByPk(userId, {
         attributes: ['id', 'email', 'username', 'role', 'avatarPath'],
       });
 
@@ -103,7 +100,7 @@ export default function (sequelize) {
     try {
       const userId = req.userId;
 
-      const user = await User.findByPk(userId);
+      const user = await db.repos.users.findByPk(userId);
       if (!user) {
         return res.status(404).send('User not found');
       }
@@ -125,7 +122,7 @@ export default function (sequelize) {
       await user.update({ avatarPath: null });
 
       // Return updated user without password
-      const updatedUser = await User.findByPk(userId, {
+      const updatedUser = await db.repos.users.findByPk(userId, {
         attributes: ['id', 'email', 'username', 'role', 'avatarPath', 'locale'],
       });
 

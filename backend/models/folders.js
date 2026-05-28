@@ -12,7 +12,7 @@ function defineFolder(sequelize, DataTypes) {
       type: DataTypes.INTEGER,
       allowNull: true,
       references: {
-        model: 'folder',
+        model: 'folders',
         key: 'id',
       },
       onDelete: 'CASCADE',
@@ -21,16 +21,16 @@ function defineFolder(sequelize, DataTypes) {
       type: DataTypes.INTEGER,
       allowNull: false,
       references: {
-        model: 'project',
+        model: 'projects',
         key: 'id',
       },
       onDelete: 'CASCADE',
     },
-  });
+  }, { tableName: 'folders' });
 
   Folder.associate = (models) => {
     Folder.belongsTo(models.Project, { foreignKey: 'projectId', onDelete: 'CASCADE' });
-    Folder.belongsTo(models.folder, { foreignKey: 'parentFolderId', onDelete: 'CASCADE' });
+    Folder.belongsTo(models.Folder, { foreignKey: 'parentFolderId', onDelete: 'CASCADE', as: 'parentFolder' });
     Folder.hasMany(models.Case, { foreignKey: 'folderId' });
   };
 

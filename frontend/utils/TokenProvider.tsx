@@ -1,5 +1,5 @@
 'use client';
-import { createContext, useState, useEffect } from 'react';
+import { createContext, useState, useEffect, useMemo, useCallback } from 'react';
 import { addToast } from '@heroui/react';
 import {
   isSignedIn as tokenIsSinedIn,
@@ -64,57 +64,73 @@ const TokenProvider = ({ toastMessages, locale, children }: TokenProps) => {
   });
   const [projectRoles, setProjectRoles] = useState<ProjectRoleType[]>([]);
 
-  const isSignedIn = () => {
-    return tokenIsSinedIn(token);
-  };
+  const isSignedIn = useCallback(() => tokenIsSinedIn(token), [token]);
 
-  const isAdmin = () => {
-    return tokenIsAdmin(token);
-  };
+  const isAdmin = useCallback(() => tokenIsAdmin(token), [token]);
 
-  const isProjectOwner = (projectId: number) => {
-    return tokenIsProjectOnwer(projectRoles, projectId);
-  };
+  const isProjectOwner = useCallback(
+    (projectId: number) => tokenIsProjectOnwer(projectRoles, projectId),
+    [projectRoles],
+  );
 
-  const isProjectManager = (projectId: number) => {
-    return tokenIsProjectManager(projectRoles, projectId);
-  };
+  const isProjectManager = useCallback(
+    (projectId: number) => tokenIsProjectManager(projectRoles, projectId),
+    [projectRoles],
+  );
 
-  const isProjectDeveloper = (projectId: number) => {
-    return tokenIsProjectDeveloper(projectRoles, projectId);
-  };
+  const isProjectDeveloper = useCallback(
+    (projectId: number) => tokenIsProjectDeveloper(projectRoles, projectId),
+    [projectRoles],
+  );
 
-  const isProjectReporter = (projectId: number) => {
-    return tokenIsProjectReporter(projectRoles, projectId);
-  };
+  const isProjectReporter = useCallback(
+    (projectId: number) => tokenIsProjectReporter(projectRoles, projectId),
+    [projectRoles],
+  );
 
-  async function refreshProjectRoles() {
-    if (!hasRestoreFinished || !token || !token.access_token) {
-      return;
-    }
+  const refreshProjectRoles = useCallback(
+    async function () {
+      if (!hasRestoreFinished || !token || !token.access_token) {
+        return;
+      }
 
-    try {
-      const data = await fetchMyRoles(token.access_token);
-      setProjectRoles(data);
-    } catch (error: unknown) {
-      logError('Error fetching project roles', error);
-    }
-  }
+      try {
+        const data = await fetchMyRoles(token.access_token);
+        setProjectRoles(data);
+      } catch (error: unknown) {
+        logError('Error fetching project roles', error);
+      }
+    },
+    [hasRestoreFinished, token],
+  );
 
-  const tokenContext = {
-    token,
-    projectRoles,
-    isSignedIn,
-    isAdmin,
-    isProjectOwner,
-    isProjectManager,
-    isProjectDeveloper,
-    isProjectReporter,
-    setToken,
-    refreshProjectRoles,
-    storeTokenToLocalStorage,
-    removeTokenFromLocalStorage,
-  };
+  const tokenContext = useMemo(
+    () => ({
+      token,
+      projectRoles,
+      isSignedIn,
+      isAdmin,
+      isProjectOwner,
+      isProjectManager,
+      isProjectDeveloper,
+      isProjectReporter,
+      setToken,
+      refreshProjectRoles,
+      storeTokenToLocalStorage,
+      removeTokenFromLocalStorage,
+    }),
+    [
+      token,
+      projectRoles,
+      isSignedIn,
+      isAdmin,
+      isProjectOwner,
+      isProjectManager,
+      isProjectDeveloper,
+      isProjectReporter,
+      refreshProjectRoles,
+    ],
+  );
 
   const restoreTokenFromLocalStorage = () => {
     const tokenString = localStorage.getItem(LOCAL_STORAGE_KEY);

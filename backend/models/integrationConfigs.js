@@ -3,7 +3,7 @@ function defineIntegrationConfig(sequelize, DataTypes) {
     projectId: {
       type: DataTypes.INTEGER,
       allowNull: false,
-      references: { model: 'Projects', key: 'id' },
+      references: { model: 'projects', key: 'id' },
       onDelete: 'CASCADE',
     },
     service: {
@@ -18,7 +18,7 @@ function defineIntegrationConfig(sequelize, DataTypes) {
       type: DataTypes.TEXT,
       allowNull: true,
     },
-  });
+  }, { tableName: 'integrationConfigs' });
 
   IntegrationConfig.associate = (models) => {
     IntegrationConfig.belongsTo(models.Project, { foreignKey: 'projectId', onDelete: 'CASCADE' });

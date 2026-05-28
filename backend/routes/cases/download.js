@@ -1,24 +1,17 @@
 import express from 'express';
 const router = express.Router();
-import { DataTypes } from 'sequelize';
 import Papa from 'papaparse';
-import defineCase from '../../models/cases.js';
-import defineStep from '../../models/steps.js';
-import defineFolder from '../../models/folders.js';
 import authMiddleware from '../../middleware/auth.js';
 import visibilityMiddleware from '../../middleware/verifyVisible.js';
 import { contentDisposition, toSafeFileName } from '../../config/contentDisposition.js';
 import { testRunStatus, priorities, testTypes, automationStatus, templates } from '../../config/enums.js';
 
-export default function (sequelize) {
-  const Case = defineCase(sequelize, DataTypes);
-  const Step = defineStep(sequelize, DataTypes);
-  const Folder = defineFolder(sequelize, DataTypes);
-  Case.belongsTo(Folder);
-  Case.belongsToMany(Step, { through: 'caseSteps' });
-  Step.belongsToMany(Case, { through: 'caseSteps' });
-  const { verifySignedIn } = authMiddleware(sequelize);
-  const { verifyProjectVisibleFromFolderId } = visibilityMiddleware(sequelize);
+export default function (db) {
+  const Case = db.repos.cases;
+  const Step = db.repos.steps;
+  const Folder = db.repos.folders;
+  const { verifySignedIn } = authMiddleware(db);
+  const { verifyProjectVisibleFromFolderId } = visibilityMiddleware(db);
 
   router.get('/download', verifySignedIn, verifyProjectVisibleFromFolderId, async (req, res) => {
     const { folderId, type } = req.query;

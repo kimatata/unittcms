@@ -57,26 +57,19 @@ function defineCase(sequelize, DataTypes) {
       type: DataTypes.INTEGER,
       allowNull: false,
       references: {
-        model: 'folder',
+        model: 'folders',
         key: 'id',
       },
       onDelete: 'CASCADE',
     },
-  });
+  }, { tableName: 'cases' });
 
   Case.associate = (models) => {
-    Case.belongsTo(models.Folder, {
-      foreignKey: 'folderId',
-      onDelete: 'CASCADE',
-    });
-    Case.belongsToMany(models.Step, {
-      through: 'caseSteps',
-    });
-    Case.belongsToMany(models.Tags, {
-      through: 'caseTags',
-      foreignKey: 'caseId',
-      otherKey: 'tagId',
-    });
+    Case.belongsTo(models.Folder, { foreignKey: 'folderId', onDelete: 'CASCADE' });
+    Case.hasMany(models.RunCase, { foreignKey: 'caseId' });
+    Case.belongsToMany(models.Step, { through: models.CaseStep, foreignKey: 'caseId', otherKey: 'stepId' });
+    Case.belongsToMany(models.Tags, { through: models.caseTags, foreignKey: 'caseId', otherKey: 'tagId' });
+    Case.belongsToMany(models.Attachment, { through: models.CaseAttachment, foreignKey: 'caseId', otherKey: 'attachmentId' });
   };
 
   return Case;

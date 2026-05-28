@@ -1,20 +1,14 @@
 import express from 'express';
 const router = express.Router();
-import { DataTypes } from 'sequelize';
-import defineCase from '../../models/cases.js';
-import defineStep from '../../models/steps.js';
-import defineCaseStep from '../../models/caseSteps.js';
 import authMiddleware from '../../middleware/auth.js';
 import editableMiddleware from '../../middleware/verifyEditable.js';
 
-export default function (sequelize) {
-  const { verifySignedIn } = authMiddleware(sequelize);
-  const { verifyProjectDeveloperFromProjectId } = editableMiddleware(sequelize);
-  const Case = defineCase(sequelize, DataTypes);
-  const Step = defineStep(sequelize, DataTypes);
-  const CaseStep = defineCaseStep(sequelize, DataTypes);
-  Case.belongsToMany(Step, { through: 'caseSteps' });
-  Step.belongsToMany(Case, { through: 'caseSteps' });
+export default function (db) {
+  const { verifySignedIn } = authMiddleware(db);
+  const { verifyProjectDeveloperFromProjectId } = editableMiddleware(db);
+  const Case = db.repos.cases;
+  const Step = db.repos.steps;
+  const CaseStep = db.repos.caseSteps;
 
   // TODO:  Implement a safer middleware to check permissions based on the actual caseId (in this case, multiples case ids)
   router.post('/clone', verifySignedIn, verifyProjectDeveloperFromProjectId, async (req, res) => {
@@ -42,7 +36,7 @@ export default function (sequelize) {
         return { ...clonedCase, folderId: targetFolderId };
       });
 
-      await sequelize.transaction(async (t) => {
+      await db.sequelize.transaction(async (t) => {
         for (const c of clonedCases) {
           const newCase = await Case.create(c, { transaction: t });
 

@@ -1,24 +1,11 @@
 import express from 'express';
 const router = express.Router();
-import { DataTypes } from 'sequelize';
-import defineFolder from '../../models/folders.js';
-import defineCase from '../../models/cases.js';
-import defineStep from '../../models/steps.js';
-import defineCaseStep from '../../models/caseSteps.js';
 import authMiddleware from '../../middleware/auth.js';
 import editableMiddleware from '../../middleware/verifyEditable.js';
 
-export default function (sequelize) {
-  const { verifySignedIn } = authMiddleware(sequelize);
-  const { verifyProjectDeveloperFromFolderId } = editableMiddleware(sequelize);
-
-  const Folder = defineFolder(sequelize, DataTypes);
-  const Case = defineCase(sequelize, DataTypes);
-  const Step = defineStep(sequelize, DataTypes);
-  const CaseStep = defineCaseStep(sequelize, DataTypes);
-  Case.belongsTo(Folder);
-  Case.belongsToMany(Step, { through: 'caseSteps' });
-  Step.belongsToMany(Case, { through: 'caseSteps' });
+export default function (db) {
+  const { verifySignedIn } = authMiddleware(db);
+  const { verifyProjectDeveloperFromFolderId } = editableMiddleware(db);
 
   async function _cloneFolderRecursive(sourceFolder, targetParent, transaction) {
     const folderToCreate = {
@@ -28,11 +15,11 @@ export default function (sequelize) {
       projectId: targetParent.projectId,
     };
 
-    const clonedFolder = await Folder.create(folderToCreate, { transaction });
+    const clonedFolder = await db.repos.folders.create(folderToCreate, { transaction });
 
     await _cloneCasesAndSteps(sourceFolder.id, clonedFolder.id, transaction);
 
-    const childFolders = await Folder.findAll({
+    const childFolders = await db.repos.folders.findAll({
       where: { parentFolderId: sourceFolder.id },
     });
 
@@ -44,9 +31,9 @@ export default function (sequelize) {
   }
 
   async function _cloneCasesAndSteps(folderId, targetFolderId, transaction) {
-    const folderCases = await Case.findAll({
+    const folderCases = await db.repos.cases.findAll({
       where: { folderId },
-      include: [{ model: Step, through: { attributes: ['stepNo'] } }],
+      include: [{ model: db.repos.steps, through: { attributes: ['stepNo'] } }],
     });
 
     if (folderCases.length === 0) return;
@@ -60,7 +47,7 @@ export default function (sequelize) {
     });
 
     for (const c of clonedCases) {
-      const newCase = await Case.create(c, { transaction });
+      const newCase = await db.repos.cases.create(c, { transaction });
 
       if (c.Steps && c.Steps.length > 0) {
         const clonedSteps = c.Steps.map((s) => {
@@ -69,14 +56,14 @@ export default function (sequelize) {
           return clonedStep;
         });
 
-        const newSteps = await Step.bulkCreate(clonedSteps, { transaction });
+        const newSteps = await db.repos.steps.bulkCreate(clonedSteps, { transaction });
         const caseSteps = newSteps.map((step, index) => ({
           caseId: newCase.id,
           stepId: step.id,
           stepNo: clonedSteps[index].caseSteps.stepNo,
         }));
 
-        await CaseStep.bulkCreate(caseSteps, { transaction });
+        await db.repos.caseSteps.bulkCreate(caseSteps, { transaction });
       }
     }
   }
@@ -86,14 +73,14 @@ export default function (sequelize) {
     const { targetFolderId } = req.body;
 
     try {
-      const sourceFolder = await Folder.findByPk(folderId);
-      const targetFolder = await Folder.findByPk(targetFolderId);
+      const sourceFolder = await db.repos.folders.findByPk(folderId);
+      const targetFolder = await db.repos.folders.findByPk(targetFolderId);
 
       if (!sourceFolder || !targetFolder) {
         return res.status(404).send('Folder or target folder not found');
       }
 
-      await sequelize.transaction(async (t) => {
+      await db.sequelize.transaction(async (t) => {
         await _cloneFolderRecursive(sourceFolder, targetFolder, t);
       });
 

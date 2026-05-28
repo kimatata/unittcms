@@ -1,5 +1,5 @@
 export async function up(queryInterface, Sequelize) {
-  await queryInterface.createTable('AutomationConfigs', {
+  await queryInterface.createTable('automationConfigs', {
     id: {
       type: Sequelize.INTEGER,
       primaryKey: true,
@@ -9,7 +9,7 @@ export async function up(queryInterface, Sequelize) {
     projectId: {
       type: Sequelize.INTEGER,
       allowNull: false,
-      references: { model: 'Projects', key: 'id' },
+      references: { model: 'projects', key: 'id' },
       onDelete: 'CASCADE',
     },
     gitlabUrl: {
@@ -64,5 +64,5 @@ export async function up(queryInterface, Sequelize) {
 }
 
 export async function down(queryInterface) {
-  await queryInterface.dropTable('AutomationConfigs');
+  await queryInterface.dropTable('automationConfigs');
 }

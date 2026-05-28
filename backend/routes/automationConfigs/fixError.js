@@ -1,19 +1,15 @@
 import express from 'express';
 const router = express.Router();
-import { DataTypes } from 'sequelize';
-import defineAutomationConfig from '../../models/automationConfigs.js';
-import defineIntegrationConfig from '../../models/integrationConfigs.js';
 import authMiddleware from '../../middleware/auth.js';
 import Anthropic from '@anthropic-ai/sdk';
+import { loadProviderCredentials } from './_credentials.js';
 
-export default function (sequelize) {
-  const { verifySignedIn } = authMiddleware(sequelize);
-  const AutomationConfig = defineAutomationConfig(sequelize, DataTypes);
-  const IntegrationConfig = defineIntegrationConfig(sequelize, DataTypes);
+export default function (db) {
+  const { verifySignedIn } = authMiddleware(db);
 
   router.post('/:id/fix-error', verifySignedIn, async (req, res) => {
     try {
-      const config = await AutomationConfig.findByPk(req.params.id);
+      const config = await db.repos.automationConfigs.findByPk(req.params.id);
       if (!config) return res.status(404).send('Not found');
       if (config.provider !== 'github' || !config.repoUrl) {
         return res.status(400).send('Only GitHub repos are supported');
@@ -22,18 +18,23 @@ export default function (sequelize) {
       const { filePath, testName, errorText } = req.body;
       if (!errorText) return res.status(400).send('errorText is required');
 
-      // Get Anthropic key from integrations
-      const integration = await IntegrationConfig.findOne({
+      const anthropicIntegration = await db.repos.integrationConfigs.findOne({
         where: { projectId: config.projectId, service: 'anthropic' },
       });
-      if (!integration) {
+      if (!anthropicIntegration) {
         return res.status(422).send('No Anthropic API key configured. Add one in the Integrations tab.');
       }
 
-      const { owner, repo } = parseRepoUrl(config.repoUrl);
-      const ghToken = config.gitlabToken;
+      let providerCredentials;
+      try {
+        providerCredentials = await loadProviderCredentials(db, config);
+      } catch (err) {
+        return res.status(err.statusCode || 422).send(err.message);
+      }
 
-      // Fetch current file content from GitHub (if a file path was identified)
+      const { owner, repo } = parseRepoUrl(config.repoUrl);
+      const ghToken = providerCredentials.token;
+
       let currentContent = null;
       let fileSha = null;
       if (filePath) {
@@ -48,12 +49,10 @@ export default function (sequelize) {
         }
       }
 
-      // Build Claude prompt
       const systemPrompt = buildSystemPrompt(config.automationTool, config.automationLanguage);
       const userMessage = buildUserMessage(testName, errorText, filePath, currentContent);
 
-      // Call Claude API
-      const anthropic = new Anthropic({ apiKey: integration.apiKey });
+      const anthropic = new Anthropic({ apiKey: anthropicIntegration.apiKey });
       const message = await anthropic.messages.create({
         model: 'claude-sonnet-4-6',
         max_tokens: 4096,
@@ -66,7 +65,6 @@ export default function (sequelize) {
         return res.status(500).send('AI did not return a valid fix');
       }
 
-      // Commit the fix back to GitHub
       let commitUrl = null;
       if (filePath && fileSha) {
         const commitRes = await fetch(

@@ -21,9 +21,6 @@ export async function createAutomationConfig(
   data: {
     projectId: number;
     provider: string;
-    gitlabUrl: string;
-    gitlabToken: string;
-    gitlabNamespace: string;
     repoName: string;
     automationTool: string;
     automationLanguage: string;
@@ -46,9 +43,6 @@ export async function updateAutomationConfig(
   id: number,
   data: {
     provider: string;
-    gitlabUrl: string;
-    gitlabToken: string;
-    gitlabNamespace: string;
     repoName: string;
     automationTool: string;
     automationLanguage: string;
@@ -75,10 +69,20 @@ export async function generateAutomationProject(jwt: string, id: number): Promis
   return res.json();
 }
 
-export async function triggerAutomationRun(jwt: string, id: number): Promise<void> {
+export type TriggerOptions = {
+  mode: 'all' | 'specific' | 'testRun';
+  caseIds?: number[];
+  runId?: number;
+};
+
+export async function triggerAutomationRun(jwt: string, id: number, options: TriggerOptions = { mode: 'all' }): Promise<void> {
   const res = await fetch(`${Config.apiServer}/automation-configs/${id}/trigger`, {
     method: 'POST',
-    headers: { Authorization: `Bearer ${jwt}` },
+    headers: {
+      Authorization: `Bearer ${jwt}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(options),
   });
   if (!res.ok) throw new Error(await res.text());
 }
@@ -103,7 +107,11 @@ export async function fetchRunStatus(jwt: string, id: number): Promise<RunStatus
   const res = await fetch(`${Config.apiServer}/automation-configs/${id}/run-status`, {
     headers: { Authorization: `Bearer ${jwt}` },
   });
-  if (!res.ok) throw new Error(await res.text());
+  if (!res.ok) {
+    const err = new Error(await res.text()) as Error & { status: number };
+    err.status = res.status;
+    throw err;
+  }
   return res.json();
 }
 
@@ -145,6 +153,15 @@ export async function fixRunError(
   return res.json();
 }
 
+export async function deleteAutomationRepo(jwt: string, id: number): Promise<AutomationConfigType> {
+  const res = await fetch(`${Config.apiServer}/automation-configs/${id}/repo`, {
+    method: 'DELETE',
+    headers: { Authorization: `Bearer ${jwt}` },
+  });
+  if (!res.ok) throw new Error(await res.text());
+  return res.json();
+}
+
 export async function updateAutoFixEnabled(jwt: string, id: number, autoFixEnabled: boolean): Promise<AutomationConfigType> {
   const res = await fetch(`${Config.apiServer}/automation-configs/${id}`, {
     method: 'PUT',
@@ -153,6 +170,43 @@ export async function updateAutoFixEnabled(jwt: string, id: number, autoFixEnabl
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({ autoFixEnabled }),
+  });
+  if (!res.ok) throw new Error(await res.text());
+  return res.json();
+}
+
+export type ImplementedCase = {
+  id: number;
+  title: string;
+  folderId: number;
+  folderPath: string;
+  tags: string[];
+  codeFilePath: string | null;
+  codeLastSyncAt: string | null;
+  codeCommitSha: string | null;
+};
+
+export async function fetchImplementedCases(
+  jwt: string,
+  configId: number
+): Promise<{ cases: ImplementedCase[]; totalCases: number }> {
+  const res = await fetch(`${Config.apiServer}/automation-configs/${configId}/implemented-cases`, {
+    headers: { Authorization: `Bearer ${jwt}` },
+  });
+  if (!res.ok) throw new Error(await res.text());
+  return res.json();
+}
+
+export type ProjectRun = {
+  id: number;
+  name: string;
+  status: string;
+  createdAt: string;
+};
+
+export async function fetchProjectRuns(jwt: string, configId: number): Promise<ProjectRun[]> {
+  const res = await fetch(`${Config.apiServer}/automation-configs/${configId}/project-runs`, {
+    headers: { Authorization: `Bearer ${jwt}` },
   });
   if (!res.ok) throw new Error(await res.text());
   return res.json();

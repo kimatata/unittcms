@@ -1,9 +1,8 @@
 import express from 'express';
 const router = express.Router();
-import { DataTypes } from 'sequelize';
-import defineAutomationConfig from '../../models/automationConfigs.js';
 import authMiddleware from '../../middleware/auth.js';
 import { buildCoreFiles } from './_builders.js';
+import { loadProviderCredentials } from './_credentials.js';
 
 // ── GitHub push helpers ───────────────────────────────────────────────────────
 
@@ -93,8 +92,9 @@ async function pushCoreFilesToGitlab(apiBase, token, glProjectId, files) {
 
 // ── Shared repair logic (exported for use by trigger.js) ─────────────────────
 
-export async function repairConfig(config) {
-  const { gitlabToken: token, automationTool, automationLanguage, provider, repoUrl, repoId, gitlabUrl } = config;
+export async function repairConfig(config, credentials) {
+  const { token, instanceUrl } = credentials;
+  const { automationTool, automationLanguage, provider, repoUrl, repoId } = config;
 
   if (!repoUrl) throw new Error('No repository linked yet — generate the project first');
 
@@ -102,10 +102,9 @@ export async function repairConfig(config) {
   const isGitlab = !provider || provider === 'gitlab';
 
   if (isGitlab) {
-    const baseUrl = gitlabUrl || 'https://gitlab.com';
+    const baseUrl = instanceUrl || 'https://gitlab.com';
     await pushCoreFilesToGitlab(`${baseUrl}/api/v4`, token, repoId, files);
   } else {
-    // Parse owner/repo from stored repoUrl e.g. https://github.com/owner/repo
     const [owner, repoSlug] = repoUrl.replace('https://github.com/', '').split('/');
     await pushCoreFilesToGithub(token, owner, repoSlug, files);
   }
@@ -113,24 +112,31 @@ export async function repairConfig(config) {
 
 // ── Route ─────────────────────────────────────────────────────────────────────
 
-export default function (sequelize) {
-  const { verifySignedIn } = authMiddleware(sequelize);
-  const AutomationConfig = defineAutomationConfig(sequelize, DataTypes);
+export default function (db) {
+  const { verifySignedIn } = authMiddleware(db);
 
   // POST /api/automation-configs/:id/repair
-  // Re-pushes scanner script and CI workflow to the connected repo.
-  // Never touches test stubs — safe to call at any time.
   router.post('/:id/repair', verifySignedIn, async (req, res) => {
     try {
-      const config = await AutomationConfig.findByPk(req.params.id);
+      const config = await db.repos.automationConfigs.findByPk(req.params.id);
       if (!config) return res.status(404).send('Config not found');
-      if (!config.gitlabToken) return res.status(400).send('No token configured');
 
-      await repairConfig(config);
+      let credentials;
+      try {
+        credentials = await loadProviderCredentials(db, config);
+      } catch (err) {
+        return res.status(err.statusCode || 422).send(err.message);
+      }
+
+      await repairConfig(config, credentials);
       res.json({ repaired: true });
     } catch (error) {
       console.error(error);
-      res.status(500).send(error.message || 'Internal Server Error');
+      const msg = error.message || 'Internal Server Error';
+      if (msg.includes('401')) {
+        return res.status(401).send('Token is invalid or expired — update it in the Integrations tab');
+      }
+      res.status(500).send(msg);
     }
   });
 

@@ -1,7 +1,5 @@
 import express from 'express';
 const router = express.Router();
-import { DataTypes } from 'sequelize';
-import defineCase from '../../models/cases.js';
 import authMiddleware from '../../middleware/auth.js';
 import editableMiddleware from '../../middleware/verifyEditable.js';
 
@@ -15,10 +13,10 @@ function isEmpty(value) {
   }
 }
 
-export default function (sequelize) {
-  const { verifySignedIn } = authMiddleware(sequelize);
-  const { verifyProjectDeveloperFromFolderId } = editableMiddleware(sequelize);
-  const Case = defineCase(sequelize, DataTypes);
+export default function (db) {
+  const { verifySignedIn } = authMiddleware(db);
+  const { verifyProjectDeveloperFromFolderId } = editableMiddleware(db);
+  const Case = db.repos.cases;
 
   router.post('/', verifySignedIn, verifyProjectDeveloperFromFolderId, async (req, res) => {
     const folderId = req.query.folderId;

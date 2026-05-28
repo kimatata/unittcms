@@ -1,4 +1,20 @@
 services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: unittcms
+      POSTGRES_PASSWORD: unittcms_secret
+      POSTGRES_DB: unittcms
+    ports:
+      - '5432:5432'
+    volumes:
+      - pg-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U unittcms']
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
   unittcms:
     image: unittcms:latest
     build: .
@@ -8,9 +24,12 @@ services:
       - PORT=8000
       - SECRET_KEY=your_secret_key_here
       - IS_DEMO=false # set to true to seed the database
+      - DATABASE_URL=postgresql://unittcms:unittcms_secret@postgres:5432/unittcms
     volumes:
-      - db-data:/app/backend/database
       - ./backend/public/uploads:/app/backend/public/uploads
+    depends_on:
+      postgres:
+        condition: service_healthy
 
 volumes:
-  db-data:
+  pg-data:

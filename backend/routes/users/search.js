@@ -1,14 +1,10 @@
 import express from 'express';
 const router = express.Router();
-import { DataTypes, Op } from 'sequelize';
-import defineUser from '../../models/users.js';
-import defineMember from '../../models/members.js';
 import authMiddleware from '../../middleware/auth.js';
 
-export default function (sequelize) {
-  const { verifySignedIn } = authMiddleware(sequelize);
-  const User = defineUser(sequelize, DataTypes);
-  const Member = defineMember(sequelize, DataTypes);
+export default function (db) {
+  const { verifySignedIn } = authMiddleware(db);
+  const { Op } = db;
 
   router.get('/search', verifySignedIn, async (req, res) => {
     try {
@@ -22,7 +18,7 @@ export default function (sequelize) {
       };
 
       let excludeIdArray = [];
-      const members = await Member.findAll({
+      const members = await db.repos.members.findAll({
         where: { projectId },
         attributes: ['userId'],
       });
@@ -30,7 +26,7 @@ export default function (sequelize) {
       excludeIdArray.push(req.userId);
       where.id = { [Op.notIn]: excludeIdArray };
 
-      const users = await User.findAll({
+      const users = await db.repos.users.findAll({
         where,
         attributes: ['id', 'email', 'username', 'role', 'avatarPath'],
         limit: 7,

@@ -1,14 +1,12 @@
 import express from 'express';
 const router = express.Router();
-import { DataTypes } from 'sequelize';
-import defineFolder from '../../models/folders.js';
 import authMiddleware from '../../middleware/auth.js';
 import visibilityMiddleware from '../../middleware/verifyVisible.js';
 
-export default function (sequelize) {
-  const { verifySignedIn } = authMiddleware(sequelize);
-  const { verifyProjectVisibleFromProjectId } = visibilityMiddleware(sequelize);
-  const Folder = defineFolder(sequelize, DataTypes);
+export default function (db) {
+  const { verifySignedIn } = authMiddleware(db);
+  const { verifyProjectVisibleFromProjectId } = visibilityMiddleware(db);
+  const Folder = db.repos.folders;
 
   router.get('/', verifySignedIn, verifyProjectVisibleFromProjectId, async (req, res) => {
     const { projectId } = req.query;

@@ -196,11 +196,6 @@
   },
   "Automation": {
     "automation": "Automation",
-    "gitlab_connection": "GitLab Connection",
-    "gitlab_url": "GitLab URL",
-    "gitlab_token": "Personal Access Token",
-    "gitlab_namespace": "Namespace (optional)",
-    "repo_config": "Repository Configuration",
     "repo_name": "Repository Name",
     "automation_tool": "Automation Tool",
     "automation_language": "Language",
@@ -221,15 +216,10 @@
     "error_saved": "Failed to save configuration",
     "error_generated": "Failed to generate automation project",
     "open_repo": "Open Repository",
-    "gitlab_url_placeholder": "https://gitlab.com",
-    "gitlab_token_placeholder": "glpat-xxxxxxxxxxxxxxxxxxxx",
     "repo_name_placeholder": "my-automation-tests",
     "provider": "Git Provider",
     "provider_gitlab": "GitLab",
     "provider_github": "GitHub",
-    "instance_url": "Instance URL",
-    "github_url_placeholder": "https://github.com",
-    "github_token_placeholder": "ghp_xxxxxxxxxxxxxxxxxxxx",
     "ci_section": "CI / Test Runs",
     "run_tests": "Run Tests",
     "triggering": "Triggering...",
@@ -248,9 +238,6 @@
     "repairing": "Repairing...",
     "success_repaired": "Core files repaired and pushed to repo",
     "error_repaired": "Failed to repair core files",
-    "config_section": "Configuration",
-    "hide_config": "Hide Configuration",
-    "show_config": "Show Configuration",
     "errors_section": "Test Failures",
     "fetch_errors": "Fetch Errors",
     "fetching_errors": "Fetching...",
@@ -261,7 +248,16 @@
     "fix_error": "Failed to apply AI fix",
     "view_commit": "View Commit",
     "auto_fix_running": "Auto-fix in progress — AI is fixing failures automatically",
-    "no_anthropic_key": "Add an Anthropic API key in the Integrations tab to enable AI fixes"
+    "no_anthropic_key": "Add an Anthropic API key in the Integrations tab to enable AI fixes",
+    "implemented_section": "Implemented Tests",
+    "implemented_count": "{count} of {total} tests implemented",
+    "no_implemented_tests": "No implemented tests yet. Run and sync the automation project to see implemented tests here.",
+    "run_mode_all": "Run All",
+    "run_mode_select": "Select Tests",
+    "run_mode_test_run": "From Test Run",
+    "run_selected_count": "Run {count} Selected",
+    "select_test_run_placeholder": "Select a test run",
+    "implemented_count_in_run": "{count} tests implemented"
   },
   "Integrations": {
     "integrations": "Integrations",
@@ -551,6 +547,10 @@
     "auto_fix_enabled": "Auto-fix on failure",
     "auto_fix_description": "Automatically apply AI fixes when test runs fail (requires Anthropic API key)",
     "auto_fix_updated": "Auto-fix setting updated",
-    "auto_fix_update_error": "Failed to update auto-fix setting"
+    "auto_fix_update_error": "Failed to update auto-fix setting",
+    "delete_automation_project": "Delete Automation Project",
+    "delete_automation_project_confirm": "This will permanently delete the remote repository and reset the automation setup. Your integration connection settings will remain intact.",
+    "delete_automation_project_success": "Automation project deleted successfully",
+    "delete_automation_project_error": "Failed to delete automation project"
   }
 }

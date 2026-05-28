@@ -49,6 +49,10 @@ export default function Page({ params }: { params: { projectId: string; locale: 
     autoFixDescription: t('auto_fix_description'),
     autoFixUpdated: t('auto_fix_updated'),
     autoFixUpdateError: t('auto_fix_update_error'),
+    deleteAutomationProject: t('delete_automation_project'),
+    deleteAutomationProjectConfirm: t('delete_automation_project_confirm'),
+    deleteAutomationProjectSuccess: t('delete_automation_project_success'),
+    deleteAutomationProjectError: t('delete_automation_project_error'),
   };
 
   const pt = useTranslations('ProjectDialog');

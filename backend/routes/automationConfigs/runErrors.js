@@ -1,25 +1,29 @@
 import express from 'express';
 const router = express.Router();
-import { DataTypes } from 'sequelize';
-import defineAutomationConfig from '../../models/automationConfigs.js';
 import authMiddleware from '../../middleware/auth.js';
+import { loadProviderCredentials } from './_credentials.js';
 
-export default function (sequelize) {
-  const { verifySignedIn } = authMiddleware(sequelize);
-  const AutomationConfig = defineAutomationConfig(sequelize, DataTypes);
+export default function (db) {
+  const { verifySignedIn } = authMiddleware(db);
 
   router.get('/:id/run-errors', verifySignedIn, async (req, res) => {
     try {
-      const config = await AutomationConfig.findByPk(req.params.id);
+      const config = await db.repos.automationConfigs.findByPk(req.params.id);
       if (!config) return res.status(404).send('Not found');
       if (config.provider !== 'github' || !config.repoUrl) {
         return res.status(400).send('Only GitHub repos are supported');
       }
 
-      const { owner, repo } = parseRepoUrl(config.repoUrl);
-      const token = config.gitlabToken;
+      let credentials;
+      try {
+        credentials = await loadProviderCredentials(db, config);
+      } catch (err) {
+        return res.status(err.statusCode || 422).send(err.message);
+      }
 
-      // Get the latest failed run
+      const { owner, repo } = parseRepoUrl(config.repoUrl);
+      const token = credentials.token;
+
       const runsRes = await fetch(
         `https://api.github.com/repos/${owner}/${repo}/actions/runs?per_page=1`,
         { headers: githubHeaders(token) }
@@ -31,7 +35,6 @@ export default function (sequelize) {
       const latestRun = runs[0];
       if (latestRun.conclusion !== 'failure') return res.json([]);
 
-      // Get failed jobs for this run
       const jobsRes = await fetch(
         `https://api.github.com/repos/${owner}/${repo}/actions/runs/${latestRun.id}/jobs`,
         { headers: githubHeaders(token) }
@@ -91,19 +94,16 @@ function parsePlaywright(log, jobId, jobName) {
 
   while (idx < lines.length) {
     const line = stripAnsi(lines[idx]);
-    // Playwright failure marker: line containing "× " or "✘ " or "FAILED"
     const failMatch = line.match(/(?:[✘×]|FAILED)\s+(.+?)(?:\s+\(\d+(?:\.\d+)?(?:ms|s)\))?$/);
     if (failMatch) {
       const testName = failMatch[1].trim();
       const errorLines = [line];
       let filePath = null;
       idx++;
-      // Collect error details until next test marker or blank + non-indented line
       while (idx < lines.length) {
         const next = stripAnsi(lines[idx]);
         if (/(?:[✘×✓]|FAILED|PASSED)\s+/.test(next) && next.trim() !== '') break;
         errorLines.push(next);
-        // Try to extract file reference
         if (!filePath) {
           const fileMatch = next.match(/\(([^)]+\.(?:ts|js|tsx|jsx):\d+:\d+)\)/);
           if (fileMatch) filePath = fileMatch[1].replace(/:\d+:\d+$/, '');
@@ -189,6 +189,5 @@ function parseCypress(log, jobId, jobName) {
 }
 
 function stripAnsi(str) {
-  // Remove ANSI escape codes that GitHub Actions embeds in log output
   return str.replace(/\x1B\[[0-9;]*[mGKHF]/g, '').replace(/^\d{4}-\d{2}-\d{2}T[\d:.Z]+\s+/, '');
 }

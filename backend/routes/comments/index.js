@@ -1,18 +1,11 @@
 import express from 'express';
 const router = express.Router();
-import { DataTypes } from 'sequelize';
-import defineComment from '../../models/comments.js';
-import defineUser from '../../models/users.js';
 import authMiddleware from '../../middleware/auth.js';
 import visibilityMiddleware from '../../middleware/verifyVisible.js';
 
-export default function (sequelize) {
-  const { verifySignedIn } = authMiddleware(sequelize);
-  const { verifyProjectVisibleFromCommentableId } = visibilityMiddleware(sequelize);
-  const Comment = defineComment(sequelize, DataTypes);
-  const User = defineUser(sequelize, DataTypes);
-  Comment.belongsTo(User, { foreignKey: 'userId', onDelete: 'CASCADE' });
-  User.hasMany(Comment, { foreignKey: 'userId', onDelete: 'CASCADE' });
+export default function (db) {
+  const { verifySignedIn } = authMiddleware(db);
+  const { verifyProjectVisibleFromCommentableId } = visibilityMiddleware(db);
 
   router.get('/', verifySignedIn, verifyProjectVisibleFromCommentableId, async (req, res) => {
     const { commentableType, commentableId } = req.query;
@@ -22,14 +15,14 @@ export default function (sequelize) {
     }
 
     try {
-      const comments = await Comment.findAll({
+      const comments = await db.repos.comments.findAll({
         where: {
           commentableType: commentableType,
           commentableId: commentableId,
         },
         include: [
           {
-            model: User,
+            model: db.repos.users,
             attributes: ['id', 'username', 'email'],
           },
         ],

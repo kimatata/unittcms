@@ -16,29 +16,13 @@ function defineComment(sequelize, DataTypes) {
       type: DataTypes.TEXT,
       allowNull: false,
     },
-  });
+  }, { tableName: 'comments' });
 
   Comment.associate = (models) => {
-    // Polymorphic associations
-    Comment.belongsTo(models.RunCase, {
-      foreignKey: 'commentableId',
-      constraints: false,
-      as: 'runCase',
-    });
-    Comment.belongsTo(models.Run, {
-      foreignKey: 'commentableId',
-      constraints: false,
-      as: 'run',
-    });
-    Comment.belongsTo(models.Case, {
-      foreignKey: 'commentableId',
-      constraints: false,
-      as: 'case',
-    });
-    Comment.belongsTo(models.User, {
-      foreignKey: 'userId',
-      onDelete: 'SET NULL',
-    });
+    Comment.belongsTo(models.RunCase, { foreignKey: 'commentableId', constraints: false, as: 'runCase' });
+    Comment.belongsTo(models.Run, { foreignKey: 'commentableId', constraints: false, as: 'run' });
+    Comment.belongsTo(models.Case, { foreignKey: 'commentableId', constraints: false, as: 'case' });
+    Comment.belongsTo(models.User, { foreignKey: 'userId', onDelete: 'SET NULL' });
   };
 
   return Comment;

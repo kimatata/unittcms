@@ -196,11 +196,6 @@
   },
   "Automation": {
     "automation": "Automação",
-    "gitlab_connection": "Conexão GitLab",
-    "gitlab_url": "URL do GitLab",
-    "gitlab_token": "Token de Acesso Pessoal",
-    "gitlab_namespace": "Namespace (opcional)",
-    "repo_config": "Configuração do Repositório",
     "repo_name": "Nome do Repositório",
     "automation_tool": "Ferramenta de Automação",
     "automation_language": "Linguagem",
@@ -221,15 +216,10 @@
     "error_saved": "Falha ao salvar configuração",
     "error_generated": "Falha ao gerar projeto de automação",
     "open_repo": "Abrir Repositório",
-    "gitlab_url_placeholder": "https://gitlab.com",
-    "gitlab_token_placeholder": "glpat-xxxxxxxxxxxxxxxxxxxx",
     "repo_name_placeholder": "meus-testes-automatizados",
     "provider": "Provedor Git",
     "provider_gitlab": "GitLab",
     "provider_github": "GitHub",
-    "instance_url": "URL da Instância",
-    "github_url_placeholder": "https://github.com",
-    "github_token_placeholder": "ghp_xxxxxxxxxxxxxxxxxxxx",
     "ci_section": "CI / Execuções de Teste",
     "run_tests": "Executar Testes",
     "triggering": "Disparando...",
@@ -248,9 +238,6 @@
     "repairing": "Reparando...",
     "success_repaired": "Arquivos principais reparados e enviados ao repositório",
     "error_repaired": "Falha ao reparar arquivos principais",
-    "config_section": "Configuração",
-    "hide_config": "Ocultar Configuração",
-    "show_config": "Mostrar Configuração",
     "errors_section": "Falhas de Teste",
     "fetch_errors": "Buscar Erros",
     "fetching_errors": "Buscando...",
@@ -261,7 +248,16 @@
     "fix_error": "Falha ao aplicar correção da IA",
     "view_commit": "Ver Commit",
     "auto_fix_running": "Correção automática em andamento — IA está corrigindo falhas automaticamente",
-    "no_anthropic_key": "Adicione uma chave de API Anthropic na aba Integrações para habilitar correções com IA"
+    "no_anthropic_key": "Adicione uma chave de API Anthropic na aba Integrações para habilitar correções com IA",
+    "implemented_section": "Testes Implementados",
+    "implemented_count": "{count} de {total} testes implementados",
+    "no_implemented_tests": "Nenhum teste implementado ainda. Execute e sincronize o projeto de automação.",
+    "run_mode_all": "Executar Todos",
+    "run_mode_select": "Selecionar Testes",
+    "run_mode_test_run": "De uma Execução",
+    "run_selected_count": "Executar {count} Selecionados",
+    "select_test_run_placeholder": "Selecionar uma execução de teste",
+    "implemented_count_in_run": "{count} testes implementados"
   },
   "Integrations": {
     "integrations": "Integrações",
@@ -551,6 +547,10 @@
     "auto_fix_enabled": "Correção automática em caso de falha",
     "auto_fix_description": "Aplicar automaticamente correções de IA quando execuções de teste falharem (requer chave de API Anthropic)",
     "auto_fix_updated": "Configuração de correção automática atualizada",
-    "auto_fix_update_error": "Falha ao atualizar configuração de correção automática"
+    "auto_fix_update_error": "Falha ao atualizar configuração de correção automática",
+    "delete_automation_project": "Excluir Projeto de Automação",
+    "delete_automation_project_confirm": "Isso excluirá permanentemente o repositório remoto e redefinirá a configuração de automação. As configurações de conexão de integração permanecerão intactas.",
+    "delete_automation_project_success": "Projeto de automação excluído com sucesso",
+    "delete_automation_project_error": "Falha ao excluir projeto de automação"
   }
 }

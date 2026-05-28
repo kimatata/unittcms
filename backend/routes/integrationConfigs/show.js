@@ -1,17 +1,14 @@
 import express from 'express';
 const router = express.Router();
-import { DataTypes } from 'sequelize';
-import defineIntegrationConfig from '../../models/integrationConfigs.js';
 import authMiddleware from '../../middleware/auth.js';
 
-export default function (sequelize) {
-  const { verifySignedIn } = authMiddleware(sequelize);
-  const IntegrationConfig = defineIntegrationConfig(sequelize, DataTypes);
+export default function (db) {
+  const { verifySignedIn } = authMiddleware(db);
 
   router.get('/project/:projectId', verifySignedIn, async (req, res) => {
     try {
       const { projectId } = req.params;
-      const configs = await IntegrationConfig.findAll({ where: { projectId } });
+      const configs = await db.repos.integrationConfigs.findAll({ where: { projectId } });
       const masked = configs.map((c) => {
         const d = c.toJSON();
         d.apiKey = maskKey(d.apiKey);

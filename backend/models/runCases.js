@@ -12,21 +12,12 @@ function defineRunCase(sequelize, DataTypes) {
       type: DataTypes.INTEGER,
       allowNull: false,
     },
-  });
+  }, { tableName: 'runCases' });
 
   RunCase.associate = (models) => {
-    RunCase.belongsTo(models.Run, {
-      foreignKey: 'runId',
-      onDelete: 'CASCADE',
-    });
-    RunCase.belongsTo(models.Case, {
-      foreignKey: 'caseId',
-      onDelete: 'CASCADE',
-    });
-    RunCase.hasMany(models.Comment, {
-      foreignKey: 'commentableId',
-      onDelete: 'CASCADE',
-    });
+    RunCase.belongsTo(models.Run, { foreignKey: 'runId', onDelete: 'CASCADE' });
+    RunCase.belongsTo(models.Case, { foreignKey: 'caseId', onDelete: 'CASCADE' });
+    RunCase.hasMany(models.Comment, { foreignKey: 'commentableId', onDelete: 'CASCADE' });
   };
 
   return RunCase;

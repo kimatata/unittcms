@@ -1,11 +1,8 @@
 import express from 'express';
 const router = express.Router();
-import { DataTypes } from 'sequelize';
-import defineAutomationConfig from '../../models/automationConfigs.js';
-import defineFolder from '../../models/folders.js';
-import defineCase from '../../models/cases.js';
 import authMiddleware from '../../middleware/auth.js';
 import { slugify, buildNodeScannerScript, buildPythonScannerScript, buildCIWorkflow } from './_builders.js';
+import { loadProviderCredentials } from './_credentials.js';
 
 function buildFolderTree(folders, cases, parentId = null) {
   return folders
@@ -22,8 +19,13 @@ function generatePlaywrightTS(node, indentLevel = 0) {
   const indent = '  '.repeat(indentLevel);
   const lines = [];
   for (const c of node.cases) {
-    lines.push(`${indent}test('${c.title.replace(/'/g, "\\'")}', async ({ page }) => {`);
+    const tagOption =
+      c.tags && c.tags.length > 0
+        ? `, { tag: [${c.tags.map((t) => `'@${t}'`).join(', ')}] }`
+        : '';
+    lines.push(`${indent}test('${c.title.replace(/'/g, "\\'")}${tagOption}, async ({ page }) => {`);
     lines.push(`${indent}  // @unittcms:caseId:${c.id}`);
+    if (c.tags && c.tags.length > 0) lines.push(`${indent}  // @unittcms:tags:${c.tags.join(',')}`);
     if (c.preConditions) lines.push(`${indent}  // Pre-conditions: ${c.preConditions}`);
     lines.push(`${indent}  // TODO: implement`);
     lines.push(`${indent}});`);
@@ -121,7 +123,11 @@ export default defineConfig({
       const slug = slugify(folder.name).replace(/-/g, '_');
       const lines = ['import pytest', ''];
       for (const c of folder.cases) {
-        lines.push(`@pytest.mark.unittcms(case_id=${c.id})`);
+        const tagsArg =
+          c.tags && c.tags.length > 0
+            ? `, tags=[${c.tags.map((t) => `"${t}"`).join(', ')}]`
+            : '';
+        lines.push(`@pytest.mark.unittcms(case_id=${c.id}${tagsArg})`);
         lines.push(`def test_${slugify(c.title).replace(/-/g, '_')}(page):`);
         if (c.preConditions) lines.push(`    # Pre-conditions: ${c.preConditions}`);
         lines.push(`    # TODO: implement`);
@@ -215,7 +221,6 @@ async function pushToGithub(apiBase, token, namespace, projectName, repoId, repo
   let ghRepoUrl = repoUrl;
 
   if (!ghRepoId) {
-    // try to create; if it exists already, fetch it
     let repo;
     try {
       repo = await ghRequest('POST', `${apiBase}/user/repos`, token, {
@@ -235,13 +240,11 @@ async function pushToGithub(apiBase, token, namespace, projectName, repoId, repo
     ghRepoUrl = repo.html_url;
   }
 
-  // get HEAD commit SHA and tree SHA of default branch
   const refsData = await ghRequest('GET', `${apiBase}/repos/${owner}/${repoSlug}/git/ref/heads/main`, token, null);
   const headSha = refsData.object.sha;
   const commitData = await ghRequest('GET', `${apiBase}/repos/${owner}/${repoSlug}/git/commits/${headSha}`, token, null);
   const baseTreeSha = commitData.tree.sha;
 
-  // create blobs for all files
   const allFiles = [...files, { path: 'README.md', content: readmeContent }];
   const treeEntries = await Promise.all(
     allFiles.map(async (f) => {
@@ -253,20 +256,17 @@ async function pushToGithub(apiBase, token, namespace, projectName, repoId, repo
     })
   );
 
-  // create tree
   const newTree = await ghRequest('POST', `${apiBase}/repos/${owner}/${repoSlug}/git/trees`, token, {
     base_tree: baseTreeSha,
     tree: treeEntries,
   });
 
-  // create commit
   const newCommit = await ghRequest('POST', `${apiBase}/repos/${owner}/${repoSlug}/git/commits`, token, {
     message: 'chore: sync automation stubs from UnitTCMS',
     tree: newTree.sha,
     parents: [headSha],
   });
 
-  // update ref
   await ghRequest('PATCH', `${apiBase}/repos/${owner}/${repoSlug}/git/refs/heads/main`, token, {
     sha: newCommit.sha,
   });
@@ -276,43 +276,52 @@ async function pushToGithub(apiBase, token, namespace, projectName, repoId, repo
 
 // ── Route ─────────────────────────────────────────────────────────────────────
 
-export default function (sequelize) {
-  const { verifySignedIn } = authMiddleware(sequelize);
-  const AutomationConfig = defineAutomationConfig(sequelize, DataTypes);
-  const Folder = defineFolder(sequelize, DataTypes);
-  const Case = defineCase(sequelize, DataTypes);
+export default function (db) {
+  const { verifySignedIn } = authMiddleware(db);
 
   router.post('/:id/generate', verifySignedIn, async (req, res) => {
     try {
-      const config = await AutomationConfig.findByPk(req.params.id);
+      const config = await db.repos.automationConfigs.findByPk(req.params.id);
       if (!config) return res.status(404).send('Config not found');
 
-      const { gitlabUrl, gitlabToken, gitlabNamespace, repoName, automationTool, automationLanguage, projectId, provider } = config;
+      let credentials;
+      try {
+        credentials = await loadProviderCredentials(db, config);
+      } catch (err) {
+        return res.status(err.statusCode || 422).send(err.message);
+      }
+
+      const { repoName, automationTool, automationLanguage, projectId, provider } = config;
+      const { token, instanceUrl, namespace } = credentials;
       const projectName = repoName || `automation-${projectId}`;
 
-      // fetch folder/case hierarchy
-      const folders = await Folder.findAll({ where: { projectId }, raw: true });
-      const cases = await Case.findAll({ where: { folderId: folders.map((f) => f.id) }, raw: true });
+      const folders = await db.repos.folders.findAll({ where: { projectId }, raw: true });
+      const caseObjs = await db.repos.cases.findAll({
+        where: { folderId: folders.map((f) => f.id) },
+        include: [{ model: db.repos.tags, as: 'Tags', through: { attributes: [] } }],
+      });
+      const cases = caseObjs.map((c) => {
+        const plain = c.toJSON();
+        plain.tags = (plain.Tags || []).map((t) => t.name);
+        return plain;
+      });
       const folderTree = buildFolderTree(folders, cases);
       const files = buildTemplateFiles(automationTool, automationLanguage, projectName, folderTree, provider);
 
       const isGitlab = !provider || provider === 'gitlab';
-      const baseUrl = gitlabUrl || (isGitlab ? 'https://gitlab.com' : 'https://github.com');
       const readmeContent = `# ${projectName}\n\nAutomation project generated by UnitTCMS.\n\n**Tool:** ${automationTool}  \n**Language:** ${automationLanguage}\n`;
 
       let result;
       if (isGitlab) {
-        result = await pushToGitlab(`${baseUrl}/api/v4`, gitlabToken, projectName, config.repoId, config.repoUrl, files, readmeContent);
+        result = await pushToGitlab(`${instanceUrl}/api/v4`, token, projectName, config.repoId, config.repoUrl, files, readmeContent);
       } else {
-        const ghApiBase = baseUrl.includes('github.com') ? 'https://api.github.com' : `${baseUrl}/api/v3`;
-        result = await pushToGithub(ghApiBase, gitlabToken, gitlabNamespace, projectName, config.repoId, config.repoUrl, files, readmeContent);
+        const ghApiBase = instanceUrl.includes('github.com') ? 'https://api.github.com' : `${instanceUrl}/api/v3`;
+        result = await pushToGithub(ghApiBase, token, namespace, projectName, config.repoId, config.repoUrl, files, readmeContent);
       }
 
       await config.update({ repoId: result.repoId, repoUrl: result.repoUrl });
 
-      const data = config.toJSON();
-      data.gitlabToken = '***';
-      res.json(data);
+      res.json(config.toJSON());
     } catch (error) {
       console.error(error);
       res.status(500).send(error.message || 'Internal Server Error');

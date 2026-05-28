@@ -1,14 +1,11 @@
 import express from 'express';
 const router = express.Router();
-import { DataTypes } from 'sequelize';
-import defineMember from '../../models/members.js';
 import authMiddleware from '../../middleware/auth.js';
 import editableMiddleware from '../../middleware/verifyEditable.js';
 
-export default function (sequelize) {
-  const { verifySignedIn } = authMiddleware(sequelize);
-  const { verifyProjectManagerFromProjectId } = editableMiddleware(sequelize);
-  const Member = defineMember(sequelize, DataTypes);
+export default function (db) {
+  const { verifySignedIn } = authMiddleware(db);
+  const { verifyProjectManagerFromProjectId } = editableMiddleware(db);
 
   router.put('/', verifySignedIn, verifyProjectManagerFromProjectId, async (req, res) => {
     const userId = req.query.userId;
@@ -16,7 +13,7 @@ export default function (sequelize) {
     const role = req.query.role;
 
     try {
-      const member = await Member.findOne({
+      const member = await db.repos.members.findOne({
         where: {
           userId: userId,
           projectId: projectId,

@@ -1,15 +1,12 @@
 import express from 'express';
 const router = express.Router();
-import { DataTypes } from 'sequelize';
-import defineMember from '../../models/members.js';
 import { memberRoles } from '../../routes/users/authSettings.js';
 import authMiddleware from '../../middleware/auth.js';
 import editableMiddleware from '../../middleware/verifyEditable.js';
 
-export default function (sequelize) {
-  const { verifySignedIn } = authMiddleware(sequelize);
-  const { verifyProjectManagerFromProjectId } = editableMiddleware(sequelize);
-  const Member = defineMember(sequelize, DataTypes);
+export default function (db) {
+  const { verifySignedIn } = authMiddleware(db);
+  const { verifyProjectManagerFromProjectId } = editableMiddleware(db);
 
   router.post('/', verifySignedIn, verifyProjectManagerFromProjectId, async (req, res) => {
     const userId = req.query.userId;
@@ -17,7 +14,7 @@ export default function (sequelize) {
 
     try {
       // Check if the record already exists
-      const existingMember = await Member.findOne({
+      const existingMember = await db.repos.members.findOne({
         where: {
           userId: userId,
           projectId: projectId,
@@ -29,7 +26,7 @@ export default function (sequelize) {
       }
 
       const managerRoleIndex = memberRoles.findIndex((entry) => entry.uid === 'reporter');
-      const newMember = await Member.create({
+      const newMember = await db.repos.members.create({
         userId: userId,
         projectId: projectId,
         role: managerRoleIndex,

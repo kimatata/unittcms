@@ -1,19 +1,17 @@
 import express from 'express';
 const router = express.Router();
-import { DataTypes } from 'sequelize';
-import defineRunCase from '../../models/runCases.js';
 import authMiddleware from '../../middleware/auth.js';
 import editableMiddleware from '../../middleware/verifyEditable.js';
 
-export default function (sequelize) {
-  const { verifySignedIn } = authMiddleware(sequelize);
-  const { verifyProjectReporterFromRunId } = editableMiddleware(sequelize);
-  const RunCase = defineRunCase(sequelize, DataTypes);
+export default function (db) {
+  const { verifySignedIn } = authMiddleware(db);
+  const { verifyProjectReporterFromRunId } = editableMiddleware(db);
+  const RunCase = db.repos.runCases;
 
   router.post('/update', verifySignedIn, verifyProjectReporterFromRunId, async (req, res) => {
     const runId = req.query.runId;
     const runCases = req.body;
-    const t = await sequelize.transaction();
+    const t = await db.sequelize.transaction();
 
     const createRunCase = async (runCase) => {
       const newRunCase = await RunCase.create(

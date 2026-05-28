@@ -1,17 +1,19 @@
 'use client';
 import { useState, useEffect, useRef, useContext, useCallback } from 'react';
-import { Button, Input, Select, SelectItem, Chip, Link, Divider } from '@heroui/react';
+import { Button, Input, Select, SelectItem, Chip, Link, Divider, Checkbox } from '@heroui/react';
 import { addToast } from '@heroui/react';
 import {
   ExternalLink,
   RefreshCw,
   Play,
   Wrench,
-  ChevronDown,
-  ChevronUp,
   AlertTriangle,
   CheckCircle,
   Loader,
+  ChevronDown,
+  ChevronRight,
+  Tag,
+  ListChecks,
 } from 'lucide-react';
 import { TokenContext } from '@/utils/TokenProvider';
 import { AutomationConfigType, AutomationMessages } from '@/types/project';
@@ -25,8 +27,13 @@ import {
   fetchRunStatus,
   fetchRunErrors,
   fixRunError,
+  fetchImplementedCases,
+  fetchProjectRuns,
   RunStatus,
   RunError,
+  ImplementedCase,
+  ProjectRun,
+  TriggerOptions,
 } from '@/utils/automationConfigControl';
 import { logError } from '@/utils/errorHandler';
 
@@ -54,15 +61,24 @@ const LANGUAGE_BY_TOOL: Record<string, { key: string; label: string }[]> = {
 };
 
 type ErrorFixState = Record<string, 'idle' | 'fixing' | 'fixed' | 'error'>;
+type RunMode = 'all' | 'specific' | 'testRun';
+
+// Group implemented cases by folderPath
+function groupByFolder(cases: ImplementedCase[]): Record<string, ImplementedCase[]> {
+  const groups: Record<string, ImplementedCase[]> = {};
+  for (const c of cases) {
+    const key = c.folderPath || 'Root';
+    if (!groups[key]) groups[key] = [];
+    groups[key].push(c);
+  }
+  return groups;
+}
 
 export default function AutomationPage({ projectId, messages }: Props) {
   const context = useContext(TokenContext);
 
   const [config, setConfig] = useState<AutomationConfigType | null>(null);
   const [provider, setProvider] = useState<'gitlab' | 'github'>('gitlab');
-  const [instanceUrl, setInstanceUrl] = useState('https://gitlab.com');
-  const [gitlabToken, setGitlabToken] = useState('');
-  const [gitlabNamespace, setGitlabNamespace] = useState('');
   const [repoName, setRepoName] = useState('');
   const [automationTool, setAutomationTool] = useState('playwright');
   const [automationLanguage, setAutomationLanguage] = useState('typescript');
@@ -72,15 +88,26 @@ export default function AutomationPage({ projectId, messages }: Props) {
   const [isRepairing, setIsRepairing] = useState(false);
   const [runStatus, setRunStatus] = useState<RunStatus | null>(null);
   const [isFetchingStatus, setIsFetchingStatus] = useState(false);
-
-  // collapsible config form
-  const [isConfigExpanded, setIsConfigExpanded] = useState(true);
+  const [runStatusError, setRunStatusError] = useState<string | null>(null);
 
   // error list
   const [runErrors, setRunErrors] = useState<RunError[]>([]);
   const [isFetchingErrors, setIsFetchingErrors] = useState(false);
   const [errorFixState, setErrorFixState] = useState<ErrorFixState>({});
   const [commitUrls, setCommitUrls] = useState<Record<string, string>>({});
+
+  // implemented tests panel
+  const [implementedCases, setImplementedCases] = useState<ImplementedCase[]>([]);
+  const [totalCases, setTotalCases] = useState(0);
+  const [isFetchingImplemented, setIsFetchingImplemented] = useState(false);
+  const [expandedFolders, setExpandedFolders] = useState<Set<string>>(new Set());
+
+  // run mode
+  const [runMode, setRunMode] = useState<RunMode>('all');
+  const [selectedCaseIds, setSelectedCaseIds] = useState<Set<number>>(new Set());
+  const [projectRuns, setProjectRuns] = useState<ProjectRun[]>([]);
+  const [selectedRunId, setSelectedRunId] = useState<number | null>(null);
+  const [isFetchingRuns, setIsFetchingRuns] = useState(false);
 
   // track previous run status to detect failure transitions
   const prevConclusionRef = useRef<string | null>(null);
@@ -89,11 +116,15 @@ export default function AutomationPage({ projectId, messages }: Props) {
     async (cfg: AutomationConfigType) => {
       if (cfg.provider !== 'github' || !cfg.repoUrl) return;
       setIsFetchingStatus(true);
+      setRunStatusError(null);
       try {
         const status = await fetchRunStatus(context.token.access_token, cfg.id);
         setRunStatus(status);
       } catch (error) {
         logError('AutomationPage runStatus', error);
+        if ((error as { status?: number }).status === 422) {
+          setRunStatusError((error as Error).message);
+        }
       } finally {
         setIsFetchingStatus(false);
       }
@@ -119,6 +150,40 @@ export default function AutomationPage({ projectId, messages }: Props) {
     [context]
   );
 
+  const loadImplementedCases = useCallback(
+    async (cfg: AutomationConfigType) => {
+      setIsFetchingImplemented(true);
+      try {
+        const data = await fetchImplementedCases(context.token.access_token, cfg.id);
+        setImplementedCases(data.cases);
+        setTotalCases(data.totalCases);
+        // Auto-expand all folders on first load
+        const folders = new Set(data.cases.map((c) => c.folderPath || 'Root'));
+        setExpandedFolders(folders);
+      } catch (error) {
+        logError('AutomationPage implementedCases', error);
+      } finally {
+        setIsFetchingImplemented(false);
+      }
+    },
+    [context]
+  );
+
+  const loadProjectRuns = useCallback(
+    async (cfg: AutomationConfigType) => {
+      setIsFetchingRuns(true);
+      try {
+        const runs = await fetchProjectRuns(context.token.access_token, cfg.id);
+        setProjectRuns(runs);
+      } catch (error) {
+        logError('AutomationPage projectRuns', error);
+      } finally {
+        setIsFetchingRuns(false);
+      }
+    },
+    [context]
+  );
+
   useEffect(() => {
     async function load() {
       if (!context.isSignedIn()) return;
@@ -127,22 +192,24 @@ export default function AutomationPage({ projectId, messages }: Props) {
         if (data) {
           setConfig(data);
           setProvider(data.provider ?? 'gitlab');
-          setInstanceUrl(data.gitlabUrl);
-          setGitlabToken('***');
-          setGitlabNamespace(data.gitlabNamespace ?? '');
           setRepoName(data.repoName ?? '');
           setAutomationTool(data.automationTool);
           setAutomationLanguage(data.automationLanguage);
-          // Collapse config section if already connected
-          if (data.repoUrl) setIsConfigExpanded(false);
-          await loadRunStatus(data);
+          await Promise.all([loadRunStatus(data), loadImplementedCases(data)]);
         }
       } catch (error) {
         logError('AutomationPage load', error);
       }
     }
     load();
-  }, [context, projectId, loadRunStatus]);
+  }, [context, projectId, loadRunStatus, loadImplementedCases]);
+
+  // Load project runs when testRun mode is selected
+  useEffect(() => {
+    if (runMode === 'testRun' && config && projectRuns.length === 0) {
+      loadProjectRuns(config);
+    }
+  }, [runMode, config, projectRuns.length, loadProjectRuns]);
 
   // Auto-poll while a run is active
   const pollRef = useRef<ReturnType<typeof setInterval> | null>(null);
@@ -176,9 +243,6 @@ export default function AutomationPage({ projectId, messages }: Props) {
 
     if (current === 'failure' && prev !== 'failure' && config) {
       loadRunErrors(config);
-      if (config.autoFixEnabled) {
-        // auto-fix kicks off after errors are loaded — handled in the errors effect below
-      }
     }
     prevConclusionRef.current = current;
   }, [runStatus?.conclusion, config, loadRunErrors]);
@@ -186,7 +250,6 @@ export default function AutomationPage({ projectId, messages }: Props) {
   // Auto-fix: when errors are loaded and autoFixEnabled, fix them all
   useEffect(() => {
     if (!config?.autoFixEnabled || runErrors.length === 0) return;
-    // Only trigger auto-fix once (all errors in 'idle' state)
     const allIdle = runErrors.every((e) => (errorFixState[e.id] ?? 'idle') === 'idle');
     if (!allIdle) return;
 
@@ -213,13 +276,6 @@ export default function AutomationPage({ projectId, messages }: Props) {
     }
   };
 
-  const handleProviderChange = (value: string) => {
-    const p = value as 'gitlab' | 'github';
-    setProvider(p);
-    setInstanceUrl(p === 'github' ? 'https://github.com' : 'https://gitlab.com');
-    setGitlabToken('');
-  };
-
   const handleToolChange = (tool: string) => {
     setAutomationTool(tool);
     const langs = LANGUAGE_BY_TOOL[tool];
@@ -231,15 +287,7 @@ export default function AutomationPage({ projectId, messages }: Props) {
   const handleSave = async () => {
     setIsSaving(true);
     try {
-      const payload = {
-        provider,
-        gitlabUrl: instanceUrl,
-        gitlabToken,
-        gitlabNamespace,
-        repoName,
-        automationTool,
-        automationLanguage,
-      };
+      const payload = { provider, repoName, automationTool, automationLanguage };
       let updated: AutomationConfigType;
       if (config) {
         updated = await updateAutomationConfig(context.token.access_token, config.id, payload);
@@ -250,7 +298,6 @@ export default function AutomationPage({ projectId, messages }: Props) {
         });
       }
       setConfig(updated);
-      setGitlabToken('***');
       addToast({ title: messages.successSaved, color: 'success' });
     } catch (error) {
       logError('AutomationPage save', error);
@@ -279,7 +326,11 @@ export default function AutomationPage({ projectId, messages }: Props) {
     if (!config) return;
     setIsTriggering(true);
     try {
-      await triggerAutomationRun(context.token.access_token, config.id);
+      const options: TriggerOptions = { mode: runMode };
+      if (runMode === 'specific') options.caseIds = Array.from(selectedCaseIds);
+      if (runMode === 'testRun' && selectedRunId) options.runId = selectedRunId;
+
+      await triggerAutomationRun(context.token.access_token, config.id, options);
       addToast({ title: messages.successTriggered, color: 'success' });
       setRunErrors([]);
       setErrorFixState({});
@@ -308,6 +359,35 @@ export default function AutomationPage({ projectId, messages }: Props) {
     }
   };
 
+  const toggleFolder = (folderPath: string) => {
+    setExpandedFolders((prev) => {
+      const next = new Set(prev);
+      if (next.has(folderPath)) next.delete(folderPath);
+      else next.add(folderPath);
+      return next;
+    });
+  };
+
+  const toggleCaseSelection = (id: number) => {
+    setSelectedCaseIds((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  };
+
+  const toggleFolderSelection = (cases: ImplementedCase[]) => {
+    const ids = cases.map((c) => c.id);
+    const allSelected = ids.every((id) => selectedCaseIds.has(id));
+    setSelectedCaseIds((prev) => {
+      const next = new Set(prev);
+      if (allSelected) ids.forEach((id) => next.delete(id));
+      else ids.forEach((id) => next.add(id));
+      return next;
+    });
+  };
+
   const runStatusLabel = (): { label: string; color: 'default' | 'warning' | 'success' | 'danger' } => {
     if (!runStatus?.status) return { label: messages.runStatusNone, color: 'default' };
     if (runStatus.status === 'queued') return { label: messages.runStatusQueued, color: 'warning' };
@@ -318,25 +398,43 @@ export default function AutomationPage({ projectId, messages }: Props) {
     return { label: messages.runStatusNone, color: 'default' };
   };
 
+  const isTriggerDisabled = () => {
+    if (!config || isTriggering) return true;
+    if (runMode === 'specific' && selectedCaseIds.size === 0) return true;
+    if (runMode === 'testRun' && !selectedRunId) return true;
+    return false;
+  };
+
+  const triggerButtonLabel = () => {
+    if (isTriggering) return messages.triggering;
+    if (runMode === 'specific' && selectedCaseIds.size > 0) {
+      return messages.runSelectedCount.replace('{count}', String(selectedCaseIds.size));
+    }
+    return messages.runTests;
+  };
+
   const availableLanguages = LANGUAGE_BY_TOOL[automationTool] ?? LANGUAGE_BY_TOOL['playwright'];
-  const urlPlaceholder = provider === 'github' ? messages.githubUrlPlaceholder : messages.gitlabUrlPlaceholder;
-  const tokenPlaceholder = provider === 'github' ? messages.githubTokenPlaceholder : messages.gitlabTokenPlaceholder;
+  const isConnected = !!config?.repoUrl;
   const showErrorPanel = runStatus?.conclusion === 'failure' && config?.provider === 'github';
+  const caseGroups = groupByFolder(implementedCases);
 
   return (
     <div className="container mx-auto max-w-3xl pt-6 px-6 flex-grow">
       {/* header */}
       <div className="w-full p-3 flex items-center justify-between mb-2">
         <h3 className="font-bold">{messages.automation}</h3>
-        <Chip color={config ? 'success' : 'default'} variant="flat" size="sm">
-          {config ? messages.connected : messages.notConnected}
+        <Chip color={isConnected ? 'success' : 'default'} variant="flat" size="sm">
+          {isConnected ? messages.connected : messages.notConnected}
         </Chip>
       </div>
 
-      {/* repo status */}
+      {/* connected detail — always shown once a repo exists */}
       {config?.repoUrl && (
         <div className="w-full px-3 mb-2">
-          <div className="flex items-center gap-2 text-sm">
+          <div className="flex items-center gap-2 text-sm flex-wrap">
+            <Chip color={config.provider === 'github' ? 'default' : 'warning'} variant="flat" size="sm">
+              {config.provider === 'github' ? messages.providerGithub : messages.providerGitlab}
+            </Chip>
             <span className="text-default-500">{messages.repoUrl}:</span>
             <Link href={config.repoUrl} isExternal showAnchorIcon size="sm">
               {config.repoUrl}
@@ -345,141 +443,177 @@ export default function AutomationPage({ projectId, messages }: Props) {
         </div>
       )}
 
-      {/* collapsible config section */}
-      <div className="w-full">
-        <button
-          className="w-full px-3 py-2 flex items-center justify-between text-left hover:bg-default-100 rounded-lg transition-colors"
-          onClick={() => setIsConfigExpanded((v) => !v)}
-        >
-          <h4 className="font-semibold text-sm text-default-600 uppercase tracking-wide">
-            {messages.configSection}
-          </h4>
-          {isConfigExpanded ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
-        </button>
+      {/* config form — only shown before the project has been created */}
+      {!isConnected && (
+        <div className="w-full p-3 flex flex-col gap-4">
+          <Select
+            label={messages.provider}
+            selectedKeys={new Set([provider])}
+            onSelectionChange={(keys) => setProvider(Array.from(keys)[0] as 'gitlab' | 'github')}
+            variant="bordered"
+            size="sm"
+          >
+            <SelectItem key="gitlab">{messages.providerGitlab}</SelectItem>
+            <SelectItem key="github">{messages.providerGithub}</SelectItem>
+          </Select>
 
-        {isConfigExpanded && (
-          <>
-            {/* provider selector */}
-            <div className="w-full p-3 flex flex-col gap-4">
-              <Select
-                label={messages.provider}
-                selectedKeys={new Set([provider])}
-                onSelectionChange={(keys) => handleProviderChange(Array.from(keys)[0] as string)}
-                variant="bordered"
-                size="sm"
-              >
-                <SelectItem key="gitlab">{messages.providerGitlab}</SelectItem>
-                <SelectItem key="github">{messages.providerGithub}</SelectItem>
-              </Select>
+          <Input
+            label={messages.repoName}
+            placeholder={messages.repoNamePlaceholder}
+            value={repoName}
+            onValueChange={setRepoName}
+            variant="bordered"
+            size="sm"
+          />
 
-              <Input
-                label={messages.instanceUrl}
-                placeholder={urlPlaceholder}
-                value={instanceUrl}
-                onValueChange={setInstanceUrl}
-                variant="bordered"
-                size="sm"
-              />
+          <Select
+            label={messages.automationTool}
+            selectedKeys={new Set([automationTool])}
+            onSelectionChange={(keys) => handleToolChange(Array.from(keys)[0] as string)}
+            variant="bordered"
+            size="sm"
+          >
+            {TOOL_OPTIONS.map((t) => (
+              <SelectItem key={t.key}>{messages[t.label as keyof AutomationMessages]}</SelectItem>
+            ))}
+          </Select>
 
-              <Input
-                label={messages.gitlabToken}
-                placeholder={tokenPlaceholder}
-                value={gitlabToken}
-                onValueChange={setGitlabToken}
-                onFocus={() => { if (gitlabToken === '***') setGitlabToken(''); }}
-                type="password"
-                variant="bordered"
-                size="sm"
-              />
+          <Select
+            label={messages.automationLanguage}
+            selectedKeys={new Set([automationLanguage])}
+            onSelectionChange={(keys) => setAutomationLanguage(Array.from(keys)[0] as string)}
+            variant="bordered"
+            size="sm"
+          >
+            {availableLanguages.map((l) => (
+              <SelectItem key={l.key}>{messages[l.label as keyof AutomationMessages]}</SelectItem>
+            ))}
+          </Select>
 
-              <Input
-                label={messages.gitlabNamespace}
-                placeholder={provider === 'github' ? 'username or org' : 'username or group/subgroup'}
-                value={gitlabNamespace}
-                onValueChange={setGitlabNamespace}
-                variant="bordered"
-                size="sm"
-              />
-            </div>
+          <div className="flex flex-wrap gap-3">
+            <Button
+              color="primary"
+              size="sm"
+              isLoading={isSaving}
+              isDisabled={!repoName}
+              onPress={handleSave}
+            >
+              {messages.saveConfig}
+            </Button>
 
-            {/* repo configuration */}
-            <div className="w-full p-3 flex flex-col gap-4">
-              <Input
-                label={messages.repoName}
-                placeholder={messages.repoNamePlaceholder}
-                value={repoName}
-                onValueChange={setRepoName}
-                variant="bordered"
-                size="sm"
-              />
+            <Button
+              color="secondary"
+              size="sm"
+              startContent={!isGenerating ? <RefreshCw size={14} /> : undefined}
+              isLoading={isGenerating}
+              isDisabled={!config || !repoName}
+              onPress={handleGenerate}
+            >
+              {isGenerating ? messages.generating : messages.generateProject}
+            </Button>
+          </div>
+        </div>
+      )}
 
-              <Select
-                label={messages.automationTool}
-                selectedKeys={new Set([automationTool])}
-                onSelectionChange={(keys) => handleToolChange(Array.from(keys)[0] as string)}
-                variant="bordered"
-                size="sm"
-              >
-                {TOOL_OPTIONS.map((t) => (
-                  <SelectItem key={t.key}>{messages[t.label as keyof AutomationMessages]}</SelectItem>
-                ))}
-              </Select>
-
-              <Select
-                label={messages.automationLanguage}
-                selectedKeys={new Set([automationLanguage])}
-                onSelectionChange={(keys) => setAutomationLanguage(Array.from(keys)[0] as string)}
-                variant="bordered"
-                size="sm"
-              >
-                {availableLanguages.map((l) => (
-                  <SelectItem key={l.key}>{messages[l.label as keyof AutomationMessages]}</SelectItem>
-                ))}
-              </Select>
-            </div>
-
-            {/* actions */}
-            <div className="w-full p-3 flex flex-wrap gap-3">
-              <Button
-                color="primary"
-                size="sm"
-                isLoading={isSaving}
-                isDisabled={!instanceUrl || !gitlabToken}
-                onPress={handleSave}
-              >
-                {messages.saveConfig}
-              </Button>
-
-              <Button
-                color="secondary"
-                size="sm"
-                startContent={!isGenerating ? <RefreshCw size={14} /> : undefined}
-                isLoading={isGenerating}
-                isDisabled={!config || !repoName}
-                onPress={handleGenerate}
-              >
-                {isGenerating ? messages.generating : messages.generateProject}
-              </Button>
-
-              {config?.repoUrl && (
+      {/* Implemented tests panel — shown when repo is connected */}
+      {isConnected && (
+        <>
+          <Divider className="my-2" />
+          <div className="w-full p-3 flex flex-col gap-3 mt-2">
+            <div className="flex items-center justify-between">
+              <h4 className="font-semibold text-sm text-default-600 uppercase tracking-wide flex items-center gap-2">
+                <ListChecks size={14} />
+                {messages.implementedSection}
+                {implementedCases.length > 0 && (
+                  <Chip color="success" variant="flat" size="sm">
+                    {implementedCases.length}
+                  </Chip>
+                )}
+              </h4>
+              <div className="flex items-center gap-2">
+                {totalCases > 0 && (
+                  <span className="text-xs text-default-400">
+                    {messages.implementedCount
+                      .replace('{count}', String(implementedCases.length))
+                      .replace('{total}', String(totalCases))}
+                  </span>
+                )}
                 <Button
-                  as={Link}
-                  href={config.repoUrl}
-                  isExternal
                   size="sm"
-                  variant="flat"
-                  startContent={<ExternalLink size={14} />}
+                  variant="light"
+                  isIconOnly
+                  isLoading={isFetchingImplemented}
+                  onPress={() => config && loadImplementedCases(config)}
                 >
-                  {messages.openRepo}
+                  {!isFetchingImplemented && <RefreshCw size={12} />}
                 </Button>
-              )}
+              </div>
             </div>
-          </>
-        )}
-      </div>
 
-      {/* CI panel — GitHub only */}
-      {config?.repoUrl && provider === 'github' && (
+            {implementedCases.length === 0 && !isFetchingImplemented && (
+              <p className="text-sm text-default-400">{messages.noImplementedTests}</p>
+            )}
+
+            {/* Case list grouped by folder */}
+            {Object.entries(caseGroups).map(([folderPath, cases]) => {
+              const isExpanded = expandedFolders.has(folderPath);
+              const folderAllSelected = cases.every((c) => selectedCaseIds.has(c.id));
+              const folderSomeSelected = cases.some((c) => selectedCaseIds.has(c.id));
+
+              return (
+                <div key={folderPath} className="border-1 dark:border-neutral-700 rounded-lg overflow-hidden">
+                  <button
+                    className="w-full flex items-center gap-2 px-3 py-2 bg-default-50 dark:bg-neutral-800/50 hover:bg-default-100 text-left"
+                    onClick={() => toggleFolder(folderPath)}
+                  >
+                    {runMode === 'specific' && (
+                      <Checkbox
+                        size="sm"
+                        isSelected={folderAllSelected}
+                        isIndeterminate={folderSomeSelected && !folderAllSelected}
+                        onValueChange={() => toggleFolderSelection(cases)}
+                        onClick={(e) => e.stopPropagation()}
+                        aria-label={`Select all in ${folderPath}`}
+                      />
+                    )}
+                    {isExpanded ? <ChevronDown size={14} /> : <ChevronRight size={14} />}
+                    <span className="text-sm font-medium flex-1 truncate">{folderPath}</span>
+                    <span className="text-xs text-default-400 shrink-0">{cases.length}</span>
+                  </button>
+
+                  {isExpanded && (
+                    <div className="divide-y divide-default-100 dark:divide-neutral-700/50">
+                      {cases.map((c) => (
+                        <div key={c.id} className="flex items-center gap-2 px-3 py-2">
+                          {runMode === 'specific' && (
+                            <Checkbox
+                              size="sm"
+                              isSelected={selectedCaseIds.has(c.id)}
+                              onValueChange={() => toggleCaseSelection(c.id)}
+                              aria-label={c.title}
+                            />
+                          )}
+                          <span className="text-sm flex-1 truncate">{c.title}</span>
+                          <div className="flex items-center gap-1 shrink-0">
+                            {c.tags.map((tag) => (
+                              <Chip key={tag} size="sm" variant="flat" color="secondary" startContent={<Tag size={10} />}>
+                                {tag}
+                              </Chip>
+                            ))}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        </>
+      )}
+
+      {/* CI panel — GitHub only, shown after project is created */}
+      {isConnected && config?.provider === 'github' && (
         <>
           <Divider className="my-2" />
           <div className="w-full p-3 flex flex-col gap-4 mt-2">
@@ -487,21 +621,72 @@ export default function AutomationPage({ projectId, messages }: Props) {
 
             <div className="flex items-center gap-3 flex-wrap">
               <span className="text-sm text-default-500">{messages.ciStatus}:</span>
-              {(() => {
-                const { label, color } = runStatusLabel();
-                return (
-                  <Chip color={color} variant="flat" size="sm">
-                    {label}
-                  </Chip>
-                );
-              })()}
-              {runStatus?.commitSha && (
-                <span className="text-xs text-default-400 font-mono">{runStatus.commitSha}</span>
+              {runStatusError ? (
+                <span className="text-sm text-warning-600 flex items-center gap-1">
+                  <AlertTriangle size={14} />
+                  {runStatusError}
+                </span>
+              ) : (
+                <>
+                  {(() => {
+                    const { label, color } = runStatusLabel();
+                    return (
+                      <Chip color={color} variant="flat" size="sm">
+                        {label}
+                      </Chip>
+                    );
+                  })()}
+                  {runStatus?.commitSha && (
+                    <span className="text-xs text-default-400 font-mono">{runStatus.commitSha}</span>
+                  )}
+                  {runStatus?.url && (
+                    <Link href={runStatus.url} isExternal size="sm" showAnchorIcon>
+                      {messages.viewRun}
+                    </Link>
+                  )}
+                </>
               )}
-              {runStatus?.url && (
-                <Link href={runStatus.url} isExternal size="sm" showAnchorIcon>
-                  {messages.viewRun}
-                </Link>
+            </div>
+
+            {/* Run mode selector */}
+            <div className="flex flex-col gap-2">
+              <div className="flex gap-2 flex-wrap">
+                {(['all', 'specific', 'testRun'] as RunMode[]).map((mode) => (
+                  <Button
+                    key={mode}
+                    size="sm"
+                    variant={runMode === mode ? 'solid' : 'flat'}
+                    color={runMode === mode ? 'primary' : 'default'}
+                    onPress={() => {
+                      setRunMode(mode);
+                      if (mode !== 'specific') setSelectedCaseIds(new Set());
+                      if (mode !== 'testRun') setSelectedRunId(null);
+                    }}
+                  >
+                    {mode === 'all' && messages.runModeAll}
+                    {mode === 'specific' && messages.runModeSelect}
+                    {mode === 'testRun' && messages.runModeTestRun}
+                  </Button>
+                ))}
+              </div>
+
+              {/* Test run picker */}
+              {runMode === 'testRun' && (
+                <Select
+                  label={messages.selectTestRunPlaceholder}
+                  selectedKeys={selectedRunId ? new Set([String(selectedRunId)]) : new Set()}
+                  onSelectionChange={(keys) => {
+                    const val = Array.from(keys)[0];
+                    setSelectedRunId(val ? Number(val) : null);
+                  }}
+                  variant="bordered"
+                  size="sm"
+                  isLoading={isFetchingRuns}
+                >
+                  {projectRuns.map((r) => (
+                    <SelectItem key={String(r.id)}>{r.name}</SelectItem>
+                  ))}
+                </Select>
               )}
             </div>
 
@@ -511,10 +696,10 @@ export default function AutomationPage({ projectId, messages }: Props) {
                 size="sm"
                 startContent={!isTriggering ? <Play size={14} /> : undefined}
                 isLoading={isTriggering}
-                isDisabled={!config}
+                isDisabled={isTriggerDisabled()}
                 onPress={handleTrigger}
               >
-                {isTriggering ? messages.triggering : messages.runTests}
+                {triggerButtonLabel()}
               </Button>
               <Button
                 size="sm"
@@ -536,6 +721,16 @@ export default function AutomationPage({ projectId, messages }: Props) {
                 onPress={handleRepair}
               >
                 {isRepairing ? messages.repairing : messages.repairCoreFiles}
+              </Button>
+              <Button
+                as={Link}
+                href={config.repoUrl ?? undefined}
+                isExternal
+                size="sm"
+                variant="flat"
+                startContent={<ExternalLink size={14} />}
+              >
+                {messages.openRepo}
               </Button>
             </div>
           </div>

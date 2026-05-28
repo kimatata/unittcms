@@ -4,15 +4,12 @@ import { fileURLToPath } from 'url';
 import multer from 'multer';
 import express from 'express';
 const router = express.Router();
-import { DataTypes } from 'sequelize';
-import defineAttachment from '../../models/attachments.js';
-import defineCaseAttachment from '../../models/caseAttachments.js';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-export default function (sequelize) {
-  const Attachment = defineAttachment(sequelize, DataTypes);
-  const CaseAttachment = defineCaseAttachment(sequelize, DataTypes);
+export default function (db) {
+  const Attachment = db.repos.attachments;
+  const CaseAttachment = db.repos.caseAttachments;
 
   // Create uploads folder if it does not exist
   const uploadDir = path.join(__dirname, '../../public/uploads');
@@ -51,7 +48,7 @@ export default function (sequelize) {
 
   // TODO middleware to verify user permission to upload files
   router.post('/', upload.array('files', 10), async (req, res) => {
-    const t = await sequelize.transaction();
+    const t = await db.sequelize.transaction();
     try {
       const caseId = req.query.parentCaseId;
       const files = req.files;

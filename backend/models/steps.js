@@ -8,12 +8,10 @@ function defineStep(sequelize, DataTypes) {
       type: DataTypes.STRING,
       allowNull: false,
     },
-  });
+  }, { tableName: 'steps' });
 
   Step.associate = (models) => {
-    Step.belongsToMany(models.Case, {
-      through: 'caseSteps',
-    });
+    Step.belongsToMany(models.Case, { through: models.CaseStep, foreignKey: 'stepId', otherKey: 'caseId' });
   };
 
   return Step;

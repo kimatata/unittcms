@@ -1,15 +1,12 @@
 import express from 'express';
 const router = express.Router();
-import { DataTypes, Op } from 'sequelize';
+import { Op } from 'sequelize';
 import authMiddleware from '../../middleware/auth.js';
 import editableMiddleware from '../../middleware/verifyEditable.js';
-import defineTag from '../../models/tags.js';
 
-export default function (sequelize) {
-  const { verifySignedIn } = authMiddleware(sequelize);
-  const { verifyProjectDeveloperFromProjectId } = editableMiddleware(sequelize);
-
-  const Tags = defineTag(sequelize, DataTypes);
+export default function (db) {
+  const { verifySignedIn } = authMiddleware(db);
+  const { verifyProjectDeveloperFromProjectId } = editableMiddleware(db);
 
   router.put('/:tagId', verifySignedIn, verifyProjectDeveloperFromProjectId, async (req, res) => {
     const { tagId } = req.params;
@@ -38,7 +35,7 @@ export default function (sequelize) {
     }
 
     try {
-      const existingTag = await Tags.findOne({
+      const existingTag = await db.repos.tags.findOne({
         where: { name: trimmedName, projectId, id: { [Op.ne]: tagId } },
         attributes: ['id'],
       });
@@ -47,13 +44,13 @@ export default function (sequelize) {
         return res.status(409).json({ error: 'Tag name must be unique' });
       }
 
-      const [updated] = await Tags.update({ name: trimmedName }, { where: { id: tagId, projectId } });
+      const [updated] = await db.repos.tags.update({ name: trimmedName }, { where: { id: tagId, projectId } });
 
       if (updated === 0) {
         return res.status(404).json({ error: 'Tag not found' });
       }
 
-      const updatedTag = await Tags.findOne({
+      const updatedTag = await db.repos.tags.findOne({
         where: { id: tagId, projectId },
       });
 

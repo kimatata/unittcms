@@ -15,7 +15,7 @@ import { UserType } from '@/types/user';
 import { findUser } from '@/utils/usersControl';
 import { logError } from '@/utils/errorHandler';
 import UserAvatar from '@/components/UserAvatar';
-import { fetchAutomationConfig, updateAutoFixEnabled } from '@/utils/automationConfigControl';
+import { fetchAutomationConfig, updateAutoFixEnabled, deleteAutomationRepo } from '@/utils/automationConfigControl';
 import { AutomationConfigType } from '@/types/project';
 
 type Props = {
@@ -75,6 +75,25 @@ export default function SettingsPage({ projectId, messages, projectDialogMessage
 
     fetchDataEffect();
   }, [context, projectId]);
+
+  const [isDeleteRepoDialogOpen, setIsDeleteRepoDialogOpen] = useState(false);
+  const [isDeletingRepo, setIsDeletingRepo] = useState(false);
+
+  const handleDeleteRepo = async () => {
+    if (!automationConfig) return;
+    setIsDeletingRepo(true);
+    try {
+      const updated = await deleteAutomationRepo(context.token.access_token, automationConfig.id);
+      setAutomationConfig(updated);
+      setIsDeleteRepoDialogOpen(false);
+      addToast({ title: messages.deleteAutomationProjectSuccess, color: 'success' });
+    } catch (error) {
+      logError('SettingsPage deleteRepo', error);
+      addToast({ title: messages.deleteAutomationProjectError, color: 'danger' });
+    } finally {
+      setIsDeletingRepo(false);
+    }
+  };
 
   const handleAutoFixToggle = async (enabled: boolean) => {
     if (!automationConfig) return;
@@ -171,13 +190,13 @@ export default function SettingsPage({ projectId, messages, projectDialogMessage
         <ProjectTagsManager projectId={projectId} messages={messages} />
       </div>
 
-      {/* Automation Settings — only shown when a repo is connected */}
+      {/* Automation Settings — only shown when an automation config exists */}
       {automationConfig && (
         <>
           <div className="w-full p-3 flex items-center justify-between mt-4">
             <h3 className="font-bold">{messages.automationSettings}</h3>
           </div>
-          <div className="w-full p-3">
+          <div className="w-full p-3 flex flex-col gap-3">
             <div className="flex items-center justify-between gap-4 border-1 dark:border-neutral-700 rounded-lg p-4">
               <div>
                 <p className="text-sm font-medium">{messages.autoFixEnabled}</p>
@@ -189,6 +208,25 @@ export default function SettingsPage({ projectId, messages, projectDialogMessage
                 size="sm"
               />
             </div>
+
+            {automationConfig.repoUrl && (
+              <div className="flex items-center justify-between gap-4 border-1 border-danger-200 dark:border-danger-800 rounded-lg p-4">
+                <div>
+                  <p className="text-sm font-medium text-danger">{messages.deleteAutomationProject}</p>
+                  <p className="text-xs text-default-500">{automationConfig.repoUrl}</p>
+                </div>
+                <Button
+                  color="danger"
+                  variant="flat"
+                  size="sm"
+                  startContent={<Trash size={14} />}
+                  isLoading={isDeletingRepo}
+                  onPress={() => setIsDeleteRepoDialogOpen(true)}
+                >
+                  {messages.deleteAutomationProject}
+                </Button>
+              </div>
+            )}
           </div>
         </>
       )}
@@ -208,6 +246,15 @@ export default function SettingsPage({ projectId, messages, projectDialogMessage
         closeText={messages.close}
         confirmText={messages.areYouSure}
         deleteText={messages.delete}
+      />
+
+      <DeleteConfirmDialog
+        isOpen={isDeleteRepoDialogOpen}
+        onCancel={() => setIsDeleteRepoDialogOpen(false)}
+        onConfirm={handleDeleteRepo}
+        closeText={messages.close}
+        confirmText={messages.deleteAutomationProjectConfirm}
+        deleteText={messages.deleteAutomationProject}
       />
     </div>
   );

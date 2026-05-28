@@ -1,16 +1,12 @@
 import express from 'express';
 const router = express.Router();
-import { DataTypes, literal } from 'sequelize';
-import defineRun from '../../models/runs.js';
-import defineRunCase from '../../models/runCases.js';
+import { literal } from 'sequelize';
 import authMiddleware from '../../middleware/auth.js';
 import visibilityMiddleware from '../../middleware/verifyVisible.js';
 
-export default function (sequelize) {
-  const { verifySignedIn } = authMiddleware(sequelize);
-  const { verifyProjectVisibleFromRunId } = visibilityMiddleware(sequelize);
-  const Run = defineRun(sequelize, DataTypes);
-  const RunCase = defineRunCase(sequelize, DataTypes);
+export default function (db) {
+  const { verifySignedIn } = authMiddleware(db);
+  const { verifyProjectVisibleFromRunId } = visibilityMiddleware(db);
 
   router.get('/:runId', verifySignedIn, verifyProjectVisibleFromRunId, async (req, res) => {
     const runId = req.params.runId;
@@ -20,13 +16,13 @@ export default function (sequelize) {
     }
 
     try {
-      const run = await Run.findByPk(runId);
+      const run = await db.repos.runs.findByPk(runId);
       if (!run) {
         return res.status(404).send('Run not found');
       }
 
       // Counts test case status belonging to the run
-      const statusCounts = await RunCase.findAll({
+      const statusCounts = await db.repos.runCases.findAll({
         attributes: ['status', [literal('COUNT(*)'), 'count']],
         where: {
           runId: run.id,

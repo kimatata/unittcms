@@ -1,22 +1,18 @@
 import express from 'express';
 const router = express.Router();
-import { DataTypes } from 'sequelize';
-import defineProject from '../../models/projects.js';
-import defineFolder from '../../models/folders.js';
-import defineRun from '../../models/runs.js';
 import authMiddleware from '../../middleware/auth.js';
 import editableMiddleware from '../../middleware/verifyEditable.js';
 
-export default function (sequelize) {
-  const { verifySignedIn } = authMiddleware(sequelize);
-  const { verifyProjectOwner } = editableMiddleware(sequelize);
-  const Project = defineProject(sequelize, DataTypes);
-  const Folder = defineFolder(sequelize, DataTypes);
-  const Run = defineRun(sequelize, DataTypes);
+export default function (db) {
+  const { verifySignedIn } = authMiddleware(db);
+  const { verifyProjectOwner } = editableMiddleware(db);
+  const Project = db.repos.projects;
+  const Folder = db.repos.folders;
+  const Run = db.repos.runs;
 
   router.delete('/:projectId', verifySignedIn, verifyProjectOwner, async (req, res) => {
     const projectId = req.params.projectId;
-    const t = await sequelize.transaction();
+    const t = await db.sequelize.transaction();
 
     try {
       const project = await Project.findByPk(projectId);

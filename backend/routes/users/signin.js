@@ -1,19 +1,16 @@
 import express from 'express';
 const router = express.Router();
-import { DataTypes } from 'sequelize';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
-import defineUser from '../../models/users.js';
 import { defaultDangerKey } from './authSettings.js';
 
-export default function (sequelize) {
-  const User = defineUser(sequelize, DataTypes);
+export default function (db) {
   const secretKey = process.env.SECRET_KEY || defaultDangerKey;
 
   router.post('/signin', async (req, res) => {
     try {
       const { email, password } = req.body;
-      const user = await User.findOne({
+      const user = await db.repos.users.findOne({
         where: {
           email: email,
         },

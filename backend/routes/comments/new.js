@@ -1,17 +1,11 @@
 import express from 'express';
 const router = express.Router();
-import { DataTypes } from 'sequelize';
-import defineComment from '../../models/comments.js';
-import defineUser from '../../models/users.js';
 import authMiddleware from '../../middleware/auth.js';
 import editableMiddleware from '../../middleware/verifyEditable.js';
 
-export default function (sequelize) {
-  const { verifySignedIn } = authMiddleware(sequelize);
-  const { verifyProjectReporterFromCommentableId } = editableMiddleware(sequelize);
-  const Comment = defineComment(sequelize, DataTypes);
-  const User = defineUser(sequelize, DataTypes);
-  Comment.belongsTo(User, { foreignKey: 'userId' });
+export default function (db) {
+  const { verifySignedIn } = authMiddleware(db);
+  const { verifyProjectReporterFromCommentableId } = editableMiddleware(db);
 
   router.post('/', verifySignedIn, verifyProjectReporterFromCommentableId, async (req, res) => {
     const { commentableType, commentableId } = req.query;
@@ -22,7 +16,7 @@ export default function (sequelize) {
     }
 
     try {
-      const newComment = await Comment.create({
+      const newComment = await db.repos.comments.create({
         commentableType: commentableType,
         commentableId: commentableId,
         userId: req.userId,
@@ -30,10 +24,10 @@ export default function (sequelize) {
       });
 
       // Fetch the comment with user data
-      const commentWithUser = await Comment.findByPk(newComment.id, {
+      const commentWithUser = await db.repos.comments.findByPk(newComment.id, {
         include: [
           {
-            model: sequelize.models.User,
+            model: db.models.User,
             attributes: ['id', 'username', 'email'],
           },
         ],

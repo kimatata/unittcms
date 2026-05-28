@@ -71,11 +71,6 @@ export type AutomationConfigType = {
 
 export type AutomationMessages = {
   automation: string;
-  gitlabConnection: string;
-  gitlabUrl: string;
-  gitlabToken: string;
-  gitlabNamespace: string;
-  repoConfig: string;
   repoName: string;
   automationTool: string;
   automationLanguage: string;
@@ -96,15 +91,10 @@ export type AutomationMessages = {
   errorSaved: string;
   errorGenerated: string;
   openRepo: string;
-  gitlabUrlPlaceholder: string;
-  gitlabTokenPlaceholder: string;
   repoNamePlaceholder: string;
   provider: string;
   providerGitlab: string;
   providerGithub: string;
-  instanceUrl: string;
-  githubUrlPlaceholder: string;
-  githubTokenPlaceholder: string;
   ciSection: string;
   runTests: string;
   triggering: string;
@@ -123,9 +113,6 @@ export type AutomationMessages = {
   repairing: string;
   successRepaired: string;
   errorRepaired: string;
-  configSection: string;
-  hideConfig: string;
-  showConfig: string;
   errorsSection: string;
   fetchErrors: string;
   fetchingErrors: string;
@@ -137,4 +124,15 @@ export type AutomationMessages = {
   viewCommit: string;
   autoFixRunning: string;
   noAnthropicKey: string;
+  // Implemented tests panel
+  implementedSection: string;
+  implementedCount: string;
+  noImplementedTests: string;
+  // Run mode selector
+  runModeAll: string;
+  runModeSelect: string;
+  runModeTestRun: string;
+  runSelectedCount: string;
+  selectTestRunPlaceholder: string;
+  implementedCountInRun: string;
 };

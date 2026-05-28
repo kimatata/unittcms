@@ -1,12 +1,9 @@
 import express from 'express';
-import { DataTypes } from 'sequelize';
-import defineUser from '../../models/users.js';
 import authMiddleware from '../../middleware/auth.js';
 const router = express.Router();
 
-export default function (sequelize) {
-  const { verifySignedIn } = authMiddleware(sequelize);
-  const User = defineUser(sequelize, DataTypes);
+export default function (db) {
+  const { verifySignedIn } = authMiddleware(db);
 
   router.put('/username', verifySignedIn, async (req, res) => {
     try {
@@ -17,7 +14,7 @@ export default function (sequelize) {
         return res.status(400).send('Username is required');
       }
 
-      const user = await User.findByPk(userId);
+      const user = await db.repos.users.findByPk(userId);
       if (!user) {
         return res.status(404).send('User not found');
       }
@@ -25,7 +22,7 @@ export default function (sequelize) {
       await user.update({ username: username.trim() });
 
       // Return updated user without password
-      const updatedUser = await User.findByPk(userId, {
+      const updatedUser = await db.repos.users.findByPk(userId, {
         attributes: ['id', 'email', 'username', 'role', 'avatarPath', 'locale'],
       });
 

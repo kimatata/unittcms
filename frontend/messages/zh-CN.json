@@ -196,11 +196,6 @@
   },
   "Automation": {
     "automation": "自动化",
-    "gitlab_connection": "GitLab 连接",
-    "gitlab_url": "GitLab 地址",
-    "gitlab_token": "个人访问令牌",
-    "gitlab_namespace": "命名空间（可选）",
-    "repo_config": "仓库配置",
     "repo_name": "仓库名称",
     "automation_tool": "自动化工具",
     "automation_language": "语言",
@@ -221,15 +216,10 @@
     "error_saved": "保存配置失败",
     "error_generated": "生成自动化项目失败",
     "open_repo": "打开仓库",
-    "gitlab_url_placeholder": "https://gitlab.com",
-    "gitlab_token_placeholder": "glpat-xxxxxxxxxxxxxxxxxxxx",
     "repo_name_placeholder": "my-automation-tests",
     "provider": "Git 提供商",
     "provider_gitlab": "GitLab",
     "provider_github": "GitHub",
-    "instance_url": "实例地址",
-    "github_url_placeholder": "https://github.com",
-    "github_token_placeholder": "ghp_xxxxxxxxxxxxxxxxxxxx",
     "ci_section": "CI / 测试运行",
     "run_tests": "运行测试",
     "triggering": "触发中...",
@@ -248,9 +238,6 @@
     "repairing": "修复中...",
     "success_repaired": "核心文件已修复并推送到仓库",
     "error_repaired": "修复核心文件失败",
-    "config_section": "配置",
-    "hide_config": "隐藏配置",
-    "show_config": "显示配置",
     "errors_section": "测试失败",
     "fetch_errors": "获取错误",
     "fetching_errors": "获取中...",
@@ -261,7 +248,16 @@
     "fix_error": "AI 修复应用失败",
     "view_commit": "查看提交",
     "auto_fix_running": "自动修复进行中 — AI 正在自动修复失败",
-    "no_anthropic_key": "请在集成标签中添加 Anthropic API 密钥以启用 AI 修复"
+    "no_anthropic_key": "请在集成标签中添加 Anthropic API 密钥以启用 AI 修复",
+    "implemented_section": "已实现的测试",
+    "implemented_count": "{total}个测试中已实现{count}个",
+    "no_implemented_tests": "尚无已实现的测试。运行并同步自动化项目以查看已实现的测试。",
+    "run_mode_all": "运行全部",
+    "run_mode_select": "选择测试",
+    "run_mode_test_run": "从测试运行",
+    "run_selected_count": "运行{count}个选定项",
+    "select_test_run_placeholder": "选择测试运行",
+    "implemented_count_in_run": "{count}个测试已实现"
   },
   "Integrations": {
     "integrations": "集成",
@@ -551,6 +547,10 @@
     "auto_fix_enabled": "失败时自动修复",
     "auto_fix_description": "当测试运行失败时自动应用 AI 修复（需要 Anthropic API 密钥）",
     "auto_fix_updated": "自动修复设置已更新",
-    "auto_fix_update_error": "更新自动修复设置失败"
+    "auto_fix_update_error": "更新自动修复设置失败",
+    "delete_automation_project": "删除自动化项目",
+    "delete_automation_project_confirm": "这将永久删除远程仓库并重置自动化设置。集成连接设置将保持不变。",
+    "delete_automation_project_success": "自动化项目已成功删除",
+    "delete_automation_project_error": "删除自动化项目失败"
   }
 }

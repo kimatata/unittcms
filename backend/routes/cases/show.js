@@ -1,31 +1,17 @@
 import express from 'express';
 const router = express.Router();
-import { DataTypes } from 'sequelize';
-import defineCase from '../../models/cases.js';
-import defineStep from '../../models/steps.js';
-import defineTag from '../../models/tags.js';
-import defineAttachment from '../../models/attachments.js';
 import authMiddleware from '../../middleware/auth.js';
 import visibilityMiddleware from '../../middleware/verifyVisible.js';
-import defineRunCase from '../../models/runCases.js';
 
-export default function (sequelize) {
-  const Case = defineCase(sequelize, DataTypes);
-  const Step = defineStep(sequelize, DataTypes);
-  const Tags = defineTag(sequelize, DataTypes);
-  const Attachment = defineAttachment(sequelize, DataTypes);
-  Case.belongsToMany(Step, { through: 'caseSteps' });
-  Step.belongsToMany(Case, { through: 'caseSteps' });
-  Case.belongsToMany(Attachment, { through: 'caseAttachments' });
-  Attachment.belongsToMany(Case, { through: 'caseAttachments' });
-  Case.belongsToMany(Tags, { through: 'caseTags', foreignKey: 'caseId', otherKey: 'tagId' });
-  Tags.belongsToMany(Case, { through: 'caseTags', foreignKey: 'tagId', otherKey: 'caseId' });
-  const RunCase = defineRunCase(sequelize, DataTypes);
-  RunCase.belongsTo(Case, { foreignKey: 'caseId' });
-  Case.hasMany(RunCase, { foreignKey: 'caseId' });
+export default function (db) {
+  const Case = db.repos.cases;
+  const Step = db.repos.steps;
+  const Tags = db.models.Tags;
+  const Attachment = db.repos.attachments;
+  const RunCase = db.repos.runCases;
 
-  const { verifySignedIn } = authMiddleware(sequelize);
-  const { verifyProjectVisibleFromCaseId } = visibilityMiddleware(sequelize);
+  const { verifySignedIn } = authMiddleware(db);
+  const { verifyProjectVisibleFromCaseId } = visibilityMiddleware(db);
 
   router.get('/:caseId', verifySignedIn, verifyProjectVisibleFromCaseId, async (req, res) => {
     const caseId = req.params.caseId;

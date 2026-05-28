@@ -1,31 +1,15 @@
 import express from 'express';
 const router = express.Router();
-import { DataTypes } from 'sequelize';
 import Papa from 'papaparse';
 import { create } from 'xmlbuilder2';
-import defineRun from '../../models/runs.js';
-import defineRunCase from '../../models/runCases.js';
-import defineCase from '../../models/cases.js';
-import defineFolder from '../../models/folders.js';
-import defineTag from '../../models/tags.js';
 import authMiddleware from '../../middleware/auth.js';
 import visibilityMiddleware from '../../middleware/verifyVisible.js';
 import { contentDisposition, toSafeFileName } from '../../config/contentDisposition.js';
 import { testRunCaseStatus, testRunStatus, priorities, testTypes, automationStatus } from '../../config/enums.js';
 
-export default function (sequelize) {
-  const { verifySignedIn } = authMiddleware(sequelize);
-  const { verifyProjectVisibleFromRunId } = visibilityMiddleware(sequelize);
-
-  const Run = defineRun(sequelize, DataTypes);
-  const RunCase = defineRunCase(sequelize, DataTypes);
-  const Case = defineCase(sequelize, DataTypes);
-  const Folder = defineFolder(sequelize, DataTypes);
-  const Tags = defineTag(sequelize, DataTypes);
-
-  RunCase.belongsTo(Case, { foreignKey: 'caseId' });
-  Case.belongsToMany(Tags, { through: 'caseTags', foreignKey: 'caseId', otherKey: 'tagId' });
-  Tags.belongsToMany(Case, { through: 'caseTags', foreignKey: 'tagId', otherKey: 'caseId' });
+export default function (db) {
+  const { verifySignedIn } = authMiddleware(db);
+  const { verifyProjectVisibleFromRunId } = visibilityMiddleware(db);
 
   router.get('/download/:runId', verifySignedIn, verifyProjectVisibleFromRunId, async (req, res) => {
     const { runId } = req.params;
@@ -36,7 +20,7 @@ export default function (sequelize) {
     }
 
     try {
-      const run = await Run.findByPk(runId);
+      const run = await db.repos.runs.findByPk(runId);
       if (!run) {
         return res.status(404).send('Run not found');
       }
@@ -46,14 +30,14 @@ export default function (sequelize) {
       res.setHeader('Access-Control-Expose-Headers', 'Content-Disposition');
       res.setHeader('Content-Disposition', contentDisposition(filename));
 
-      const runCases = await RunCase.findAll({
+      const runCases = await db.repos.runCases.findAll({
         where: { runId },
         include: [
           {
-            model: Case,
+            model: db.repos.cases,
             include: [
               {
-                model: Tags,
+                model: db.repos.tags,
                 attributes: ['id', 'name'],
                 through: { attributes: [] },
               },
@@ -83,7 +67,7 @@ export default function (sequelize) {
 
         for (const [folderId, cases] of folderMap.entries()) {
           let folderName = '';
-          const folder = await Folder.findByPk(folderId);
+          const folder = await db.repos.folders.findByPk(folderId);
           if (folder) {
             folderName = folder.name;
           }

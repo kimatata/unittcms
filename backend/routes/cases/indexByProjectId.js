@@ -1,31 +1,17 @@
 import express from 'express';
 const router = express.Router();
-import { DataTypes, Op } from 'sequelize';
-import defineProject from '../../models/projects.js';
-import defineFolder from '../../models/folders.js';
-import defineCase from '../../models/cases.js';
-import defineTag from '../../models/tags.js';
-import defineRunCase from '../../models/runCases.js';
+import { Op } from 'sequelize';
 import authMiddleware from '../../middleware/auth.js';
 import visibilityMiddleware from '../../middleware/verifyVisible.js';
 
-export default function (sequelize) {
-  const Project = defineProject(sequelize, DataTypes);
-  const Folder = defineFolder(sequelize, DataTypes);
-  const Case = defineCase(sequelize, DataTypes);
-  const RunCase = defineRunCase(sequelize, DataTypes);
-  const Tags = defineTag(sequelize, DataTypes);
-  Project.hasMany(Folder, { foreignKey: 'projectId' });
-  Folder.hasMany(Case, { foreignKey: 'folderId' });
-  Folder.belongsTo(Project, { foreignKey: 'projectId' });
-  Case.belongsTo(Folder, { foreignKey: 'folderId' });
-  Case.hasMany(RunCase, { foreignKey: 'caseId' });
-  Case.belongsToMany(Tags, { through: 'caseTags', foreignKey: 'caseId', otherKey: 'tagId' });
-  Tags.belongsToMany(Case, { through: 'caseTags', foreignKey: 'tagId', otherKey: 'caseId' });
-  RunCase.belongsTo(Case, { foreignKey: 'caseId' });
-  const { verifySignedIn } = authMiddleware(sequelize);
-  const { verifyProjectVisibleFromProjectId } = visibilityMiddleware(sequelize);
-  const { verifyProjectVisibleFromRunId } = visibilityMiddleware(sequelize);
+export default function (db) {
+  const Case = db.repos.cases;
+  const RunCase = db.repos.runCases;
+  const Tags = db.models.Tags;
+  const Folder = db.repos.folders;
+  const { verifySignedIn } = authMiddleware(db);
+  const { verifyProjectVisibleFromProjectId } = visibilityMiddleware(db);
+  const { verifyProjectVisibleFromRunId } = visibilityMiddleware(db);
 
   router.get(
     '/byproject',
@@ -114,10 +100,10 @@ export default function (sequelize) {
                 'runId',
                 'status',
                 [
-                  sequelize.literal(
-                    '(SELECT COUNT(*) FROM `comments` WHERE `comments`.`commentableType` = ' +
-                      sequelize.escape('RunCase') +
-                      ' AND `comments`.`commentableId` = `RunCases`.`id`)'
+                  db.sequelize.literal(
+                    '(SELECT COUNT(*) FROM "comments" WHERE "comments"."commentableType" = ' +
+                      db.sequelize.escape('RunCase') +
+                      ' AND "comments"."commentableId" = "RunCases"."id")'
                   ),
                   'commentCount',
                 ],

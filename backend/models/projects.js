@@ -16,17 +16,18 @@ function defineProject(sequelize, DataTypes) {
       type: DataTypes.INTEGER,
       allowNull: false,
       references: {
-        model: 'user',
+        model: 'users',
         key: 'id',
       },
       onDelete: 'CASCADE',
     },
-  });
+  }, { tableName: 'projects' });
 
   Project.associate = (models) => {
     Project.belongsTo(models.User, { foreignKey: 'userId', onDelete: 'CASCADE' });
     Project.hasMany(models.Folder, { foreignKey: 'projectId', onDelete: 'CASCADE' });
     Project.hasMany(models.Run, { foreignKey: 'projectId', onDelete: 'CASCADE' });
+    Project.hasMany(models.Member, { foreignKey: 'projectId', onDelete: 'CASCADE' });
   };
 
   return Project;

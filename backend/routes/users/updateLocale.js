@@ -1,19 +1,16 @@
 import express from 'express';
-import { DataTypes } from 'sequelize';
-import defineUser from '../../models/users.js';
 import authMiddleware from '../../middleware/auth.js';
 import { SUPPORTED_LOCALES } from '../../config/locale.js';
 const router = express.Router();
 
-export default function (sequelize) {
-  const { verifySignedIn } = authMiddleware(sequelize);
-  const User = defineUser(sequelize, DataTypes);
+export default function (db) {
+  const { verifySignedIn } = authMiddleware(db);
 
   router.put('/locale', verifySignedIn, async (req, res) => {
     try {
       const userId = req.userId;
 
-      const user = await User.findByPk(userId);
+      const user = await db.repos.users.findByPk(userId);
       if (!user) {
         return res.status(404).send('User not found');
       }
@@ -31,7 +28,7 @@ export default function (sequelize) {
 
       await user.update({ locale: normalizedLocale });
 
-      const updatedUser = await User.findByPk(userId, {
+      const updatedUser = await db.repos.users.findByPk(userId, {
         attributes: ['id', 'email', 'username', 'role', 'avatarPath', 'locale'],
       });
 

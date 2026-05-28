@@ -1,20 +1,17 @@
 import express from 'express';
 const router = express.Router();
-import { DataTypes } from 'sequelize';
-import defineRun from '../../models/runs.js';
 import authMiddleware from '../../middleware/auth.js';
 import editableMiddleware from '../../middleware/verifyEditable.js';
 
-export default function (sequelize) {
-  const Run = defineRun(sequelize, DataTypes);
-  const { verifySignedIn } = authMiddleware(sequelize);
-  const { verifyProjectReporterFromRunId } = editableMiddleware(sequelize);
+export default function (db) {
+  const { verifySignedIn } = authMiddleware(db);
+  const { verifyProjectReporterFromRunId } = editableMiddleware(db);
 
   router.put('/:runId', verifySignedIn, verifyProjectReporterFromRunId, async (req, res) => {
     const runId = req.params.runId;
     const updateRun = req.body;
     try {
-      const testrun = await Run.findByPk(runId);
+      const testrun = await db.repos.runs.findByPk(runId);
       if (!testrun) {
         return res.status(404).send('Run not found');
       }

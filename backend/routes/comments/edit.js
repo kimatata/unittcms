@@ -1,15 +1,9 @@
 import express from 'express';
 const router = express.Router();
-import { DataTypes } from 'sequelize';
-import defineComment from '../../models/comments.js';
-import defineUser from '../../models/users.js';
 import authMiddleware from '../../middleware/auth.js';
 
-export default function (sequelize) {
-  const { verifySignedIn } = authMiddleware(sequelize);
-  const Comment = defineComment(sequelize, DataTypes);
-  const User = defineUser(sequelize, DataTypes);
-  Comment.belongsTo(User, { foreignKey: 'userId' });
+export default function (db) {
+  const { verifySignedIn } = authMiddleware(db);
 
   router.put('/:commentId', verifySignedIn, async (req, res) => {
     const commentId = req.params.commentId;
@@ -20,7 +14,7 @@ export default function (sequelize) {
     }
 
     try {
-      const comment = await Comment.findByPk(commentId);
+      const comment = await db.repos.comments.findByPk(commentId);
       if (!comment) {
         return res.status(404).json({ error: 'Comment not found' });
       }
@@ -33,10 +27,10 @@ export default function (sequelize) {
       await comment.update({ content });
 
       // Fetch the comment with user data
-      const commentWithUser = await Comment.findByPk(commentId, {
+      const commentWithUser = await db.repos.comments.findByPk(commentId, {
         include: [
           {
-            model: sequelize.models.User,
+            model: db.models.User,
             attributes: ['id', 'username', 'email'],
           },
         ],

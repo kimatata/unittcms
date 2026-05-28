@@ -3,10 +3,6 @@ import express from 'express';
 const router = express.Router();
 import multer from 'multer';
 import XLSX from 'xlsx';
-import { DataTypes } from 'sequelize';
-import defineCase from '../../models/cases.js';
-import defineStep from '../../models/steps.js';
-import defineCaseStep from '../../models/caseSteps.js';
 import authMiddleware from '../../middleware/auth.js';
 import editableMiddleware from '../../middleware/verifyEditable.js';
 import { priorities, testTypes, automationStatus, templates } from '../../config/enums.js';
@@ -34,14 +30,12 @@ const upload = multer({
   limits: { fileSize: 50 * 1024 * 1024 }, // 50 MB limit
 });
 
-export default function (sequelize) {
-  const Case = defineCase(sequelize, DataTypes);
-  const Step = defineStep(sequelize, DataTypes);
-  const CaseStep = defineCaseStep(sequelize, DataTypes);
-  Case.belongsToMany(Step, { through: CaseStep });
-  Step.belongsToMany(Case, { through: CaseStep });
-  const { verifySignedIn } = authMiddleware(sequelize);
-  const { verifyProjectDeveloperFromFolderId } = editableMiddleware(sequelize);
+export default function (db) {
+  const Case = db.repos.cases;
+  const Step = db.repos.steps;
+  const CaseStep = db.repos.caseSteps;
+  const { verifySignedIn } = authMiddleware(db);
+  const { verifyProjectDeveloperFromFolderId } = editableMiddleware(db);
 
   router.post(
     '/import',
@@ -66,7 +60,7 @@ export default function (sequelize) {
         return res.status(400).json({ error: 'folderId is required' });
       }
 
-      const t = await sequelize.transaction();
+      const t = await db.sequelize.transaction();
       try {
         const workbook = XLSX.read(req.file.buffer, { type: 'buffer' });
         const sheetName = workbook.SheetNames[0];

@@ -1,14 +1,12 @@
 import express from 'express';
 const router = express.Router();
-import { DataTypes } from 'sequelize';
-import defineFolder from '../../models/folders.js';
 import authMiddleware from '../../middleware/auth.js';
 import editableMiddleware from '../../middleware/verifyEditable.js';
 
-export default function (sequelize) {
-  const { verifySignedIn } = authMiddleware(sequelize);
-  const { verifyProjectDeveloperFromProjectId } = editableMiddleware(sequelize);
-  const Folder = defineFolder(sequelize, DataTypes);
+export default function (db) {
+  const { verifySignedIn } = authMiddleware(db);
+  const { verifyProjectDeveloperFromProjectId } = editableMiddleware(db);
+  const Folder = db.repos.folders;
 
   router.post('/', verifySignedIn, verifyProjectDeveloperFromProjectId, async (req, res) => {
     try {

@@ -1,17 +1,14 @@
 import express from 'express';
 const router = express.Router();
-import { DataTypes } from 'sequelize';
-import defineIntegrationConfig from '../../models/integrationConfigs.js';
 import authMiddleware from '../../middleware/auth.js';
 
-export default function (sequelize) {
-  const { verifySignedIn } = authMiddleware(sequelize);
-  const IntegrationConfig = defineIntegrationConfig(sequelize, DataTypes);
+export default function (db) {
+  const { verifySignedIn } = authMiddleware(db);
 
   router.delete('/:id', verifySignedIn, async (req, res) => {
     try {
       const { id } = req.params;
-      const config = await IntegrationConfig.findByPk(id);
+      const config = await db.repos.integrationConfigs.findByPk(id);
       if (!config) return res.status(404).send('Not found');
       await config.destroy();
       res.status(204).send();

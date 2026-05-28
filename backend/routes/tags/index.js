@@ -1,15 +1,11 @@
 import express from 'express';
 const router = express.Router();
-import { DataTypes } from 'sequelize';
 import authMiddleware from '../../middleware/auth.js';
-import defineTag from '../../models/tags.js';
 import visibilityMiddleware from '../../middleware/verifyVisible.js';
 
-export default function (sequelize) {
-  const { verifySignedIn } = authMiddleware(sequelize);
-  const { verifyProjectVisibleFromProjectId } = visibilityMiddleware(sequelize);
-
-  const Tags = defineTag(sequelize, DataTypes);
+export default function (db) {
+  const { verifySignedIn } = authMiddleware(db);
+  const { verifyProjectVisibleFromProjectId } = visibilityMiddleware(db);
 
   router.get('/', verifySignedIn, verifyProjectVisibleFromProjectId, async (req, res) => {
     const projectId = req.query.projectId;
@@ -21,7 +17,7 @@ export default function (sequelize) {
     }
 
     try {
-      const tags = await Tags.findAll({
+      const tags = await db.repos.tags.findAll({
         where: {
           projectId: projectId,
         },

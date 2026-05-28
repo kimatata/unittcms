@@ -1,17 +1,11 @@
 import express from 'express';
 const router = express.Router();
-import { DataTypes } from 'sequelize';
-import defineUser from '../../models/users.js';
-import defineMember from '../../models/members.js';
 import authMiddleware from '../../middleware/auth.js';
 import visibilityMiddleware from '../../middleware/verifyVisible.js';
 
-export default function (sequelize) {
-  const { verifySignedIn } = authMiddleware(sequelize);
-  const { verifyProjectVisibleFromProjectId } = visibilityMiddleware(sequelize);
-  const User = defineUser(sequelize, DataTypes);
-  const Member = defineMember(sequelize, DataTypes);
-  Member.belongsTo(User, { foreignKey: 'userId' });
+export default function (db) {
+  const { verifySignedIn } = authMiddleware(db);
+  const { verifyProjectVisibleFromProjectId } = visibilityMiddleware(db);
 
   router.get('/', verifySignedIn, verifyProjectVisibleFromProjectId, async (req, res) => {
     const { projectId } = req.query;
@@ -21,13 +15,13 @@ export default function (sequelize) {
     }
 
     try {
-      const members = await Member.findAll({
+      const members = await db.repos.members.findAll({
         where: {
           projectId: projectId,
         },
         include: [
           {
-            model: User,
+            model: db.repos.users,
           },
         ],
       });

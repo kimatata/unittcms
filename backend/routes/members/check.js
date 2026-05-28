@@ -1,14 +1,9 @@
 import express from 'express';
 const router = express.Router();
-import { DataTypes } from 'sequelize';
-import defineMember from '../../models/members.js';
-import defineProject from '../../models/projects.js';
 import authMiddleware from '../../middleware/auth.js';
 
-export default function (sequelize) {
-  const { verifySignedIn } = authMiddleware(sequelize);
-  const Member = defineMember(sequelize, DataTypes);
-  const Project = defineProject(sequelize, DataTypes);
+export default function (db) {
+  const { verifySignedIn } = authMiddleware(db);
 
   router.get('/check', verifySignedIn, async (req, res) => {
     const userId = req.userId;
@@ -18,13 +13,13 @@ export default function (sequelize) {
     }
 
     try {
-      const members = await Member.findAll({
+      const members = await db.repos.members.findAll({
         where: {
           userId: userId,
         },
       });
 
-      const myProjects = await Project.findAll({
+      const myProjects = await db.repos.projects.findAll({
         where: {
           userId: userId,
         },

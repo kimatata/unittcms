@@ -4,19 +4,20 @@ function defineAutomationConfig(sequelize, DataTypes) {
       type: DataTypes.INTEGER,
       allowNull: false,
       references: {
-        model: 'Projects',
+        model: 'projects',
         key: 'id',
       },
       onDelete: 'CASCADE',
     },
     gitlabUrl: {
       type: DataTypes.STRING,
-      allowNull: false,
-      defaultValue: 'https://gitlab.com',
+      allowNull: true,
+      defaultValue: null,
     },
     gitlabToken: {
       type: DataTypes.STRING,
-      allowNull: false,
+      allowNull: true,
+      defaultValue: null,
     },
     gitlabNamespace: {
       type: DataTypes.STRING,
@@ -54,7 +55,7 @@ function defineAutomationConfig(sequelize, DataTypes) {
       allowNull: false,
       defaultValue: false,
     },
-  });
+  }, { tableName: 'automationConfigs' });
 
   AutomationConfig.associate = (models) => {
     AutomationConfig.belongsTo(models.Project, { foreignKey: 'projectId', onDelete: 'CASCADE' });

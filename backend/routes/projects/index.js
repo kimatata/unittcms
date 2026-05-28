@@ -1,15 +1,12 @@
 import express from 'express';
 const router = express.Router();
-import { DataTypes, Op } from 'sequelize';
-import defineProject from '../../models/projects.js';
-import defineMember from '../../models/members.js';
+import { Op } from 'sequelize';
 import authMiddleware from '../../middleware/auth.js';
 
-export default function (sequelize) {
-  const { verifySignedIn } = authMiddleware(sequelize);
-  const Project = defineProject(sequelize, DataTypes);
-  const Member = defineMember(sequelize, DataTypes);
-  Project.hasMany(Member, { foreignKey: 'projectId' });
+export default function (db) {
+  const { verifySignedIn } = authMiddleware(db);
+  const Project = db.repos.projects;
+  const Member = db.repos.members;
 
   router.get('/', verifySignedIn, async (req, res) => {
     try {
@@ -37,7 +34,7 @@ export default function (sequelize) {
             [Op.or]: [
               { isPublic: true },
               { userId: req.userId },
-              sequelize.where(sequelize.col('Members.userId'), req.userId),
+              db.sequelize.where(db.sequelize.col('Members.userId'), req.userId),
             ],
           },
         });

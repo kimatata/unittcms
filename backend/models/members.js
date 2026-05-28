@@ -12,17 +12,11 @@ function defineMember(sequelize, DataTypes) {
       type: DataTypes.INTEGER,
       allowNull: false,
     },
-  });
+  }, { tableName: 'members' });
 
   Member.associate = (models) => {
-    Member.belongsTo(models.User, {
-      foreignKey: 'userId',
-      onDelete: 'CASCADE',
-    });
-    Member.belongsTo(models.Project, {
-      foreignKey: 'projectId',
-      onDelete: 'CASCADE',
-    });
+    Member.belongsTo(models.User, { foreignKey: 'userId', onDelete: 'CASCADE' });
+    Member.belongsTo(models.Project, { foreignKey: 'projectId', onDelete: 'CASCADE' });
   };
 
   return Member;

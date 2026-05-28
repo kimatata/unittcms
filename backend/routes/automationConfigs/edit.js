@@ -1,35 +1,26 @@
 import express from 'express';
 const router = express.Router();
-import { DataTypes } from 'sequelize';
-import defineAutomationConfig from '../../models/automationConfigs.js';
 import authMiddleware from '../../middleware/auth.js';
 
-export default function (sequelize) {
-  const { verifySignedIn } = authMiddleware(sequelize);
-  const AutomationConfig = defineAutomationConfig(sequelize, DataTypes);
+export default function (db) {
+  const { verifySignedIn } = authMiddleware(db);
 
   router.put('/:id', verifySignedIn, async (req, res) => {
     try {
       const { id } = req.params;
-      const { gitlabUrl, gitlabToken, gitlabNamespace, repoName, automationTool, automationLanguage, provider, autoFixEnabled } = req.body;
+      const { provider, repoName, automationTool, automationLanguage, autoFixEnabled } = req.body;
 
-      const config = await AutomationConfig.findByPk(id);
+      const config = await db.repos.automationConfigs.findByPk(id);
       if (!config) {
         return res.status(404).send('Not found');
       }
 
-      const updates = { gitlabUrl, gitlabNamespace, repoName, automationTool, automationLanguage, provider };
+      const updates = { provider, repoName, automationTool, automationLanguage };
       if (autoFixEnabled !== undefined) updates.autoFixEnabled = autoFixEnabled;
-      // only update token if a real value is provided (not the masked placeholder)
-      if (gitlabToken && gitlabToken !== '***') {
-        updates.gitlabToken = gitlabToken;
-      }
 
       await config.update(updates);
 
-      const data = config.toJSON();
-      data.gitlabToken = '***';
-      res.json(data);
+      res.json(config.toJSON());
     } catch (error) {
       console.error(error);
       res.status(500).send('Internal Server Error');

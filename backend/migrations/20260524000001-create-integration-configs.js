@@ -1,5 +1,5 @@
 export async function up(queryInterface, Sequelize) {
-  await queryInterface.createTable('IntegrationConfigs', {
+  await queryInterface.createTable('integrationConfigs', {
     id: {
       type: Sequelize.INTEGER,
       primaryKey: true,
@@ -9,7 +9,7 @@ export async function up(queryInterface, Sequelize) {
     projectId: {
       type: Sequelize.INTEGER,
       allowNull: false,
-      references: { model: 'Projects', key: 'id' },
+      references: { model: 'projects', key: 'id' },
       onDelete: 'CASCADE',
     },
     service: {
@@ -30,9 +30,9 @@ export async function up(queryInterface, Sequelize) {
     },
   });
 
-  await queryInterface.addIndex('IntegrationConfigs', ['projectId', 'service'], { unique: true });
+  await queryInterface.addIndex('integrationConfigs', ['projectId', 'service'], { unique: true });
 }
 
 export async function down(queryInterface) {
-  await queryInterface.dropTable('IntegrationConfigs');
+  await queryInterface.dropTable('integrationConfigs');
 }

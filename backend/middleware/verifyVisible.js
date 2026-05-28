@@ -1,16 +1,4 @@
-import { DataTypes } from 'sequelize';
-import defineMember from '../models/members.js';
-import defineProject from '../models/projects.js';
-import defineFolder from '../models/folders.js';
-import defineCase from '../models/cases.js';
-import defineRun from '../models/runs.js';
-import defineRunCase from '../models/runCases.js';
-
-export default function verifyVisibleMiddleware(sequelize) {
-  /**
-   * Verify user can read project by projectId
-   * (have to be called after verifySignedIn() middleware)
-   */
+export default function verifyVisibleMiddleware(db) {
   async function verifyProjectVisibleFromProjectId(req, res, next) {
     let projectId = req.params.projectId || req.query.projectId;
     if (!projectId) {
@@ -26,20 +14,13 @@ export default function verifyVisibleMiddleware(sequelize) {
     return res.status(403).json({ error: 'Forbidden' });
   }
 
-  /**
-   * Verify user can read project by folderId
-   * (have to be called after verifySignedIn() middleware)
-   */
   async function verifyProjectVisibleFromFolderId(req, res, next) {
-    const Folder = defineFolder(sequelize, DataTypes);
-
     const folderId = req.params.folderId || req.query.folderId;
     if (!folderId) {
       return res.status(400).json({ error: 'folderId is required' });
     }
 
-    // find project id from folderId
-    const folder = await Folder.findByPk(folderId);
+    const folder = await db.repos.folders.findByPk(folderId);
     const projectId = folder && folder.projectId;
     if (!projectId) {
       return res.status(404).send('failed to find projectId');
@@ -55,24 +36,15 @@ export default function verifyVisibleMiddleware(sequelize) {
   }
 
   async function verifyProjectVisibleFromCaseId(req, res, next) {
-    const Project = defineProject(sequelize, DataTypes);
-    const Folder = defineFolder(sequelize, DataTypes);
-    const Case = defineCase(sequelize, DataTypes);
-    Project.hasMany(Folder, { foreignKey: 'projectId' });
-    Folder.hasMany(Case, { foreignKey: 'folderId' });
-    Folder.belongsTo(Project, { foreignKey: 'projectId' });
-    Case.belongsTo(Folder, { foreignKey: 'folderId' });
-
     const caseId = req.params.caseId || req.query.caseId;
     if (!caseId) {
       return res.status(400).json({ error: 'caseId is required' });
     }
 
-    // find project id from caseId
-    const testCase = await Case.findByPk(caseId, {
+    const testCase = await db.repos.cases.findByPk(caseId, {
       include: {
-        model: Folder,
-        include: Project,
+        model: db.models.Folder,
+        include: db.models.Project,
       },
     });
 
@@ -90,20 +62,13 @@ export default function verifyVisibleMiddleware(sequelize) {
     return res.status(403).json({ error: 'Forbidden' });
   }
 
-  /**
-   * Verify user can read project by runId
-   * (have to be called after verifySignedIn() middleware)
-   */
   async function verifyProjectVisibleFromRunId(req, res, next) {
-    const Run = defineRun(sequelize, DataTypes);
-
     const runId = req.params.runId || req.query.runId;
     if (!runId) {
       return res.status(400).json({ error: 'runId is required' });
     }
 
-    // find project id from runId
-    const run = await Run.findByPk(runId);
+    const run = await db.repos.runs.findByPk(runId);
     const projectId = run && run.projectId;
     if (!projectId) {
       return res.status(404).send('failed to find projectId');
@@ -125,33 +90,17 @@ export default function verifyVisibleMiddleware(sequelize) {
       return res.status(400).json({ error: 'commentableType and commentableId are required' });
     }
 
-    if (commentableType === 'Run') {
-      // not implemented yet
-      next();
-      return;
-    } else if (commentableType === 'Case') {
-      // not implemented yet
+    if (commentableType === 'Run' || commentableType === 'Case') {
       next();
       return;
     } else if (commentableType === 'RunCase') {
-      const RunCase = defineRunCase(sequelize, DataTypes);
-      const runCaseId = req.params.commentableId || req.query.commentableId;
-      if (!runCaseId) {
-        return res.status(400).json({ error: 'runCaseId is required' });
-      }
-
-      const runCase = await RunCase.findByPk(runCaseId);
+      const runCase = await db.repos.runCases.findByPk(commentableId);
       const runId = runCase && runCase.runId;
-      if (!runId) {
-        return res.status(404).send('failed to find runId');
-      }
+      if (!runId) return res.status(404).send('failed to find runId');
 
-      const Run = defineRun(sequelize, DataTypes);
-      const run = await Run.findByPk(runId);
+      const run = await db.repos.runs.findByPk(runId);
       const projectId = run && run.projectId;
-      if (!projectId) {
-        return res.status(404).send('failed to find projectId');
-      }
+      if (!projectId) return res.status(404).send('failed to find projectId');
 
       const visible = await isVisible(projectId, req.userId);
       if (visible) {
@@ -164,38 +113,14 @@ export default function verifyVisibleMiddleware(sequelize) {
   }
 
   async function isVisible(projectId, userId) {
-    const Project = defineProject(sequelize, DataTypes);
-    const Member = defineMember(sequelize, DataTypes);
-    Project.hasMany(Member, { foreignKey: 'projectId' });
-    const project = await Project.findOne({
+    const project = await db.repos.projects.findOne({
       where: { id: projectId },
-      include: [
-        {
-          model: Member,
-          where: { userId: userId },
-          required: false,
-        },
-      ],
+      include: [{ model: db.models.Member, where: { userId }, required: false }],
     });
-    if (!project) {
-      return false;
-    }
-
-    // if project is public, everyone can see
-    if (project.isPublic) {
-      return true;
-    }
-
-    // if project is private, owner and project member can see
-    if (project.userId === userId) {
-      return true;
-    }
-
-    const member = project.Members && project.Members[0];
-    if (member) {
-      return true;
-    }
-
+    if (!project) return false;
+    if (project.isPublic) return true;
+    if (project.userId === userId) return true;
+    if (project.Members && project.Members[0]) return true;
     return false;
   }
 

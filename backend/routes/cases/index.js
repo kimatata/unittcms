@@ -1,20 +1,15 @@
 import express from 'express';
 const router = express.Router();
-import { DataTypes, Op } from 'sequelize';
-import defineCase from '../../models/cases.js';
-import defineTag from '../../models/tags.js';
+import { Op } from 'sequelize';
 
 import authMiddleware from '../../middleware/auth.js';
 import visibilityMiddleware from '../../middleware/verifyVisible.js';
 
-export default function (sequelize) {
-  const { verifySignedIn } = authMiddleware(sequelize);
-  const { verifyProjectVisibleFromFolderId } = visibilityMiddleware(sequelize);
-  const Case = defineCase(sequelize, DataTypes);
-  const Tags = defineTag(sequelize, DataTypes);
-
-  Case.belongsToMany(Tags, { through: 'caseTags', foreignKey: 'caseId', otherKey: 'tagId' });
-  Tags.belongsToMany(Case, { through: 'caseTags', foreignKey: 'tagId', otherKey: 'caseId' });
+export default function (db) {
+  const { verifySignedIn } = authMiddleware(db);
+  const { verifyProjectVisibleFromFolderId } = visibilityMiddleware(db);
+  const Case = db.repos.cases;
+  const Tags = db.models.Tags;
 
   router.get('/', verifySignedIn, verifyProjectVisibleFromFolderId, async (req, res) => {
     const { folderId, search, priority, type, tag } = req.query;

@@ -1,21 +1,18 @@
 import express from 'express';
 const router = express.Router();
-import { DataTypes } from 'sequelize';
-import defineStep from '../../models/steps.js';
-import defineCaseStep from '../../models/caseSteps.js';
 import authMiddleware from '../../middleware/auth.js';
 import editableMiddleware from '../../middleware/verifyEditable.js';
 
-export default function (sequelize) {
-  const Step = defineStep(sequelize, DataTypes);
-  const CaseStep = defineCaseStep(sequelize, DataTypes);
-  const { verifySignedIn } = authMiddleware(sequelize);
-  const { verifyProjectDeveloperFromCaseId } = editableMiddleware(sequelize);
+export default function (db) {
+  const Step = db.repos.steps;
+  const CaseStep = db.repos.caseSteps;
+  const { verifySignedIn } = authMiddleware(db);
+  const { verifyProjectDeveloperFromCaseId } = editableMiddleware(db);
 
   router.post('/update', verifySignedIn, verifyProjectDeveloperFromCaseId, async (req, res) => {
     const caseId = req.query.caseId;
     const steps = req.body;
-    const t = await sequelize.transaction();
+    const t = await db.sequelize.transaction();
 
     const createStep = async (step) => {
       const newStep = await Step.create(

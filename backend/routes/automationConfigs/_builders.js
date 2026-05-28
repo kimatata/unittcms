@@ -12,7 +12,7 @@ export function buildNodeScannerScript() {
   return `#!/usr/bin/env node
 /**
  * UnitTCMS sync — scans test files for @unittcms:caseId annotations and
- * reports implementation status back to UnitTCMS.
+ * reports implementation status and tags back to UnitTCMS.
  *
  * Required env vars:
  *   UNITTCMS_URL        e.g. http://localhost:8000
@@ -59,10 +59,13 @@ for (const file of walk(testDir, ['.spec.ts', '.spec.js'])) {
   for (let i = 0; i < lines.length; i++) {
     const m = lines[i].match(/\\/\\/ @unittcms:caseId:(\\d+)/);
     if (m) {
+      const tagsLine = lines[i + 1]?.match(/\\/\\/ @unittcms:tags:([\\w,\\s-]+)/);
+      const tags = tagsLine ? tagsLine[1].split(',').map((t) => t.trim()).filter(Boolean) : [];
       cases.push({
         caseId: parseInt(m[1], 10),
         status: isStub(lines, i) ? 'stub' : 'implemented',
         filePath: relative(process.cwd(), file),
+        tags,
       });
     }
   }
@@ -83,7 +86,7 @@ export function buildPythonScannerScript() {
   return `#!/usr/bin/env python3
 """
 UnitTCMS sync -- scans pytest files for @pytest.mark.unittcms annotations and
-reports implementation status back to UnitTCMS.
+reports implementation status and tags back to UnitTCMS.
 
 Required env vars:
   UNITTCMS_URL        e.g. http://localhost:8000
@@ -108,7 +111,7 @@ try:
 except Exception:
     commit_sha = ''
 
-MARK_RE = re.compile(r'@pytest\\.mark\\.unittcms\\(case_id=(\\d+)\\)')
+MARK_RE = re.compile(r'@pytest\\.mark\\.unittcms\\(case_id=(\\d+)(?:,\\s*tags=\\[([^\\]]*)\\])?\\)')
 
 def is_stub(lines, func_idx):
     indent = len(lines[func_idx]) - len(lines[func_idx].lstrip())
@@ -129,12 +132,16 @@ for pyfile in root.rglob('test_*.py'):
     for i, line in enumerate(lines):
         m = MARK_RE.search(line)
         if m:
+            case_id = int(m.group(1))
+            tags_str = m.group(2) or ''
+            tags = [t.strip().strip('\\"\\'' ) for t in tags_str.split(',') if t.strip()] if tags_str else []
             func_idx = next((j for j in range(i + 1, len(lines)) if lines[j].strip().startswith('def ')), None)
             stub = is_stub(lines, func_idx) if func_idx is not None else True
             cases.append({
-                'caseId': int(m.group(1)),
+                'caseId': case_id,
                 'status': 'stub' if stub else 'implemented',
                 'filePath': str(pyfile.relative_to(root)),
+                'tags': tags,
             })
 
 body = json.dumps({'projectId': UNITTCMS_PROJECT_ID, 'commitSha': commit_sha, 'cases': cases}).encode()
@@ -157,15 +164,19 @@ export function buildCIWorkflow(tool, language, provider) {
         ? `      - name: Sync status to UnitTCMS\n        if: always()\n        env:\n          UNITTCMS_URL: \${{ secrets.UNITTCMS_URL }}\n          UNITTCMS_TOKEN: \${{ secrets.UNITTCMS_TOKEN }}\n          UNITTCMS_PROJECT_ID: \${{ secrets.UNITTCMS_PROJECT_ID }}\n        run: python scripts/unittcms_sync.py`
         : `      - name: Sync status to UnitTCMS\n        if: always()\n        env:\n          UNITTCMS_URL: \${{ secrets.UNITTCMS_URL }}\n          UNITTCMS_TOKEN: \${{ secrets.UNITTCMS_TOKEN }}\n          UNITTCMS_PROJECT_ID: \${{ secrets.UNITTCMS_PROJECT_ID }}\n        run: npm run sync`;
 
+    const dispatchInputs = `    inputs:\n      grep_filter:\n        description: '${tool === 'pytest' ? 'Test filter (-k expression)' : 'Test filter (regex for --grep)'}'\n        required: false\n        default: ''`;
+
     if (tool === 'pytest') {
+      const testStep = `      - name: Run tests\n        run: |\n          FILTER="\${{ inputs.grep_filter }}"\n          if [ -n "$FILTER" ]; then\n            pytest -k "$FILTER"\n          else\n            pytest\n          fi`;
       return {
         path: '.github/workflows/tests.yml',
-        content: `name: Tests\n\non:\n  push:\n    branches: [main]\n  pull_request:\n  workflow_dispatch:\n\njobs:\n  test:\n    runs-on: ubuntu-latest\n    steps:\n      - uses: actions/checkout@v4\n      - uses: actions/setup-python@v5\n        with:\n          python-version: '3.11'\n      - run: pip install -r requirements.txt\n      - run: playwright install --with-deps chromium\n      - run: pytest\n${syncStep}\n`,
+        content: `name: Tests\n\non:\n  push:\n    branches: [main]\n  pull_request:\n  workflow_dispatch:\n${dispatchInputs}\n\njobs:\n  test:\n    runs-on: ubuntu-latest\n    steps:\n      - uses: actions/checkout@v4\n      - uses: actions/setup-python@v5\n        with:\n          python-version: '3.11'\n      - run: pip install -r requirements.txt\n      - run: playwright install --with-deps chromium\n${testStep}\n${syncStep}\n`,
       };
     }
+    const testStep = `      - name: Run tests\n        run: |\n          FILTER="\${{ inputs.grep_filter }}"\n          if [ -n "$FILTER" ]; then\n            npm test -- --grep "$FILTER"\n          else\n            npm test\n          fi`;
     return {
       path: '.github/workflows/tests.yml',
-      content: `name: Tests\n\non:\n  push:\n    branches: [main]\n  pull_request:\n  workflow_dispatch:\n\njobs:\n  test:\n    runs-on: ubuntu-latest\n    steps:\n      - uses: actions/checkout@v4\n      - uses: actions/setup-node@v4\n        with:\n          node-version: '20'\n          cache: 'npm'\n      - run: npm ci\n      - run: npx playwright install --with-deps chromium\n      - run: npm test\n${syncStep}\n`,
+      content: `name: Tests\n\non:\n  push:\n    branches: [main]\n  pull_request:\n  workflow_dispatch:\n${dispatchInputs}\n\njobs:\n  test:\n    runs-on: ubuntu-latest\n    steps:\n      - uses: actions/checkout@v4\n      - uses: actions/setup-node@v4\n        with:\n          node-version: '20'\n          cache: 'npm'\n      - run: npm ci\n      - run: npx playwright install --with-deps chromium\n${testStep}\n${syncStep}\n`,
     };
   }
 

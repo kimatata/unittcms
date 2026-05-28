@@ -1,12 +1,9 @@
 import express from 'express';
 const router = express.Router();
-import { DataTypes } from 'sequelize';
-import defineUser from '../../models/users.js';
 import authMiddleware from '../../middleware/auth.js';
 
-export default function (sequelize) {
-  const { verifySignedIn } = authMiddleware(sequelize);
-  const User = defineUser(sequelize, DataTypes);
+export default function (db) {
+  const { verifySignedIn } = authMiddleware(db);
 
   router.get('/find/:userId', verifySignedIn, async (req, res) => {
     try {
@@ -16,7 +13,7 @@ export default function (sequelize) {
       }
 
       try {
-        const user = await User.findByPk(userId, {
+        const user = await db.repos.users.findByPk(userId, {
           attributes: ['id', 'email', 'username', 'role', 'avatarPath'],
         });
         if (!user) {

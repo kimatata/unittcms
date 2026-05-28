@@ -1,13 +1,10 @@
 import express from 'express';
-import { DataTypes } from 'sequelize';
-import defineUser from '../../models/users.js';
 import authMiddleware from '../../middleware/auth.js';
 import { roles } from './authSettings.js';
 const router = express.Router();
 
-export default function (sequelize) {
-  const { verifySignedIn, verifyAdmin } = authMiddleware(sequelize);
-  const User = defineUser(sequelize, DataTypes);
+export default function (db) {
+  const { verifySignedIn, verifyAdmin } = authMiddleware(db);
 
   router.put('/:userId/role', verifySignedIn, verifyAdmin, async (req, res) => {
     // param check
@@ -22,7 +19,7 @@ export default function (sequelize) {
     }
 
     try {
-      const targetUser = await User.findByPk(userId);
+      const targetUser = await db.repos.users.findByPk(userId);
       if (!targetUser) {
         return res.status(404).send('User not found');
       }
@@ -32,7 +29,7 @@ export default function (sequelize) {
 
       // At least one administrator is required.
       if (newRole === userRoleIndex) {
-        const adminCount = await User.count({
+        const adminCount = await db.repos.users.count({
           where: {
             role: adminRoleIndex,
           },

@@ -1,12 +1,9 @@
 import express from 'express';
 const router = express.Router();
-import { DataTypes } from 'sequelize';
-import defineIntegrationConfig from '../../models/integrationConfigs.js';
 import authMiddleware from '../../middleware/auth.js';
 
-export default function (sequelize) {
-  const { verifySignedIn } = authMiddleware(sequelize);
-  const IntegrationConfig = defineIntegrationConfig(sequelize, DataTypes);
+export default function (db) {
+  const { verifySignedIn } = authMiddleware(db);
 
   router.post('/upsert', verifySignedIn, async (req, res) => {
     try {
@@ -17,14 +14,13 @@ export default function (sequelize) {
 
       const settingsJson = settings ? JSON.stringify(settings) : null;
 
-      const [config, created] = await IntegrationConfig.findOrCreate({
+      const [config, created] = await db.repos.integrationConfigs.findOrCreate({
         where: { projectId, service },
         defaults: { projectId, service, apiKey, settings: settingsJson },
       });
 
       if (!created) {
         const updates = { settings: settingsJson };
-        // Only update token if a real value was provided (not the masked placeholder)
         if (apiKey && !apiKey.startsWith('***')) {
           updates.apiKey = apiKey;
         }

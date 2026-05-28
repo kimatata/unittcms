@@ -1,13 +1,10 @@
 import express from 'express';
 const router = express.Router();
-import { DataTypes } from 'sequelize';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
-import defineUser from '../../models/users.js';
 import { roles, defaultDangerKey } from './authSettings.js';
 
-export default function (sequelize) {
-  const User = defineUser(sequelize, DataTypes);
+export default function (db) {
   const secretKey = process.env.SECRET_KEY || defaultDangerKey;
 
   router.post('/signup', async (req, res) => {
@@ -15,13 +12,13 @@ export default function (sequelize) {
       const { email, password, username } = req.body;
       const hashedPassword = await bcrypt.hash(password, 10);
 
-      const userCount = await User.count();
+      const userCount = await db.repos.users.count();
       const initialRole =
         userCount > 0
           ? roles.findIndex((entry) => entry.uid === 'user')
           : roles.findIndex((entry) => entry.uid === 'administrator');
 
-      const user = await User.create({
+      const user = await db.repos.users.create({
         email,
         password: hashedPassword,
         username: username,

@@ -1,18 +1,11 @@
 import express from 'express';
 const router = express.Router();
-import { DataTypes } from 'sequelize';
 import authMiddleware from '../../middleware/auth.js';
 import editableMiddleware from '../../middleware/verifyEditable.js';
-import defineCaseTag from '../../models/caseTags.js';
-import defineCase from '../../models/cases.js';
-import defineTag from '../../models/tags.js';
 
-export default function (sequelize) {
-  const { verifySignedIn } = authMiddleware(sequelize);
-  const { verifyProjectDeveloperFromCaseId } = editableMiddleware(sequelize);
-  const CaseTag = defineCaseTag(sequelize, DataTypes);
-  const Case = defineCase(sequelize, DataTypes);
-  const Tag = defineTag(sequelize, DataTypes);
+export default function (db) {
+  const { verifySignedIn } = authMiddleware(db);
+  const { verifyProjectDeveloperFromCaseId } = editableMiddleware(db);
 
   router.post('/update', verifySignedIn, verifyProjectDeveloperFromCaseId, async (req, res) => {
     const { tagIds } = req.body;
@@ -27,12 +20,12 @@ export default function (sequelize) {
     }
 
     try {
-      const testCase = await Case.findByPk(caseId);
+      const testCase = await db.repos.cases.findByPk(caseId);
       if (!testCase) {
         return res.status(404).json({ error: 'Case not found' });
       }
 
-      const currentAssociations = await CaseTag.findAll({
+      const currentAssociations = await db.repos.caseTags.findAll({
         where: { caseId },
       });
 
@@ -42,13 +35,13 @@ export default function (sequelize) {
       const tagsToRemove = currentTagIds.filter((id) => !tagIds.includes(id));
 
       if (tagsToAdd.length > 0) {
-        const validTags = await Tag.findAll({ where: { id: tagsToAdd } });
+        const validTags = await db.repos.tags.findAll({ where: { id: tagsToAdd } });
         const newLinks = validTags.map((tag) => ({ caseId, tagId: tag.id }));
-        await CaseTag.bulkCreate(newLinks);
+        await db.repos.caseTags.bulkCreate(newLinks);
       }
 
       if (tagsToRemove.length > 0) {
-        await CaseTag.destroy({
+        await db.repos.caseTags.destroy({
           where: { caseId, tagId: tagsToRemove },
         });
       }

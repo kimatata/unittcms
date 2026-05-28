@@ -1,6 +1,6 @@
 # UnitTCMS — Claude Working Guide
 
-Open-source self-hosted test case management system. Full-stack TypeScript monorepo: Next.js 14 frontend + Express/SQLite backend, served together from a single Docker container on port 8000.
+Open-source self-hosted test case management system. Full-stack TypeScript monorepo: Next.js 14 frontend + Express/PostgreSQL backend, served together from a single Docker container on port 8000.
 
 ---
 
@@ -27,6 +27,7 @@ Key env vars (in `docker-compose.yaml`):
 - `PORT=8000`
 - `SECRET_KEY=your_secret_key_here`
 - `IS_DEMO=false`
+- `DATABASE_URL=postgresql://unittcms:unittcms_secret@postgres:5432/unittcms` (set automatically by compose)
 
 ---
 
@@ -44,6 +45,9 @@ unittcms/
 
 ### Key features implemented
 - **Automation tab** (`/projects/:id/automation`) — connects a project to a GitLab or GitHub repo, generates Playwright/Cypress/pytest stub test files from the test case hierarchy, pushes via provider API. Config stored in `automationConfigs` table. Routes: `backend/routes/automationConfigs/`. Control: `frontend/utils/automationConfigControl.ts`.
+- **Integrations tab** (`/projects/:id/integrations`) — per-project API key management. One row per `(projectId, service)` in `IntegrationConfigs` table. Keys are masked on read (`***ef45`). Currently supports: Anthropic (single apiKey), GitHub (token + instanceUrl + namespace), GitLab (token + instanceUrl + namespace). Extra fields stored in `settings` JSON TEXT column. Control: `frontend/utils/integrationConfigControl.ts`. Types: `frontend/types/integrations.ts`.
+- **AI auto-fix for CI failures** — `GET /automation-configs/:id/run-errors` fetches the latest GitHub Actions run, downloads failed job logs, parses Playwright/pytest/Cypress failures into `[{ id, jobId, testName, filePath, errorText }]`. `POST /automation-configs/:id/fix-error` loads Anthropic key from IntegrationConfigs, fetches file from GitHub, calls `claude-sonnet-4-6`, extracts code, commits fix back to GitHub. AutomationPage shows each error with a "Fix with AI" button.
+- **Auto-fix setting** — `autoFixEnabled` boolean on `AutomationConfigs` (default false). Toggle in Settings page (`/projects/:id/settings`). When ON, AutomationPage automatically fires all fix calls when a CI run transitions to failure status.
 
 ### Request flow
 - All `/api/*` requests → Express backend
@@ -51,9 +55,11 @@ unittcms/
 - Both served on port 8000 via `entrypoint.js`
 
 ### Database
-- SQLite at `/app/backend/database/database.sqlite` (persisted via Docker volume)
+- **PostgreSQL** (default) via `DATABASE_URL` env var — runs as a separate `postgres:16-alpine` service in Docker
+- SQLite fallback when `DATABASE_URL` is not set (useful for local dev without Docker)
 - Sequelize ORM with numbered migrations in `backend/migrations/`
 - Never edit the DB file directly — use migrations
+- DB data persisted in `pg-data` Docker volume
 
 ---
 
@@ -61,31 +67,46 @@ unittcms/
 
 **Entry**: `index.js` → `server.js` (Express app setup, route registration)
 
-**Route pattern** — every route file exports a factory function:
+**Data layer** (Repository Pattern):
+- `backend/db/index.js` — initializes Sequelize (Postgres or SQLite), loads all models, runs `associate()`, returns `{ sequelize, models, Op }`
+- `backend/repositories/index.js` — maps model aliases to `db.repos.*`: `db.repos.users`, `db.repos.projects`, etc.
+- `server.js` uses top-level `await initDb()` then spreads `repos` onto the `db` object passed to all routes
+
+**Route pattern** — every route file exports a factory function receiving `db`:
 ```js
-export default function(sequelize) {
-  router.put('/:id', verifySignedIn, verifyProjectOwner, async (req, res) => { ... });
+export default function(db) {
+  const { verifySignedIn } = authMiddleware(db);
+  router.put('/:id', verifySignedIn, async (req, res) => {
+    const item = await db.repos.projects.findByPk(req.params.id);
+  });
   return router;
 }
 ```
 
-**Middleware** (`backend/middleware/`):
-- `auth.js` — `verifySignedIn` (JWT Bearer), `verifyAdmin`, `verifyProjectOwner`
-- `verifyEditable.js` — permission checks for edit operations
+**Available on `db`:**
+- `db.repos.users` / `db.repos.projects` / `db.repos.folders` / `db.repos.cases` etc. — Sequelize model instances
+- `db.models.User` / `db.models.Project` etc. — same models by class name (for `include:` clauses)
+- `db.sequelize` — the Sequelize instance (for transactions, literals, etc.)
+- `db.Op` — Sequelize operators
 
-**Models** (`backend/models/`): Sequelize model definitions, associations in `models/index.js`.
-Key models: `users`, `projects`, `folders`, `cases`, `runs`, `runCases`, `members`, `tags`, `caseTags`, `steps`, `comments`, `attachments`, `automationConfigs`
+**Middleware** (`backend/middleware/`):
+- `auth.js` — `verifySignedIn` (JWT Bearer), `verifyAdmin` — accepts `db`
+- `verifyEditable.js` — permission checks for edit operations — accepts `db`
+- `verifyVisible.js` — read permission checks — accepts `db`
+
+**Models** (`backend/models/`): Sequelize model definitions. Every model has an explicit `tableName` option and an `associate(models)` method. Associations are set up once centrally by `db/index.js`.
+Key models: `users`, `projects`, `folders`, `cases`, `runs`, `runCases`, `members`, `tags`, `caseTags`, `steps`, `comments`, `attachments`, `automationConfigs`, `integrationConfigs`
 
 **Adding a new endpoint:**
 1. Create `backend/routes/<resource>/<action>.js`
-2. Register it in `backend/server.js`
+2. Register it in `backend/server.js` passing `db`
 
 **Route registration gotcha**: register without `/api` prefix — `entrypoint.js` adds that at the proxy layer:
 ```js
 // ✓ correct
-app.use('/my-resource', myRoute(sequelize));
+app.use('/my-resource', myRoute(db));
 // ✗ wrong — results in /api/api/my-resource
-app.use('/api/my-resource', myRoute(sequelize));
+app.use('/api/my-resource', myRoute(db));
 ```
 
 **`router` scope**: `const router = express.Router()` is defined at module scope (outside the exported factory function). This is the established pattern — do not move it inside the function.
@@ -195,6 +216,7 @@ Not under `src/`. Key files:
 - `case.ts` — `CaseType`
 - `user.ts` — `UserType`, `TokenContextType`, `TokenType`
 - `folder.ts` — `FolderType`, `TreeNodeData`
+- `integrations.ts` — `IntegrationConfigType`, `IntegrationsMessages`
 
 ---
 
@@ -256,11 +278,40 @@ E2E tests live in `e2e/` and cover full user workflows.
 
 | Task | What to do |
 |---|---|
-| Add field to existing model | Add migration file in `backend/migrations/`, update model in `backend/models/` |
-| Add new API endpoint | Create `backend/routes/<resource>/<verb>.js`, register in `backend/server.js` |
+| Add field to existing model | Add migration file in `backend/migrations/`, update model in `backend/models/` (add `tableName` option) |
+| Add new API endpoint | Create `backend/routes/<resource>/<verb>.js` using `export default function(db)`, register in `backend/server.js` |
+| Add new model | Create `backend/models/xxx.js`, add to `backend/repositories/index.js` |
 | Add new page | Create `page.tsx` (server) + `FeaturePage.tsx` (client) under `[locale]/...` |
 | Add translation key | Edit all 5 `messages/*.json` files + the TypeScript type + `page.tsx` messages object |
 | See changes | `docker-compose -f docker-compose.yaml up --build -d` |
 | Force clean rebuild (cache miss) | `docker-compose -f docker-compose.yaml build --no-cache && docker-compose -f docker-compose.yaml up -d` |
 | View logs | `docker logs unittcms-unittcms-1 -f` |
 | Access container shell | `docker exec -it unittcms-unittcms-1 sh` |
+
+---
+
+## Recent additions (2026-05-24)
+
+### Integrations tab
+- New sidebar tab. Route: `/projects/:id/integrations`.
+- Key files: `frontend/src/app/[locale]/projects/[projectId]/integrations/page.tsx` (server), `IntegrationsPage.tsx` (client).
+- Backend: `backend/routes/integrationConfigs/` (show, upsert, destroy). Model: `backend/models/integrationConfigs.js`.
+- Migrations: `20260524000001-create-integration-configs.js`, `20260524000003-add-settings-to-integration-configs.js`.
+- Services: Anthropic (single `apiKey` field), GitHub and GitLab (multi-field: `token` + `instanceUrl` + `namespace` stored in `settings` JSON column).
+- Token masking pattern: DB stores full key; GET returns `***` + last 4 chars; PUT skips update if value starts with `***`.
+- ServiceDef pattern in `IntegrationsPage.tsx` — one array for AI providers, one for Git providers. Each def has `id`, `label`, `fields[]`, and `isSettings` flag to split apiKey from settings object.
+
+### AI auto-fix for CI failures
+- `backend/routes/automationConfigs/runErrors.js` — parses GitHub Actions job logs. Returns `[{ id, jobId, jobName, testName, filePath, errorText }]`. Strips ANSI codes and log timestamps before regex parsing.
+- `backend/routes/automationConfigs/fixError.js` — loads Anthropic key from IntegrationConfigs, fetches file from GitHub contents API, calls `claude-sonnet-4-6`, extracts code block from response, commits fix via PUT to GitHub contents API.
+- `frontend/utils/automationConfigControl.ts` — added `RunError` type, `fetchRunErrors`, `fixRunError`, `updateAutoFixEnabled`.
+- `AutomationPage.tsx` — collapsible config form (auto-collapses when repo is connected), error panel with per-error "Fix with AI" button, `errorFixState` map tracks idle/fixing/done/error per error id.
+- **Catch variable gotcha**: inside `handleFixError(error: RunError)`, name the catch variable `err` not `error` to avoid shadowing the parameter.
+
+### Auto-fix setting
+- `autoFixEnabled` boolean on `AutomationConfigs` (migration `20260524000002`).
+- Toggle in `SettingsPage.tsx` under "Automation Settings" section — only shown when an automation config exists for the project.
+- When ON: `AutomationPage.tsx` `useEffect` on `runErrors` fires all fix calls automatically without user interaction.
+
+### Backend dependency
+- `@anthropic-ai/sdk ^0.55.0` added to `backend/package.json`. `backend/package-lock.json` must be kept in sync — run `npm install` in `backend/` after any package.json change, then commit the lock file before Docker rebuild.

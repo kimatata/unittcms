@@ -1,14 +1,12 @@
 import express from 'express';
 const router = express.Router();
-import { DataTypes } from 'sequelize';
-import defineProject from '../../models/projects.js';
 import authMiddleware from '../../middleware/auth.js';
 import editableMiddleware from '../../middleware/verifyEditable.js';
 
-export default function (sequelize) {
-  const { verifySignedIn } = authMiddleware(sequelize);
-  const { verifyProjectOwner } = editableMiddleware(sequelize);
-  const Project = defineProject(sequelize, DataTypes);
+export default function (db) {
+  const { verifySignedIn } = authMiddleware(db);
+  const { verifyProjectOwner } = editableMiddleware(db);
+  const Project = db.repos.projects;
 
   router.put('/:projectId', verifySignedIn, verifyProjectOwner, async (req, res) => {
     const projectId = req.params.projectId;

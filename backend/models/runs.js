@@ -20,15 +20,16 @@ function defineRun(sequelize, DataTypes) {
       type: DataTypes.INTEGER,
       allowNull: false,
       references: {
-        model: 'project',
+        model: 'projects',
         key: 'id',
       },
       onDelete: 'CASCADE',
     },
-  });
+  }, { tableName: 'runs' });
 
   Run.associate = (models) => {
     Run.belongsTo(models.Project, { foreignKey: 'projectId', onDelete: 'CASCADE' });
+    Run.hasMany(models.RunCase, { foreignKey: 'runId', onDelete: 'CASCADE' });
   };
 
   return Run;

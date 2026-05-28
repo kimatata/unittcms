@@ -1,12 +1,10 @@
 import express from 'express';
 const router = express.Router();
-import { DataTypes } from 'sequelize';
-import defineProject from '../../models/projects.js';
 import authMiddleware from '../../middleware/auth.js';
 
-export default function (sequelize) {
-  const { verifySignedIn } = authMiddleware(sequelize);
-  const Project = defineProject(sequelize, DataTypes);
+export default function (db) {
+  const { verifySignedIn } = authMiddleware(db);
+  const Project = db.repos.projects;
 
   router.post('/', verifySignedIn, async (req, res) => {
     try {

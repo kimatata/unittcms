@@ -1,14 +1,11 @@
 import express from 'express';
 const router = express.Router();
-import { DataTypes } from 'sequelize';
-import defineMember from '../../models/members.js';
 import authMiddleware from '../../middleware/auth.js';
 import editableMiddleware from '../../middleware/verifyEditable.js';
 
-export default function (sequelize) {
-  const { verifySignedIn } = authMiddleware(sequelize);
-  const { verifyProjectManagerFromProjectId } = editableMiddleware(sequelize);
-  const Member = defineMember(sequelize, DataTypes);
+export default function (db) {
+  const { verifySignedIn } = authMiddleware(db);
+  const { verifyProjectManagerFromProjectId } = editableMiddleware(db);
 
   router.delete('/', verifySignedIn, verifyProjectManagerFromProjectId, async (req, res) => {
     const userId = req.query.userId;
@@ -16,7 +13,7 @@ export default function (sequelize) {
 
     try {
       // Get Member to be deleted.
-      const deletingMember = await Member.findOne({
+      const deletingMember = await db.repos.members.findOne({
         where: {
           userId: userId,
           projectId: projectId,

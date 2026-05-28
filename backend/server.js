@@ -3,7 +3,6 @@ import { fileURLToPath } from 'url';
 import express from 'express';
 import cors from 'cors';
 import RateLimit from 'express-rate-limit';
-import { Sequelize } from 'sequelize';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const app = express();
@@ -30,21 +29,20 @@ app.use(limiter);
 // Specify the directory to serve static files
 app.use(express.static(path.join(__dirname, 'public')));
 
-// init sequalize
-const databasePath = path.resolve(__dirname, 'database/database.sqlite');
-const sequelize = new Sequelize({
-  dialect: 'sqlite',
-  storage: databasePath,
-  logging: false,
-});
+// init database (Postgres or SQLite via DATABASE_URL)
+import { initDb } from './db/index.js';
+import { createRepositories } from './repositories/index.js';
+
+const rawDb = await initDb();
+const db = { ...rawDb, repos: createRepositories(rawDb) };
 
 // "/"
 import indexRoute from './routes/index.js';
-app.use('/', indexRoute());
+app.use('/', indexRoute(db));
 
 // "/health"
 import healthIndexRoute from './routes/health/index.js';
-app.use('/health', healthIndexRoute());
+app.use('/health', healthIndexRoute(db));
 
 // "users"
 import usersIndexRoute from './routes/users/index.js';
@@ -58,17 +56,17 @@ import usersUpdateAvatarRoute from './routes/users/updateAvatar.js';
 import usersUpdateRoleRoute from './routes/users/updateRole.js';
 import signUpRoute from './routes/users/signup.js';
 import signInRoute from './routes/users/signin.js';
-app.use('/users', usersIndexRoute(sequelize));
-app.use('/users', usersFindRoute(sequelize));
-app.use('/users', usersSearchRoute(sequelize));
-app.use('/users', usersUpdateUsernameRoute(sequelize));
-app.use('/users', usersUpdatePasswordRoute(sequelize));
-app.use('/users', usersAdminResetPasswordRoute(sequelize));
-app.use('/users', usersUpdateLocaleRoute(sequelize));
-app.use('/users', usersUpdateAvatarRoute(sequelize));
-app.use('/users', usersUpdateRoleRoute(sequelize));
-app.use('/users', signUpRoute(sequelize));
-app.use('/users', signInRoute(sequelize));
+app.use('/users', usersIndexRoute(db));
+app.use('/users', usersFindRoute(db));
+app.use('/users', usersSearchRoute(db));
+app.use('/users', usersUpdateUsernameRoute(db));
+app.use('/users', usersUpdatePasswordRoute(db));
+app.use('/users', usersAdminResetPasswordRoute(db));
+app.use('/users', usersUpdateLocaleRoute(db));
+app.use('/users', usersUpdateAvatarRoute(db));
+app.use('/users', usersUpdateRoleRoute(db));
+app.use('/users', signUpRoute(db));
+app.use('/users', signInRoute(db));
 
 // "/projects"
 import projectsIndexRoute from './routes/projects/index.js';
@@ -76,11 +74,11 @@ import projectsShowRoute from './routes/projects/show.js';
 import projectsNewRoute from './routes/projects/new.js';
 import projectsEditRoute from './routes/projects/edit.js';
 import projectsDeleteRoute from './routes/projects/delete.js';
-app.use('/projects', projectsIndexRoute(sequelize));
-app.use('/projects', projectsShowRoute(sequelize));
-app.use('/projects', projectsNewRoute(sequelize));
-app.use('/projects', projectsEditRoute(sequelize));
-app.use('/projects', projectsDeleteRoute(sequelize));
+app.use('/projects', projectsIndexRoute(db));
+app.use('/projects', projectsShowRoute(db));
+app.use('/projects', projectsNewRoute(db));
+app.use('/projects', projectsEditRoute(db));
+app.use('/projects', projectsDeleteRoute(db));
 
 // "/folders"
 import foldersIndexRoute from './routes/folders/index.js';
@@ -88,11 +86,11 @@ import foldersNewRoute from './routes/folders/new.js';
 import foldersEditRoute from './routes/folders/edit.js';
 import foldersDeleteRoute from './routes/folders/delete.js';
 import foldersCloneRoute from './routes/folders/clone.js';
-app.use('/folders', foldersIndexRoute(sequelize));
-app.use('/folders', foldersNewRoute(sequelize));
-app.use('/folders', foldersEditRoute(sequelize));
-app.use('/folders', foldersDeleteRoute(sequelize));
-app.use('/folders', foldersCloneRoute(sequelize));
+app.use('/folders', foldersIndexRoute(db));
+app.use('/folders', foldersNewRoute(db));
+app.use('/folders', foldersEditRoute(db));
+app.use('/folders', foldersDeleteRoute(db));
+app.use('/folders', foldersCloneRoute(db));
 
 // "/cases"
 import casesDownloadRoute from './routes/cases/download.js';
@@ -105,28 +103,28 @@ import casesEditRoute from './routes/cases/edit.js';
 import casesDeleteRoute from './routes/cases/delete.js';
 import casesCloneRoute from './routes/cases/clone.js';
 import casesImportRoute from './routes/cases/import.js';
-app.use('/cases', casesDownloadRoute(sequelize));
-app.use('/cases', casesMoveRoute(sequelize));
-app.use('/cases', casesIndexRoute(sequelize));
-app.use('/cases', casesIndexByProjectIdRoute(sequelize));
-app.use('/cases', casesShowRoute(sequelize));
-app.use('/cases', casesNewRoute(sequelize));
-app.use('/cases', casesEditRoute(sequelize));
-app.use('/cases', casesDeleteRoute(sequelize));
-app.use('/cases', casesCloneRoute(sequelize));
-app.use('/cases', casesImportRoute(sequelize));
+app.use('/cases', casesDownloadRoute(db));
+app.use('/cases', casesMoveRoute(db));
+app.use('/cases', casesIndexRoute(db));
+app.use('/cases', casesIndexByProjectIdRoute(db));
+app.use('/cases', casesShowRoute(db));
+app.use('/cases', casesNewRoute(db));
+app.use('/cases', casesEditRoute(db));
+app.use('/cases', casesDeleteRoute(db));
+app.use('/cases', casesCloneRoute(db));
+app.use('/cases', casesImportRoute(db));
 
 // "/steps"
 import stepsEditRoute from './routes/steps/edit.js';
-app.use('/steps', stepsEditRoute(sequelize));
+app.use('/steps', stepsEditRoute(db));
 
 // "/attachments"
 import attachmentsNewRoute from './routes/attachments/new.js';
 import attachmentsDeleteRoute from './routes/attachments/delete.js';
 import attachmentsDownloadRoute from './routes/attachments/download.js';
-app.use('/attachments', attachmentsNewRoute(sequelize));
-app.use('/attachments', attachmentsDeleteRoute(sequelize));
-app.use('/attachments', attachmentsDownloadRoute(sequelize));
+app.use('/attachments', attachmentsNewRoute(db));
+app.use('/attachments', attachmentsDeleteRoute(db));
+app.use('/attachments', attachmentsDownloadRoute(db));
 
 // "/runs"
 import runsDownloadRoute from './routes/runs/download.js';
@@ -136,18 +134,18 @@ import runsNewRoute from './routes/runs/new.js';
 import runsEditRoute from './routes/runs/edit.js';
 import runDeleteRoute from './routes/runs/delete.js';
 
-app.use('/runs', runsDownloadRoute(sequelize));
-app.use('/runs', runsIndexRoute(sequelize));
-app.use('/runs', runsShowRoute(sequelize));
-app.use('/runs', runsNewRoute(sequelize));
-app.use('/runs', runsEditRoute(sequelize));
-app.use('/runs', runDeleteRoute(sequelize));
+app.use('/runs', runsDownloadRoute(db));
+app.use('/runs', runsIndexRoute(db));
+app.use('/runs', runsShowRoute(db));
+app.use('/runs', runsNewRoute(db));
+app.use('/runs', runsEditRoute(db));
+app.use('/runs', runDeleteRoute(db));
 
 // "/runcases"
 import runCaseIndexRoute from './routes/runcases/index.js';
 import runCaseEditRoute from './routes/runcases/edit.js';
-app.use('/runcases', runCaseIndexRoute(sequelize));
-app.use('/runcases', runCaseEditRoute(sequelize));
+app.use('/runcases', runCaseIndexRoute(db));
+app.use('/runcases', runCaseEditRoute(db));
 
 // "/members"
 import membersIndexRoute from './routes/members/index.js';
@@ -155,11 +153,11 @@ import membersNewRoute from './routes/members/new.js';
 import membersEditRoute from './routes/members/edit.js';
 import membersDeleteRoute from './routes/members/delete.js';
 import membersCheckRoute from './routes/members/check.js';
-app.use('/members', membersIndexRoute(sequelize));
-app.use('/members', membersNewRoute(sequelize));
-app.use('/members', membersEditRoute(sequelize));
-app.use('/members', membersDeleteRoute(sequelize));
-app.use('/members', membersCheckRoute(sequelize));
+app.use('/members', membersIndexRoute(db));
+app.use('/members', membersNewRoute(db));
+app.use('/members', membersEditRoute(db));
+app.use('/members', membersDeleteRoute(db));
+app.use('/members', membersCheckRoute(db));
 
 // "/tags"
 import tagsNewRoute from './routes/tags/new.js';
@@ -167,29 +165,29 @@ import tagsIndexRoute from './routes/tags/index.js';
 import tagsEditRoute from './routes/tags/edit.js';
 import tagsDeleteRoute from './routes/tags/delete.js';
 import tagsShowRoute from './routes/tags/show.js';
-app.use('/tags', tagsNewRoute(sequelize));
-app.use('/tags', tagsIndexRoute(sequelize));
-app.use('/tags', tagsShowRoute(sequelize));
-app.use('/tags', tagsDeleteRoute(sequelize));
-app.use('/tags', tagsEditRoute(sequelize));
+app.use('/tags', tagsNewRoute(db));
+app.use('/tags', tagsIndexRoute(db));
+app.use('/tags', tagsShowRoute(db));
+app.use('/tags', tagsDeleteRoute(db));
+app.use('/tags', tagsEditRoute(db));
 
 // "/casetags"
 import caseTagsEditRoute from './routes/casetags/edit.js';
-app.use('/casetags', caseTagsEditRoute(sequelize));
+app.use('/casetags', caseTagsEditRoute(db));
 
 // "/comments"
 import commentsIndexRoute from './routes/comments/index.js';
 import commentsNewRoute from './routes/comments/new.js';
 import commentsEditRoute from './routes/comments/edit.js';
 import commentsDeleteRoute from './routes/comments/delete.js';
-app.use('/comments', commentsIndexRoute(sequelize));
-app.use('/comments', commentsNewRoute(sequelize));
-app.use('/comments', commentsEditRoute(sequelize));
-app.use('/comments', commentsDeleteRoute(sequelize));
+app.use('/comments', commentsIndexRoute(db));
+app.use('/comments', commentsNewRoute(db));
+app.use('/comments', commentsEditRoute(db));
+app.use('/comments', commentsDeleteRoute(db));
 
 // "/home"
 import homeIndexRoute from './routes/home/index.js';
-app.use('/home', homeIndexRoute(sequelize));
+app.use('/home', homeIndexRoute(db));
 
 // "/automation-configs"
 import automationConfigsShowRoute from './routes/automationConfigs/show.js';
@@ -202,24 +200,28 @@ import automationConfigsRunStatusRoute from './routes/automationConfigs/runStatu
 import automationConfigsRepairRoute from './routes/automationConfigs/repair.js';
 import automationConfigsRunErrorsRoute from './routes/automationConfigs/runErrors.js';
 import automationConfigsFixErrorRoute from './routes/automationConfigs/fixError.js';
-app.use('/automation-configs', automationConfigsShowRoute(sequelize));
-app.use('/automation-configs', automationConfigsNewRoute(sequelize));
-app.use('/automation-configs', automationConfigsEditRoute(sequelize));
-app.use('/automation-configs', automationConfigsGenerateRoute(sequelize));
-app.use('/automation-configs', automationConfigsSyncStatusRoute(sequelize));
-app.use('/automation-configs', automationConfigsTriggerRoute(sequelize));
-app.use('/automation-configs', automationConfigsRunStatusRoute(sequelize));
-app.use('/automation-configs', automationConfigsRepairRoute(sequelize));
-app.use('/automation-configs', automationConfigsRunErrorsRoute(sequelize));
-app.use('/automation-configs', automationConfigsFixErrorRoute(sequelize));
+import automationConfigsDeleteRepoRoute from './routes/automationConfigs/deleteRepo.js';
+import automationConfigsImplementedCasesRoute from './routes/automationConfigs/implementedCases.js';
+app.use('/automation-configs', automationConfigsShowRoute(db));
+app.use('/automation-configs', automationConfigsNewRoute(db));
+app.use('/automation-configs', automationConfigsEditRoute(db));
+app.use('/automation-configs', automationConfigsGenerateRoute(db));
+app.use('/automation-configs', automationConfigsSyncStatusRoute(db));
+app.use('/automation-configs', automationConfigsTriggerRoute(db));
+app.use('/automation-configs', automationConfigsRunStatusRoute(db));
+app.use('/automation-configs', automationConfigsRepairRoute(db));
+app.use('/automation-configs', automationConfigsRunErrorsRoute(db));
+app.use('/automation-configs', automationConfigsFixErrorRoute(db));
+app.use('/automation-configs', automationConfigsDeleteRepoRoute(db));
+app.use('/automation-configs', automationConfigsImplementedCasesRoute(db));
 
 // "/integration-configs"
 import integrationConfigsShowRoute from './routes/integrationConfigs/show.js';
 import integrationConfigsUpsertRoute from './routes/integrationConfigs/upsert.js';
 import integrationConfigsDestroyRoute from './routes/integrationConfigs/destroy.js';
-app.use('/integration-configs', integrationConfigsShowRoute(sequelize));
-app.use('/integration-configs', integrationConfigsUpsertRoute(sequelize));
-app.use('/integration-configs', integrationConfigsDestroyRoute(sequelize));
+app.use('/integration-configs', integrationConfigsShowRoute(db));
+app.use('/integration-configs', integrationConfigsUpsertRoute(db));
+app.use('/integration-configs', integrationConfigsDestroyRoute(db));
 
 if (!process.env.SECRET_KEY) {
   console.log(

@@ -27,7 +27,7 @@ function defineUser(sequelize, DataTypes) {
         allowNull: true,
       },
     },
-    { underscored: true }
+    { underscored: true, tableName: 'users' }
   );
 
   User.associate = (models) => {
