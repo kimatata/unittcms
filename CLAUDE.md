@@ -282,11 +282,48 @@ E2E tests live in `e2e/` and cover full user workflows.
 | Add new API endpoint | Create `backend/routes/<resource>/<verb>.js` using `export default function(db)`, register in `backend/server.js` |
 | Add new model | Create `backend/models/xxx.js`, add to `backend/repositories/index.js` |
 | Add new page | Create `page.tsx` (server) + `FeaturePage.tsx` (client) under `[locale]/...` |
-| Add translation key | Edit all 5 `messages/*.json` files + the TypeScript type + `page.tsx` messages object |
+| Add translation key | Edit `messages/en.json` and `messages/he.json` + the TypeScript type + `page.tsx` messages object |
 | See changes | `docker-compose -f docker-compose.yaml up --build -d` |
 | Force clean rebuild (cache miss) | `docker-compose -f docker-compose.yaml build --no-cache && docker-compose -f docker-compose.yaml up -d` |
 | View logs | `docker logs unittcms-unittcms-1 -f` |
 | Access container shell | `docker exec -it unittcms-unittcms-1 sh` |
+
+---
+
+## End of session
+At the end of each session, update this file (the "Recent additions" section and any
+relevant architecture notes) and the memory files in
+`C:\Users\shira\.claude\projects\c--Documents-Projects-unittcms\memory\`
+to reflect what was built or changed.
+
+---
+
+## Recent additions (2026-05-28)
+
+### Automation tab overhaul — credentials moved to Integrations
+- Git credentials (token, instance URL, namespace) removed from AutomationConfig; now read at runtime from `IntegrationConfigs` via `backend/routes/automationConfigs/_credentials.js`.
+- Automation tab shows creation form (provider, repo name, tool, language) only when no repo is connected (`repoUrl` is null). After connection it shows only: provider chip + repo URL, CI section, error panel.
+- `backend/routes/automationConfigs/new.js` and `edit.js` no longer accept credential fields.
+- All automation routes (`trigger`, `runStatus`, `repair`, `runErrors`, `fixError`, `generate`) load credentials via `loadProviderCredentials(db, config)`.
+- Migration `20260524000004-make-automation-config-token-nullable.js` makes `gitlabToken`/`gitlabUrl` nullable.
+
+### Delete automation project from Settings
+- New endpoint: `DELETE /automation-configs/:id/repo` — deletes the remote GitHub or GitLab repo and clears `repoId`/`repoUrl` on the config. Integration credentials are untouched.
+- Route: `backend/routes/automationConfigs/deleteRepo.js`. Registered in `server.js`.
+- Settings page shows a danger card with the repo URL and Trash button when `automationConfig.repoUrl` is set. Uses `DeleteConfirmDialog` for confirmation.
+- New messages: `delete_automation_project`, `delete_automation_project_confirm`, `delete_automation_project_success`, `delete_automation_project_error` in Settings namespace.
+- Control function: `deleteAutomationRepo(jwt, id)` in `frontend/utils/automationConfigControl.ts`.
+
+### Backend repository pattern
+- New `backend/db/index.js` — initialises Sequelize, loads models, runs `associate()`, returns `{ sequelize, models, Op }`.
+- New `backend/repositories/index.js` — maps model aliases to `db.repos.*`.
+- All routes now receive a single `db` object; use `db.repos.<model>.findByPk()` etc. instead of raw Sequelize models.
+
+### Locales: English + Hebrew only
+- Removed de, ja, zh-CN, pt-BR locale support. Added Hebrew (`he`).
+- Changed: `frontend/src/i18n/routing.ts` locales array, `frontend/config/selection.ts` locales list, `frontend/types/locale.ts` `LocaleCodeType`, `backend/config/locale.js` `SUPPORTED_LOCALES`.
+- New file: `frontend/messages/he.json` — full Hebrew translation.
+- Old locale files (de, ja, zh-CN, pt-BR) remain on disk but are no longer routed to.
 
 ---
 
