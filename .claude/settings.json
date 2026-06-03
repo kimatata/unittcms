@@ -2,7 +2,8 @@
   "permissions": {
     "allow": [
       "PowerShell($proc = Get-NetTCPConnection -LocalPort 8000 -ErrorAction SilentlyContinue | Select-Object -First 1; if \\($proc\\) { $p = Get-Process -Id $proc.OwningProcess -ErrorAction SilentlyContinue; \"PID $\\($proc.OwningProcess\\): $\\($p.ProcessName\\)\"; Stop-Process -Id $proc.OwningProcess -Force; \"Killed\" } else { \"Port 8000 is free\" })",
-      "Bash(git commit -m ' *)"
+      "Bash(git commit -m ' *)",
+      "Bash(findstr \":8000\")"
     ]
   }
 }

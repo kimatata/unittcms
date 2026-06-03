@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "start": "node --env-file=.env index",
-    "dev": "node --env-file=.env index",
+    "dev": "node --watch --env-file=.env index",
     "migrate": "sequelize db:migrate",
     "seed": "sequelize db:seed:all",
     "drop": "sequelize db:migrate:undo:all"
