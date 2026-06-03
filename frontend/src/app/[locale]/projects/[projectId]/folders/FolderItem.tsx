@@ -1,3 +1,4 @@
+'use client';
 import { Button } from '@heroui/react';
 import { ChevronDown, ChevronRight, Folder, Plus } from 'lucide-react';
 import { NodeApi } from 'react-arborist';

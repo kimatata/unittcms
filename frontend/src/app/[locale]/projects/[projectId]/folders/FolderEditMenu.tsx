@@ -1,3 +1,4 @@
+'use client';
 import { useState, useEffect } from 'react';
 import { Button, Dropdown, DropdownTrigger, DropdownMenu, DropdownItem } from '@heroui/react';
 import { MoreVertical } from 'lucide-react';

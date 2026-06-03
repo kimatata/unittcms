@@ -1,3 +1,4 @@
+'use client';
 import { useState, useEffect, useMemo, ReactNode } from 'react';
 import {
   Table,

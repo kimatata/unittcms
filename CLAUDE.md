@@ -298,6 +298,49 @@ to reflect what was built or changed.
 
 ---
 
+## Recent additions (2026-06-03)
+
+### Dev server: hot reload (local) vs Docker
+- Only the PostgreSQL DB runs in Docker. The Next.js frontend and Express backend run locally with hot reload.
+- Frontend dev command: `cd frontend && npm run dev` (uses Turbopack: `next dev --turbo -p 8000`)
+- Backend dev: runs separately (see backend package.json)
+- **Translation key table updated**: only 2 locales now (`en` + `he`). CLAUDE.md previously said 5 locales — that is outdated.
+
+### Automation config cache (frontend)
+- Module-level `configCache = new Map<number, AutomationConfigType | null>()` in `frontend/utils/automationConfigControl.ts`.
+- `fetchAutomationConfig` checks cache first; stores result (including `null` for 404) on miss.
+- `setAutomationConfigCache(projectId, config)` exported for callers to update after mutations.
+- Called after save/generate in `AutomationPage.tsx` and after delete-repo/autofix-toggle in `SettingsPage.tsx`.
+- Result: zero extra API calls on same-session navigation; only one call per fresh page load.
+
+### useEffect dep fix: `context` → `jwt`
+- All `useCallback` hooks and `useEffect` in `AutomationPage.tsx` and `SettingsPage.tsx` previously depended on the entire `context` object. When `projectRoles` updated after login (triggering a new `context` reference), callbacks recreated and the main `useEffect` re-fired — causing 2–3 extra API calls on each page load.
+- Fix: extract `const jwt = context.token.access_token` (a stable string) and use `[jwt]` as deps instead of `[context]`. `context` object reference changes when roles load, but `jwt` string stays the same.
+- **Convention going forward**: use `jwt = context.token.access_token` as dep, not `context`, in any new `useCallback`/`useEffect` that only needs the token.
+
+### `'use client'` audit — 18 files fixed
+Turbopack evaluates module boundaries more strictly than webpack. Files importing `@heroui/react` (which transitively imports `@react-aria/ssr`, which calls `createContext`) without `'use client'` caused a server-side `TypeError: createContext only works in Client Components` crash.
+
+**Architecture principle applied:**
+- Static/presentational components → true server components (no HeroUI, no `'use client'`):
+  - `LandingPage.tsx` — replaced `<Divider>` with `<hr>`
+  - `PaneMainFeatures.tsx` — replaced HeroUI Card/Avatar with Tailwind divs
+  - `PaneMainTitle.tsx` — replaced HeroUI Button+ClientLink with `<Link>` + `<a>` (lucide `ExternalLink` icon)
+- Interactive components (state, events, HeroUI) → added `'use client'` to 15 files that were missing it:
+  - `admin/PasswordResetDialog.tsx`, `admin/UsersTable.tsx`
+  - `projects/ProjectsTable.tsx`
+  - `folders/FolderEditMenu.tsx`, `folders/FolderItem.tsx`
+  - `cases/TestCaseFilter.tsx`, `cases/TestCaseTable.tsx`
+  - `cases/[caseId]/CaseAttachmentsEditor.tsx`, `cases/[caseId]/CaseStepsEditor.tsx`
+  - `members/CandidatesTable.tsx`, `members/MembersTable.tsx`
+  - `runs/RunsTable.tsx`
+  - `runs/[runId]/TestCaseSelector.tsx`, `runs/[runId]/TestRunFilter.tsx`
+  - `settings/ProjectTagsManager.tsx`
+
+**Rule**: Any component that uses `useState`, `useEffect`, `useContext`, or imports from `@heroui/react` MUST have `'use client'` as the first line.
+
+---
+
 ## Recent additions (2026-05-28)
 
 ### Automation tab overhaul — credentials moved to Integrations

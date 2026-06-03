@@ -15,7 +15,7 @@ import { UserType } from '@/types/user';
 import { findUser } from '@/utils/usersControl';
 import { logError } from '@/utils/errorHandler';
 import UserAvatar from '@/components/UserAvatar';
-import { fetchAutomationConfig, updateAutoFixEnabled, deleteAutomationRepo } from '@/utils/automationConfigControl';
+import { fetchAutomationConfig, setAutomationConfigCache, updateAutoFixEnabled, deleteAutomationRepo } from '@/utils/automationConfigControl';
 import { AutomationConfigType } from '@/types/project';
 
 type Props = {
@@ -50,20 +50,20 @@ export default function SettingsPage({ projectId, messages, projectDialogMessage
     locale: null,
   });
 
+  const jwt = context.token.access_token;
+
   useEffect(() => {
     async function fetchDataEffect() {
-      if (!context.isSignedIn()) {
-        return;
-      }
+      if (!jwt) return;
 
       try {
-        const data = await fetchProject(context.token.access_token, Number(projectId));
+        const data = await fetchProject(jwt, Number(projectId));
         setProject(data);
-        const aCfg = await fetchAutomationConfig(context.token.access_token, Number(projectId));
+        const aCfg = await fetchAutomationConfig(jwt, Number(projectId));
         setAutomationConfig(aCfg);
 
         if (data.userId) {
-          const ownerData = await findUser(context.token.access_token, data.userId);
+          const ownerData = await findUser(jwt, data.userId);
           setOwner(ownerData);
         } else {
           console.error('failed to get project owner id');
@@ -74,7 +74,7 @@ export default function SettingsPage({ projectId, messages, projectDialogMessage
     }
 
     fetchDataEffect();
-  }, [context, projectId]);
+  }, [jwt, projectId]);
 
   const [isDeleteRepoDialogOpen, setIsDeleteRepoDialogOpen] = useState(false);
   const [isDeletingRepo, setIsDeletingRepo] = useState(false);
@@ -83,8 +83,9 @@ export default function SettingsPage({ projectId, messages, projectDialogMessage
     if (!automationConfig) return;
     setIsDeletingRepo(true);
     try {
-      const updated = await deleteAutomationRepo(context.token.access_token, automationConfig.id);
+      const updated = await deleteAutomationRepo(jwt, automationConfig.id);
       setAutomationConfig(updated);
+      setAutomationConfigCache(Number(projectId), updated);
       setIsDeleteRepoDialogOpen(false);
       addToast({ title: messages.deleteAutomationProjectSuccess, color: 'success' });
     } catch (error) {
@@ -98,8 +99,9 @@ export default function SettingsPage({ projectId, messages, projectDialogMessage
   const handleAutoFixToggle = async (enabled: boolean) => {
     if (!automationConfig) return;
     try {
-      const updated = await updateAutoFixEnabled(context.token.access_token, automationConfig.id, enabled);
+      const updated = await updateAutoFixEnabled(jwt, automationConfig.id, enabled);
       setAutomationConfig(updated);
+      setAutomationConfigCache(Number(projectId), updated);
       addToast({ title: messages.autoFixUpdated, color: 'success' });
     } catch (error) {
       logError('SettingsPage autoFix toggle', error);
@@ -110,7 +112,7 @@ export default function SettingsPage({ projectId, messages, projectDialogMessage
   // project dialog
   const [isProjectDialogOpen, setIsProjectDialogOpen] = useState(false);
   const onSubmit = async (name: string, detail: string, isPublic: boolean) => {
-    const updatedProject = await updateProject(context.token.access_token, project.id, name, detail, isPublic);
+    const updatedProject = await updateProject(jwt, project.id, name, detail, isPublic);
     setProject(updatedProject);
     setIsProjectDialogOpen(false);
   };
@@ -118,7 +120,7 @@ export default function SettingsPage({ projectId, messages, projectDialogMessage
   // delete confirm dialog
   const [isDeleteConfirmDialogOpen, setIsDeleteConfirmDialogOpen] = useState(false);
   const onConfirm = async () => {
-    await deleteProject(context.token.access_token, Number(projectId));
+    await deleteProject(jwt, Number(projectId));
     setIsDeleteConfirmDialogOpen(false);
     router.push(`/projects/`, { locale: locale });
   };

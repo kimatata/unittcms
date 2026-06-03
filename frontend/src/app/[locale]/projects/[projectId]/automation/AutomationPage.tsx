@@ -19,6 +19,7 @@ import { TokenContext } from '@/utils/TokenProvider';
 import { AutomationConfigType, AutomationMessages } from '@/types/project';
 import {
   fetchAutomationConfig,
+  setAutomationConfigCache,
   createAutomationConfig,
   updateAutomationConfig,
   generateAutomationProject,
@@ -112,13 +113,15 @@ export default function AutomationPage({ projectId, messages }: Props) {
   // track previous run status to detect failure transitions
   const prevConclusionRef = useRef<string | null>(null);
 
+  const jwt = context.token.access_token;
+
   const loadRunStatus = useCallback(
     async (cfg: AutomationConfigType) => {
       if (cfg.provider !== 'github' || !cfg.repoUrl) return;
       setIsFetchingStatus(true);
       setRunStatusError(null);
       try {
-        const status = await fetchRunStatus(context.token.access_token, cfg.id);
+        const status = await fetchRunStatus(jwt, cfg.id);
         setRunStatus(status);
       } catch (error) {
         logError('AutomationPage runStatus', error);
@@ -129,7 +132,7 @@ export default function AutomationPage({ projectId, messages }: Props) {
         setIsFetchingStatus(false);
       }
     },
-    [context]
+    [jwt]
   );
 
   const loadRunErrors = useCallback(
@@ -139,7 +142,7 @@ export default function AutomationPage({ projectId, messages }: Props) {
       setErrorFixState({});
       setCommitUrls({});
       try {
-        const errors = await fetchRunErrors(context.token.access_token, cfg.id);
+        const errors = await fetchRunErrors(jwt, cfg.id);
         setRunErrors(errors);
       } catch (error) {
         logError('AutomationPage fetchErrors', error);
@@ -147,14 +150,14 @@ export default function AutomationPage({ projectId, messages }: Props) {
         setIsFetchingErrors(false);
       }
     },
-    [context]
+    [jwt]
   );
 
   const loadImplementedCases = useCallback(
     async (cfg: AutomationConfigType) => {
       setIsFetchingImplemented(true);
       try {
-        const data = await fetchImplementedCases(context.token.access_token, cfg.id);
+        const data = await fetchImplementedCases(jwt, cfg.id);
         setImplementedCases(data.cases);
         setTotalCases(data.totalCases);
         // Auto-expand all folders on first load
@@ -166,14 +169,14 @@ export default function AutomationPage({ projectId, messages }: Props) {
         setIsFetchingImplemented(false);
       }
     },
-    [context]
+    [jwt]
   );
 
   const loadProjectRuns = useCallback(
     async (cfg: AutomationConfigType) => {
       setIsFetchingRuns(true);
       try {
-        const runs = await fetchProjectRuns(context.token.access_token, cfg.id);
+        const runs = await fetchProjectRuns(jwt, cfg.id);
         setProjectRuns(runs);
       } catch (error) {
         logError('AutomationPage projectRuns', error);
@@ -181,14 +184,14 @@ export default function AutomationPage({ projectId, messages }: Props) {
         setIsFetchingRuns(false);
       }
     },
-    [context]
+    [jwt]
   );
 
   useEffect(() => {
     async function load() {
-      if (!context.isSignedIn()) return;
+      if (!jwt) return;
       try {
-        const data = await fetchAutomationConfig(context.token.access_token, Number(projectId));
+        const data = await fetchAutomationConfig(jwt, Number(projectId));
         if (data) {
           setConfig(data);
           setProvider(data.provider ?? 'gitlab');
@@ -202,7 +205,7 @@ export default function AutomationPage({ projectId, messages }: Props) {
       }
     }
     load();
-  }, [context, projectId, loadRunStatus, loadImplementedCases]);
+  }, [jwt, projectId, loadRunStatus, loadImplementedCases]);
 
   // Load project runs when testRun mode is selected
   useEffect(() => {
@@ -263,7 +266,7 @@ export default function AutomationPage({ projectId, messages }: Props) {
     if (!config) return;
     setErrorFixState((prev) => ({ ...prev, [error.id]: 'fixing' }));
     try {
-      const result = await fixRunError(context.token.access_token, config.id, error);
+      const result = await fixRunError(jwt, config.id, error);
       setErrorFixState((prev) => ({ ...prev, [error.id]: 'fixed' }));
       if (result.commitUrl) {
         setCommitUrls((prev) => ({ ...prev, [error.id]: result.commitUrl! }));
@@ -290,14 +293,15 @@ export default function AutomationPage({ projectId, messages }: Props) {
       const payload = { provider, repoName, automationTool, automationLanguage };
       let updated: AutomationConfigType;
       if (config) {
-        updated = await updateAutomationConfig(context.token.access_token, config.id, payload);
+        updated = await updateAutomationConfig(jwt, config.id, payload);
       } else {
-        updated = await createAutomationConfig(context.token.access_token, {
+        updated = await createAutomationConfig(jwt, {
           projectId: Number(projectId),
           ...payload,
         });
       }
       setConfig(updated);
+      setAutomationConfigCache(Number(projectId), updated);
       addToast({ title: messages.successSaved, color: 'success' });
     } catch (error) {
       logError('AutomationPage save', error);
@@ -311,8 +315,9 @@ export default function AutomationPage({ projectId, messages }: Props) {
     if (!config) return;
     setIsGenerating(true);
     try {
-      const updated = await generateAutomationProject(context.token.access_token, config.id);
+      const updated = await generateAutomationProject(jwt, config.id);
       setConfig(updated);
+      setAutomationConfigCache(Number(projectId), updated);
       addToast({ title: messages.successGenerated, color: 'success' });
     } catch (error) {
       logError('AutomationPage generate', error);
@@ -330,7 +335,7 @@ export default function AutomationPage({ projectId, messages }: Props) {
       if (runMode === 'specific') options.caseIds = Array.from(selectedCaseIds);
       if (runMode === 'testRun' && selectedRunId) options.runId = selectedRunId;
 
-      await triggerAutomationRun(context.token.access_token, config.id, options);
+      await triggerAutomationRun(jwt, config.id, options);
       addToast({ title: messages.successTriggered, color: 'success' });
       setRunErrors([]);
       setErrorFixState({});
@@ -348,7 +353,7 @@ export default function AutomationPage({ projectId, messages }: Props) {
     if (!config) return;
     setIsRepairing(true);
     try {
-      await repairAutomationProject(context.token.access_token, config.id);
+      await repairAutomationProject(jwt, config.id);
       addToast({ title: messages.successRepaired, color: 'success' });
     } catch (error) {
       const msg = error instanceof Error ? error.message : String(error);

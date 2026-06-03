@@ -1,3 +1,4 @@
+'use client';
 import { useContext, useEffect, useState } from 'react';
 import { addToast, Button, Card, CardBody, Input, Popover, PopoverContent, PopoverTrigger } from '@heroui/react';
 import { Check, Pencil, Plus, Trash2, X } from 'lucide-react';

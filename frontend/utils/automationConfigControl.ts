@@ -2,14 +2,28 @@ import Config from '@/config/config';
 import { AutomationConfigType } from '@/types/project';
 import { logError } from '@/utils/errorHandler';
 
+const configCache = new Map<number, AutomationConfigType | null>();
+
+export function setAutomationConfigCache(projectId: number, config: AutomationConfigType | null) {
+  configCache.set(projectId, config);
+}
+
 export async function fetchAutomationConfig(jwt: string, projectId: number): Promise<AutomationConfigType | null> {
+  if (configCache.has(projectId)) {
+    return configCache.get(projectId) ?? null;
+  }
   try {
     const res = await fetch(`${Config.apiServer}/automation-configs/project/${projectId}`, {
       headers: { Authorization: `Bearer ${jwt}` },
     });
-    if (res.status === 404) return null;
+    if (res.status === 404) {
+      configCache.set(projectId, null);
+      return null;
+    }
     if (!res.ok) throw new Error(await res.text());
-    return res.json();
+    const data: AutomationConfigType = await res.json();
+    configCache.set(projectId, data);
+    return data;
   } catch (error) {
     logError('fetchAutomationConfig', error);
     return null;

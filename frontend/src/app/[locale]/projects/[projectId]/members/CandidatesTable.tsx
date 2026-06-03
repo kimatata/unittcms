@@ -1,3 +1,4 @@
+'use client';
 import { useMemo, useCallback } from 'react';
 import { Button, Table, TableHeader, TableColumn, TableBody, TableRow, TableCell } from '@heroui/react';
 import { UserType } from '@/types/user';

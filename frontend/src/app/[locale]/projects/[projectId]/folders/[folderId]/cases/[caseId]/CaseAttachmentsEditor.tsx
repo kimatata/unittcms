@@ -1,3 +1,4 @@
+'use client';
 import { Image, Button, Tooltip, Card, CardBody } from '@heroui/react';
 import { Trash, ArrowDownToLine, ArrowUpFromLine } from 'lucide-react';
 import { ChangeEvent, DragEvent } from 'react';

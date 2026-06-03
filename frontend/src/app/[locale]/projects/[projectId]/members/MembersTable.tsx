@@ -1,3 +1,4 @@
+'use client';
 import { useState, useMemo, ReactNode } from 'react';
 import {
   Button,

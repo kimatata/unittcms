@@ -1,3 +1,4 @@
+'use client';
 import { Textarea, Button, Tooltip, Avatar } from '@heroui/react';
 import { Plus, Trash } from 'lucide-react';
 import { CaseMessages, StepType } from '@/types/case';
