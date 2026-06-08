@@ -65,6 +65,7 @@ export async function updateSourceRepoConfig(
     sourceRepoName: string;
     sourceRepoBranch: string;
     autoAnalyzeCommits: boolean;
+    sourceProvider?: string | null;
   }
 ): Promise<void> {
   const res = await fetch(`${Config.apiServer}/automation-configs/${configId}`, {

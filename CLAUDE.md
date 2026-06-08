@@ -1,33 +1,49 @@
 # UnitTCMS — Claude Working Guide
 
-Open-source self-hosted test case management system. Full-stack TypeScript monorepo: Next.js 14 frontend + Express/PostgreSQL backend, served together from a single Docker container on port 8000.
+Open-source self-hosted test case management system. Full-stack TypeScript monorepo: Next.js 14 frontend + Express/PostgreSQL backend.
 
 ---
 
 ## Running the project
 
-**The app runs in Docker. There is no local `node_modules` in `frontend/` or `backend/`.**
-All code changes require a Docker rebuild — hot reload does not apply.
+**Only the PostgreSQL database runs in Docker. The frontend and backend run locally with hot reload.**
 
+### Start the database (Docker)
 ```powershell
-# Rebuild and restart (run from repo root)
-docker-compose -f docker-compose.yaml up --build -d
+docker-compose -f docker-compose.yaml up -d postgres
+```
+
+### Start the backend (local, hot reload)
+```powershell
+cd backend && npm run dev
+```
+
+### Start the frontend (local, hot reload — Turbopack)
+```powershell
+cd frontend && npm run dev
 ```
 
 App available at: `http://localhost:8000/en/projects`
 
-> **Docker cache not picking up changes?** On Windows, Docker sometimes serves a fully cached build even after file edits. Force a clean rebuild:
+> **Local `node_modules` exist** in both `frontend/` and `backend/`. Run `npm install` inside each folder after adding packages.
+
+> **Sequelize migrations** do NOT run automatically in local dev mode. After adding migration files, run them manually:
 > ```powershell
-> docker-compose -f docker-compose.yaml build --no-cache && docker-compose -f docker-compose.yaml up -d
+> cd backend
+> $env:DATABASE_URL="postgresql://unittcms:unittcms_secret@localhost:5432/unittcms"; npx sequelize-cli db:migrate
 > ```
+> (migrations only run automatically inside Docker via `entrypoint.js`)
 
-The frontend Next.js build output and the Express backend are combined in a single process by `entrypoint.js`. On startup, Sequelize migrations run automatically. Set `IS_DEMO=true` in `docker-compose.yaml` to seed sample data.
+Key env vars (in `docker-compose.yaml` for the DB container):
+- `DATABASE_URL=postgresql://unittcms:unittcms_secret@localhost:5432/unittcms`
+- Backend reads `DATABASE_URL` from its env to connect to the local Postgres
 
-Key env vars (in `docker-compose.yaml`):
-- `PORT=8000`
-- `SECRET_KEY=your_secret_key_here`
-- `IS_DEMO=false`
-- `DATABASE_URL=postgresql://unittcms:unittcms_secret@postgres:5432/unittcms` (set automatically by compose)
+### Production / Docker-only build (for verification or deployment)
+The full Docker build compiles the frontend and serves both frontend+backend from one container on port 8000. Only use this to verify TypeScript compiles cleanly or for production deploys — not for daily development.
+```powershell
+# Full rebuild (verification / production)
+docker-compose -f docker-compose.yaml up --build -d
+```
 
 ---
 
@@ -298,6 +314,26 @@ to reflect what was built or changed.
 
 ---
 
+## Recent additions (2026-06-09, session 2)
+
+### Repo connection flow — browse & pick from GitHub/GitLab
+- **`GET /integration-configs/list-repos?projectId=X&service=github`** — new route in `backend/routes/integrationConfigs/listRepos.js`. Loads the user's token from `IntegrationConfigs`, calls GitHub `/user/repos` or GitLab `/projects?membership=true`, paginates up to 500 repos. Returns normalized `[{ id, name, fullName, url, isPrivate, description }]`.
+- **`backend/migrations/20260608000004`** — adds `sourceProvider` (STRING(20), nullable) to `automationConfigs`.
+- **`backend/models/automationConfigs.js`** — added `sourceProvider` field.
+- **`backend/routes/automationConfigs/edit.js`** — all fields now optional (conditional `if (x !== undefined)` updates); added `sourceProvider`, `repoUrl`, `repoId` as patchable fields.
+- **`backend/routes/automationConfigs/new.js`** — accepts optional `repoUrl`, `repoId` at creation time.
+- **`RepoPickerModal.tsx`** — new `'use client'` component. Opens a HeroUI Modal, fetches repos from `listRepos` on open, filters client-side, shows fullName + private badge + description. Click to select.
+- **`AutomationPage.tsx`** — Test repo card now has "Create New / Use Existing" toggle. In "Use Existing" mode: read-only name field + Browse button opens `RepoPickerModal`; selecting a repo auto-saves the config with `repoUrl` + `repoId` set. Source repo card has a Source Provider dropdown + Browse button; picking a repo fills owner/name fields (user still saves manually).
+- **`frontend/utils/automationConfigControl.ts`** — added `RepoItem` type and `listRepos(jwt, projectId, service)` function; `updateAutomationConfig` data type now all-optional + `repoUrl`/`repoId`/`sourceProvider` fields; `createAutomationConfig` accepts optional `repoUrl`/`repoId`.
+- **`frontend/utils/monitorControl.ts`** — `updateSourceRepoConfig` accepts optional `sourceProvider`.
+- New locale keys (en + he): `create_new_repo`, `use_existing_repo`, `browse_repos`, `loading_repos`, `search_repos_placeholder`, `no_repos_found`, `pick_repo_title`, `source_provider`.
+
+### Migration gotcha (local dev)
+`npx sequelize-cli db:migrate` without `DATABASE_URL` set silently migrates SQLite instead of Postgres and reports "already up to date" — always pass it explicitly:
+```powershell
+$env:DATABASE_URL="postgresql://unittcms:unittcms_secret@localhost:5432/unittcms"; npx sequelize-cli db:migrate
+```
+
 ## Recent additions (2026-06-09)
 
 ### Sync Tests — bidirectional automation ↔ test plan sync
@@ -348,6 +384,43 @@ to reflect what was built or changed.
 - **Fix**: `syncTests.js` now parses annotated tests and bulk-updates their `codeStatus` even without CI — clicking Sync Tests once populates the correct status from the repo directly.
 
 ## Recent additions (2026-06-08)
+
+### Commit-Driven Test Intelligence + Monitor tab
+
+**Goal**: Connect the source project (app under development) to UnitTCMS and the test automation repo so AI can watch commits and generate tests automatically.
+
+**New DB tables + migrations**:
+- `sourceCommits` (`20260608000002`) — one row per commit from source repo: sha, diff, status (new/analyzing/done/failed), aiSummary, generatedTestCaseIds, testCommitSha
+- `syncLogs` (`20260608000003`) — activity log: type (commit_sync/ai_analysis/test_sync/webhook), description, created count, status
+- `automationConfigs` additions (`20260608000001`): `sourceRepoOwner`, `sourceRepoName`, `sourceRepoBranch`, `webhookSecret`, `autoAnalyzeCommits`
+
+**New backend routes** (all under `/automation-configs/:id/`):
+- `GET /source-commits` — list stored commits
+- `POST /sync-source-commits` — fetch last 30 commits from source repo via GitHub/GitLab API with diffs
+- `GET /sync-logs` — activity log
+- `POST /analyze-commit/:sha` — AI analysis: reads diff + test hierarchy + sample test file → calls `claude-sonnet-4-6` → creates test cases in UnitTCMS under "AI Generated" folder → commits test code to test repo → updates SourceCommit status
+- `POST /webhook` — receives GitHub/GitLab push events with HMAC signature verification
+- `GET /test-health` — matrix data: folders × last 10 UnitTCMS test runs with pass/fail/skipped counts
+
+**New frontend**:
+- Monitor tab: `frontend/src/app/[locale]/projects/[projectId]/monitor/` — 4 panels: health bar, commit coverage timeline, test health matrix, activity log
+- `frontend/utils/monitorControl.ts` — API control functions
+- Types: `SourceCommitType`, `SyncLogType`, `TestHealthData`, `MonitorMessages` in `frontend/types/project.ts`
+- Sidebar: Monitor tab with `MonitorDot` icon
+- Automation tab: Source Repo Config section (owner/name/branch inputs + auto-analyze toggle)
+- Locale: `Monitor` namespace added to `en.json` and `he.json`
+
+**AI analysis flow** (`analyzeCommit.js`):
+1. Load commit diff from DB
+2. Load test hierarchy (folders + cases) from UnitTCMS DB
+3. Fetch sample test file from test repo for style reference
+4. Call Claude with diff + hierarchy + sample → parse `TEST CASES:` list + `TEST CODE:` file blocks
+5. Create test cases under `AI Generated > {commit message}` folder
+6. Commit generated test files to test repo
+7. Log to `syncLogs`
+
+### Dev setup clarification
+CLAUDE.md top section now correctly documents: **only PostgreSQL runs in Docker**. Frontend (`npm run dev` in `frontend/`) and backend (`npm run dev` in `backend/`) run locally with hot reload. Docker full-build is only for production or TypeScript verification.
 
 ### Projects list duplication bug fix
 - `backend/routes/projects/index.js` — replaced the LEFT JOIN + `Op.or` query with a two-step approach: first fetch `memberProjectIds` via `Member.findAll`, then query projects with `{ id: { Op.in: memberProjectIds } }` in the OR. The old JOIN produced duplicate rows when a project matched multiple OR conditions (e.g. public AND member). No `distinct` flag needed — no join, no duplicates.

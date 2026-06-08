@@ -30,6 +30,28 @@ export async function fetchAutomationConfig(jwt: string, projectId: number): Pro
   }
 }
 
+export type RepoItem = {
+  id: number;
+  name: string;
+  fullName: string;
+  url: string;
+  isPrivate: boolean;
+  description: string | null;
+};
+
+export async function listRepos(
+  jwt: string,
+  projectId: number,
+  service: 'github' | 'gitlab'
+): Promise<RepoItem[]> {
+  const res = await fetch(
+    `${Config.apiServer}/integration-configs/list-repos?projectId=${projectId}&service=${service}`,
+    { headers: { Authorization: `Bearer ${jwt}` } }
+  );
+  if (!res.ok) throw new Error(await res.text());
+  return res.json();
+}
+
 export async function createAutomationConfig(
   jwt: string,
   data: {
@@ -38,6 +60,8 @@ export async function createAutomationConfig(
     repoName: string;
     automationTool: string;
     automationLanguage: string;
+    repoUrl?: string;
+    repoId?: number;
   }
 ): Promise<AutomationConfigType> {
   const res = await fetch(`${Config.apiServer}/automation-configs`, {
@@ -56,10 +80,13 @@ export async function updateAutomationConfig(
   jwt: string,
   id: number,
   data: {
-    provider: string;
-    repoName: string;
-    automationTool: string;
-    automationLanguage: string;
+    provider?: string;
+    repoName?: string;
+    automationTool?: string;
+    automationLanguage?: string;
+    repoUrl?: string | null;
+    repoId?: number | null;
+    sourceProvider?: string | null;
   }
 ): Promise<AutomationConfigType> {
   const res = await fetch(`${Config.apiServer}/automation-configs/${id}`, {

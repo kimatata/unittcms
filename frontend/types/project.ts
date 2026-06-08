@@ -126,6 +126,7 @@ export type AutomationConfigType = {
   sourceRepoBranch: string;
   webhookSecret: string | null;
   autoAnalyzeCommits: boolean;
+  sourceProvider: string | null;
   createdAt: string;
   updatedAt: string;
 };
@@ -161,7 +162,7 @@ export type SyncLogType = {
 };
 
 export type TestHealthCell = { total: number; passed: number; failed: number; skipped: number };
-export type TestHealthRun = { id: number; name: string; status: number; updatedAt: string };
+export type TestHealthRun = { id: number; name: string; state: number; updatedAt: string };
 export type TestHealthFolder = { id: number; name: string };
 export type TestHealthData = {
   runs: TestHealthRun[];
@@ -243,4 +244,27 @@ export type AutomationMessages = {
   syncResult: string;
   viewCommitSync: string;
   openInRepo: string;
+  // Config sections
+  testRepoSection: string;
+  sourceRepoSection: string;
+  sourceRepoOwner: string;
+  sourceRepoName: string;
+  sourceRepoBranch: string;
+  sourceRepoOwnerPlaceholder: string;
+  sourceRepoNamePlaceholder: string;
+  sourceRepoBranchPlaceholder: string;
+  autoAnalyzeCommits: string;
+  saveSourceRepo: string;
+  savingSourceRepo: string;
+  saveSourceRepoSuccess: string;
+  saveSourceRepoError: string;
+  // Repo picker
+  createNewRepo: string;
+  useExistingRepo: string;
+  browseRepos: string;
+  loadingRepos: string;
+  searchReposPlaceholder: string;
+  noReposFound: string;
+  pickRepoTitle: string;
+  sourceProvider: string;
 };

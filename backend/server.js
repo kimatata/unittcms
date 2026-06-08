@@ -229,9 +229,11 @@ app.use('/automation-configs', automationConfigsTestHealthRoute(db));
 import integrationConfigsShowRoute from './routes/integrationConfigs/show.js';
 import integrationConfigsUpsertRoute from './routes/integrationConfigs/upsert.js';
 import integrationConfigsDestroyRoute from './routes/integrationConfigs/destroy.js';
+import integrationConfigsListReposRoute from './routes/integrationConfigs/listRepos.js';
 app.use('/integration-configs', integrationConfigsShowRoute(db));
 app.use('/integration-configs', integrationConfigsUpsertRoute(db));
 app.use('/integration-configs', integrationConfigsDestroyRoute(db));
+app.use('/integration-configs', integrationConfigsListReposRoute(db));
 
 if (!process.env.SECRET_KEY) {
   console.log(

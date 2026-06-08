@@ -19,6 +19,7 @@ export default function SidebarLayout({
     settings: t('settings'),
     automation: t('automation'),
     integrations: t('integrations'),
+    monitor: t('monitor'),
   };
 
   return (

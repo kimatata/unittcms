@@ -19,7 +19,7 @@ export default function (db) {
         order: [['updatedAt', 'DESC']],
         limit: 10,
         raw: true,
-        attributes: ['id', 'name', 'status', 'updatedAt'],
+        attributes: ['id', 'name', 'state', 'updatedAt'],
       });
 
       if (runs.length === 0) {

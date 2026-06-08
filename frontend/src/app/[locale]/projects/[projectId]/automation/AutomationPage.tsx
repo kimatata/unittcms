@@ -15,9 +15,12 @@ import {
   Tag,
   ListChecks,
   ArrowLeftRight,
+  GitCommitHorizontal,
+  FolderSearch,
 } from 'lucide-react';
 import { TokenContext } from '@/utils/TokenProvider';
 import { AutomationConfigType, AutomationMessages } from '@/types/project';
+import { updateSourceRepoConfig } from '@/utils/monitorControl';
 import {
   fetchAutomationConfig,
   setAutomationConfigCache,
@@ -38,8 +41,10 @@ import {
   ProjectRun,
   SyncResult,
   TriggerOptions,
+  RepoItem,
 } from '@/utils/automationConfigControl';
 import { logError } from '@/utils/errorHandler';
+import RepoPickerModal from './RepoPickerModal';
 
 type Props = {
   projectId: string;
@@ -66,6 +71,7 @@ const LANGUAGE_BY_TOOL: Record<string, { key: string; label: string }[]> = {
 
 type ErrorFixState = Record<string, 'idle' | 'fixing' | 'fixed' | 'error'>;
 type RunMode = 'all' | 'specific' | 'testRun';
+type TestRepoMode = 'create' | 'existing';
 
 // Group implemented cases by folderPath
 function groupByFolder(cases: ImplementedCase[]): Record<string, ImplementedCase[]> {
@@ -116,6 +122,19 @@ export default function AutomationPage({ projectId, messages }: Props) {
   // sync
   const [isSyncing, setIsSyncing] = useState(false);
   const [syncResult, setSyncResult] = useState<SyncResult | null>(null);
+
+  // source repo config
+  const [sourceOwner, setSourceOwner] = useState('');
+  const [sourceName, setSourceName] = useState('');
+  const [sourceBranch, setSourceBranch] = useState('main');
+  const [autoAnalyzeCommits, setAutoAnalyzeCommits] = useState(false);
+  const [isSavingSourceRepo, setIsSavingSourceRepo] = useState(false);
+  const [sourceProv, setSourceProv] = useState<'github' | 'gitlab'>('github');
+
+  // repo picker
+  const [testRepoMode, setTestRepoMode] = useState<TestRepoMode>('create');
+  const [isPickingTestRepo, setIsPickingTestRepo] = useState(false);
+  const [isPickingSourceRepo, setIsPickingSourceRepo] = useState(false);
 
   // track previous run status to detect failure transitions
   const prevConclusionRef = useRef<string | null>(null);
@@ -205,6 +224,12 @@ export default function AutomationPage({ projectId, messages }: Props) {
           setRepoName(data.repoName ?? '');
           setAutomationTool(data.automationTool);
           setAutomationLanguage(data.automationLanguage);
+          setSourceOwner(data.sourceRepoOwner ?? '');
+          setSourceName(data.sourceRepoName ?? '');
+          setSourceBranch(data.sourceRepoBranch ?? 'main');
+          setAutoAnalyzeCommits(data.autoAnalyzeCommits ?? false);
+          setSourceProv((data.sourceProvider as 'github' | 'gitlab') ?? data.provider ?? 'github');
+          if (data.repoUrl) setTestRepoMode('existing');
           await Promise.all([loadRunStatus(data), loadImplementedCases(data)]);
         }
       } catch (error) {
@@ -371,6 +396,67 @@ export default function AutomationPage({ projectId, messages }: Props) {
     }
   };
 
+  const handleSaveSourceRepo = async () => {
+    if (!config) return;
+    setIsSavingSourceRepo(true);
+    try {
+      await updateSourceRepoConfig(jwt, config.id, {
+        sourceRepoOwner: sourceOwner,
+        sourceRepoName: sourceName,
+        sourceRepoBranch: sourceBranch,
+        autoAnalyzeCommits,
+        sourceProvider: sourceProv,
+      });
+      const updated = { ...config, sourceRepoOwner: sourceOwner, sourceRepoName: sourceName, sourceRepoBranch: sourceBranch, autoAnalyzeCommits, sourceProvider: sourceProv };
+      setConfig(updated);
+      setAutomationConfigCache(Number(projectId), updated);
+      addToast({ title: messages.saveSourceRepoSuccess, color: 'success' });
+    } catch (error) {
+      logError('AutomationPage saveSourceRepo', error);
+      addToast({ title: messages.saveSourceRepoError, color: 'danger' });
+    } finally {
+      setIsSavingSourceRepo(false);
+    }
+  };
+
+  const handlePickTestRepo = async (repo: RepoItem) => {
+    setIsPickingTestRepo(false);
+    const shortName = repo.name;
+    setRepoName(shortName);
+    setIsSaving(true);
+    try {
+      const payload = {
+        provider,
+        repoName: shortName,
+        automationTool,
+        automationLanguage,
+        repoUrl: repo.url,
+        repoId: repo.id,
+      };
+      let updated: AutomationConfigType;
+      if (config) {
+        updated = await updateAutomationConfig(jwt, config.id, payload);
+      } else {
+        updated = await createAutomationConfig(jwt, { projectId: Number(projectId), ...payload });
+      }
+      setConfig(updated);
+      setAutomationConfigCache(Number(projectId), updated);
+      addToast({ title: messages.successSaved, color: 'success' });
+    } catch (error) {
+      logError('AutomationPage pickTestRepo', error);
+      addToast({ title: messages.errorSaved, color: 'danger' });
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  const handlePickSourceRepo = (repo: RepoItem) => {
+    setIsPickingSourceRepo(false);
+    const parts = repo.fullName.split('/');
+    setSourceOwner(parts[0]);
+    setSourceName(parts.slice(1).join('/'));
+  };
+
   const handleSync = async () => {
     if (!config) return;
     setIsSyncing(true);
@@ -458,92 +544,217 @@ export default function AutomationPage({ projectId, messages }: Props) {
         </Chip>
       </div>
 
-      {/* connected detail — always shown once a repo exists */}
-      {config?.repoUrl && (
-        <div className="w-full px-3 mb-2">
-          <div className="flex items-center gap-2 text-sm flex-wrap">
-            <Chip color={config.provider === 'github' ? 'default' : 'warning'} variant="flat" size="sm">
-              {config.provider === 'github' ? messages.providerGithub : messages.providerGitlab}
-            </Chip>
-            <span className="text-default-500">{messages.repoUrl}:</span>
-            <Link href={config.repoUrl} isExternal showAnchorIcon size="sm">
-              {config.repoUrl}
-            </Link>
+      {/* ── Unified configuration (always visible) ─────────────────────── */}
+      <div className="w-full p-3 flex flex-col gap-4">
+
+        {/* Test repo */}
+        <div className="border-1 dark:border-neutral-700 rounded-xl p-4 flex flex-col gap-3">
+          <div className="flex items-center justify-between">
+            <span className="text-xs font-semibold text-default-500 uppercase tracking-wide">
+              {messages.testRepoSection}
+            </span>
+            {config?.repoUrl && (
+              <Link href={config.repoUrl} isExternal showAnchorIcon size="sm" className="max-w-xs truncate">
+                {config.repoUrl}
+              </Link>
+            )}
+          </div>
+
+          {/* Mode toggle */}
+          <div className="flex gap-1">
+            <Button
+              size="sm"
+              variant={testRepoMode === 'create' ? 'solid' : 'flat'}
+              color={testRepoMode === 'create' ? 'primary' : 'default'}
+              onPress={() => setTestRepoMode('create')}
+            >
+              {messages.createNewRepo}
+            </Button>
+            <Button
+              size="sm"
+              variant={testRepoMode === 'existing' ? 'solid' : 'flat'}
+              color={testRepoMode === 'existing' ? 'primary' : 'default'}
+              onPress={() => setTestRepoMode('existing')}
+            >
+              {messages.useExistingRepo}
+            </Button>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <Select
+              label={messages.provider}
+              selectedKeys={new Set([provider])}
+              onSelectionChange={(keys) => setProvider(Array.from(keys)[0] as 'gitlab' | 'github')}
+              variant="bordered"
+              size="sm"
+            >
+              <SelectItem key="gitlab">{messages.providerGitlab}</SelectItem>
+              <SelectItem key="github">{messages.providerGithub}</SelectItem>
+            </Select>
+
+            {testRepoMode === 'create' ? (
+              <Input
+                label={messages.repoName}
+                placeholder={messages.repoNamePlaceholder}
+                value={repoName}
+                onValueChange={setRepoName}
+                variant="bordered"
+                size="sm"
+              />
+            ) : (
+              <div className="flex items-end gap-2">
+                <Input
+                  label={messages.repoName}
+                  placeholder={messages.repoNamePlaceholder}
+                  value={repoName}
+                  isReadOnly
+                  variant="bordered"
+                  size="sm"
+                  className="flex-1"
+                />
+                <Button
+                  size="sm"
+                  variant="flat"
+                  startContent={<FolderSearch size={14} />}
+                  onPress={() => setIsPickingTestRepo(true)}
+                >
+                  {messages.browseRepos}
+                </Button>
+              </div>
+            )}
+
+            <Select
+              label={messages.automationTool}
+              selectedKeys={new Set([automationTool])}
+              onSelectionChange={(keys) => handleToolChange(Array.from(keys)[0] as string)}
+              variant="bordered"
+              size="sm"
+            >
+              {TOOL_OPTIONS.map((t) => (
+                <SelectItem key={t.key}>{messages[t.label as keyof AutomationMessages]}</SelectItem>
+              ))}
+            </Select>
+
+            <Select
+              label={messages.automationLanguage}
+              selectedKeys={new Set([automationLanguage])}
+              onSelectionChange={(keys) => setAutomationLanguage(Array.from(keys)[0] as string)}
+              variant="bordered"
+              size="sm"
+            >
+              {availableLanguages.map((l) => (
+                <SelectItem key={l.key}>{messages[l.label as keyof AutomationMessages]}</SelectItem>
+              ))}
+            </Select>
+          </div>
+
+          <div className="flex flex-wrap gap-2">
+            {testRepoMode === 'create' && (
+              <>
+                <Button
+                  color="primary"
+                  size="sm"
+                  isLoading={isSaving}
+                  isDisabled={!repoName}
+                  onPress={handleSave}
+                >
+                  {messages.saveConfig}
+                </Button>
+                <Button
+                  color="secondary"
+                  size="sm"
+                  variant="flat"
+                  startContent={!isGenerating ? <RefreshCw size={14} /> : undefined}
+                  isLoading={isGenerating}
+                  isDisabled={!config || !repoName || isConnected}
+                  onPress={handleGenerate}
+                >
+                  {isGenerating ? messages.generating : messages.generateProject}
+                </Button>
+              </>
+            )}
           </div>
         </div>
-      )}
 
-      {/* config form — only shown before the project has been created */}
-      {!isConnected && (
-        <div className="w-full p-3 flex flex-col gap-4">
-          <Select
-            label={messages.provider}
-            selectedKeys={new Set([provider])}
-            onSelectionChange={(keys) => setProvider(Array.from(keys)[0] as 'gitlab' | 'github')}
-            variant="bordered"
-            size="sm"
-          >
-            <SelectItem key="gitlab">{messages.providerGitlab}</SelectItem>
-            <SelectItem key="github">{messages.providerGithub}</SelectItem>
-          </Select>
+        {/* Source repo */}
+        <div className="border-1 dark:border-neutral-700 rounded-xl p-4 flex flex-col gap-3">
+          <div className="flex items-center justify-between">
+            <span className="text-xs font-semibold text-default-500 uppercase tracking-wide flex items-center gap-2">
+              <GitCommitHorizontal size={12} />
+              {messages.sourceRepoSection}
+            </span>
+            {config?.sourceRepoName && (
+              <Chip color="success" variant="flat" size="sm">{messages.connected}</Chip>
+            )}
+          </div>
 
-          <Input
-            label={messages.repoName}
-            placeholder={messages.repoNamePlaceholder}
-            value={repoName}
-            onValueChange={setRepoName}
-            variant="bordered"
-            size="sm"
-          />
+          <div className="flex items-end gap-2">
+            <Select
+              label={messages.sourceProvider}
+              selectedKeys={new Set([sourceProv])}
+              onSelectionChange={(keys) => setSourceProv(Array.from(keys)[0] as 'github' | 'gitlab')}
+              variant="bordered"
+              size="sm"
+              className="max-w-[160px]"
+            >
+              <SelectItem key="github">{messages.providerGithub}</SelectItem>
+              <SelectItem key="gitlab">{messages.providerGitlab}</SelectItem>
+            </Select>
+            <Button
+              size="sm"
+              variant="flat"
+              startContent={<FolderSearch size={14} />}
+              onPress={() => setIsPickingSourceRepo(true)}
+            >
+              {messages.browseRepos}
+            </Button>
+          </div>
 
-          <Select
-            label={messages.automationTool}
-            selectedKeys={new Set([automationTool])}
-            onSelectionChange={(keys) => handleToolChange(Array.from(keys)[0] as string)}
-            variant="bordered"
-            size="sm"
-          >
-            {TOOL_OPTIONS.map((t) => (
-              <SelectItem key={t.key}>{messages[t.label as keyof AutomationMessages]}</SelectItem>
-            ))}
-          </Select>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            <Input
+              label={messages.sourceRepoOwner}
+              placeholder={messages.sourceRepoOwnerPlaceholder}
+              value={sourceOwner}
+              onValueChange={setSourceOwner}
+              variant="bordered"
+              size="sm"
+            />
+            <Input
+              label={messages.sourceRepoName}
+              placeholder={messages.sourceRepoNamePlaceholder}
+              value={sourceName}
+              onValueChange={setSourceName}
+              variant="bordered"
+              size="sm"
+            />
+            <Input
+              label={messages.sourceRepoBranch}
+              placeholder={messages.sourceRepoBranchPlaceholder}
+              value={sourceBranch}
+              onValueChange={setSourceBranch}
+              variant="bordered"
+              size="sm"
+            />
+          </div>
 
-          <Select
-            label={messages.automationLanguage}
-            selectedKeys={new Set([automationLanguage])}
-            onSelectionChange={(keys) => setAutomationLanguage(Array.from(keys)[0] as string)}
-            variant="bordered"
-            size="sm"
-          >
-            {availableLanguages.map((l) => (
-              <SelectItem key={l.key}>{messages[l.label as keyof AutomationMessages]}</SelectItem>
-            ))}
-          </Select>
-
-          <div className="flex flex-wrap gap-3">
+          <div className="flex items-center gap-3 flex-wrap">
+            <Checkbox size="sm" isSelected={autoAnalyzeCommits} onValueChange={setAutoAnalyzeCommits}>
+              <span className="text-sm">{messages.autoAnalyzeCommits}</span>
+            </Checkbox>
             <Button
               color="primary"
               size="sm"
-              isLoading={isSaving}
-              isDisabled={!repoName}
-              onPress={handleSave}
+              variant="flat"
+              isLoading={isSavingSourceRepo}
+              isDisabled={isSavingSourceRepo}
+              onPress={handleSaveSourceRepo}
             >
-              {messages.saveConfig}
-            </Button>
-
-            <Button
-              color="secondary"
-              size="sm"
-              startContent={!isGenerating ? <RefreshCw size={14} /> : undefined}
-              isLoading={isGenerating}
-              isDisabled={!config || !repoName}
-              onPress={handleGenerate}
-            >
-              {isGenerating ? messages.generating : messages.generateProject}
+              {isSavingSourceRepo ? messages.savingSourceRepo : messages.saveSourceRepo}
             </Button>
           </div>
         </div>
-      )}
+
+      </div>
 
       {/* Implemented tests panel — shown when repo is connected */}
       {isConnected && (
@@ -923,6 +1134,35 @@ export default function AutomationPage({ projectId, messages }: Props) {
           </div>
         </>
       )}
+      {/* Repo picker modals */}
+      <RepoPickerModal
+        isOpen={isPickingTestRepo}
+        onClose={() => setIsPickingTestRepo(false)}
+        onSelect={handlePickTestRepo}
+        projectId={Number(projectId)}
+        service={provider}
+        jwt={jwt}
+        messages={{
+          pickRepoTitle: messages.pickRepoTitle,
+          searchReposPlaceholder: messages.searchReposPlaceholder,
+          loadingRepos: messages.loadingRepos,
+          noReposFound: messages.noReposFound,
+        }}
+      />
+      <RepoPickerModal
+        isOpen={isPickingSourceRepo}
+        onClose={() => setIsPickingSourceRepo(false)}
+        onSelect={handlePickSourceRepo}
+        projectId={Number(projectId)}
+        service={sourceProv}
+        jwt={jwt}
+        messages={{
+          pickRepoTitle: messages.pickRepoTitle,
+          searchReposPlaceholder: messages.searchReposPlaceholder,
+          loadingRepos: messages.loadingRepos,
+          noReposFound: messages.noReposFound,
+        }}
+      />
     </div>
   );
 }

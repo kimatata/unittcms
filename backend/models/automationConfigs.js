@@ -80,6 +80,11 @@ function defineAutomationConfig(sequelize, DataTypes) {
       allowNull: false,
       defaultValue: false,
     },
+    sourceProvider: {
+      type: DataTypes.STRING(20),
+      allowNull: true,
+      defaultValue: null,
+    },
   }, { tableName: 'automationConfigs' });
 
   AutomationConfig.associate = (models) => {

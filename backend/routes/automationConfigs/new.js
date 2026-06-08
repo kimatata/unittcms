@@ -7,20 +7,24 @@ export default function (db) {
 
   router.post('/', verifySignedIn, async (req, res) => {
     try {
-      const { projectId, provider, repoName, automationTool, automationLanguage } = req.body;
+      const { projectId, provider, repoName, automationTool, automationLanguage, repoUrl, repoId } = req.body;
 
       const existing = await db.repos.automationConfigs.findOne({ where: { projectId } });
       if (existing) {
         return res.status(409).send('Config already exists for this project');
       }
 
-      const config = await db.repos.automationConfigs.create({
+      const data = {
         projectId,
         provider: provider || 'gitlab',
         repoName,
         automationTool,
         automationLanguage,
-      });
+      };
+      if (repoUrl !== undefined) data.repoUrl = repoUrl;
+      if (repoId !== undefined) data.repoId = repoId;
+
+      const config = await db.repos.automationConfigs.create(data);
 
       res.json(config.toJSON());
     } catch (error) {

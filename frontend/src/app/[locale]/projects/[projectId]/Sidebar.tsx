@@ -11,6 +11,7 @@ import {
   Settings,
   Bot,
   Plug,
+  MonitorDot,
 } from 'lucide-react';
 import { usePathname, useRouter } from '@/src/i18n/routing';
 import useGetCurrentIds from '@/utils/useGetCurrentIds';
@@ -49,6 +50,8 @@ export default function Sidebar({ messages, locale }: Props) {
       router.push(`/projects/${projectId}/automation`, { locale: locale });
     } else if (key === 'integrations') {
       router.push(`/projects/${projectId}/integrations`, { locale: locale });
+    } else if (key === 'monitor') {
+      router.push(`/projects/${projectId}/monitor`, { locale: locale });
     }
   };
 
@@ -68,6 +71,8 @@ export default function Sidebar({ messages, locale }: Props) {
         setCurrentKey('automation');
       } else if (currentPath.includes('integrations')) {
         setCurrentKey('integrations');
+      } else if (currentPath.includes('monitor')) {
+        setCurrentKey('monitor');
       }
     };
 
@@ -109,6 +114,11 @@ export default function Sidebar({ messages, locale }: Props) {
       key: 'integrations',
       text: messages.integrations,
       startContent: <Plug strokeWidth={ICON_STROKE_WIDTH} size={ICON_SIZE} />,
+    },
+    {
+      key: 'monitor',
+      text: messages.monitor,
+      startContent: <MonitorDot strokeWidth={ICON_STROKE_WIDTH} size={ICON_SIZE} />,
     },
   ];
 
