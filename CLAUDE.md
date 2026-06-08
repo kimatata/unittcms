@@ -314,6 +314,18 @@ to reflect what was built or changed.
 
 ---
 
+## Recent additions (2026-06-09, session 3)
+
+### Bug fixes
+
+- **`backend/middleware/auth.js`** — `verifySignedIn` crashed with 500 when the `Authorization` header was absent (root cause: `authHeader.split()` called on `undefined`). Fixed with `authHeader?.split()` so a missing header returns 401 `Access denied` instead.
+- **`backend/routes/automationConfigs/testHealth.js`** — queried `status` on the `runs` table but the column is named `state`. Fixed `attributes: ['id', 'name', 'state', 'updatedAt']`. Caused a 500 on every `GET /:id/test-health` request.
+- **`frontend/types/project.ts`** — `TestHealthRun.status` renamed to `TestHealthRun.state` to match the column fix above.
+- **`backend/routes/automationConfigs/analyzeCommit.js`** — Anthropic API errors (e.g. low credit balance) were caught by the generic catch block and returned as raw 500 with the SDK's JSON string. Now wrapped in a dedicated try/catch: parses `error.message` JSON to extract the human-readable `error.error.message`, logs to `syncLogs`, and returns 422 so the frontend can display it cleanly.
+- **`frontend/src/app/[locale]/projects/[projectId]/monitor/MonitorPage.tsx`** — `handleAnalyzeCommit` error toast was showing only the generic `analyzeCommitError` label. Added `description: err instanceof Error ? err.message : undefined` so server-side messages like "Your credit balance is too low" appear directly in the toast.
+
+---
+
 ## Recent additions (2026-06-09, session 2)
 
 ### Repo connection flow — browse & pick from GitHub/GitLab

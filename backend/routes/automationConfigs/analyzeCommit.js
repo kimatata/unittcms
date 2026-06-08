@@ -285,14 +285,33 @@ TEST CODE:
 Keep tests focused on the changed code. Each test case should be independently meaningful.`;
 
       const client = new Anthropic({ apiKey: anthropicIntegration.apiKey });
-      const message = await client.messages.create({
-        model: 'claude-sonnet-4-6',
-        max_tokens: 4096,
-        messages: [{ role: 'user', content: userPrompt }],
-        system: systemPrompt,
-      });
+      let aiResponse;
+      try {
+        aiResponse = await client.messages.create({
+          model: 'claude-sonnet-4-6',
+          max_tokens: 4096,
+          messages: [{ role: 'user', content: userPrompt }],
+          system: systemPrompt,
+        });
+      } catch (anthropicErr) {
+        await sourceCommit.update({ status: 'failed' });
+        let humanMsg = anthropicErr.message || 'Anthropic API error';
+        try {
+          const parsed = JSON.parse(humanMsg.replace(/^\d{3}\s+/, ''));
+          humanMsg = parsed.error?.message || humanMsg;
+        } catch (_) {}
+        await db.repos.syncLogs.create({
+          automationConfigId: config.id,
+          type: 'ai_analysis',
+          commitSha: sha,
+          description: `Anthropic API error: ${humanMsg}`,
+          status: 'failed',
+          errorMessage: humanMsg,
+        }).catch(() => {});
+        return res.status(422).send(humanMsg);
+      }
 
-      const aiText = message.content[0]?.type === 'text' ? message.content[0].text : '';
+      const aiText = aiResponse.content[0]?.type === 'text' ? aiResponse.content[0].text : '';
       const { caseNames, fileBlocks } = parseAiResponse(aiText);
 
       // Create test cases in UnitTCMS

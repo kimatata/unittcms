@@ -182,7 +182,11 @@ export default function MonitorPage({ projectId, messages }: Props) {
       logError('MonitorPage analyzeCommit', err);
       setAnalyzeState((prev) => ({ ...prev, [commit.sha]: 'error' }));
       setCommits((prev) => prev.map((c) => c.sha === commit.sha ? { ...c, status: 'failed' } : c));
-      addToast({ title: messages.analyzeCommitError, color: 'danger' });
+      addToast({
+        title: messages.analyzeCommitError,
+        description: err instanceof Error ? err.message : undefined,
+        color: 'danger',
+      });
     }
   };
 
