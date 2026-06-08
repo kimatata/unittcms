@@ -251,13 +251,20 @@
     "no_anthropic_key": "הוסף מפתח Anthropic API בלשונית האינטגרציות כדי לאפשר תיקוני AI",
     "implemented_section": "טסטים מיושמים",
     "implemented_count": "{count} מתוך {total} טסטים מיושמים",
-    "no_implemented_tests": "אין עדיין טסטים מיושמים. הרץ וסנכרן את פרויקט האוטומציה.",
+    "no_implemented_tests": "לא זוהו טסטים מיושמים. לחץ על סנכרן טסטים כדי לקרוא סטטוס מהריפו.",
     "run_mode_all": "הרץ הכל",
     "run_mode_select": "בחר טסטים",
     "run_mode_test_run": "מריצת טסט",
     "run_selected_count": "הרץ {count} נבחרים",
     "select_test_run_placeholder": "בחר ריצת טסט",
-    "implemented_count_in_run": "{count} טסטים מיושמים"
+    "implemented_count_in_run": "{count} טסטים מיושמים",
+    "sync_tests": "סנכרן טסטים",
+    "syncing": "מסנכרן...",
+    "sync_success": "הסנכרון הושלם",
+    "sync_error": "הסנכרון נכשל",
+    "sync_result": "{added} נוספו לתוכנית · {stubs} נוספו לקוד · {updated} עודכן סטטוס · {tagged} תויגו כ-automated",
+    "open_in_repo": "פתח בריפו",
+    "view_commit_sync": "צפה ב-commit הסנכרון"
   },
   "Integrations": {
     "integrations": "אינטגרציות",
@@ -360,7 +367,13 @@
     "or_drag_and_drop": " או גרור ושחרר",
     "max_file_size": "גודל קובץ מקסימלי",
     "cases_imported": "מקרי הבדיקה יובאו",
-    "create_more": "צור עוד"
+    "create_more": "צור עוד",
+    "automation_filter": "אוטומציה",
+    "select_automation": "בחר סטטוס",
+    "automated_only": "מאוטמט",
+    "stub_only": "Stub",
+    "not_automated": "לא מאוטמט",
+    "stale_only": "Stale"
   },
   "Case": {
     "back_to_cases": "חזור למקרי הבדיקה",
@@ -500,6 +513,7 @@
     "email": "דוא\"ל",
     "username": "שם משתמש",
     "role": "תפקיד",
+    "owner": "בעלים",
     "manager": "מנהל",
     "developer": "מפתח",
     "reporter": "מדווח",

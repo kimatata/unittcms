@@ -63,11 +63,14 @@ export default function MembersTable({ members, isDisabled, onChangeRole, onDele
       case 'username':
         return member.User.username;
       case 'role':
+        if (member.isOwner) {
+          return <span className="text-sm px-2">{messages.owner}</span>;
+        }
         return (
           <Dropdown>
             <DropdownTrigger>
               <Button size="sm" isDisabled={isDisabled} variant="light" endContent={<ChevronDown size={16} />}>
-                <span className="w-12">{messages[memberRoles[cellValue as number].uid]}</span>
+                <span className="w-12">{messages[memberRoles[member.role as number].uid]}</span>
               </Button>
             </DropdownTrigger>
             <DropdownMenu aria-label="test case actions">
@@ -83,7 +86,7 @@ export default function MembersTable({ members, isDisabled, onChangeRole, onDele
         return (
           <Button
             size="sm"
-            isDisabled={isDisabled}
+            isDisabled={isDisabled || !!member.isOwner}
             color="danger"
             variant="light"
             onPress={() => {

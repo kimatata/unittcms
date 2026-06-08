@@ -18,6 +18,7 @@ type Props = {
 
 export default function MembersPage({ projectId, messages }: Props) {
   const context = useContext(TokenContext);
+  const jwt = context.token?.access_token;
   const [members, setMembers] = useState<MemberType[]>([]);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
@@ -28,7 +29,7 @@ export default function MembersPage({ projectId, messages }: Props) {
       }
 
       try {
-        const data = await fetchProjectMembers(context.token.access_token, projectId);
+        const data = await fetchProjectMembers(jwt, projectId);
         setMembers(data);
       } catch (error: unknown) {
         logError('Error fetching members:', error);
@@ -36,7 +37,8 @@ export default function MembersPage({ projectId, messages }: Props) {
     }
 
     fetchDataEffect();
-  }, [context, projectId]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [jwt, projectId]);
 
   const handleAddMember = async (userAdded: UserType) => {
     if (userAdded.id) {

@@ -19,6 +19,7 @@ export default function Page({ params }: { params: { projectId: string; locale: 
     email: t('email'),
     username: t('username'),
     role: t('role'),
+    owner: t('owner'),
     manager: t('manager'),
     developer: t('developer'),
     reporter: t('reporter'),

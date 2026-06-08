@@ -73,7 +73,8 @@ export default function AdminPage({ messages, locale }: Props) {
     }
 
     fetchDataEffect();
-  }, [tokenContext]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [tokenContext.token.access_token]);
 
   const handleChangeRole = async (userEdit: UserType, role: number) => {
     if (!tokenContext.isAdmin()) {

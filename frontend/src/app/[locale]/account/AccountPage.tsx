@@ -44,7 +44,8 @@ export default function AccountPage({ messages, locale }: Props) {
     }
 
     fetchDataEffect();
-  }, [context]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [context.token.access_token]);
 
   return (
     <>

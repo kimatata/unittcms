@@ -251,13 +251,20 @@
     "no_anthropic_key": "Add an Anthropic API key in the Integrations tab to enable AI fixes",
     "implemented_section": "Implemented Tests",
     "implemented_count": "{count} of {total} tests implemented",
-    "no_implemented_tests": "No implemented tests yet. Run and sync the automation project to see implemented tests here.",
+    "no_implemented_tests": "No implemented tests detected. Click Sync Tests to read status from your repo.",
     "run_mode_all": "Run All",
     "run_mode_select": "Select Tests",
     "run_mode_test_run": "From Test Run",
     "run_selected_count": "Run {count} Selected",
     "select_test_run_placeholder": "Select a test run",
-    "implemented_count_in_run": "{count} tests implemented"
+    "implemented_count_in_run": "{count} tests implemented",
+    "sync_tests": "Sync Tests",
+    "syncing": "Syncing...",
+    "sync_success": "Sync complete",
+    "sync_error": "Sync failed",
+    "sync_result": "{added} added to plan · {stubs} stubs added to code · {updated} status updated · {tagged} tagged as automated",
+    "open_in_repo": "Open in repo",
+    "view_commit_sync": "View Sync Commit"
   },
   "Integrations": {
     "integrations": "Integrations",
@@ -360,7 +367,13 @@
     "or_drag_and_drop": " or drag and drop",
     "max_file_size": "Max. file size",
     "cases_imported": "Test cases imported",
-    "create_more": "Create more"
+    "create_more": "Create more",
+    "automation_filter": "Automation",
+    "select_automation": "Select status",
+    "automated_only": "Automated",
+    "stub_only": "Stub",
+    "not_automated": "Not automated",
+    "stale_only": "Stale"
   },
   "Case": {
     "back_to_cases": "Back to test cases",
@@ -500,6 +513,7 @@
     "email": "Email",
     "username": "User name",
     "role": "Role",
+    "owner": "Owner",
     "manager": "Manager",
     "developer": "Developer",
     "reporter": "Reporter",

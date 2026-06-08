@@ -18,6 +18,7 @@ export type Props = {
 
 export default function ProjectsPage({ messages, projectDialogMessages, locale }: Props) {
   const context = useContext(TokenContext);
+  const jwt = context.token?.access_token;
   const [projects, setProjects] = useState<ProjectType[]>([]);
 
   useEffect(() => {
@@ -26,7 +27,7 @@ export default function ProjectsPage({ messages, projectDialogMessages, locale }
         return;
       }
       try {
-        const data = await fetchProjects(context.token.access_token);
+        const data = await fetchProjects(jwt);
         setProjects(data);
       } catch (error: unknown) {
         logError('Error fetching data:', error);
@@ -34,7 +35,8 @@ export default function ProjectsPage({ messages, projectDialogMessages, locale }
     }
 
     fetchDataEffect();
-  }, [context]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [jwt]);
 
   // project dialog
   const [isProjectDialogOpen, setIsProjectDialogOpen] = useState(false);

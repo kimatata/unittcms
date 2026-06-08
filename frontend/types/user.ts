@@ -103,6 +103,7 @@ export type MemberType = {
   id: number | null;
   userId: number;
   projectId: number;
-  role: number;
+  role: number | null;
+  isOwner?: boolean;
   User: UserType;
 };

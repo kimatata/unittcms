@@ -19,22 +19,18 @@ export default function (db) {
         });
       } else {
         // public projects, owned projects, participated projects will be returned
+        const memberRows = await Member.findAll({
+          where: { userId: req.userId },
+          attributes: ['projectId'],
+        });
+        const memberProjectIds = memberRows.map((m) => m.projectId);
+
         projects = await Project.findAll({
-          include: [
-            {
-              model: Member,
-              attributes: [],
-              where: {
-                userId: req.userId,
-              },
-              required: false,
-            },
-          ],
           where: {
             [Op.or]: [
               { isPublic: true },
               { userId: req.userId },
-              db.sequelize.where(db.sequelize.col('Members.userId'), req.userId),
+              ...(memberProjectIds.length > 0 ? [{ id: { [Op.in]: memberProjectIds } }] : []),
             ],
           },
         });

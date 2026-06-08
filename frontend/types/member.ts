@@ -4,6 +4,7 @@ export type MembersMessages = {
   email: string;
   username: string;
   role: string;
+  owner: string;
   manager: string;
   developer: string;
   reporter: string;

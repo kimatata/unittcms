@@ -298,6 +298,23 @@ to reflect what was built or changed.
 
 ---
 
+## Recent additions (2026-06-08)
+
+### Projects list duplication bug fix
+- `backend/routes/projects/index.js` — replaced the LEFT JOIN + `Op.or` query with a two-step approach: first fetch `memberProjectIds` via `Member.findAll`, then query projects with `{ id: { Op.in: memberProjectIds } }` in the OR. The old JOIN produced duplicate rows when a project matched multiple OR conditions (e.g. public AND member). No `distinct` flag needed — no join, no duplicates.
+- `frontend/src/app/[locale]/projects/ProjectsPage.tsx` — fixed `[context]` → `[jwt]` useEffect dep (same pattern as AutomationPage/SettingsPage).
+
+### Members tab now includes project owner
+- `backend/routes/members/index.js` — endpoint now fetches the project to get `userId`, fetches the owner user, prepends a synthetic `{ id: null, isOwner: true, User: ownerUser }` entry, and filters out the owner from the regular members array to avoid duplicate if they were also explicitly added.
+- `frontend/types/user.ts` — `MemberType.role` is now `number | null`; added `isOwner?: boolean`.
+- `frontend/types/member.ts` — added `owner: string` to `MembersMessages`.
+- `frontend/messages/en.json` + `he.json` — added `"owner"` key to Members namespace.
+- `frontend/.../members/page.tsx` — passes `owner: t('owner')` in messages object.
+- `frontend/.../members/MembersTable.tsx` — owner row shows static "Owner" label instead of role dropdown; delete button is always disabled for owner rows (`isDisabled || !!member.isOwner`).
+- `frontend/.../members/MembersPage.tsx` — fixed `[context, projectId]` → `[jwt, projectId]` dep.
+
+---
+
 ## Recent additions (2026-06-03)
 
 ### Dev server: hot reload (local) vs Docker
