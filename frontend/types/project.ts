@@ -50,6 +50,62 @@ export type ProjectMessages = {
   settings: string;
   automation: string;
   integrations: string;
+  monitor: string;
+};
+
+export type MonitorMessages = {
+  monitor: string;
+  // Health bar
+  healthCoverage: string;
+  healthLastRun: string;
+  healthOpenGaps: string;
+  healthCommitsSynced: string;
+  // Source repo config
+  sourceRepoSection: string;
+  sourceRepoOwner: string;
+  sourceRepoName: string;
+  sourceRepoBranch: string;
+  sourceRepoOwnerPlaceholder: string;
+  sourceRepoNamePlaceholder: string;
+  sourceRepoBranchPlaceholder: string;
+  autoAnalyzeCommits: string;
+  autoAnalyzeCommitsDescription: string;
+  saveSourceRepo: string;
+  savingSourceRepo: string;
+  saveSourceRepoSuccess: string;
+  saveSourceRepoError: string;
+  sourceRepoConnected: string;
+  sourceRepoNotConnected: string;
+  // Commit sync
+  syncCommits: string;
+  syncingCommits: string;
+  syncCommitsSuccess: string;
+  syncCommitsError: string;
+  syncCommitsResult: string;
+  // Commit timeline
+  commitTimelineSection: string;
+  noCommitsSynced: string;
+  analyzeCommit: string;
+  analyzingCommit: string;
+  analyzeCommitSuccess: string;
+  analyzeCommitError: string;
+  commitStatusNew: string;
+  commitStatusAnalyzing: string;
+  commitStatusDone: string;
+  commitStatusFailed: string;
+  viewTestCommit: string;
+  generatedCases: string;
+  // Test health matrix
+  testHealthSection: string;
+  noRunsForMatrix: string;
+  // Activity log
+  activitySection: string;
+  noActivity: string;
+  activityCommitSync: string;
+  activityAiAnalysis: string;
+  activityTestSync: string;
+  activityWebhook: string;
+  activityCasesCreated: string;
 };
 
 export type AutomationConfigType = {
@@ -65,8 +121,52 @@ export type AutomationConfigType = {
   automationTool: string;
   automationLanguage: string;
   autoFixEnabled: boolean;
+  sourceRepoOwner: string | null;
+  sourceRepoName: string | null;
+  sourceRepoBranch: string;
+  webhookSecret: string | null;
+  autoAnalyzeCommits: boolean;
   createdAt: string;
   updatedAt: string;
+};
+
+export type SourceCommitStatus = 'new' | 'analyzing' | 'analyzed' | 'done' | 'failed';
+
+export type SourceCommitType = {
+  id: number;
+  automationConfigId: number;
+  sha: string;
+  message: string | null;
+  author: string | null;
+  committedAt: string | null;
+  status: SourceCommitStatus;
+  aiSummary: string | null;
+  generatedTestCaseIds: string | null;
+  testCommitSha: string | null;
+  createdAt: string;
+};
+
+export type SyncLogType = {
+  id: number;
+  automationConfigId: number;
+  type: 'commit_sync' | 'ai_analysis' | 'test_sync' | 'webhook';
+  commitSha: string | null;
+  description: string | null;
+  created: number;
+  updated: number;
+  orphaned: number;
+  status: 'success' | 'failed';
+  errorMessage: string | null;
+  createdAt: string;
+};
+
+export type TestHealthCell = { total: number; passed: number; failed: number; skipped: number };
+export type TestHealthRun = { id: number; name: string; status: number; updatedAt: string };
+export type TestHealthFolder = { id: number; name: string };
+export type TestHealthData = {
+  runs: TestHealthRun[];
+  folders: TestHealthFolder[];
+  matrix: Record<number, Record<number, TestHealthCell>>;
 };
 
 export type AutomationMessages = {
@@ -135,4 +235,12 @@ export type AutomationMessages = {
   runSelectedCount: string;
   selectTestRunPlaceholder: string;
   implementedCountInRun: string;
+  // Sync
+  syncTests: string;
+  syncing: string;
+  syncSuccess: string;
+  syncError: string;
+  syncResult: string;
+  viewCommitSync: string;
+  openInRepo: string;
 };

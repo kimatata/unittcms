@@ -225,3 +225,20 @@ export async function fetchProjectRuns(jwt: string, configId: number): Promise<P
   if (!res.ok) throw new Error(await res.text());
   return res.json();
 }
+
+export type SyncResult = {
+  addedToTestPlan: number;
+  addedToCode: number;
+  updatedStatus: number;
+  taggedAutomated: number;
+  commitUrl: string | null;
+};
+
+export async function syncTests(jwt: string, configId: number): Promise<SyncResult> {
+  const res = await fetch(`${Config.apiServer}/automation-configs/${configId}/sync`, {
+    method: 'POST',
+    headers: { Authorization: `Bearer ${jwt}` },
+  });
+  if (!res.ok) throw new Error(await res.text());
+  return res.json();
+}

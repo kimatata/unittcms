@@ -55,6 +55,31 @@ function defineAutomationConfig(sequelize, DataTypes) {
       allowNull: false,
       defaultValue: false,
     },
+    sourceRepoOwner: {
+      type: DataTypes.STRING,
+      allowNull: true,
+      defaultValue: null,
+    },
+    sourceRepoName: {
+      type: DataTypes.STRING,
+      allowNull: true,
+      defaultValue: null,
+    },
+    sourceRepoBranch: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      defaultValue: 'main',
+    },
+    webhookSecret: {
+      type: DataTypes.STRING,
+      allowNull: true,
+      defaultValue: null,
+    },
+    autoAnalyzeCommits: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+      defaultValue: false,
+    },
   }, { tableName: 'automationConfigs' });
 
   AutomationConfig.associate = (models) => {

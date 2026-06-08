@@ -60,11 +60,12 @@ type Props = {
   onDeleteCases: (caseIds: number[]) => void;
   onShowImportDialog: () => void;
   onExportCases: (type: string) => void;
-  onFilterChange: (query: string, priorities: number[], types: number[], tag: number[]) => void;
+  onFilterChange: (query: string, priorities: number[], types: number[], tag: number[], codeStatuses: string[]) => void;
   activeSearchFilter: string;
   activePriorityFilters: number[];
   activeTypeFilters: number[];
   activeTagFilters: number[];
+  activeCodeStatusFilters: string[];
   messages: CasesMessages;
   priorityMessages: PriorityMessages;
   testTypeMessages: TestTypeMessages;
@@ -85,6 +86,7 @@ export default function TestCaseTable({
   activePriorityFilters,
   activeTypeFilters,
   activeTagFilters,
+  activeCodeStatusFilters,
   messages,
   priorityMessages,
   testTypeMessages,
@@ -184,7 +186,7 @@ export default function TestCaseTable({
   // **************************************************************************
   const [showFilter, setShowFilter] = useState(false);
   const activeFilterNum =
-    (activeSearchFilter ? 1 : 0) + activePriorityFilters.length + activeTypeFilters.length + activeTagFilters.length;
+    (activeSearchFilter ? 1 : 0) + activePriorityFilters.length + activeTypeFilters.length + activeTagFilters.length + activeCodeStatusFilters.length;
 
   // **************************************************************************
   // select test case
@@ -351,10 +353,11 @@ export default function TestCaseTable({
                   activePriorityFilters={activePriorityFilters}
                   activeTypeFilters={activeTypeFilters}
                   activeTagFilters={activeTagFilters}
+                  activeCodeStatusFilters={activeCodeStatusFilters}
                   projectId={projectId}
-                  onFilterChange={(newTitleFilter, newPriorityFilters, newTypeFilters, newTagFilters) => {
+                  onFilterChange={(newTitle, newPriorities, newTypes, newTags, newCodeStatuses) => {
                     setShowFilter(false);
-                    onFilterChange(newTitleFilter, newPriorityFilters, newTypeFilters, newTagFilters);
+                    onFilterChange(newTitle, newPriorities, newTypes, newTags, newCodeStatuses);
                   }}
                 />
               </PopoverContent>

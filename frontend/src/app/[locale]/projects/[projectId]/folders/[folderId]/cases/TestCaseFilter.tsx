@@ -28,11 +28,19 @@ type TestCaseFilterProps = {
   activePriorityFilters: number[];
   activeTypeFilters: number[];
   activeTagFilters: number[];
+  activeCodeStatusFilters: string[];
   projectId: string;
-  onFilterChange: (search: string, priorities: number[], types: number[], tags: number[]) => void;
+  onFilterChange: (search: string, priorities: number[], types: number[], tags: number[], codeStatuses: string[]) => void;
 };
 
 type Tag = Pick<TagType, 'id' | 'name'>;
+
+const CODE_STATUS_OPTIONS = [
+  { key: 'implemented', labelKey: 'automatedOnly' as const },
+  { key: 'stub', labelKey: 'stubOnly' as const },
+  { key: 'none', labelKey: 'notAutomated' as const },
+  { key: 'stale', labelKey: 'staleOnly' as const },
+];
 
 export default function TestCaseFilter({
   messages,
@@ -42,6 +50,7 @@ export default function TestCaseFilter({
   activePriorityFilters,
   activeTypeFilters,
   activeTagFilters,
+  activeCodeStatusFilters,
   onFilterChange,
   projectId,
 }: TestCaseFilterProps) {
@@ -50,6 +59,7 @@ export default function TestCaseFilter({
   const [selectedPriorities, setSelectedPriorities] = useState<Selection>(new Set([]));
   const [selectedTypes, setSelectedTypes] = useState<Selection>(new Set([]));
   const [selectedTags, setSelectedTags] = useState<Selection>(new Set([]));
+  const [selectedCodeStatuses, setSelectedCodeStatuses] = useState<Selection>(new Set([]));
   const [tags, setTags] = useState<Tag[]>([]);
 
   useEffect(() => {
@@ -77,6 +87,10 @@ export default function TestCaseFilter({
   useEffect(() => {
     setSearch(activeSearchFilter);
   }, [activeSearchFilter]);
+
+  useEffect(() => {
+    setSelectedCodeStatuses(activeCodeStatusFilters.length > 0 ? new Set(activeCodeStatusFilters) : new Set([]));
+  }, [activeCodeStatusFilters]);
 
   useEffect(() => {
     if (activePriorityFilters.length > 0) {
@@ -126,13 +140,18 @@ export default function TestCaseFilter({
         .filter((id) => !isNaN(id));
     }
 
-    onFilterChange(search, priorityIndices, typeIndices, tagIds);
+    const codeStatuses: string[] = selectedCodeStatuses !== 'all' && selectedCodeStatuses.size > 0
+      ? Array.from(selectedCodeStatuses).map((k) => k as string)
+      : [];
+
+    onFilterChange(search, priorityIndices, typeIndices, tagIds, codeStatuses);
   };
 
   const handleClearFilter = () => {
     setSelectedPriorities(new Set([]));
     setSelectedTypes(new Set([]));
-    onFilterChange('', [], [], []);
+    setSelectedCodeStatuses(new Set([]));
+    onFilterChange('', [], [], [], []);
   };
 
   return (
@@ -214,6 +233,31 @@ export default function TestCaseFilter({
         <div className="flex-col space-y-1">
           <h3 className="text-default-500 text-small"></h3>
         </div>
+      </div>
+
+      <div className="mb-3 space-y-1">
+        <h3 className="text-default-500 text-small">{messages.automationFilter}</h3>
+        <Dropdown>
+          <DropdownTrigger>
+            <Button size="sm" variant="bordered" className="w-32" endContent={<ChevronDown size={16} />}>
+              {selectedCodeStatuses === 'all' || selectedCodeStatuses.size === 0
+                ? messages.selectAutomation
+                : `${selectedCodeStatuses.size} ${messages.selected || 'selected'}`}
+            </Button>
+          </DropdownTrigger>
+          <DropdownMenu
+            aria-label="Automation status filter"
+            selectionMode="multiple"
+            selectedKeys={selectedCodeStatuses}
+            onSelectionChange={setSelectedCodeStatuses}
+          >
+            {CODE_STATUS_OPTIONS.map((opt) => (
+              <DropdownItem key={opt.key} textValue={messages[opt.labelKey]}>
+                <span className="text-sm">{messages[opt.labelKey]}</span>
+              </DropdownItem>
+            ))}
+          </DropdownMenu>
+        </Dropdown>
       </div>
 
       <div className="mb-3 space-y-1">

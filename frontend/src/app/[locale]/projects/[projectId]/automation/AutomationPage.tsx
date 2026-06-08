@@ -1,6 +1,6 @@
 'use client';
 import { useState, useEffect, useRef, useContext, useCallback } from 'react';
-import { Button, Input, Select, SelectItem, Chip, Link, Divider, Checkbox } from '@heroui/react';
+import { Button, Input, Select, SelectItem, Chip, Link, Divider, Checkbox, Tooltip } from '@heroui/react';
 import { addToast } from '@heroui/react';
 import {
   ExternalLink,
@@ -14,6 +14,7 @@ import {
   ChevronRight,
   Tag,
   ListChecks,
+  ArrowLeftRight,
 } from 'lucide-react';
 import { TokenContext } from '@/utils/TokenProvider';
 import { AutomationConfigType, AutomationMessages } from '@/types/project';
@@ -30,10 +31,12 @@ import {
   fixRunError,
   fetchImplementedCases,
   fetchProjectRuns,
+  syncTests,
   RunStatus,
   RunError,
   ImplementedCase,
   ProjectRun,
+  SyncResult,
   TriggerOptions,
 } from '@/utils/automationConfigControl';
 import { logError } from '@/utils/errorHandler';
@@ -109,6 +112,10 @@ export default function AutomationPage({ projectId, messages }: Props) {
   const [projectRuns, setProjectRuns] = useState<ProjectRun[]>([]);
   const [selectedRunId, setSelectedRunId] = useState<number | null>(null);
   const [isFetchingRuns, setIsFetchingRuns] = useState(false);
+
+  // sync
+  const [isSyncing, setIsSyncing] = useState(false);
+  const [syncResult, setSyncResult] = useState<SyncResult | null>(null);
 
   // track previous run status to detect failure transitions
   const prevConclusionRef = useRef<string | null>(null);
@@ -364,6 +371,24 @@ export default function AutomationPage({ projectId, messages }: Props) {
     }
   };
 
+  const handleSync = async () => {
+    if (!config) return;
+    setIsSyncing(true);
+    setSyncResult(null);
+    try {
+      const result = await syncTests(jwt, config.id);
+      setSyncResult(result);
+      addToast({ title: messages.syncSuccess, color: 'success' });
+      // Reload implemented cases so the panel reflects any new cases
+      await loadImplementedCases(config);
+    } catch (err) {
+      logError('AutomationPage sync', err);
+      addToast({ title: messages.syncError, color: 'danger' });
+    } finally {
+      setIsSyncing(false);
+    }
+  };
+
   const toggleFolder = (folderPath: string) => {
     setExpandedFolders((prev) => {
       const next = new Set(prev);
@@ -555,6 +580,53 @@ export default function AutomationPage({ projectId, messages }: Props) {
               </div>
             </div>
 
+            {/* Sync button + last result */}
+            <div className="flex items-center gap-3 flex-wrap">
+              <Button
+                size="sm"
+                color="primary"
+                variant="flat"
+                startContent={!isSyncing ? <ArrowLeftRight size={14} /> : undefined}
+                isLoading={isSyncing}
+                isDisabled={!config || isSyncing}
+                onPress={handleSync}
+              >
+                {isSyncing ? messages.syncing : messages.syncTests}
+              </Button>
+              {syncResult && (
+                <div className="flex items-center gap-2 flex-wrap">
+                  <span className="text-xs text-default-500">
+                    {messages.syncResult
+                      .replace('{added}', String(syncResult.addedToTestPlan))
+                      .replace('{stubs}', String(syncResult.addedToCode))
+                      .replace('{updated}', String(syncResult.updatedStatus))
+                      .replace('{tagged}', String(syncResult.taggedAutomated))}
+                  </span>
+                  {syncResult.commitUrl && (
+                    <Link href={syncResult.commitUrl} isExternal size="sm" showAnchorIcon>
+                      {messages.viewCommitSync}
+                    </Link>
+                  )}
+                </div>
+              )}
+            </div>
+
+            {/* Coverage progress bar */}
+            {totalCases > 0 && (
+              <div className="flex flex-col gap-1">
+                <div className="flex items-center justify-between text-xs text-default-400">
+                  <span>{messages.implementedCount.replace('{count}', String(implementedCases.length)).replace('{total}', String(totalCases))}</span>
+                  <span>{Math.round((implementedCases.length / totalCases) * 100)}%</span>
+                </div>
+                <div className="w-full bg-default-100 rounded-full h-2 overflow-hidden">
+                  <div
+                    className="bg-success h-2 rounded-full transition-all duration-500"
+                    style={{ width: `${(implementedCases.length / totalCases) * 100}%` }}
+                  />
+                </div>
+              </div>
+            )}
+
             {implementedCases.length === 0 && !isFetchingImplemented && (
               <p className="text-sm text-default-400">{messages.noImplementedTests}</p>
             )}
@@ -588,26 +660,40 @@ export default function AutomationPage({ projectId, messages }: Props) {
 
                   {isExpanded && (
                     <div className="divide-y divide-default-100 dark:divide-neutral-700/50">
-                      {cases.map((c) => (
-                        <div key={c.id} className="flex items-center gap-2 px-3 py-2">
-                          {runMode === 'specific' && (
-                            <Checkbox
-                              size="sm"
-                              isSelected={selectedCaseIds.has(c.id)}
-                              onValueChange={() => toggleCaseSelection(c.id)}
-                              aria-label={c.title}
-                            />
-                          )}
-                          <span className="text-sm flex-1 truncate">{c.title}</span>
-                          <div className="flex items-center gap-1 shrink-0">
-                            {c.tags.map((tag) => (
-                              <Chip key={tag} size="sm" variant="flat" color="secondary" startContent={<Tag size={10} />}>
-                                {tag}
-                              </Chip>
-                            ))}
+                      {cases.map((c) => {
+                        const codeUrl = c.codeFilePath && config
+                          ? config.provider === 'github'
+                            ? `${config.repoUrl}/blob/main/${c.codeFilePath}`
+                            : `${config.repoUrl}/-/blob/main/${c.codeFilePath}`
+                          : null;
+                        return (
+                          <div key={c.id} className="flex items-center gap-2 px-3 py-2">
+                            {runMode === 'specific' && (
+                              <Checkbox
+                                size="sm"
+                                isSelected={selectedCaseIds.has(c.id)}
+                                onValueChange={() => toggleCaseSelection(c.id)}
+                                aria-label={c.title}
+                              />
+                            )}
+                            <span className="text-sm flex-1 truncate">{c.title}</span>
+                            <div className="flex items-center gap-1 shrink-0">
+                              {c.tags.map((tag) => (
+                                <Chip key={tag} size="sm" variant="flat" color="secondary" startContent={<Tag size={10} />}>
+                                  {tag}
+                                </Chip>
+                              ))}
+                              {codeUrl && (
+                                <Tooltip content={c.codeFilePath ?? messages.openInRepo} placement="top">
+                                  <Link href={codeUrl} isExternal size="sm" aria-label={messages.openInRepo}>
+                                    <ExternalLink size={12} />
+                                  </Link>
+                                </Tooltip>
+                              )}
+                            </div>
                           </div>
-                        </div>
-                      ))}
+                        );
+                      })}
                     </div>
                   )}
                 </div>

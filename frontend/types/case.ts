@@ -113,6 +113,12 @@ type CasesMessages = {
   maxFileSize: string;
   casesImported: string;
   createMore: string;
+  automationFilter: string;
+  selectAutomation: string;
+  automatedOnly: string;
+  stubOnly: string;
+  notAutomated: string;
+  staleOnly: string;
 };
 
 type CaseMessages = {

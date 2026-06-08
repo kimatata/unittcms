@@ -16,5 +16,7 @@ export function createRepositories(db) {
     comments: db.models.Comment,
     automationConfigs: db.models.AutomationConfig,
     integrationConfigs: db.models.IntegrationConfig,
+    sourceCommits: db.models.SourceCommit,
+    syncLogs: db.models.SyncLog,
   };
 }

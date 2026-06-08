@@ -298,6 +298,55 @@ to reflect what was built or changed.
 
 ---
 
+## Recent additions (2026-06-09)
+
+### Sync Tests — bidirectional automation ↔ test plan sync
+- **`POST /automation-configs/:id/sync`** — new route in `backend/routes/automationConfigs/syncTests.js`. Reads the connected repo tree, parses annotated and unannotated test functions, then:
+  1. Creates missing test cases in the plan from unannotated code tests (with `codeStatus: 'stub'`)
+  2. Updates `codeStatus` ('stub'|'implemented') for already-annotated tests (root-cause fix for AUTOMATED badge not appearing — CI scanner is optional, manual Sync now covers this)
+  3. Adds stubs to code files for plan cases with no automation code
+  4. Tags all implemented cases with the "automated" tag
+  5. Commits all file changes in one commit
+  - Returns `{ addedToTestPlan, addedToCode, updatedStatus, taggedAutomated, commitUrl }`
+  - Supports GitHub + GitLab, Playwright (TS/JS) + pytest
+- **`frontend/utils/automationConfigControl.ts`** — added `SyncResult` type and `syncTests(jwt, configId)` function
+- **`frontend/types/project.ts`** — added `syncTests, syncing, syncSuccess, syncError, syncResult, viewCommitSync, openInRepo` to `AutomationMessages`
+
+### AutomationPage improvements
+- **`AutomationPage.tsx`** — Sync Tests button with `ArrowLeftRight` icon; inline sync result showing `added·stubs·updated·tagged` counts with commit link; coverage progress bar (% implemented); open-in-repo link per implemented case row; fixed empty-state message ("Run and sync" instead of misleading "No implemented tests")
+- **`automation/page.tsx`** — 7 new message keys added to messages object
+
+### Automation status filter in test cases table
+- **`backend/routes/cases/index.js`** — `codeStatus` query param support: splits comma-separated values and applies `WHERE codeStatus IN (...)` filter
+- **`frontend/utils/caseControl.ts`** — `fetchCases()` accepts optional 7th param `codeStatus?: string[]`, appended as `codeStatus=...` query param
+- **`TestCaseFilter.tsx`** — added 4-option "Automation Status" dropdown (Automated / Stub / Not Automated / Stale) above Tags filter; `activeCodeStatusFilters` prop; `selectedCodeStatuses` state; 5th param `codeStatuses: string[]` in `onFilterChange`
+- **`TestCaseTable.tsx`** — `activeCodeStatusFilters: string[]` prop added; `activeFilterNum` now includes `activeCodeStatusFilters.length`; passes `activeCodeStatusFilters` and 5-arg `onFilterChange` to `TestCaseFilter`
+- **`CasesPane.tsx`** — `codeStatusFilter` state + stored in URL params (`?codeStatus=implemented,stub,...`); `refreshCases` reads from `searchParams` (avoids stale closure); `handleFilterChange` passes codeStatuses to `updateUrlParams`; passes `activeCodeStatusFilters={codeStatusFilter}` to `TestCaseTable`
+- **`cases/page.tsx`** — 6 new message keys: `automationFilter, selectAutomation, automatedOnly, stubOnly, notAutomated, staleOnly`
+- **`frontend/types/case.ts`** — same 6 keys added to `CasesMessages`
+- **`frontend/messages/en.json` + `he.json`** — `automation_filter, select_automation, automated_only, stub_only, not_automated, stale_only` added to Cases namespace; sync keys added to Automation namespace
+
+### Monitor tab — backend infrastructure (routes + types, no frontend page yet)
+- **`POST /:id/analyze-commit/:sha`** (`analyzeCommit.js`) — loads a stored commit diff, calls Claude (`claude-sonnet-4-6`) with the diff + existing test hierarchy + a sample test file for style reference. Claude returns a `TEST CASES:` section + `TEST CODE:` fenced code blocks. Route creates UnitTCMS test cases in an "AI Generated > {commit}" folder and commits generated test files to the automation repo. Updates `sourceCommit.status` to `done/failed`, logs to `syncLogs`.
+- **`POST /:id/webhook`** (`webhook.js`) — receives GitHub push events (via `x-hub-signature-256` HMAC) and GitLab push events (via `x-gitlab-token`). Stores new commits with diffs in `sourceCommits`. Does not require auth (verifies webhook secret instead). Uses `express.raw()` for HMAC verification.
+- **`GET /:id/test-health`** (`testHealth.js`) — returns a matrix of `{ runs, folders, matrix }` where `matrix[folderId][runId]` = `{ total, passed, failed, skipped }`. Uses root folder grouping. Input: last 10 runs × all root-level folders for the project.
+- **`frontend/utils/monitorControl.ts`** — API control functions: `fetchSourceCommits`, `syncSourceCommits`, `analyzeCommit`, `fetchSyncLogs`, `fetchTestHealth`, `updateSourceRepoConfig`
+- **`frontend/types/project.ts`** — added `SourceCommitType`, `SyncLogType`, `TestHealthData` data types; new `MonitorMessages` type covering health bar, source repo config, commit timeline, commit status badges, test health matrix, and activity log sections
+
+### Source commits tracking (backend infrastructure)
+- **New model `backend/models/sourceCommits.js`** — `SourceCommit` model: stores commits fetched from a source (application) repo; fields: sha, message, author, committedAt, diff, status (new/analyzing/analyzed/done/failed), aiSummary, generatedTestCaseIds, testCommitSha
+- **New model `backend/models/syncLogs.js`** — `SyncLog` model: audit log per sync operation; fields: type (commit_sync/ai_analysis/test_sync/webhook), description, created/updated/orphaned counts, status, errorMessage
+- **New route `backend/routes/automationConfigs/sourceCommits.js`**:
+  - `GET /:id/source-commits` — list stored commits (last 50)
+  - `POST /:id/sync-source-commits` — fetch last 30 commits from source repo (GitHub or GitLab), store new ones with diffs; if `autoAnalyzeCommits` is on, queues them for analysis
+- **`backend/models/automationConfigs.js`** — added 5 fields: `sourceRepoOwner`, `sourceRepoName`, `sourceRepoBranch` (default 'main'), `webhookSecret`, `autoAnalyzeCommits` (bool, default false)
+- **`backend/repositories/index.js`** — added `sourceCommits` and `syncLogs` to `db.repos.*`
+- **Migrations**: `20260608000001` (add fields to automationConfigs), `20260608000002` (create sourceCommits table with unique index on configId+sha), `20260608000003` (create syncLogs table)
+
+### Bug fix: AUTOMATED badge and "implemented" panel not showing
+- **Root cause**: `codeStatus` on cases is only set by the CI scanner script (which requires `UNITTCMS_URL`/`UNITTCMS_TOKEN` in GitHub Actions secrets). If CI secrets are not configured, `codeStatus` stays `'none'` forever and neither the AUTOMATED badge nor implemented-cases panel ever populate.
+- **Fix**: `syncTests.js` now parses annotated tests and bulk-updates their `codeStatus` even without CI — clicking Sync Tests once populates the correct status from the repo directly.
+
 ## Recent additions (2026-06-08)
 
 ### Projects list duplication bug fix

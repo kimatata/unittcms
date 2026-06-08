@@ -33,7 +33,8 @@ async function fetchCases(
   search?: string,
   priority?: number[],
   type?: number[],
-  tag?: number[]
+  tag?: number[],
+  codeStatus?: string[]
 ) {
   const queryParams = [`folderId=${folderId}`];
 
@@ -51,6 +52,10 @@ async function fetchCases(
 
   if (tag && tag.length > 0) {
     queryParams.push(`tag=${tag.join(',')}`);
+  }
+
+  if (codeStatus && codeStatus.length > 0) {
+    queryParams.push(`codeStatus=${codeStatus.join(',')}`);
   }
 
   const query = queryParams.length > 0 ? `?${queryParams.join('&')}` : '';

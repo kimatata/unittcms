@@ -8,7 +8,10 @@ export default function (db) {
   router.put('/:id', verifySignedIn, async (req, res) => {
     try {
       const { id } = req.params;
-      const { provider, repoName, automationTool, automationLanguage, autoFixEnabled } = req.body;
+      const {
+        provider, repoName, automationTool, automationLanguage, autoFixEnabled,
+        sourceRepoOwner, sourceRepoName, sourceRepoBranch, webhookSecret, autoAnalyzeCommits,
+      } = req.body;
 
       const config = await db.repos.automationConfigs.findByPk(id);
       if (!config) {
@@ -17,6 +20,11 @@ export default function (db) {
 
       const updates = { provider, repoName, automationTool, automationLanguage };
       if (autoFixEnabled !== undefined) updates.autoFixEnabled = autoFixEnabled;
+      if (sourceRepoOwner !== undefined) updates.sourceRepoOwner = sourceRepoOwner;
+      if (sourceRepoName !== undefined) updates.sourceRepoName = sourceRepoName;
+      if (sourceRepoBranch !== undefined) updates.sourceRepoBranch = sourceRepoBranch;
+      if (webhookSecret !== undefined) updates.webhookSecret = webhookSecret;
+      if (autoAnalyzeCommits !== undefined) updates.autoAnalyzeCommits = autoAnalyzeCommits;
 
       await config.update(updates);
 

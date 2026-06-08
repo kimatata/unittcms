@@ -68,6 +68,13 @@ export default function Page({ params: { projectId } }: { params: { projectId: s
     runSelectedCount: t('run_selected_count'),
     selectTestRunPlaceholder: t('select_test_run_placeholder'),
     implementedCountInRun: t('implemented_count_in_run'),
+    syncTests: t('sync_tests'),
+    syncing: t('syncing'),
+    syncSuccess: t('sync_success'),
+    syncError: t('sync_error'),
+    syncResult: t('sync_result'),
+    viewCommitSync: t('view_commit_sync'),
+    openInRepo: t('open_in_repo'),
   };
 
   return <AutomationPage projectId={projectId} messages={messages} />;

@@ -58,6 +58,12 @@ export default function Page({ params }: { params: { projectId: string; folderId
     maxFileSize: t('max_file_size'),
     casesImported: t('cases_imported'),
     createMore: t('create_more'),
+    automationFilter: t('automation_filter'),
+    selectAutomation: t('select_automation'),
+    automatedOnly: t('automated_only'),
+    stubOnly: t('stub_only'),
+    notAutomated: t('not_automated'),
+    staleOnly: t('stale_only'),
   };
 
   const priorityTranslation = useTranslations('Priority');

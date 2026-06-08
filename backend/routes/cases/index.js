@@ -12,7 +12,7 @@ export default function (db) {
   const Tags = db.models.Tags;
 
   router.get('/', verifySignedIn, verifyProjectVisibleFromFolderId, async (req, res) => {
-    const { folderId, search, priority, type, tag } = req.query;
+    const { folderId, search, priority, type, tag, codeStatus } = req.query;
 
     if (!folderId) {
       return res.status(400).json({ error: 'folderId is required' });
@@ -55,6 +55,13 @@ export default function (db) {
           .filter((t) => !isNaN(t));
         if (typeValues.length > 0) {
           whereClause.type = { [Op.in]: typeValues };
+        }
+      }
+
+      if (codeStatus) {
+        const statuses = codeStatus.split(',').map((s) => s.trim()).filter(Boolean);
+        if (statuses.length > 0) {
+          whereClause.codeStatus = { [Op.in]: statuses };
         }
       }
 

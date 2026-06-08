@@ -21,7 +21,7 @@ app.use(express.json());
 // enable rate limiter
 const limiter = RateLimit({
   windowMs: 60 * 60 * 1000, // 1h
-  max: 1000, // 1000 requests per hour
+  max: 10000, // 1000 requests per hour
   message: 'Too many requests from this IP, please try again after an hour',
 });
 app.use(limiter);
@@ -202,6 +202,11 @@ import automationConfigsRunErrorsRoute from './routes/automationConfigs/runError
 import automationConfigsFixErrorRoute from './routes/automationConfigs/fixError.js';
 import automationConfigsDeleteRepoRoute from './routes/automationConfigs/deleteRepo.js';
 import automationConfigsImplementedCasesRoute from './routes/automationConfigs/implementedCases.js';
+import automationConfigsSyncTestsRoute from './routes/automationConfigs/syncTests.js';
+import automationConfigsSourceCommitsRoute from './routes/automationConfigs/sourceCommits.js';
+import automationConfigsAnalyzeCommitRoute from './routes/automationConfigs/analyzeCommit.js';
+import automationConfigsWebhookRoute from './routes/automationConfigs/webhook.js';
+import automationConfigsTestHealthRoute from './routes/automationConfigs/testHealth.js';
 app.use('/automation-configs', automationConfigsShowRoute(db));
 app.use('/automation-configs', automationConfigsNewRoute(db));
 app.use('/automation-configs', automationConfigsEditRoute(db));
@@ -214,6 +219,11 @@ app.use('/automation-configs', automationConfigsRunErrorsRoute(db));
 app.use('/automation-configs', automationConfigsFixErrorRoute(db));
 app.use('/automation-configs', automationConfigsDeleteRepoRoute(db));
 app.use('/automation-configs', automationConfigsImplementedCasesRoute(db));
+app.use('/automation-configs', automationConfigsSyncTestsRoute(db));
+app.use('/automation-configs', automationConfigsSourceCommitsRoute(db));
+app.use('/automation-configs', automationConfigsAnalyzeCommitRoute(db));
+app.use('/automation-configs', automationConfigsWebhookRoute(db));
+app.use('/automation-configs', automationConfigsTestHealthRoute(db));
 
 // "/integration-configs"
 import integrationConfigsShowRoute from './routes/integrationConfigs/show.js';
