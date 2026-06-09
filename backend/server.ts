@@ -7,15 +7,15 @@ import cors from 'cors';
 import RateLimit from 'express-rate-limit';
 import { Sequelize } from 'sequelize';
 import { RegisterRoutes } from './routes.js';
+import { FRONTEND_ORIGIN } from './config/config.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const app: Application = express();
 
 // enable frontend access
-const frontendOrigin = process.env.FRONTEND_ORIGIN || 'http://localhost:8000';
 const corsOptions = {
-  origin: frontendOrigin,
+  origin: FRONTEND_ORIGIN,
   methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
 };
 app.use(cors(corsOptions));

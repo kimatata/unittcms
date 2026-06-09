@@ -3,21 +3,19 @@ import { auth } from 'express-openid-connect';
 import jwt from 'jsonwebtoken';
 import { DataTypes } from 'sequelize';
 import defineUser from '../../models/users.js';
-import { roles, defaultDangerKey } from './authSettings.js';
+import { API_PATH, FRONTEND_ORIGIN, IS_PROD, PORT, SECRET_KEY } from '../../config/config.js';
+import { roles } from './authSettings.js';
 
 const router = express.Router();
 
 export default function (sequelize) {
   const User = defineUser(sequelize, DataTypes);
-  const secretKey = process.env.SECRET_KEY || defaultDangerKey;
-  const frontendOrigin = process.env.FRONTEND_ORIGIN || 'http://localhost:8000';
-  const signInURL = `${frontendOrigin}/account/signin`;
+
+  const signInURL = `${FRONTEND_ORIGIN}/account/signin`;
+  const apiOrigin = IS_PROD ? `${FRONTEND_ORIGIN}${API_PATH}` : `http://localhost:${PORT}`;
 
   const isOIDCConfigured =
-    process.env.OIDC_ISSUER != null &&
-    process.env.OIDC_CLIENT_ID != null &&
-    process.env.OIDC_CLIENT_SECRET != null &&
-    process.env.OIDC_CALLBACK_URL != null;
+    process.env.OIDC_ISSUER != null && process.env.OIDC_CLIENT_ID != null && process.env.OIDC_CLIENT_SECRET != null;
 
   router.get('/oidc/enabled', (req, res) => {
     res.json({ enabled: isOIDCConfigured });
@@ -29,9 +27,9 @@ export default function (sequelize) {
 
   const config = {
     authRequired: false,
-    secret: secretKey,
+    secret: SECRET_KEY,
     clientSecret: process.env.OIDC_CLIENT_SECRET,
-    baseURL: process.env.OIDC_CALLBACK_URL.replace('/oidc/callback', ''),
+    baseURL: `${apiOrigin}/users`,
     clientID: process.env.OIDC_CLIENT_ID,
     issuerBaseURL: process.env.OIDC_ISSUER,
     authorizationParams: {
@@ -42,7 +40,7 @@ export default function (sequelize) {
     routes: {
       login: false, // We'll handle this manually
       callback: '/oidc/callback',
-      postLogoutRedirect: frontendOrigin,
+      postLogoutRedirect: FRONTEND_ORIGIN,
     },
   };
 
@@ -52,9 +50,9 @@ export default function (sequelize) {
   // Manual login route to redirect to OIDC provider
   router.get('/oidc/login', (req, res) => {
     res.oidc.login({
-      returnTo: '/users/oidc/afterCallback',
+      returnTo: `${apiOrigin}/users/oidc/afterCallback`,
       authorizationParams: {
-        redirect_uri: process.env.OIDC_CALLBACK_URL,
+        redirect_uri: `${apiOrigin}/users/oidc/callback`,
       },
     });
   });
@@ -92,7 +90,7 @@ export default function (sequelize) {
       }
 
       // Generate JWT token (same as regular signin)
-      const accessToken = jwt.sign({ userId: user.id }, secretKey, {
+      const accessToken = jwt.sign({ userId: user.id }, SECRET_KEY, {
         expiresIn: '24h',
       });
       const expiresAt = Date.now() + 3600 * 1000 * 24; // expire date(ms)
@@ -107,7 +105,7 @@ export default function (sequelize) {
       };
 
       const tokenParam = encodeURIComponent(JSON.stringify(tokenData));
-      res.redirect(`${frontendOrigin}/account/sso-callback?token=${tokenParam}`);
+      res.redirect(`${FRONTEND_ORIGIN}/account/sso-callback?token=${tokenParam}`);
     } catch (error) {
       console.error('OIDC authentication error:', error);
       res.redirect(signInURL);

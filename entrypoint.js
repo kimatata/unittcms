@@ -9,6 +9,7 @@ const __dirname = path.dirname(__filename);
 
 // Use express from backend node_modules
 import expressModule from './backend/node_modules/express/index.js';
+import { API_PATH, IS_PROD } from './backend/config/config.js';
 const express = expressModule.default || expressModule;
 
 async function runMigrations() {
@@ -42,9 +43,9 @@ async function startServer() {
     // Import the backend app
     const backendAppModule = await import('./backend/server.js');
     const backendApp = backendAppModule.default || backendAppModule;
-    const apiPath = process.env.API_PATH || '/api';
-    console.log(`Mounting backend API at: ${apiPath}`);
-    server.use(apiPath, backendApp);
+
+    console.log(`Mounting backend API at: ${API_PATH}`);
+    server.use(API_PATH, backendApp);
 
     // For Next.js standalone build
     // Check if we have the Next.js server file
@@ -55,7 +56,7 @@ async function startServer() {
       const next = nextModule.default || nextModule;
 
       // Initialize Next.js app
-      const dev = process.env.NODE_ENV !== 'production';
+      const dev = !IS_PROD;
       const nextApp = next({ dev, dir: path.join(__dirname, '.') });
       const handle = nextApp.getRequestHandler();
       await nextApp.prepare();
