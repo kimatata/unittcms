@@ -69,10 +69,7 @@ export default function (sequelize) {
         return res.status(400).json({ error: 'One or more runCaseIds do not belong to this run' });
       }
 
-      await RunCase.update(
-        { assigneeUserId },
-        { where: { id: runCaseIds, runId }, transaction: t }
-      );
+      await RunCase.update({ assigneeUserId }, { where: { id: runCaseIds, runId }, transaction: t });
 
       const updated = await RunCase.findAll({ where: { id: runCaseIds }, transaction: t });
 

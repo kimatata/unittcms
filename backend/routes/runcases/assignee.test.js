@@ -191,10 +191,7 @@ describe('POST /runcases/assignee', () => {
       .send({ runCaseIds: [2], assigneeUserId: 8 });
 
     expect(res.status).toBe(200);
-    expect(mockRunCase.update).toHaveBeenCalledWith(
-      { assigneeUserId: 8 },
-      expect.anything()
-    );
+    expect(mockRunCase.update).toHaveBeenCalledWith({ assigneeUserId: 8 }, expect.anything());
     // status is not part of the update payload
     const updateCall = mockRunCase.update.mock.calls[0][0];
     expect(updateCall).not.toHaveProperty('status');
@@ -212,10 +209,7 @@ describe('POST /runcases/assignee', () => {
       .send({ runCaseIds: [2], assigneeUserId: 42 });
 
     expect(res.status).toBe(200);
-    expect(mockRunCase.update).toHaveBeenCalledWith(
-      { assigneeUserId: 42 },
-      expect.anything()
-    );
+    expect(mockRunCase.update).toHaveBeenCalledWith({ assigneeUserId: 42 }, expect.anything());
   });
 
   it('clearing assignee (null) succeeds', async () => {
@@ -229,10 +223,7 @@ describe('POST /runcases/assignee', () => {
       .send({ runCaseIds: [2], assigneeUserId: null });
 
     expect(res.status).toBe(200);
-    expect(mockRunCase.update).toHaveBeenCalledWith(
-      { assigneeUserId: null },
-      expect.anything()
-    );
+    expect(mockRunCase.update).toHaveBeenCalledWith({ assigneeUserId: null }, expect.anything());
   });
 });
 

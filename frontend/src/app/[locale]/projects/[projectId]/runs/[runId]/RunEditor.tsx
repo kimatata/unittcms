@@ -317,19 +317,13 @@ export default function RunEditor({
       return;
     }
 
-    const resolvedAssignee =
-      assignee === 'me' ? String(tokenContext.token.user?.id ?? '') : assignee ?? '';
+    const resolvedAssignee = assignee === 'me' ? String(tokenContext.token.user?.id ?? '') : (assignee ?? '');
 
     setSearchFilter(search);
     setStatusFilter(status);
     setTagFilter(tag);
     setAssigneeFilter(assignee ?? '');
-    setActiveFilterNum(
-      (search ? 1 : 0) +
-      (status.length > 0 ? 1 : 0) +
-      (tag.length > 0 ? 1 : 0) +
-      (assignee ? 1 : 0)
-    );
+    setActiveFilterNum((search ? 1 : 0) + (status.length > 0 ? 1 : 0) + (tag.length > 0 ? 1 : 0) + (assignee ? 1 : 0));
     await initTestCases(search, status.map(String), tag.map(String), resolvedAssignee || undefined);
   };
 

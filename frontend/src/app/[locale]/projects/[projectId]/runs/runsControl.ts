@@ -370,12 +370,7 @@ async function fetchProjectCases(
   }
 }
 
-async function assignRunCases(
-  jwt: string,
-  runId: number,
-  runCaseIds: number[],
-  assigneeUserId: number | null
-) {
+async function assignRunCases(jwt: string, runId: number, runCaseIds: number[], assigneeUserId: number | null) {
   const fetchOptions = {
     method: 'POST',
     headers: {

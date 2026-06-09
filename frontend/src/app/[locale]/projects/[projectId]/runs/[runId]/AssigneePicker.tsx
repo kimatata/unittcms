@@ -54,7 +54,11 @@ export default function AssigneePicker({
   }
 
   return (
-    <Dropdown onOpenChange={(open) => { if (!open) setSearch(''); }}>
+    <Dropdown
+      onOpenChange={(open) => {
+        if (!open) setSearch('');
+      }}
+    >
       <DropdownTrigger>
         <Button size="sm" variant="light" endContent={<ChevronDown size={14} />} startContent={<UserRound size={14} />}>
           <span className="max-w-24 truncate">{assigneeName}</span>
