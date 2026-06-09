@@ -25,6 +25,10 @@ function defineRun(sequelize, DataTypes) {
       },
       onDelete: 'CASCADE',
     },
+    pipelineRunId: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+    },
   });
 
   Run.associate = (models) => {

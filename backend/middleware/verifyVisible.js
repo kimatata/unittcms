@@ -5,6 +5,8 @@ import defineFolder from '../models/folders.js';
 import defineCase from '../models/cases.js';
 import defineRun from '../models/runs.js';
 import defineRunCase from '../models/runCases.js';
+import defineCiRepositoryConfig from '../models/ciRepositoryConfig.js';
+import defineCiPipelineRun from '../models/ciPipelineRun.js';
 
 export default function verifyVisibleMiddleware(sequelize) {
   /**
@@ -199,11 +201,71 @@ export default function verifyVisibleMiddleware(sequelize) {
     return false;
   }
 
+  /**
+   * Verify user can read project by CI config id
+   * (have to be called after verifySignedIn() middleware)
+   */
+  async function verifyProjectVisibleFromCiConfigId(req, res, next) {
+    const CiRepositoryConfig = defineCiRepositoryConfig(sequelize, DataTypes);
+
+    const configId = req.params.configId || req.query.configId;
+    if (!configId) {
+      return res.status(400).json({ error: 'configId is required' });
+    }
+
+    const config = await CiRepositoryConfig.findByPk(configId);
+    if (!config) {
+      return res.status(404).send('CI configuration not found');
+    }
+
+    const visible = await isVisible(config.projectId, req.userId);
+    if (visible) {
+      next();
+      return;
+    }
+
+    return res.status(403).json({ error: 'Forbidden' });
+  }
+
+  /**
+   * Verify user can read project by pipeline run id
+   * (have to be called after verifySignedIn() middleware)
+   */
+  async function verifyProjectVisibleFromPipelineRunId(req, res, next) {
+    const CiPipelineRun = defineCiPipelineRun(sequelize, DataTypes);
+    const CiRepositoryConfig = defineCiRepositoryConfig(sequelize, DataTypes);
+
+    const runId = req.params.runId || req.query.pipelineRunId;
+    if (!runId) {
+      return res.status(400).json({ error: 'runId is required' });
+    }
+
+    const run = await CiPipelineRun.findByPk(runId);
+    if (!run) {
+      return res.status(404).send('Pipeline run not found');
+    }
+
+    const config = await CiRepositoryConfig.findByPk(run.configId);
+    if (!config) {
+      return res.status(404).send('CI configuration not found');
+    }
+
+    const visible = await isVisible(config.projectId, req.userId);
+    if (visible) {
+      next();
+      return;
+    }
+
+    return res.status(403).json({ error: 'Forbidden' });
+  }
+
   return {
     verifyProjectVisibleFromProjectId,
     verifyProjectVisibleFromFolderId,
     verifyProjectVisibleFromCaseId,
     verifyProjectVisibleFromRunId,
     verifyProjectVisibleFromCommentableId,
+    verifyProjectVisibleFromCiConfigId,
+    verifyProjectVisibleFromPipelineRunId,
   };
 }

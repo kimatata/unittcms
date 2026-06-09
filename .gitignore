@@ -9,3 +9,6 @@ database.sqlite
 /playwright/.cache/
 .DS_Store
 /.idea/
+.claude/
+specs/
+CLAUDE.md

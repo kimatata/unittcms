@@ -198,6 +198,36 @@ app.use('/comments', commentsDeleteRoute(sequelize));
 import homeIndexRoute from './routes/home/index.js';
 app.use('/home', homeIndexRoute(sequelize));
 
+// "/ci-configs"
+import ciConfigsIndexRoute from './routes/ci-configs/index.js';
+import ciConfigsNewRoute from './routes/ci-configs/new.js';
+import ciConfigsEditRoute from './routes/ci-configs/edit.js';
+import ciConfigsDeleteRoute from './routes/ci-configs/delete.js';
+import ciConfigsSyncRoute from './routes/ci-configs/sync.js';
+import ciConfigsPingRoute from './routes/ci-configs/ping.js';
+app.use('/ci-configs', ciConfigsIndexRoute(sequelize));
+app.use('/ci-configs', ciConfigsNewRoute(sequelize));
+app.use('/ci-configs', ciConfigsEditRoute(sequelize));
+app.use('/ci-configs', ciConfigsDeleteRoute(sequelize));
+app.use('/ci-configs', ciConfigsSyncRoute(sequelize));
+app.use('/ci-configs', ciConfigsPingRoute(sequelize));
+
+// "/pipeline-runs"
+import pipelineRunsIndexRoute from './routes/pipeline-runs/index.js';
+import pipelineRunsShowRoute from './routes/pipeline-runs/show.js';
+app.use('/pipeline-runs', pipelineRunsIndexRoute(sequelize));
+app.use('/pipeline-runs', pipelineRunsShowRoute(sequelize));
+
+// "/pipeline-jobs"
+import pipelineJobsIndexRoute from './routes/pipeline-jobs/index.js';
+app.use('/pipeline-jobs', pipelineJobsIndexRoute(sequelize));
+
+// "/junit-imports"
+import junitImportsIndexRoute from './routes/junit-imports/index.js';
+import junitImportsNewRoute from './routes/junit-imports/new.js';
+app.use('/junit-imports', junitImportsIndexRoute(sequelize));
+app.use('/junit-imports', junitImportsNewRoute(sequelize));
+
 if (!process.env.SECRET_KEY) {
   console.log(
     "[Warning]: Default key is used for token generation. Please set the environment variable 'SECRET_KEY'`."
