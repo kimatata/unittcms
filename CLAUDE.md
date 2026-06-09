@@ -314,6 +314,55 @@ to reflect what was built or changed.
 
 ---
 
+## Recent additions (2026-06-09, session 4)
+
+### Sprint Flow — new feature tab
+
+A full new tab at `/projects/:id/sprint` that visualizes active feature branches, generates test plans with Claude, and links them to a UnitTCMS test run.
+
+**New DB tables (migrations `20260609000001–2`):**
+- `sprintConfigs` — per `automationConfigId`: `keyBranchPatterns` (JSON array TEXT), `sprintBranchPattern`, `jiraBaseUrl`, `jiraProjectKey`, `branchTicketRegex`
+- `sprintFlows` — per sprint: `title`, `baseBranch`, `versionBranch`, `testRunId`, `status` (active/draft/testing/done/archived), `branchSnapshot` (JSON TEXT), `nodePositions` (JSON TEXT), `testPlanDraft` (JSON TEXT), `generationPrompt`, `generationLogs` (JSON TEXT)
+
+**New models:** `backend/models/sprintConfigs.js`, `backend/models/sprintFlows.js`. Both registered in `backend/repositories/index.js`.
+
+**New backend routes** (`/sprint` prefix, registered in `server.js`):
+- `GET  /sprint/config?automationConfigId=X` — returns sprint config (defaults if none saved)
+- `POST /sprint/config` — upsert sprint config (key branches, Jira settings, ticket regex)
+- `GET  /sprint/detect?automationConfigId=X` — scans test repo for feature branches vs key branches; returns `{ featureBranches, newBranchCount, newBranches, detectedVersionBranch, hasNewBranches }`
+- `POST /sprint/start` — creates sprint flow: fetches branches + PRs, snapshots them with ticket IDs, creates a UnitTCMS test run, returns `{ flow, testRunId }`
+- `GET  /sprint/flows?automationConfigId=X` — list last 20 sprint flows
+- `GET  /sprint/flows/:flowId` — load flow with live branch/PR state overlaid on snapshot
+- `PATCH /sprint/flows/:flowId/positions` — persist node drag positions
+- `GET  /sprint/flows/:flowId/generate/prepare` (SSE) — AI pipeline: fetches diffs for each branch → calls Claude → streams `log` events with pipeline steps → saves `testPlanDraft` on flow → sends final `done` event with draft
+- `PATCH /sprint/flows/:flowId/draft` — save edited draft (moves status to `draft`)
+- `POST /sprint/flows/:flowId/approve` — bulk-creates folders, test cases (with steps), and `RunCase` entries in the sprint test run; moves status to `testing`
+
+**`backend/routes/sprint/_gitHelpers.js`** — shared helpers: `ghRequest`, `glRequest`, `inferApiBase`, `fetchBranches`, `fetchOpenPRs`, `inferTicketId`
+
+**New frontend (`frontend/src/app/[locale]/projects/[projectId]/sprint/`):**
+- `page.tsx` (server) + `SprintPage.tsx` (client) — main sprint page, detection banner, "New Sprint Flow" dialog, flow list
+- `SprintBoard.tsx` — `@xyflow/react` board rendering branch nodes, version-branch node, test-plan node
+- `nodes/BranchNode.tsx`, `TicketNode.tsx`, `TestPlanNode.tsx`, `VersionBranchNode.tsx` — custom React Flow node components
+- `detail/DetailPanel.tsx`, `BranchDetail.tsx`, `GenerationPipeline.tsx`, `PipelineTaskRow.tsx`, `TestPlanReview.tsx` — slide-in detail panel: branch details, SSE-driven generation pipeline display, editable draft test plan reviewer
+
+**`frontend/utils/sprintControl.ts`** — API control functions for all sprint endpoints.
+
+**New types in `frontend/types/project.ts`:**
+- `SprintBranchInfo`, `SprintFlowStatus`, `SprintFlow`, `SprintDraftCase`, `SprintDraftFolder`, `SprintGenerationLogEntry`, `SprintDetectResult`, `SprintConfig`, `SprintMessages`
+- `sprint: string` added to `ProjectMessages`
+
+**New locale namespace `Sprint`** in `en.json` + `he.json` — ~50 keys covering all Sprint UI labels.
+
+**`frontend/package.json`** — added `@xyflow/react ^12.11.0` for the branch visualization board.
+
+**Sidebar + layout** — Sprint tab added with `sprint` icon to `Sidebar.tsx` and `layout.tsx`.
+
+### Monitor page simplification
+`MonitorPage.tsx` refactored: removed commit timeline, activity log, health bar stats, and commit sync button. Now shows only source repo config form + test health matrix.
+
+---
+
 ## Recent additions (2026-06-09, session 3)
 
 ### Bug fixes
