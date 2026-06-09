@@ -83,7 +83,11 @@ export default function (sequelize) {
           if (assigneeUserId === 'null') {
             assigneeFilter = { assigneeUserId: { [Op.is]: null } };
           } else {
-            assigneeFilter = { assigneeUserId: Number(assigneeUserId) };
+            const assigneeId = Number(assigneeUserId);
+            if (!Number.isInteger(assigneeId) || assigneeId <= 0) {
+              return res.status(400).json({ error: 'assigneeUserId must be a positive integer or "null"' });
+            }
+            assigneeFilter = { assigneeUserId: assigneeId };
           }
           runCaseRequired = true;
         }

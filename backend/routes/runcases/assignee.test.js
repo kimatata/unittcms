@@ -275,23 +275,4 @@ describe('GET /runcases', () => {
   });
 });
 
-describe('Member removal cascade (6.8)', () => {
-  it('nulls assigneeUserId for removed member across project runs', async () => {
-    const mockDeleteMember = {
-      findOne: vi.fn().mockResolvedValue({ destroy: vi.fn() }),
-    };
-    const mockRunForDelete = {
-      findAll: vi.fn().mockResolvedValue([{ id: 1 }, { id: 2 }]),
-    };
-    const mockRunCaseForDelete = {
-      update: vi.fn().mockResolvedValue([2]),
-    };
-
-    vi.doMock('../../models/members.js', () => ({ default: () => mockDeleteMember }));
-    vi.doMock('../../models/runs.js', () => ({ default: () => mockRunForDelete }));
-    vi.doMock('../../models/runCases.js', () => ({ default: () => mockRunCaseForDelete }));
-
-    expect(mockRunForDelete.findAll).toBeDefined();
-    expect(mockRunCaseForDelete.update).toBeDefined();
-  });
-});
+// Member removal cascade (6.8) is exercised in routes/members/delete.test.js.

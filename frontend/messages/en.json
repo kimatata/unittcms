@@ -370,7 +370,8 @@
     "assigned_to_me": "Assigned to me",
     "assign_selected": "Assign selected",
     "filter_by_assignee": "Filter by assignee",
-    "select_assignee": "Select assignee"
+    "select_assignee": "Select assignee",
+    "search_assignee": "Search…"
   },
   "Comments": {
     "comments": "Comments",

@@ -15,14 +15,21 @@ export default function (sequelize) {
   const Run = defineRun(sequelize, DataTypes);
 
   router.delete('/', verifySignedIn, verifyProjectManagerFromProjectId, async (req, res) => {
-    const userId = req.query.userId;
-    const projectId = req.query.projectId;
+    const userIdNum = Number(req.query.userId);
+    const projectIdNum = Number(req.query.projectId);
+
+    if (!Number.isInteger(userIdNum) || userIdNum <= 0) {
+      return res.status(400).json({ error: 'userId is required' });
+    }
+    if (!Number.isInteger(projectIdNum) || projectIdNum <= 0) {
+      return res.status(400).json({ error: 'projectId is required' });
+    }
 
     const t = await sequelize.transaction();
 
     try {
       const deletingMember = await Member.findOne({
-        where: { userId, projectId },
+        where: { userId: userIdNum, projectId: projectIdNum },
         transaction: t,
       });
 
@@ -32,7 +39,7 @@ export default function (sequelize) {
       }
 
       const runs = await Run.findAll({
-        where: { projectId },
+        where: { projectId: projectIdNum },
         attributes: ['id'],
         transaction: t,
       });
@@ -41,7 +48,7 @@ export default function (sequelize) {
         const runIds = runs.map((r) => r.id);
         await RunCase.update(
           { assigneeUserId: null },
-          { where: { runId: runIds, assigneeUserId: userId }, transaction: t }
+          { where: { runId: runIds, assigneeUserId: userIdNum }, transaction: t }
         );
       }
 

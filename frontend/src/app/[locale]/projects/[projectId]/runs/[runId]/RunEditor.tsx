@@ -265,30 +265,40 @@ export default function RunEditor({
 
   const onSave = async () => {
     setIsUpdating(true);
-    await updateRun(tokenContext.token.access_token, testRun);
-    await updateRunCases(tokenContext.token.access_token, Number(runId), testCases);
+    try {
+      await updateRun(tokenContext.token.access_token, testRun);
+      await updateRunCases(tokenContext.token.access_token, Number(runId), testCases);
 
-    if (pendingAssignees.size > 0) {
-      const grouped = new Map<number | null, number[]>();
-      pendingAssignees.forEach((userId, runCaseId) => {
-        const existing = grouped.get(userId) ?? [];
-        grouped.set(userId, [...existing, runCaseId]);
-      });
-      for (const [userId, ids] of Array.from(grouped.entries())) {
-        await assignRunCases(tokenContext.token.access_token, Number(runId), ids, userId);
+      if (pendingAssignees.size > 0) {
+        const grouped = new Map<number | null, number[]>();
+        pendingAssignees.forEach((userId, runCaseId) => {
+          const existing = grouped.get(userId) ?? [];
+          grouped.set(userId, [...existing, runCaseId]);
+        });
+        for (const [userId, ids] of Array.from(grouped.entries())) {
+          await assignRunCases(tokenContext.token.access_token, Number(runId), ids, userId);
+        }
+        setPendingAssignees(new Map());
       }
-      setPendingAssignees(new Map());
+
+      await initTestCases();
+
+      addToast({
+        title: 'Success',
+        color: 'success',
+        description: messages.updatedTestRun,
+      });
+      setIsDirty(false);
+    } catch (error) {
+      logError('Error saving run:', error);
+      addToast({
+        title: 'Error',
+        color: 'danger',
+        description: 'Failed to save run. Please try again.',
+      });
+    } finally {
+      setIsUpdating(false);
     }
-
-    await initTestCases();
-
-    addToast({
-      title: 'Success',
-      color: 'success',
-      description: messages.updatedTestRun,
-    });
-    setIsUpdating(false);
-    setIsDirty(false);
   };
 
   // **************************************************************************
@@ -543,7 +553,9 @@ export default function RunEditor({
                     assigneeUserId={null}
                     members={members}
                     isDisabled={false}
-                    unassignedLabel={messages.assignSelected}
+                    unassignedLabel={messages.unassigned}
+                    searchPlaceholder={messages.searchAssignee}
+                    triggerLabel={messages.assignSelected}
                     onAssign={(userId) => handleBulkAssignCases(userId)}
                   />
                 )}

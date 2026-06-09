@@ -370,7 +370,8 @@
     "assigned_to_me": "Mir zugewiesen",
     "assign_selected": "Ausgewählte zuweisen",
     "filter_by_assignee": "Nach Beauftragtem filtern",
-    "select_assignee": "Beauftragten auswählen"
+    "select_assignee": "Beauftragten auswählen",
+    "search_assignee": "Suchen…"
   },
   "Comments": {
     "comments": "Kommentare",

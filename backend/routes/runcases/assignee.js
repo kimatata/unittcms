@@ -18,7 +18,8 @@ export default function (sequelize) {
 
   router.post('/assignee', verifySignedIn, verifyProjectManagerFromRunId, async (req, res) => {
     const runId = req.query.runId;
-    const { runCaseIds, assigneeUserId } = req.body;
+    const body = req.body || {};
+    const { runCaseIds } = body;
 
     if (!runId) {
       return res.status(400).json({ error: 'runId is required' });
@@ -26,6 +27,14 @@ export default function (sequelize) {
 
     if (!Array.isArray(runCaseIds) || runCaseIds.length === 0) {
       return res.status(400).json({ error: 'runCaseIds must be a non-empty array' });
+    }
+
+    if (!Object.prototype.hasOwnProperty.call(body, 'assigneeUserId')) {
+      return res.status(400).json({ error: 'assigneeUserId is required (use null to clear)' });
+    }
+    const assigneeUserId = body.assigneeUserId;
+    if (assigneeUserId !== null && (!Number.isInteger(assigneeUserId) || assigneeUserId <= 0)) {
+      return res.status(400).json({ error: 'assigneeUserId must be a positive integer or null' });
     }
 
     const t = await sequelize.transaction();
@@ -38,12 +47,12 @@ export default function (sequelize) {
       }
       const projectId = run.projectId;
 
-      if (assigneeUserId !== null && assigneeUserId !== undefined) {
+      if (assigneeUserId !== null) {
         const [member, project] = await Promise.all([
           Member.findOne({ where: { userId: assigneeUserId, projectId }, transaction: t }),
           Project.findByPk(projectId, { transaction: t }),
         ]);
-        const isOwner = project && project.userId === Number(assigneeUserId);
+        const isOwner = project && project.userId === assigneeUserId;
         if (!member && !isOwner) {
           await t.rollback();
           return res.status(400).json({ error: 'assigneeUserId is not a member of this project' });
@@ -61,7 +70,7 @@ export default function (sequelize) {
       }
 
       await RunCase.update(
-        { assigneeUserId: assigneeUserId ?? null },
+        { assigneeUserId },
         { where: { id: runCaseIds, runId }, transaction: t }
       );
 

@@ -229,10 +229,10 @@ export default function verifyEditableMiddleware(sequelize) {
     }
 
     const run = await Run.findByPk(runId);
-    const projectId = run && run.projectId;
-    if (!projectId) {
-      return res.status(404).send('failed to find projectId');
+    if (!run) {
+      return res.status(404).send('Run not found');
     }
+    const projectId = run.projectId;
 
     const Project = defineProject(sequelize, DataTypes);
     const project = await Project.findByPk(projectId);

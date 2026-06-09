@@ -98,6 +98,7 @@ type RunMessages = {
   assignSelected: string;
   filterByAssignee: string;
   selectAssignee: string;
+  searchAssignee: string;
 };
 
 type RunDetailMessages = {

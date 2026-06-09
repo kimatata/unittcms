@@ -400,7 +400,7 @@ async function assignRunCases(
 }
 
 async function fetchProjectMembersForRun(jwt: string, projectId: string) {
-  const url = `${apiServer}/members?projectId=${projectId}`;
+  const url = `${apiServer}/members?projectId=${projectId}&includeOwner=true`;
 
   try {
     const response = await fetch(url, {

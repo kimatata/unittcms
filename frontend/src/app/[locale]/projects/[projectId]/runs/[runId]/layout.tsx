@@ -59,6 +59,7 @@ export default function RunLayout({
     assignSelected: t('assign_selected'),
     filterByAssignee: t('filter_by_assignee'),
     selectAssignee: t('select_assignee'),
+    searchAssignee: t('search_assignee'),
   };
 
   const rst = useTranslations('RunStatus');

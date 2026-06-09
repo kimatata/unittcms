@@ -14,7 +14,7 @@ export default function (sequelize) {
     const { runId, assigneeUserId } = req.query;
 
     if (!runId) {
-      return res.status(400).json({ error: 'run is required' });
+      return res.status(400).json({ error: 'runId is required' });
     }
 
     try {
@@ -24,7 +24,11 @@ export default function (sequelize) {
         if (assigneeUserId === 'null') {
           where.assigneeUserId = { [Op.is]: null };
         } else {
-          where.assigneeUserId = Number(assigneeUserId);
+          const assigneeId = Number(assigneeUserId);
+          if (!Number.isInteger(assigneeId) || assigneeId <= 0) {
+            return res.status(400).json({ error: 'assigneeUserId must be a positive integer or "null"' });
+          }
+          where.assigneeUserId = assigneeId;
         }
       }
 

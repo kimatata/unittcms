@@ -6,6 +6,7 @@ import defineMember from '../../models/members.js';
 import defineProject from '../../models/projects.js';
 import authMiddleware from '../../middleware/auth.js';
 import visibilityMiddleware from '../../middleware/verifyVisible.js';
+import { memberRoles } from '../users/authSettings.js';
 
 export default function (sequelize) {
   const { verifySignedIn } = authMiddleware(sequelize);
@@ -17,13 +18,23 @@ export default function (sequelize) {
   Project.belongsTo(User, { foreignKey: 'userId' });
 
   router.get('/', verifySignedIn, verifyProjectVisibleFromProjectId, async (req, res) => {
-    const { projectId } = req.query;
+    const { projectId, includeOwner } = req.query;
 
     if (!projectId) {
       return res.status(400).json({ error: 'projectId is required' });
     }
 
     try {
+      const wantOwner = includeOwner === 'true';
+
+      if (!wantOwner) {
+        const members = await Member.findAll({
+          where: { projectId },
+          include: [{ model: User }],
+        });
+        return res.json(members);
+      }
+
       const [members, project] = await Promise.all([
         Member.findAll({
           where: { projectId },
@@ -36,15 +47,15 @@ export default function (sequelize) {
 
       const result = [...members];
 
-      // Prepend the project owner if they are not already in the members list
       if (project && project.User) {
         const ownerAlreadyMember = members.some((m) => m.userId === project.userId);
         if (!ownerAlreadyMember) {
+          const managerRoleIndex = memberRoles.findIndex((r) => r.uid === 'manager');
           result.unshift({
-            id: null,
+            id: `owner-${project.userId}`,
             userId: project.userId,
             projectId: Number(projectId),
-            role: null,
+            role: managerRoleIndex,
             User: project.User,
           });
         }

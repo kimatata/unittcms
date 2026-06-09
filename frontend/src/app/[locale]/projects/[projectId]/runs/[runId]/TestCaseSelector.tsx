@@ -15,7 +15,7 @@ import {
   SortDescriptor,
   Chip,
 } from '@heroui/react';
-import { ChevronDown, MoreVertical, CopyPlus, CopyMinus, MessageCircle, UserRound } from 'lucide-react';
+import { ChevronDown, MoreVertical, CopyPlus, CopyMinus, MessageCircle } from 'lucide-react';
 import RunCaseStatus from './RunCaseStatus';
 import AssigneePicker from './AssigneePicker';
 import { Link, NextUiLinkClasses } from '@/src/i18n/routing';
@@ -208,6 +208,7 @@ export default function TestCaseSelector({
             members={members}
             isDisabled={!isManager}
             unassignedLabel={messages.unassigned}
+            searchPlaceholder={messages.searchAssignee}
             onAssign={(userId) => onAssignCase(runCaseId, userId)}
           />
         );

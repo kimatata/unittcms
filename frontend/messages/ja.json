@@ -370,7 +370,8 @@
     "assigned_to_me": "自分に割り当て済み",
     "assign_selected": "選択済みを割り当て",
     "filter_by_assignee": "担当者でフィルター",
-    "select_assignee": "担当者を選択"
+    "select_assignee": "担当者を選択",
+    "search_assignee": "検索…"
   },
   "Comments": {
     "comments": "コメント",

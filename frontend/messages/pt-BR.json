@@ -370,7 +370,8 @@
     "assigned_to_me": "Atribuído a mim",
     "assign_selected": "Atribuir selecionados",
     "filter_by_assignee": "Filtrar por responsável",
-    "select_assignee": "Selecionar responsável"
+    "select_assignee": "Selecionar responsável",
+    "search_assignee": "Buscar…"
   },
   "Comments": {
     "comments": "Comentários",

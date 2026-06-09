@@ -17,17 +17,27 @@ type Props = {
   members: Member[];
   isDisabled: boolean;
   unassignedLabel: string;
+  searchPlaceholder: string;
+  triggerLabel?: string;
   onAssign: (userId: number | null) => void;
 };
 
-export default function AssigneePicker({ assigneeUserId, members, isDisabled, unassignedLabel, onAssign }: Props) {
+export default function AssigneePicker({
+  assigneeUserId,
+  members,
+  isDisabled,
+  unassignedLabel,
+  searchPlaceholder,
+  triggerLabel,
+  onAssign,
+}: Props) {
   const [search, setSearch] = useState('');
 
   const assigneeName = useMemo(() => {
-    if (!assigneeUserId) return unassignedLabel;
+    if (!assigneeUserId) return triggerLabel ?? unassignedLabel;
     const m = members.find((m) => m.User?.id === assigneeUserId);
     return m?.User?.username ?? unassignedLabel;
-  }, [assigneeUserId, members, unassignedLabel]);
+  }, [assigneeUserId, members, unassignedLabel, triggerLabel]);
 
   const filteredMembers = useMemo(() => {
     if (!search) return members;
@@ -58,7 +68,7 @@ export default function AssigneePicker({ assigneeUserId, members, isDisabled, un
           <div className="px-2 pt-2 pb-1">
             <Input
               size="sm"
-              placeholder="Search…"
+              placeholder={searchPlaceholder}
               value={search}
               onValueChange={setSearch}
               onKeyDown={(e) => e.stopPropagation()}
