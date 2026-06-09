@@ -2,19 +2,11 @@
 import { useState, useMemo } from 'react';
 import { Button, Dropdown, DropdownTrigger, DropdownMenu, DropdownItem, Input } from '@heroui/react';
 import { ChevronDown, UserRound } from 'lucide-react';
-
-type Member = {
-  id: number;
-  userId: number;
-  User: {
-    id: number;
-    username: string;
-  };
-};
+import { MemberType } from '@/types/user';
 
 type Props = {
   assigneeUserId: number | null | undefined;
-  members: Member[];
+  members: MemberType[];
   isDisabled: boolean;
   unassignedLabel: string;
   searchPlaceholder: string;

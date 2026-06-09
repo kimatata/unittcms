@@ -18,12 +18,7 @@ import { fetchTags } from '@/utils/tagsControls';
 import { TokenContext } from '@/utils/TokenProvider';
 import { logError } from '@/utils/errorHandler';
 import { TestRunCaseStatusMessages } from '@/types/status';
-
-type Member = {
-  id: number;
-  userId: number;
-  User: { id: number; username: string };
-};
+import { MemberType } from '@/types/user';
 
 type TestRunFilterProps = {
   messages: RunMessages;
@@ -33,7 +28,7 @@ type TestRunFilterProps = {
   activeStatusFilters: number[];
   activeTagFilters: number[];
   activeAssigneeFilter?: string;
-  members?: Member[];
+  members?: MemberType[];
   onFilterChange: (search: string, statusIndices: number[], tagIds: number[], assigneeFilter?: string) => void;
 };
 

@@ -250,6 +250,7 @@ function includeExcludeTestCases(
           runId: runId,
           status: 0,
           editState: 'new',
+          assigneeUserId: null,
         } as RunCaseType;
         targetCase.RunCases = [newRunCase];
       }
@@ -291,6 +292,7 @@ async function updateRunCases(jwt: string, runId: number, testCases: CaseType[])
         runId: runId,
         status: itr.RunCases[0].status,
         editState: itr.RunCases[0].editState,
+        assigneeUserId: itr.RunCases[0].assigneeUserId ?? null,
         createdAt: '0',
         updatedAt: '0',
       });

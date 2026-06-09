@@ -62,6 +62,7 @@ import { useFormGuard } from '@/utils/formGuard';
 import { PriorityMessages } from '@/types/priority';
 import { RunStatusMessages, TestRunCaseStatusMessages } from '@/types/status';
 import { TestTypeMessages } from '@/types/testType';
+import { MemberType } from '@/types/user';
 import { logError } from '@/utils/errorHandler';
 import TreeItem from '@/components/TreeItem';
 import { buildFolderTree } from '@/utils/buildFolderTree';
@@ -114,7 +115,7 @@ export default function RunEditor({
   const [statusFilter, setStatusFilter] = useState<number[]>([]);
   const [tagFilter, setTagFilter] = useState<number[]>([]);
   const [assigneeFilter, setAssigneeFilter] = useState<string>('');
-  const [members, setMembers] = useState<{ id: number; userId: number; User: { id: number; username: string } }[]>([]);
+  const [members, setMembers] = useState<MemberType[]>([]);
   const [pendingAssignees, setPendingAssignees] = useState<Map<number, number | null>>(new Map());
   const router = useRouter();
   const isManager = tokenContext.isProjectManager(Number(projectId));

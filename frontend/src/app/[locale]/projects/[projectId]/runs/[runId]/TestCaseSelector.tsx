@@ -26,12 +26,7 @@ import { PriorityMessages } from '@/types/priority';
 import TestCasePriority from '@/components/TestCasePriority';
 import { TestTypeMessages } from '@/types/testType';
 import { TestRunCaseStatusMessages } from '@/types/status';
-
-type Member = {
-  id: number;
-  userId: number;
-  User: { id: number; username: string };
-};
+import { MemberType } from '@/types/user';
 
 type Props = {
   projectId: string;
@@ -40,7 +35,7 @@ type Props = {
   cases: CaseType[];
   isDisabled: boolean;
   isManager: boolean;
-  members: Member[];
+  members: MemberType[];
   selectedKeys: Selection;
   onSelectionChange: React.Dispatch<React.SetStateAction<Selection>>;
   onChangeStatus: (changeCaseId: number, status: number) => void;

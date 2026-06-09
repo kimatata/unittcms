@@ -18,7 +18,7 @@ type RunCaseType = {
   editState: 'notChanged' | 'changed' | 'new' | 'deleted';
   createdAt: string;
   updatedAt: string;
-  assigneeUserId?: number | null;
+  assigneeUserId: number | null;
 };
 
 type RunStatusCountType = {
