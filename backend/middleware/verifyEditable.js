@@ -217,6 +217,50 @@ export default function verifyEditableMiddleware(sequelize) {
   }
 
   /**
+   * Verify user is manager of the project by runId
+   * (have to be called after verifySignedIn() middleware)
+   */
+  async function verifyProjectManagerFromRunId(req, res, next) {
+    const Run = defineRun(sequelize, DataTypes);
+
+    const runId = req.params.runId || req.query.runId;
+    if (!runId) {
+      return res.status(400).json({ error: 'runId is required' });
+    }
+
+    const run = await Run.findByPk(runId);
+    const projectId = run && run.projectId;
+    if (!projectId) {
+      return res.status(404).send('failed to find projectId');
+    }
+
+    const Project = defineProject(sequelize, DataTypes);
+    const project = await Project.findByPk(projectId);
+    if (!project) {
+      return res.status(404).send('Project not found');
+    }
+
+    if (project.userId === req.userId) {
+      next();
+      return;
+    }
+
+    const Member = defineMember(sequelize, DataTypes);
+    const member = await Member.findOne({
+      where: { userId: req.userId, projectId: projectId },
+    });
+    if (member) {
+      const managerRoleIndex = memberRoles.findIndex((entry) => entry.uid === 'manager');
+      if (member.role === managerRoleIndex) {
+        next();
+        return;
+      }
+    }
+
+    return res.status(403).json({ error: 'Forbidden' });
+  }
+
+  /**
    * Verify user is reporter of the project by runId
    * (have to be called after verifySignedIn() middleware)
    */
@@ -334,6 +378,7 @@ export default function verifyEditableMiddleware(sequelize) {
   return {
     verifyProjectOwner,
     verifyProjectManagerFromProjectId,
+    verifyProjectManagerFromRunId,
     verifyProjectDeveloperFromProjectId,
     verifyProjectDeveloperFromFolderId,
     verifyProjectDeveloperFromCaseId,

@@ -363,7 +363,14 @@
     "no_case_selected": "Nenhum caso de teste selecionado",
     "case_detail": "Detalhe do caso de teste",
     "comments": "Comentários",
-    "history": "Histórico"
+    "history": "Histórico",
+    "assignee": "Responsável",
+    "unassigned": "Não atribuído",
+    "assign_to": "Atribuir a",
+    "assigned_to_me": "Atribuído a mim",
+    "assign_selected": "Atribuir selecionados",
+    "filter_by_assignee": "Filtrar por responsável",
+    "select_assignee": "Selecionar responsável"
   },
   "Comments": {
     "comments": "Comentários",

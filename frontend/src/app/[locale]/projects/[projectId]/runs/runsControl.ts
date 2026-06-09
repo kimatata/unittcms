@@ -325,7 +325,8 @@ async function fetchProjectCases(
   runId: number,
   search?: string,
   status?: string[],
-  tag?: string[]
+  tag?: string[],
+  assigneeUserId?: string
 ) {
   const queryParams = [`projectId=${projectId}&runId=${runId}`];
 
@@ -339,6 +340,10 @@ async function fetchProjectCases(
 
   if (tag && tag.length > 0) {
     queryParams.push(`tag=${tag.join(',')}`);
+  }
+
+  if (assigneeUserId !== undefined && assigneeUserId !== '') {
+    queryParams.push(`assigneeUserId=${assigneeUserId}`);
   }
 
   const query = `?${queryParams.join('&')}`;
@@ -365,6 +370,58 @@ async function fetchProjectCases(
   }
 }
 
+async function assignRunCases(
+  jwt: string,
+  runId: number,
+  runCaseIds: number[],
+  assigneeUserId: number | null
+) {
+  const fetchOptions = {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${jwt}`,
+    },
+    body: JSON.stringify({ runCaseIds, assigneeUserId }),
+  };
+
+  const url = `${apiServer}/runcases/assignee?runId=${runId}`;
+
+  try {
+    const response = await fetch(url, fetchOptions);
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+    return await response.json();
+  } catch (error: unknown) {
+    logError('Error assigning run cases:', error);
+    throw error;
+  }
+}
+
+async function fetchProjectMembersForRun(jwt: string, projectId: string) {
+  const url = `${apiServer}/members?projectId=${projectId}`;
+
+  try {
+    const response = await fetch(url, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${jwt}`,
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+
+    return await response.json();
+  } catch (error: unknown) {
+    logError('Error fetching project members:', error);
+    return [];
+  }
+}
+
 export {
   fetchRun,
   fetchRuns,
@@ -377,4 +434,6 @@ export {
   includeExcludeTestCases,
   updateRunCases,
   fetchProjectCases,
+  assignRunCases,
+  fetchProjectMembersForRun,
 };

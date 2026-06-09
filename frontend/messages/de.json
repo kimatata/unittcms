@@ -363,7 +363,14 @@
     "no_case_selected": "Kein Testfall ausgewählt",
     "case_detail": "Testfall-Details",
     "comments": "Kommentare",
-    "history": "Verlauf"
+    "history": "Verlauf",
+    "assignee": "Beauftragter",
+    "unassigned": "Nicht zugewiesen",
+    "assign_to": "Zuweisen an",
+    "assigned_to_me": "Mir zugewiesen",
+    "assign_selected": "Ausgewählte zuweisen",
+    "filter_by_assignee": "Nach Beauftragtem filtern",
+    "select_assignee": "Beauftragten auswählen"
   },
   "Comments": {
     "comments": "Kommentare",

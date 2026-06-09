@@ -12,6 +12,11 @@ function defineRunCase(sequelize, DataTypes) {
       type: DataTypes.INTEGER,
       allowNull: false,
     },
+    assigneeUserId: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+      defaultValue: null,
+    },
   });
 
   RunCase.associate = (models) => {
@@ -26,6 +31,11 @@ function defineRunCase(sequelize, DataTypes) {
     RunCase.hasMany(models.Comment, {
       foreignKey: 'commentableId',
       onDelete: 'CASCADE',
+    });
+    RunCase.belongsTo(models.User, {
+      as: 'assignee',
+      foreignKey: 'assigneeUserId',
+      onDelete: 'SET NULL',
     });
   };
 

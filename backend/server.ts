@@ -153,8 +153,10 @@ app.use('/runs', runDeleteRoute(sequelize));
 // "/runcases"
 import runCaseIndexRoute from './routes/runcases/index.js';
 import runCaseEditRoute from './routes/runcases/edit.js';
+import runCaseAssigneeRoute from './routes/runcases/assignee.js';
 app.use('/runcases', runCaseIndexRoute(sequelize));
 app.use('/runcases', runCaseEditRoute(sequelize));
+app.use('/runcases', runCaseAssigneeRoute(sequelize));
 
 // "/members"
 import membersIndexRoute from './routes/members/index.js';

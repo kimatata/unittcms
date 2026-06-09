@@ -33,7 +33,7 @@ export default function (sequelize) {
     verifyProjectVisibleFromProjectId,
     verifyProjectVisibleFromRunId,
     async (req, res) => {
-      const { projectId, runId, status, tag, search } = req.query;
+      const { projectId, runId, status, tag, search, assigneeUserId } = req.query;
 
       if (!projectId) {
         return res.status(400).json({ error: 'projectId is required' });
@@ -65,6 +65,7 @@ export default function (sequelize) {
 
         // Handle status filter for RunCase
         let statusFilter = undefined;
+        let assigneeFilter = undefined;
         let runCaseRequired = false;
         if (status) {
           const statusValues = status
@@ -76,6 +77,15 @@ export default function (sequelize) {
             statusFilter = { status: { [Op.in]: statusValues } };
             runCaseRequired = true;
           }
+        }
+
+        if (assigneeUserId !== undefined) {
+          if (assigneeUserId === 'null') {
+            assigneeFilter = { assigneeUserId: { [Op.is]: null } };
+          } else {
+            assigneeFilter = { assigneeUserId: Number(assigneeUserId) };
+          }
+          runCaseRequired = true;
         }
 
         // Handle tag filter
@@ -113,6 +123,7 @@ export default function (sequelize) {
                 'id',
                 'runId',
                 'status',
+                'assigneeUserId',
                 [
                   sequelize.literal(
                     '(SELECT COUNT(*) FROM `comments` WHERE `comments`.`commentableType` = ' +
@@ -122,10 +133,10 @@ export default function (sequelize) {
                   'commentCount',
                 ],
               ],
-              // Must be 'true' when filtering by status, otherwise all cases are returned.
+              // Must be 'true' when filtering by status or assignee, otherwise all cases are returned.
               required: runCaseRequired,
               where: {
-                [Op.and]: [{ runId: runId }, statusFilter],
+                [Op.and]: [{ runId: runId }, statusFilter, assigneeFilter].filter(Boolean),
               },
             },
             tagInclude,

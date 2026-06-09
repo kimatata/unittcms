@@ -363,7 +363,14 @@
     "no_case_selected": "No test case selected",
     "case_detail": "Test case detail",
     "comments": "Comments",
-    "history": "History"
+    "history": "History",
+    "assignee": "Assignee",
+    "unassigned": "Unassigned",
+    "assign_to": "Assign to",
+    "assigned_to_me": "Assigned to me",
+    "assign_selected": "Assign selected",
+    "filter_by_assignee": "Filter by assignee",
+    "select_assignee": "Select assignee"
   },
   "Comments": {
     "comments": "Comments",

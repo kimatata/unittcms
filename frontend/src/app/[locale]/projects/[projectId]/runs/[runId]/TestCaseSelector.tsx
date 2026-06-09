@@ -15,8 +15,9 @@ import {
   SortDescriptor,
   Chip,
 } from '@heroui/react';
-import { ChevronDown, MoreVertical, CopyPlus, CopyMinus, MessageCircle } from 'lucide-react';
+import { ChevronDown, MoreVertical, CopyPlus, CopyMinus, MessageCircle, UserRound } from 'lucide-react';
 import RunCaseStatus from './RunCaseStatus';
+import AssigneePicker from './AssigneePicker';
 import { Link, NextUiLinkClasses } from '@/src/i18n/routing';
 import { testRunCaseStatus } from '@/config/selection';
 import { CaseType } from '@/types/case';
@@ -26,17 +27,26 @@ import TestCasePriority from '@/components/TestCasePriority';
 import { TestTypeMessages } from '@/types/testType';
 import { TestRunCaseStatusMessages } from '@/types/status';
 
+type Member = {
+  id: number;
+  userId: number;
+  User: { id: number; username: string };
+};
+
 type Props = {
   projectId: string;
   runId: string;
   locale: string;
   cases: CaseType[];
   isDisabled: boolean;
+  isManager: boolean;
+  members: Member[];
   selectedKeys: Selection;
   onSelectionChange: React.Dispatch<React.SetStateAction<Selection>>;
   onChangeStatus: (changeCaseId: number, status: number) => void;
   onIncludeCase: (includeCaseId: number) => void;
   onExcludeCase: (excludeCaseId: number) => void;
+  onAssignCase: (runCaseId: number, userId: number | null) => void;
   messages: RunMessages;
   testRunCaseStatusMessages: TestRunCaseStatusMessages;
   priorityMessages: PriorityMessages;
@@ -49,11 +59,14 @@ export default function TestCaseSelector({
   locale,
   cases,
   isDisabled,
+  isManager,
+  members,
   selectedKeys,
   onSelectionChange,
   onChangeStatus,
   onIncludeCase,
   onExcludeCase,
+  onAssignCase,
   messages,
   testRunCaseStatusMessages,
   priorityMessages,
@@ -64,6 +77,7 @@ export default function TestCaseSelector({
     { name: messages.priority, uid: 'priority', sortable: true },
     { name: messages.tags, uid: 'tags', sortable: false },
     { name: messages.status, uid: 'runStatus', sortable: true },
+    { name: messages.assignee, uid: 'assignee', sortable: false },
     { name: messages.comments, uid: 'comments', sortable: false },
     { name: messages.actions, uid: 'actions' },
   ];
@@ -181,6 +195,23 @@ export default function TestCaseSelector({
             </DropdownMenu>
           </Dropdown>
         );
+      case 'assignee': {
+        const runCaseId = testCase.RunCases && testCase.RunCases.length > 0 ? testCase.RunCases[0].id : null;
+        const currentAssignee =
+          testCase.RunCases && testCase.RunCases.length > 0 ? testCase.RunCases[0].assigneeUserId : null;
+        if (!isIncluded || !runCaseId || runCaseId < 0) {
+          return <span className={notIncludedCaseClass}>-</span>;
+        }
+        return (
+          <AssigneePicker
+            assigneeUserId={currentAssignee ?? null}
+            members={members}
+            isDisabled={!isManager}
+            unassignedLabel={messages.unassigned}
+            onAssign={(userId) => onAssignCase(runCaseId, userId)}
+          />
+        );
+      }
       case 'comments':
         return (
           <div className={isIncluded ? '' : notIncludedCaseClass}>

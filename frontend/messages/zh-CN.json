@@ -363,7 +363,14 @@
     "no_case_selected": "未选择测试用例",
     "case_detail": "测试用例详情",
     "comments": "评论",
-    "history": "历史"
+    "history": "历史",
+    "assignee": "负责人",
+    "unassigned": "未分配",
+    "assign_to": "分配给",
+    "assigned_to_me": "分配给我",
+    "assign_selected": "分配所选",
+    "filter_by_assignee": "按负责人筛选",
+    "select_assignee": "选择负责人"
   },
   "Comments": {
     "comments": "评论",
