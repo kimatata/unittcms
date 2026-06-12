@@ -249,7 +249,7 @@ export default function RunEditor({
     setIsDirty(true);
     setTestCases((current) =>
       current.map((tc) => {
-        if (tc.RunCases && runCaseIds.includes(tc.RunCases[0].id)) {
+        if (tc.RunCases?.[0] && runCaseIds.includes(tc.RunCases[0].id)) {
           return { ...tc, RunCases: [{ ...tc.RunCases[0], assigneeUserId: userId }] };
         }
         return tc;
