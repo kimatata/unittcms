@@ -1,7 +1,8 @@
 'use client';
 import { useState, useMemo } from 'react';
 import { Button, Dropdown, DropdownTrigger, DropdownMenu, DropdownItem, Input } from '@heroui/react';
-import { ChevronDown, UserRound } from 'lucide-react';
+import { ChevronDown } from 'lucide-react';
+import UserAvatar from '@/components/UserAvatar';
 import { MemberType } from '@/types/user';
 
 type Props = {
@@ -25,11 +26,14 @@ export default function AssigneePicker({
 }: Props) {
   const [search, setSearch] = useState('');
 
-  const assigneeName = useMemo(() => {
-    if (!assigneeUserId) return triggerLabel ?? unassignedLabel;
-    const m = members.find((m) => m.User?.id === assigneeUserId);
-    return m?.User?.username ?? unassignedLabel;
-  }, [assigneeUserId, members, unassignedLabel, triggerLabel]);
+  const currentMember = useMemo(() => {
+    if (!assigneeUserId) return null;
+    return members.find((m) => m.User?.id === assigneeUserId) ?? null;
+  }, [assigneeUserId, members]);
+
+  const assigneeName = !assigneeUserId
+    ? (triggerLabel ?? unassignedLabel)
+    : (currentMember?.User?.username ?? unassignedLabel);
 
   const filteredMembers = useMemo(() => {
     if (!search) return members;
@@ -39,7 +43,7 @@ export default function AssigneePicker({
   if (isDisabled) {
     return (
       <span className="text-sm text-default-500 flex items-center gap-1">
-        <UserRound size={14} />
+        <UserAvatar size={14} username={currentMember?.User?.username} avatarPath={currentMember?.User?.avatarPath} />
         {assigneeName}
       </span>
     );
@@ -52,7 +56,18 @@ export default function AssigneePicker({
       }}
     >
       <DropdownTrigger>
-        <Button size="sm" variant="light" endContent={<ChevronDown size={14} />} startContent={<UserRound size={14} />}>
+        <Button
+          size="sm"
+          variant="light"
+          endContent={<ChevronDown size={14} />}
+          startContent={
+            <UserAvatar
+              size={14}
+              username={currentMember?.User?.username}
+              avatarPath={currentMember?.User?.avatarPath}
+            />
+          }
+        >
           <span className="max-w-24 truncate">{assigneeName}</span>
         </Button>
       </DropdownTrigger>
