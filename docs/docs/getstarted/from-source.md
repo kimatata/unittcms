@@ -8,7 +8,7 @@ While using Docker is the recommended and easiest way to run UnitTCMS, this chap
 
 :::info[Prerequisite]
 
-Prerequisite: v20 or higher node must be installed.
+Prerequisite: v22 or higher node must be installed.
 
 :::
 
@@ -33,6 +33,12 @@ Move to backend directory, then install dependencies.
 ```bash
 cd backend
 npm install
+```
+
+Build backend code.
+
+```bash
+npm run build
 ```
 
 Initialize the database with the following command.

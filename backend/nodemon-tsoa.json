@@ -1,0 +1,6 @@
+{
+  "watch": ["controllers/**/*.ts"],
+  "ignore": ["dist", "node_modules"],
+  "exec": "tsoa spec-and-routes",
+  "ext": "ts"
+}

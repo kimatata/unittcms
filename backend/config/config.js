@@ -1,10 +1,14 @@
 import path from 'path';
-import { fileURLToPath } from 'url';
+import { defaultDangerKey } from '../routes/users/authSettings.js';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+export const FRONTEND_ORIGIN = process.env.FRONTEND_ORIGIN || 'http://localhost:8000';
+export const SECRET_KEY = process.env.SECRET_KEY || defaultDangerKey;
 
-const databasePath = path.resolve(__dirname, '../database/database.sqlite');
+export const IS_PROD = process.env.NODE_ENV === 'production';
+export const PORT = process.env.PORT || 8001;
+export const API_PATH = process.env.API_PATH || '/api';
+
+const databasePath = process.env.DATABASE_PATH ?? path.resolve(process.cwd(), 'database/database.sqlite');
 
 export default {
   development: {

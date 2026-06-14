@@ -94,7 +94,9 @@
     "signin": "サインイン",
     "or_signup": "新規登録ページ",
     "or_signin": "サインインページ",
+    "or_sso": "または",
     "signin_as_guest": "ゲストとしてサインイン",
+    "signin_with_sso": "SSOでログイン",
     "email": "メールアドレス",
     "username": "ユーザー名",
     "password": "パスワード",
@@ -361,7 +363,15 @@
     "no_case_selected": "テストケースが選択されていません",
     "case_detail": "テストケース詳細",
     "comments": "コメント",
-    "history": "履歴"
+    "history": "履歴",
+    "assignee": "担当者",
+    "unassigned": "未割り当て",
+    "assign_to": "担当者を割り当て",
+    "assigned_to_me": "自分に割り当て済み",
+    "assign_selected": "選択済みを割り当て",
+    "filter_by_assignee": "担当者でフィルター",
+    "select_assignee": "担当者を選択",
+    "search_assignee": "検索…"
   },
   "Comments": {
     "comments": "コメント",

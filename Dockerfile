@@ -32,6 +32,23 @@ COPY frontend ./frontend
 WORKDIR /app/frontend
 RUN npm run build
 
+# Build backend
+FROM base AS backend-builder
+WORKDIR /app
+
+ARG API_PATH=/api
+
+# Install jq for JSON manipulation
+RUN apk add --no-cache jq
+
+COPY --from=deps /app/backend/node_modules ./backend/node_modules
+COPY backend ./backend
+
+WORKDIR /app/backend
+# Update tsoa.json spec.basePath with the API_PATH using jq
+RUN jq --arg path "$API_PATH" '.spec.basePath = $path' tsoa.json > tsoa.tmp && mv tsoa.tmp tsoa.json
+RUN npm run build
+
 # Final production image
 FROM base AS runner
 WORKDIR /app
@@ -39,13 +56,20 @@ WORKDIR /app
 ENV NODE_ENV=production
 ENV PORT=8000
 ENV FRONTEND_ORIGIN=http://localhost:8000
+ENV API_PATH=/api
+ENV DATABASE_PATH=/app/backend/database/database.sqlite
 
 # Create a non-root user
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
 
-# Copy backend files
-COPY backend ./backend
+# Copy backend build (dist and public folders)
+COPY --from=backend-builder /app/backend/dist ./backend
+COPY --from=backend-builder /app/backend/public ./backend/public
+# Copy sequelize files for migrations
+COPY --from=backend-builder /app/backend/config ./backend/config
+COPY --from=backend-builder /app/backend/migrations ./backend/migrations
+COPY --from=backend-builder /app/backend/seeders ./backend/seeders
 
 # Copy frontend build
 COPY --from=frontend-builder /app/frontend/.next/standalone ./
@@ -55,11 +79,14 @@ COPY --from=frontend-builder /app/frontend/public ./public
 # Copy Next.js module for the server
 COPY --from=deps /app/frontend/node_modules/next ./node_modules/next
 
-# Install backend dependencies directly in the container to ensure native modules are built correctly
+# Install backend production dependencies only
 WORKDIR /app/backend
 COPY backend/package.json backend/package-lock.json* ./
-RUN npm ci
+RUN npm ci --omit=dev
 WORKDIR /app
+
+## remove .env
+RUN rm -f /app/frontend/.env && rm -f /app/backend/.env
 
 # Copy custom entrypoint.js that combines frontend and backend
 COPY entrypoint.js ./

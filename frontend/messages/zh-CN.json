@@ -94,7 +94,9 @@
     "signin": "登录",
     "or_signup": "没有账号？去注册",
     "or_signin": "已有账号？去登录",
+    "or_sso": "或",
     "signin_as_guest": "或以访客身份登录",
+    "signin_with_sso": "使用SSO登录",
     "email": "邮箱",
     "username": "用户名",
     "password": "密码",
@@ -361,7 +363,15 @@
     "no_case_selected": "未选择测试用例",
     "case_detail": "测试用例详情",
     "comments": "评论",
-    "history": "历史"
+    "history": "历史",
+    "assignee": "负责人",
+    "unassigned": "未分配",
+    "assign_to": "分配给",
+    "assigned_to_me": "分配给我",
+    "assign_selected": "分配所选",
+    "filter_by_assignee": "按负责人筛选",
+    "select_assignee": "选择负责人",
+    "search_assignee": "搜索…"
   },
   "Comments": {
     "comments": "评论",

@@ -94,7 +94,9 @@
     "signin": "Entrar",
     "or_signup": "Você precisa se cadastrar?",
     "or_signin": "Você precisa entrar?",
+    "or_sso": "ou",
     "signin_as_guest": "Ou entre como Convidado",
+    "signin_with_sso": "Entrar com SSO",
     "email": "E-mail",
     "username": "Nome de usuário",
     "password": "Senha",
@@ -361,7 +363,15 @@
     "no_case_selected": "Nenhum caso de teste selecionado",
     "case_detail": "Detalhe do caso de teste",
     "comments": "Comentários",
-    "history": "Histórico"
+    "history": "Histórico",
+    "assignee": "Responsável",
+    "unassigned": "Não atribuído",
+    "assign_to": "Atribuir a",
+    "assigned_to_me": "Atribuído a mim",
+    "assign_selected": "Atribuir selecionados",
+    "filter_by_assignee": "Filtrar por responsável",
+    "select_assignee": "Selecionar responsável",
+    "search_assignee": "Buscar…"
   },
   "Comments": {
     "comments": "Comentários",

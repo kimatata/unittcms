@@ -1,17 +1,21 @@
 import path from 'path';
 import { fileURLToPath } from 'url';
-import express from 'express';
+import { readFileSync } from 'fs';
+import swaggerUi from 'swagger-ui-express';
+import express, { Application } from 'express';
 import cors from 'cors';
 import RateLimit from 'express-rate-limit';
 import { Sequelize } from 'sequelize';
+import { RegisterRoutes } from './routes.js';
+import { FRONTEND_ORIGIN } from './config/config.js';
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-const app = express();
+const app: Application = express();
 
 // enable frontend access
-const frontendOrigin = process.env.FRONTEND_ORIGIN || 'http://localhost:8000';
 const corsOptions = {
-  origin: frontendOrigin,
+  origin: FRONTEND_ORIGIN,
   methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
 };
 app.use(cors(corsOptions));
@@ -30,21 +34,22 @@ app.use(limiter);
 // Specify the directory to serve static files
 app.use(express.static(path.join(__dirname, 'public')));
 
-// init sequalize
-const databasePath = path.resolve(__dirname, 'database/database.sqlite');
-const sequelize = new Sequelize({
+// Swagger UI
+const swaggerPath = path.join(__dirname, 'public/swagger.json');
+const swaggerDocument = JSON.parse(readFileSync(swaggerPath, 'utf8'));
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+
+// __dirname is backend/ in dev (ts-node) and backend/dist/ in production (compiled)
+const backendDir = path.basename(__dirname) === 'dist' ? path.resolve(__dirname, '..') : __dirname;
+const databasePath = process.env.DATABASE_PATH ?? path.resolve(backendDir, 'database/database.sqlite');
+export const sequelize = new Sequelize({
   dialect: 'sqlite',
   storage: databasePath,
   logging: false,
 });
 
-// "/"
-import indexRoute from './routes/index.js';
-app.use('/', indexRoute());
-
-// "/health"
-import healthIndexRoute from './routes/health/index.js';
-app.use('/health', healthIndexRoute());
+// Register TSOA-generated routes (TypeScript controllers)
+RegisterRoutes(app);
 
 // "users"
 import usersIndexRoute from './routes/users/index.js';
@@ -58,6 +63,8 @@ import usersUpdateAvatarRoute from './routes/users/updateAvatar.js';
 import usersUpdateRoleRoute from './routes/users/updateRole.js';
 import signUpRoute from './routes/users/signup.js';
 import signInRoute from './routes/users/signin.js';
+import oidcRoute from './routes/users/oidc.js';
+app.use('/users', oidcRoute(sequelize)); // OIDC must be before other routes
 app.use('/users', usersIndexRoute(sequelize));
 app.use('/users', usersFindRoute(sequelize));
 app.use('/users', usersSearchRoute(sequelize));
@@ -146,8 +153,10 @@ app.use('/runs', runDeleteRoute(sequelize));
 // "/runcases"
 import runCaseIndexRoute from './routes/runcases/index.js';
 import runCaseEditRoute from './routes/runcases/edit.js';
+import runCaseAssigneeRoute from './routes/runcases/assignee.js';
 app.use('/runcases', runCaseIndexRoute(sequelize));
 app.use('/runcases', runCaseEditRoute(sequelize));
+app.use('/runcases', runCaseAssigneeRoute(sequelize));
 
 // "/members"
 import membersIndexRoute from './routes/members/index.js';

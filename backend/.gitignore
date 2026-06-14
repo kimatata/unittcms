@@ -2,3 +2,11 @@ node_modules/
 .env
 public/uploads/*
 !public/uploads/dummy.txt
+
+# TypeScript
+dist/
+*.tsbuildinfo
+
+# TSOA auto-generated files
+routes.ts
+public/swagger.json

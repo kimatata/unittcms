@@ -52,6 +52,14 @@ export default function RunLayout({
     tags: t('tags'),
     selectTags: t('select_tags'),
     comments: t('comments'),
+    assignee: t('assignee'),
+    unassigned: t('unassigned'),
+    assignTo: t('assign_to'),
+    assignedToMe: t('assigned_to_me'),
+    assignSelected: t('assign_selected'),
+    filterByAssignee: t('filter_by_assignee'),
+    selectAssignee: t('select_assignee'),
+    searchAssignee: t('search_assignee'),
   };
 
   const rst = useTranslations('RunStatus');

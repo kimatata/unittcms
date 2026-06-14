@@ -19,6 +19,8 @@ export default function Page({ params }: PageType) {
     linkTitle: t('or_signin'),
     submitTitle: t('signup'),
     signInAsGuest: t('signin_as_guest'),
+    signInWithSso: t('signin_with_sso'),
+    or: t('or_sso'),
     email: t('email'),
     username: t('username'),
     password: t('password'),
@@ -35,7 +37,7 @@ export default function Page({ params }: PageType) {
   };
   return (
     <>
-      <AuthPage isSignup={true} messages={messages} locale={params.locale as LocaleCodeType} />
+      <AuthPage isSignup={true} messages={messages} locale={params.locale as LocaleCodeType} ssoEnabled={false} />
     </>
   );
 }

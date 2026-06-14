@@ -18,6 +18,7 @@ type RunCaseType = {
   editState: 'notChanged' | 'changed' | 'new' | 'deleted';
   createdAt: string;
   updatedAt: string;
+  assigneeUserId: number | null;
 };
 
 type RunStatusCountType = {
@@ -90,6 +91,14 @@ type RunMessages = {
   tags: string;
   selectTags: string;
   comments: string;
+  assignee: string;
+  unassigned: string;
+  assignTo: string;
+  assignedToMe: string;
+  assignSelected: string;
+  filterByAssignee: string;
+  selectAssignee: string;
+  searchAssignee: string;
 };
 
 type RunDetailMessages = {

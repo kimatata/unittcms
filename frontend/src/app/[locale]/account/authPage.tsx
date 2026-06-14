@@ -12,15 +12,18 @@ import { useRouter } from '@/src/i18n/routing';
 import Config from '@/config/config';
 import { LocaleCodeType } from '@/types/locale';
 import Footer from '@/components/Footer';
+import { OpenIdIcon } from '@/components/icons';
 const isDemoSite = Config.isDemoSite;
+const apiServer = Config.apiServer;
 
 type Props = {
   isSignup: boolean;
   messages: AuthMessages;
   locale: LocaleCodeType;
+  ssoEnabled: boolean;
 };
 
-export default function AuthPage({ isSignup, messages, locale }: Props) {
+export default function AuthPage({ isSignup, messages, locale, ssoEnabled }: Props) {
   const router = useRouter();
   const context = useContext(TokenContext);
   const [user, setUser] = useState<UserType>({
@@ -92,6 +95,11 @@ export default function AuthPage({ isSignup, messages, locale }: Props) {
     context.setToken(token);
     context.storeTokenToLocalStorage(token);
     router.push('/account', { locale: token.user?.locale ?? locale });
+  };
+
+  const handleSSOLogin = () => {
+    // Redirect to backend OIDC login endpoint
+    window.location.href = `${apiServer}/users/oidc/login`;
   };
 
   return (
@@ -192,6 +200,26 @@ export default function AuthPage({ isSignup, messages, locale }: Props) {
                 </Button>
               )}
             </div>
+
+            {!isSignup && ssoEnabled && (
+              <>
+                <div className="relative flex items-center my-3">
+                  <div className="flex-grow border-t border-default-200" />
+                  <span className="mx-4 flex-shrink text-sm text-default-400">{messages.or}</span>
+                  <div className="flex-grow border-t border-default-200" />
+                </div>
+
+                <Button
+                  color="primary"
+                  variant="bordered"
+                  onPress={handleSSOLogin}
+                  className="w-full mt-3"
+                  startContent={<OpenIdIcon />}
+                >
+                  {messages.signInWithSso}
+                </Button>
+              </>
+            )}
           </form>
         </CardBody>
       </Card>

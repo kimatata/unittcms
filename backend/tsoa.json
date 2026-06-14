@@ -1,0 +1,34 @@
+{
+  "entryFile": "server.ts",
+  "noImplicitAdditionalProperties": "throw-on-extras",
+  "controllerPathGlobs": ["controllers/**/*.ts"],
+  "compilerOptions": {
+    "esModuleInterop": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true
+  },
+  "spec": {
+    "basePath": "/",
+    "outputDirectory": "public",
+    "specVersion": 3,
+    "securityDefinitions": {
+      "jwt": {
+        "type": "apiKey",
+        "name": "Authorization",
+        "in": "header"
+      }
+    },
+    "name": "UnitTCMS API",
+    "description": "Test Case Management System API",
+    "version": "1.0.0",
+    "contact": {
+      "name": "UnitTCMS"
+    }
+  },
+  "routes": {
+    "routesDir": ".",
+    "middleware": "express",
+    "basePath": "/",
+    "esm": true
+  }
+}

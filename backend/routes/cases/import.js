@@ -66,62 +66,68 @@ export default function (sequelize) {
         return res.status(400).json({ error: 'folderId is required' });
       }
 
-      const t = await sequelize.transaction();
+      let jsonData;
       try {
         const workbook = XLSX.read(req.file.buffer, { type: 'buffer' });
         const sheetName = workbook.SheetNames[0];
         const worksheet = workbook.Sheets[sheetName];
-        const jsonData = XLSX.utils.sheet_to_json(worksheet);
+        jsonData = XLSX.utils.sheet_to_json(worksheet);
+      } catch (error) {
+        console.error(error);
+        return res.status(400).json({ error: 'Invalid Excel file' });
+      }
 
-        let currentTitle = null;
-        let previousTitle = null;
-        let stepNo = 1;
-        const casesToCreate = [];
-        const stepsToCreate = [];
-        for (const [index, row] of jsonData.entries()) {
-          const errorMessage = _getRowValidationError(row, index);
-          if (errorMessage) {
-            return res.status(400).json({ error: errorMessage });
-          }
-
-          // Add step to the same case if the current row title is equal to previous row title
-          // This handle cases with multiple steps :)
-          currentTitle = row['title'].trim();
-          previousTitle = casesToCreate[casesToCreate.length - 1]?.title.trim();
-          if (casesToCreate.length > 0 && previousTitle === currentTitle) {
-            stepNo += 1;
-            stepsToCreate.push({
-              caseIndex: casesToCreate.length - 1,
-              stepNo: stepNo,
-              step: row['step'] || '',
-              result: row['expectedStepResult'] || '',
-            });
-          } else {
-            stepNo = 1;
-            casesToCreate.push({
-              folderId: folderId,
-              title: currentTitle,
-              description: row['description'] || '',
-              state: 0, // default state
-              priority: row['priority'] ? priorities.indexOf(row['priority']) : priorities.indexOf('medium'),
-              type: row['type'] ? testTypes.indexOf(row['type']) : testTypes.indexOf('other'),
-              preConditions: row['preConditions'],
-              expectedResults: row['expectedResults'],
-              automationStatus: row['automationStatus']
-                ? automationStatus.indexOf(row['automationStatus'])
-                : automationStatus.indexOf('automation-not-required'),
-              template: row['template'] ? templates.indexOf(row['template']) : templates.indexOf('text'),
-            });
-            stepsToCreate.push({
-              caseIndex: casesToCreate.length - 1,
-              stepNo: stepNo,
-              step: row['step'] || '',
-              result: row['expectedStepResult'] || '',
-            });
-          }
+      for (const [index, row] of jsonData.entries()) {
+        const errorMessage = _getRowValidationError(row, index);
+        if (errorMessage) {
+          return res.status(400).json({ error: errorMessage });
         }
+      }
 
-        // 'Manually' create cases, steps and caseStep association.
+      let currentTitle = null;
+      let previousTitle = null;
+      let stepNo = 1;
+      const casesToCreate = [];
+      const stepsToCreate = [];
+      for (const row of jsonData) {
+        currentTitle = row['title'].trim();
+        previousTitle = casesToCreate[casesToCreate.length - 1]?.title.trim();
+        if (casesToCreate.length > 0 && previousTitle === currentTitle) {
+          stepNo += 1;
+          stepsToCreate.push({
+            caseIndex: casesToCreate.length - 1,
+            stepNo: stepNo,
+            step: row['step'] || '',
+            result: row['expectedStepResult'] || '',
+          });
+        } else {
+          stepNo = 1;
+          casesToCreate.push({
+            folderId: folderId,
+            title: currentTitle,
+            description: row['description'] || '',
+            state: 0,
+            priority: row['priority'] ? priorities.indexOf(row['priority']) : priorities.indexOf('medium'),
+            type: row['type'] ? testTypes.indexOf(row['type']) : testTypes.indexOf('other'),
+            preConditions: row['preConditions'],
+            expectedResults: row['expectedResults'],
+            automationStatus: row['automationStatus']
+              ? automationStatus.indexOf(row['automationStatus'])
+              : automationStatus.indexOf('automation-not-required'),
+            template: row['template'] ? templates.indexOf(row['template']) : templates.indexOf('text'),
+          });
+          stepsToCreate.push({
+            caseIndex: casesToCreate.length - 1,
+            stepNo: stepNo,
+            step: row['step'] || '',
+            result: row['expectedStepResult'] || '',
+          });
+        }
+      }
+
+      // Only open the transaction once all data is known to be valid.
+      const t = await sequelize.transaction();
+      try {
         const createdCases = await Case.bulkCreate(casesToCreate, { transaction: t });
         for (const stepData of stepsToCreate) {
           const createdCase = createdCases[stepData.caseIndex];
@@ -143,10 +149,11 @@ export default function (sequelize) {
         }
 
         await t.commit();
-        res.json(createdCases);
+        res.status(200).json(createdCases);
       } catch (error) {
         await t.rollback();
         console.error(error);
+        res.status(500).json({ error: 'Internal server error' });
       }
     }
   );
@@ -166,7 +173,7 @@ function _getRowValidationError(row, index) {
 
   // Validate priority if provided
   if (row['priority']) {
-    const priorityIndex = priorities.indexOf(row['priority']?.toLowerCase());
+    const priorityIndex = priorities.indexOf(row['priority']);
     if (priorityIndex === -1) {
       return `Row ${rowNumber} has invalid priority: ${row['priority']}`;
     }
@@ -174,7 +181,7 @@ function _getRowValidationError(row, index) {
 
   // Validate type if provided
   if (row['type']) {
-    const typeIndex = testTypes.indexOf(row['type']?.toLowerCase());
+    const typeIndex = testTypes.indexOf(row['type']);
     if (typeIndex === -1) {
       return `Row ${rowNumber} has invalid type: ${row['type']}`;
     }
@@ -182,7 +189,7 @@ function _getRowValidationError(row, index) {
 
   // Validate automationStatus if provided
   if (row['automationStatus']) {
-    const automationStatusIndex = automationStatus.indexOf(row['automationStatus']?.toLowerCase());
+    const automationStatusIndex = automationStatus.indexOf(row['automationStatus']);
     if (automationStatusIndex === -1) {
       return `Row ${rowNumber} has invalid automationStatus: ${row['automationStatus']}`;
     }
@@ -190,7 +197,7 @@ function _getRowValidationError(row, index) {
 
   // Validate template if provided
   if (row['template']) {
-    const templateIndex = templates.indexOf(row['template']?.toLowerCase());
+    const templateIndex = templates.indexOf(row['template']);
     if (templateIndex === -1) {
       return `Row ${rowNumber} has invalid template: ${row['template']}`;
     }

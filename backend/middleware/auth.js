@@ -13,7 +13,7 @@ export default function authMiddleware(sequelize) {
     const authHeader = req.header('Authorization');
     const secretKey = process.env.SECRET_KEY || defaultDangerKey;
 
-    const token = authHeader.split(' ')[1]; // delete 'Bearer '
+    const token = authHeader?.split(' ')?.pop(); // delete 'Bearer '
     if (!token) {
       return res.status(401).json({ error: 'Access denied' });
     }

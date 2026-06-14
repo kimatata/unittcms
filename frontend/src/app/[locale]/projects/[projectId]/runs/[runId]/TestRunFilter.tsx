@@ -18,6 +18,7 @@ import { fetchTags } from '@/utils/tagsControls';
 import { TokenContext } from '@/utils/TokenProvider';
 import { logError } from '@/utils/errorHandler';
 import { TestRunCaseStatusMessages } from '@/types/status';
+import { MemberType } from '@/types/user';
 
 type TestRunFilterProps = {
   messages: RunMessages;
@@ -26,10 +27,15 @@ type TestRunFilterProps = {
   activeSearchFilter: string;
   activeStatusFilters: number[];
   activeTagFilters: number[];
-  onFilterChange: (search: string, statusIndices: number[], tagIds: number[]) => void;
+  activeAssigneeFilter?: string;
+  members?: MemberType[];
+  onFilterChange: (search: string, statusIndices: number[], tagIds: number[], assigneeFilter?: string) => void;
 };
 
 type Tag = Pick<TagType, 'id' | 'name'>;
+
+const ASSIGNEE_ME = 'me';
+const ASSIGNEE_UNASSIGNED = 'null';
 
 export default function TestRunFilter({
   messages,
@@ -39,11 +45,14 @@ export default function TestRunFilter({
   activeSearchFilter = '',
   activeStatusFilters = [],
   activeTagFilters = [],
+  activeAssigneeFilter = '',
+  members = [],
 }: TestRunFilterProps) {
   const tokenContext = useContext(TokenContext);
   const [search, setSearch] = useState<string>('');
   const [selectedStatuses, setSelectedStatuses] = useState<Selection>(new Set([]));
   const [selectedTags, setSelectedTags] = useState<Selection>(new Set([]));
+  const [selectedAssignee, setSelectedAssignee] = useState<string>('');
   const [tags, setTags] = useState<Tag[]>([]);
 
   useEffect(() => {
@@ -81,8 +90,20 @@ export default function TestRunFilter({
     }
   }, [activeTagFilters]);
 
+  useEffect(() => {
+    setSelectedAssignee(activeAssigneeFilter || '');
+  }, [activeAssigneeFilter]);
+
   const handleStatusSelectionChange = (keys: Selection) => {
     setSelectedStatuses(keys);
+  };
+
+  const assigneeLabel = () => {
+    if (!selectedAssignee) return messages.selectAssignee;
+    if (selectedAssignee === ASSIGNEE_ME) return messages.assignedToMe;
+    if (selectedAssignee === ASSIGNEE_UNASSIGNED) return messages.unassigned;
+    const m = members.find((m) => String(m.User?.id) === selectedAssignee);
+    return m?.User?.username ?? messages.selectAssignee;
   };
 
   const handleApplyFilter = () => {
@@ -100,14 +121,15 @@ export default function TestRunFilter({
         .filter((id) => !isNaN(id));
     }
 
-    onFilterChange(search, statusIndices, tagIds);
+    onFilterChange(search, statusIndices, tagIds, selectedAssignee || undefined);
   };
 
   const handleClearFilter = () => {
     setSearch('');
     setSelectedStatuses(new Set([]));
     setSelectedTags(new Set([]));
-    onFilterChange('', [], []);
+    setSelectedAssignee('');
+    onFilterChange('', [], [], undefined);
   };
 
   return (
@@ -129,7 +151,7 @@ export default function TestRunFilter({
           maxLength={100}
         />
       </div>
-      <div className="mb-3 flex justify-between gap-2">
+      <div className="mb-3 flex justify-between gap-2 flex-wrap">
         <div className="flex-col space-y-1">
           <h3 className="text-default-500 text-small">{messages.status}</h3>
           <Dropdown>
@@ -182,6 +204,41 @@ export default function TestRunFilter({
                   <span className="text-sm">{tag.name}</span>
                 </DropdownItem>
               ))}
+            </DropdownMenu>
+          </Dropdown>
+        </div>
+
+        <div className="flex-col space-y-1">
+          <h3 className="text-default-500 text-small">{messages.filterByAssignee}</h3>
+          <Dropdown>
+            <DropdownTrigger>
+              <Button size="sm" variant="bordered" className="w-36" endContent={<ChevronDown size={16} />}>
+                <span className="truncate max-w-24">{assigneeLabel()}</span>
+              </Button>
+            </DropdownTrigger>
+            <DropdownMenu
+              aria-label="Assignee filter"
+              selectionMode="single"
+              selectedKeys={selectedAssignee ? new Set([selectedAssignee]) : new Set([])}
+              onSelectionChange={(keys) => {
+                if (keys === 'all') return;
+                const val = Array.from(keys)[0] as string | undefined;
+                setSelectedAssignee(val ?? '');
+              }}
+            >
+              <>
+                <DropdownItem key={ASSIGNEE_ME} textValue={messages.assignedToMe}>
+                  {messages.assignedToMe}
+                </DropdownItem>
+                <DropdownItem key={ASSIGNEE_UNASSIGNED} textValue={messages.unassigned}>
+                  {messages.unassigned}
+                </DropdownItem>
+                {members.map((m) => (
+                  <DropdownItem key={String(m.User?.id)} textValue={m.User?.username}>
+                    {m.User?.username}
+                  </DropdownItem>
+                ))}
+              </>
             </DropdownMenu>
           </Dropdown>
         </div>

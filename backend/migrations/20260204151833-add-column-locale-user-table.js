@@ -6,5 +6,5 @@ export async function up(queryInterface, Sequelize) {
 }
 
 export async function down(queryInterface) {
-  await queryInterface.removeColumn('users', 'locale');
+  await queryInterface.sequelize.query('ALTER TABLE "users" DROP COLUMN "locale"');
 }

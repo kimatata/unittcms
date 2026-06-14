@@ -53,6 +53,8 @@ export type AuthMessages = {
   linkTitle: string;
   submitTitle: string;
   signInAsGuest: string;
+  signInWithSso: string;
+  or: string;
   email: string;
   username: string;
   password: string;

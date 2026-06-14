@@ -10,7 +10,7 @@ Feel free to open an issue if you find a bug, have a question, or want to sugges
 
 ## Pull Requests
 
-The `main` branch is a snapshot of the latest production version. All development must be done in dedicated branches and will be merged to `development` branch.
+The `main` branch is a snapshot of the latest production version. All development must be done in dedicated branches and will be merged to `develop` branch.
 
 ### Steps
 
@@ -19,6 +19,13 @@ The `main` branch is a snapshot of the latest production version. All developmen
 1. Create a new branch out of the `develop` branch.
 1. When submitting a pull request, please ensure that your changes are well-tested and documented where necessary.
 1. It is no problem to have multiple commits while working on the PR. We'll let GitHub squash it automatically before the merge.
+
+### Additional Guidelines
+
+- Please keep pull requests focused and small. Large or multiple PRs at once may take longer to review.
+- For UI changes, please include screenshots or a short video demonstrating the changes.
+- Where applicable, please include tests (e.g. Vitest or Playwright) to help verify the behavior.
+- Make sure your changes pass all CI checks (formatting, tests, etc.).
 
 ## Thanks
 

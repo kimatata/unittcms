@@ -2,11 +2,15 @@ name: E2E Test
 
 on:
   pull_request:
-    branches: [ "main"]
+    branches: [ "main", "develop" ]
   workflow_dispatch:
 
+permissions:
+  contents: read
+
 jobs:
-  e2e:
+  # This job runs the E2E tests using the docker containers defined in the docker-compose file.
+  e2e-docker:
     runs-on: ubuntu-latest
 
     steps:
@@ -32,12 +36,50 @@ jobs:
         run: docker-compose up --build -d
 
       - name: Run E2E tests
-        run: npm run e2e
+        run: npm run e2e:docker
 
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: e2e-report
+          name: e2e-docker-report
+          path: |
+            playwright-report/
+            playwright-screenshots/
+
+  # This job runs the E2E tests by building and running the backend and frontend from source.
+  e2e-dev:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install root dependencies
+        run: npm install
+
+      - name: Install backend dependencies
+        run: npm install
+        working-directory: backend
+
+      - name: Install frontend dependencies
+        run: npm install
+        working-directory: frontend
+
+      - name: Install Playwright
+        run: npx playwright install --with-deps
+
+      - name: Run E2E tests (dev mode)
+        run: npm run e2e:dev
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: e2e-dev-report
           path: |
             playwright-report/
             playwright-screenshots/
