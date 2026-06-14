@@ -6,6 +6,7 @@ import UserAvatar from '@/components/UserAvatar';
 import { MemberType } from '@/types/user';
 
 type Props = {
+  isAvatarOnly?: boolean;
   assigneeUserId: number | null | undefined;
   members: MemberType[];
   isDisabled: boolean;
@@ -16,6 +17,7 @@ type Props = {
 };
 
 export default function AssigneePicker({
+  isAvatarOnly,
   assigneeUserId,
   members,
   isDisabled,
@@ -42,10 +44,9 @@ export default function AssigneePicker({
 
   if (isDisabled) {
     return (
-      <span className="text-sm text-default-500 flex items-center gap-1">
+      <Button isIconOnly radius="full" size="sm" variant="light" title={assigneeName}>
         <UserAvatar size={14} username={currentMember?.User?.username} avatarPath={currentMember?.User?.avatarPath} />
-        {assigneeName}
-      </span>
+      </Button>
     );
   }
 
@@ -56,20 +57,31 @@ export default function AssigneePicker({
       }}
     >
       <DropdownTrigger>
-        <Button
-          size="sm"
-          variant="light"
-          endContent={<ChevronDown size={14} />}
-          startContent={
+        {isAvatarOnly ? (
+          <Button isIconOnly radius="full" size="sm" variant="light" title={assigneeName}>
             <UserAvatar
               size={14}
               username={currentMember?.User?.username}
               avatarPath={currentMember?.User?.avatarPath}
             />
-          }
-        >
-          <span className="max-w-24 truncate">{assigneeName}</span>
-        </Button>
+          </Button>
+        ) : (
+          <Button
+            isIconOnly={isAvatarOnly}
+            size="sm"
+            variant="bordered"
+            endContent={<ChevronDown size={14} />}
+            startContent={
+              <UserAvatar
+                size={14}
+                username={currentMember?.User?.username}
+                avatarPath={currentMember?.User?.avatarPath}
+              />
+            }
+          >
+            <span className="max-w-24 truncate">{assigneeName}</span>
+          </Button>
+        )}
       </DropdownTrigger>
       <DropdownMenu
         aria-label="Select assignee"

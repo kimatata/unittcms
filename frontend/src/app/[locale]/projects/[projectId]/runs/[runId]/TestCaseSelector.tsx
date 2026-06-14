@@ -15,7 +15,7 @@ import {
   SortDescriptor,
   Chip,
 } from '@heroui/react';
-import { ChevronDown, MoreVertical, CopyPlus, CopyMinus, MessageCircle } from 'lucide-react';
+import { MoreVertical, CopyPlus, CopyMinus, MessageCircle } from 'lucide-react';
 import RunCaseStatus from './RunCaseStatus';
 import AssigneePicker from './AssigneePicker';
 import { Link, NextUiLinkClasses } from '@/src/i18n/routing';
@@ -72,7 +72,7 @@ export default function TestCaseSelector({
     { name: messages.priority, uid: 'priority', sortable: true },
     { name: messages.tags, uid: 'tags', sortable: false },
     { name: messages.status, uid: 'runStatus', sortable: true },
-    { name: messages.assignee, uid: 'assignee', sortable: false },
+    { name: messages.assignee, uid: 'assignee', sortable: true },
     { name: messages.comments, uid: 'comments', sortable: false },
     { name: messages.actions, uid: 'actions' },
   ];
@@ -100,8 +100,28 @@ export default function TestCaseSelector({
 
   const sortedItems = useMemo(() => {
     return [...cases].sort((a: CaseType, b: CaseType) => {
-      const first = a[sortDescriptor.column as keyof CaseType] as number;
-      const second = b[sortDescriptor.column as keyof CaseType] as number;
+      let first, second;
+
+      switch (sortDescriptor.column) {
+        case 'runStatus':
+          first = a.RunCases && a.RunCases.length > 0 ? a.RunCases[0].status : -1;
+          second = b.RunCases && b.RunCases.length > 0 ? b.RunCases[0].status : -1;
+          break;
+        case 'title':
+          first = a.title;
+          second = b.title;
+          break;
+        case 'priority':
+          first = a.priority;
+          second = b.priority;
+          break;
+        case 'id':
+        default:
+          first = a.id;
+          second = b.id;
+          break;
+      }
+
       const cmp = first < second ? -1 : first > second ? 1 : 0;
 
       return sortDescriptor.direction === 'descending' ? -cmp : cmp;
@@ -134,7 +154,7 @@ export default function TestCaseSelector({
             <Link
               href={`/projects/${projectId}/runs/${runId}/cases/${testCase.id}`}
               locale={locale}
-              className={NextUiLinkClasses}
+              className={`${NextUiLinkClasses} block max-w-24 truncate`}
               onPointerDown={(e) => e.stopPropagation()}
             >
               {cellValue as string}
@@ -166,15 +186,14 @@ export default function TestCaseSelector({
           <Dropdown>
             <DropdownTrigger>
               <Button
+                isIconOnly
+                radius="full"
                 size="sm"
                 variant="light"
+                title={isIncluded ? testRunCaseStatusMessages[testRunCaseStatus[runStatus].uid] : undefined}
                 isDisabled={!isIncluded}
-                startContent={isIncluded && <RunCaseStatus uid={testRunCaseStatus[runStatus].uid} />}
-                endContent={isIncluded && <ChevronDown size={16} />}
               >
-                <span className="w-12">
-                  {isIncluded && testRunCaseStatusMessages[testRunCaseStatus[runStatus].uid]}
-                </span>
+                {isIncluded ? <RunCaseStatus uid={testRunCaseStatus[runStatus].uid} /> : '-'}
               </Button>
             </DropdownTrigger>
             <DropdownMenu disabledKeys={disabledStatusKeys} aria-label="test case actions">
@@ -199,6 +218,7 @@ export default function TestCaseSelector({
         }
         return (
           <AssigneePicker
+            isAvatarOnly={true}
             assigneeUserId={currentAssignee ?? null}
             members={members}
             isDisabled={!isManager}
