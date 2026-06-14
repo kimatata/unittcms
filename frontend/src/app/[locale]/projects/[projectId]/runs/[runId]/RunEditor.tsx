@@ -515,6 +515,18 @@ export default function RunEditor({
           <div className="flex items-center gap-2">
             {(selectedKeys === 'all' || selectedKeys.size > 0) && (
               <>
+                {isManager && (
+                  <AssigneePicker
+                    isAvatarOnly={false}
+                    assigneeUserId={null}
+                    members={members}
+                    isDisabled={false}
+                    unassignedLabel={messages.unassigned}
+                    searchPlaceholder={messages.searchAssignee}
+                    triggerLabel={messages.assignSelected}
+                    onAssign={(userId) => handleBulkAssignCases(userId)}
+                  />
+                )}
                 <Dropdown>
                   <DropdownTrigger>
                     <Button
@@ -543,17 +555,6 @@ export default function RunEditor({
                     </DropdownItem>
                   </DropdownMenu>
                 </Dropdown>
-                {isManager && (
-                  <AssigneePicker
-                    assigneeUserId={null}
-                    members={members}
-                    isDisabled={false}
-                    unassignedLabel={messages.unassigned}
-                    searchPlaceholder={messages.searchAssignee}
-                    triggerLabel={messages.assignSelected}
-                    onAssign={(userId) => handleBulkAssignCases(userId)}
-                  />
-                )}
               </>
             )}
           </div>
