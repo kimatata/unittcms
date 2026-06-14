@@ -100,7 +100,7 @@ export default function TestCaseSelector({
 
   const sortedItems = useMemo(() => {
     return [...cases].sort((a: CaseType, b: CaseType) => {
-      let first, second;
+      let first: number | string, second: number | string;
 
       switch (sortDescriptor.column) {
         case 'runStatus':
@@ -114,6 +114,10 @@ export default function TestCaseSelector({
         case 'priority':
           first = a.priority;
           second = b.priority;
+          break;
+        case 'assignee':
+          first = a.RunCases && a.RunCases.length > 0 ? a.RunCases[0].assigneeUserId || -1 : -1;
+          second = b.RunCases && b.RunCases.length > 0 ? b.RunCases[0].assigneeUserId || -1 : -1;
           break;
         case 'id':
         default:
