@@ -44,10 +44,13 @@ import {
   includeExcludeTestCases,
   changeStatus,
   exportRun,
+  assignRunCases,
+  fetchProjectMembersForRun,
 } from '../runsControl';
 import { fetchFolders } from '../../folders/foldersControl';
 import RunProgressChart from './RunPregressDonutChart';
 import TestCaseSelector from './TestCaseSelector';
+import AssigneePicker from './AssigneePicker';
 import TestRunFilter from './TestRunFilter';
 import { useRouter } from '@/src/i18n/routing';
 import { testRunStatus } from '@/config/selection';
@@ -59,6 +62,7 @@ import { useFormGuard } from '@/utils/formGuard';
 import { PriorityMessages } from '@/types/priority';
 import { RunStatusMessages, TestRunCaseStatusMessages } from '@/types/status';
 import { TestTypeMessages } from '@/types/testType';
+import { MemberType } from '@/types/user';
 import { logError } from '@/utils/errorHandler';
 import TreeItem from '@/components/TreeItem';
 import { buildFolderTree } from '@/utils/buildFolderTree';
@@ -110,7 +114,11 @@ export default function RunEditor({
   const [searchFilter, setSearchFilter] = useState('');
   const [statusFilter, setStatusFilter] = useState<number[]>([]);
   const [tagFilter, setTagFilter] = useState<number[]>([]);
+  const [assigneeFilter, setAssigneeFilter] = useState<string>('');
+  const [members, setMembers] = useState<MemberType[]>([]);
+  const [pendingAssignees, setPendingAssignees] = useState<Map<number, number | null>>(new Map());
   const router = useRouter();
+  const isManager = tokenContext.isProjectManager(Number(projectId));
 
   // not show warning when navigating to test case detail page
   useFormGuard(isDirty, messages.areYouSureLeave, [`/projects/${projectId}/runs/${runId}/cases/\\d+`]);
@@ -121,14 +129,15 @@ export default function RunEditor({
     setRunStatusCounts(statusCounts);
   };
 
-  const initTestCases = async (search?: string, status?: string[], tag?: string[]) => {
+  const initTestCases = async (search?: string, status?: string[], tag?: string[], assignee?: string) => {
     const casesData = await fetchProjectCases(
       tokenContext.token.access_token,
       Number(projectId),
       Number(runId),
       search,
       status,
-      tag
+      tag,
+      assignee
     );
     casesData.forEach((testCase: CaseType) => {
       if (testCase.RunCases && testCase.RunCases.length > 0) {
@@ -154,6 +163,8 @@ export default function RunEditor({
         setTreeData(tree);
         setSelectedFolder(foldersData[0]);
         initTestCases();
+        const membersData = await fetchProjectMembersForRun(tokenContext.token.access_token, projectId);
+        setMembers(membersData || []);
       } catch (error: unknown) {
         logError('Error fetching run data', error);
       }
@@ -205,19 +216,90 @@ export default function RunEditor({
     setSelectedKeys(new Set([]));
   };
 
+  const handleAssignCase = (runCaseId: number, userId: number | null) => {
+    setIsDirty(true);
+    setTestCases((current) =>
+      current.map((tc) => {
+        if (tc.RunCases && tc.RunCases[0]?.id === runCaseId) {
+          return { ...tc, RunCases: [{ ...tc.RunCases[0], assigneeUserId: userId }] };
+        }
+        return tc;
+      })
+    );
+    setPendingAssignees((prev) => new Map(prev).set(runCaseId, userId));
+  };
+
+  const handleBulkAssignCases = (userId: number | null) => {
+    let keys: number[] = [];
+    if (selectedKeys === 'all') {
+      keys = filteredTestCases.map((item) => item.id);
+    } else {
+      keys = Array.from(selectedKeys).map(Number);
+    }
+
+    const runCaseIds = keys
+      .map((caseId) => {
+        const tc = testCases.find((t) => t.id === caseId);
+        return tc?.RunCases?.[0]?.id;
+      })
+      .filter((id): id is number => typeof id === 'number' && id > 0);
+
+    if (runCaseIds.length === 0) return;
+
+    setIsDirty(true);
+    setTestCases((current) =>
+      current.map((tc) => {
+        if (tc.RunCases?.[0] && runCaseIds.includes(tc.RunCases[0].id)) {
+          return { ...tc, RunCases: [{ ...tc.RunCases[0], assigneeUserId: userId }] };
+        }
+        return tc;
+      })
+    );
+    setPendingAssignees((prev) => {
+      const next = new Map(prev);
+      runCaseIds.forEach((id) => next.set(id, userId));
+      return next;
+    });
+    // Defer clearing selection so the picker dropdown finishes closing before unmounting
+    setTimeout(() => setSelectedKeys(new Set([])), 0);
+  };
+
   const onSave = async () => {
     setIsUpdating(true);
-    await updateRun(tokenContext.token.access_token, testRun);
-    await updateRunCases(tokenContext.token.access_token, Number(runId), testCases);
-    await initTestCases();
+    try {
+      await updateRun(tokenContext.token.access_token, testRun);
+      await updateRunCases(tokenContext.token.access_token, Number(runId), testCases);
 
-    addToast({
-      title: 'Success',
-      color: 'success',
-      description: messages.updatedTestRun,
-    });
-    setIsUpdating(false);
-    setIsDirty(false);
+      if (pendingAssignees.size > 0) {
+        const grouped = new Map<number | null, number[]>();
+        pendingAssignees.forEach((userId, runCaseId) => {
+          const existing = grouped.get(userId) ?? [];
+          grouped.set(userId, [...existing, runCaseId]);
+        });
+        for (const [userId, ids] of Array.from(grouped.entries())) {
+          await assignRunCases(tokenContext.token.access_token, Number(runId), ids, userId);
+        }
+        setPendingAssignees(new Map());
+      }
+
+      await initTestCases();
+
+      addToast({
+        title: 'Success',
+        color: 'success',
+        description: messages.updatedTestRun,
+      });
+      setIsDirty(false);
+    } catch (error) {
+      logError('Error saving run:', error);
+      addToast({
+        title: 'Error',
+        color: 'danger',
+        description: 'Failed to save run. Please try again.',
+      });
+    } finally {
+      setIsUpdating(false);
+    }
   };
 
   // **************************************************************************
@@ -226,7 +308,7 @@ export default function RunEditor({
   const [showFilter, setShowFilter] = useState(false);
   const [activeFilterNum, setActiveFilterNum] = useState(0);
 
-  const onFilterChange = async (search: string, status: number[], tag: number[]) => {
+  const onFilterChange = async (search: string, status: number[], tag: number[], assignee?: string) => {
     if (isDirty) {
       addToast({
         title: 'Error',
@@ -236,11 +318,14 @@ export default function RunEditor({
       return;
     }
 
+    const resolvedAssignee = assignee === 'me' ? String(tokenContext.token.user?.id ?? '') : (assignee ?? '');
+
     setSearchFilter(search);
     setStatusFilter(status);
     setTagFilter(tag);
-    setActiveFilterNum((search ? 1 : 0) + (status.length > 0 ? 1 : 0) + (tag.length > 0 ? 1 : 0));
-    await initTestCases(search, status.map(String), tag.map(String));
+    setAssigneeFilter(assignee ?? '');
+    setActiveFilterNum((search ? 1 : 0) + (status.length > 0 ? 1 : 0) + (tag.length > 0 ? 1 : 0) + (assignee ? 1 : 0));
+    await initTestCases(search, status.map(String), tag.map(String), resolvedAssignee || undefined);
   };
 
   return (
@@ -287,10 +372,12 @@ export default function RunEditor({
                 activeSearchFilter={searchFilter}
                 activeStatusFilters={statusFilter}
                 activeTagFilters={tagFilter}
+                activeAssigneeFilter={assigneeFilter}
                 projectId={projectId}
-                onFilterChange={(newTitleFilter, newStatusFilters, newTagFilters) => {
+                members={members}
+                onFilterChange={(newTitleFilter, newStatusFilters, newTagFilters, newAssigneeFilter) => {
                   setShowFilter(false);
-                  onFilterChange(newTitleFilter, newStatusFilters, newTagFilters);
+                  onFilterChange(newTitleFilter, newStatusFilters, newTagFilters, newAssigneeFilter);
                 }}
               />
             </PopoverContent>
@@ -425,36 +512,49 @@ export default function RunEditor({
         <Divider className="my-6" />
         <div className="flex items-center justify-between">
           <h6 className="h-8 font-bold">{messages.selectTestCase}</h6>
-          <div>
+          <div className="flex items-center gap-2">
             {(selectedKeys === 'all' || selectedKeys.size > 0) && (
-              <Dropdown>
-                <DropdownTrigger>
-                  <Button
-                    size="sm"
-                    isDisabled={!tokenContext.isProjectReporter(Number(projectId))}
-                    color="primary"
-                    endContent={<ChevronDown size={16} />}
-                  >
-                    {messages.testCaseSelection}
-                  </Button>
-                </DropdownTrigger>
-                <DropdownMenu aria-label="test case select actions">
-                  <DropdownItem
-                    key="include"
-                    startContent={<CopyPlus size={16} />}
-                    onPress={() => handleBulkIncludeExcludeCases(true)}
-                  >
-                    {messages.includeInRun}
-                  </DropdownItem>
-                  <DropdownItem
-                    key="exclude"
-                    startContent={<CopyMinus size={16} />}
-                    onPress={() => handleBulkIncludeExcludeCases(false)}
-                  >
-                    {messages.excludeFromRun}
-                  </DropdownItem>
-                </DropdownMenu>
-              </Dropdown>
+              <>
+                <Dropdown>
+                  <DropdownTrigger>
+                    <Button
+                      size="sm"
+                      isDisabled={!tokenContext.isProjectReporter(Number(projectId))}
+                      color="primary"
+                      endContent={<ChevronDown size={16} />}
+                    >
+                      {messages.testCaseSelection}
+                    </Button>
+                  </DropdownTrigger>
+                  <DropdownMenu aria-label="test case select actions">
+                    <DropdownItem
+                      key="include"
+                      startContent={<CopyPlus size={16} />}
+                      onPress={() => handleBulkIncludeExcludeCases(true)}
+                    >
+                      {messages.includeInRun}
+                    </DropdownItem>
+                    <DropdownItem
+                      key="exclude"
+                      startContent={<CopyMinus size={16} />}
+                      onPress={() => handleBulkIncludeExcludeCases(false)}
+                    >
+                      {messages.excludeFromRun}
+                    </DropdownItem>
+                  </DropdownMenu>
+                </Dropdown>
+                {isManager && (
+                  <AssigneePicker
+                    assigneeUserId={null}
+                    members={members}
+                    isDisabled={false}
+                    unassignedLabel={messages.unassigned}
+                    searchPlaceholder={messages.searchAssignee}
+                    triggerLabel={messages.assignSelected}
+                    onAssign={(userId) => handleBulkAssignCases(userId)}
+                  />
+                )}
+              </>
             )}
           </div>
         </div>
@@ -512,11 +612,14 @@ export default function RunEditor({
               locale={locale}
               cases={filteredTestCases}
               isDisabled={!tokenContext.isProjectReporter(Number(projectId))}
+              isManager={isManager}
+              members={members}
               selectedKeys={selectedKeys}
               onSelectionChange={setSelectedKeys}
               onChangeStatus={handleChangeStatus}
               onIncludeCase={(includeTestId) => handleIncludeExcludeCase(true, includeTestId)}
               onExcludeCase={(excludeCaseId) => handleIncludeExcludeCase(false, excludeCaseId)}
+              onAssignCase={handleAssignCase}
               messages={messages}
               testRunCaseStatusMessages={testRunCaseStatusMessages}
               priorityMessages={priorityMessages}
