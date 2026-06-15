@@ -18,5 +18,7 @@ export function createRepositories(db) {
     integrationConfigs: db.models.IntegrationConfig,
     sourceCommits: db.models.SourceCommit,
     syncLogs: db.models.SyncLog,
+    sprintConfigs: db.models.SprintConfig,
+    sprintFlows: db.models.SprintFlow,
   };
 }

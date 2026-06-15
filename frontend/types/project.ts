@@ -51,61 +51,181 @@ export type ProjectMessages = {
   automation: string;
   integrations: string;
   monitor: string;
+  sprint: string;
+};
+
+// ── Sprint Flow types ──────────────────────────────────────────────────────────
+
+export type SprintBranchInfo = {
+  name: string;
+  sha: string;
+  lastCommitAuthor: string | null;
+  lastCommitAt: string | null;
+  ticketId: string | null;
+  prNumber: number | null;
+  prTitle: string | null;
+  prTargetBranch: string | null;
+  prState: 'open' | 'merged' | 'closed' | null;
+  prUrl: string | null;
+};
+
+export type SprintFlowStatus = 'active' | 'draft' | 'testing' | 'done' | 'archived';
+
+export type SprintFlow = {
+  id: number;
+  automationConfigId: number;
+  title: string;
+  baseBranch: string;
+  versionBranch: string | null;
+  jiraSprintId: string | null;
+  jiraSprintTitle: string | null;
+  testRunId: number | null;
+  status: SprintFlowStatus;
+  branchSnapshot: SprintBranchInfo[];
+  nodePositions: Record<string, { x: number; y: number }>;
+  testPlanDraft: SprintDraftFolder[] | null;
+  generationPrompt: string | null;
+  generationLogs: SprintGenerationLogEntry[];
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type SprintDraftCase = {
+  title: string;
+  steps: string[];
+  expectedResult: string;
+};
+
+export type SprintDraftFolder = {
+  name: string;
+  cases: SprintDraftCase[];
+};
+
+export type SprintGenerationLogEntry = {
+  task: string;
+  status: 'running' | 'done' | 'failed';
+  output: string;
+  durationMs: number;
+  ts: number;
+};
+
+export type SprintDetectResult = {
+  featureBranches: SprintBranchInfo[];
+  newBranchCount: number;
+  newBranches: string[];
+  detectedVersionBranch: string | null;
+  hasNewBranches: boolean;
+};
+
+export type SprintConfig = {
+  automationConfigId: number;
+  keyBranchPatterns: string[];
+  sprintBranchPattern: string | null;
+  jiraBaseUrl: string | null;
+  jiraProjectKey: string | null;
+  branchTicketRegex: string;
+  sourceBranch: string | null;
+  deploymentFlow: string | null;
+};
+
+export type SprintMessages = {
+  sprint: string;
+  newSprintFlow: string;
+  startSprintFlow: string;
+  startSprint: string;
+  startSprintTitle: string;
+  sprintTitle: string;
+  sprintTitlePlaceholder: string;
+  baseBranch: string;
+  versionBranch: string;
+  versionBranchPlaceholder: string;
+  cancel: string;
+  start: string;
+  starting: string;
+  detectionBanner: string;
+  detectionBannerSingle: string;
+  dismiss: string;
+  noFlows: string;
+  noFlowsDesc: string;
+  featureBranches: string;
+  mergedBranches: string;
+  pendingBranches: string;
+  allMerged: string;
+  generateTestPlan: string;
+  generateTestPlanDesc: string;
+  generationPipelineTitle: string;
+  promptLabel: string;
+  sendToClaude: string;
+  sendingToClaude: string;
+  testPlanReady: string;
+  testPlanDraft: string;
+  reviewTestPlan: string;
+  existingTests: string;
+  newTests: string;
+  saveAsDraft: string;
+  approveAndAdd: string;
+  approving: string;
+  approveSuccess: string;
+  approveError: string;
+  draftSaved: string;
+  testSuite: string;
+  noSteps: string;
+  addCase: string;
+  deleteCase: string;
+  addFolder: string;
+  deleteFolder: string;
+  configTitle: string;
+  keyBranchPatterns: string;
+  branchTicketRegex: string;
+  saveConfig: string;
+  configSaved: string;
+  openInGit: string;
+  ciPassing: string;
+  ciFailing: string;
+  ciUnknown: string;
+  prOpen: string;
+  prMerged: string;
+  prClosed: string;
+  noPR: string;
+  loadingBoard: string;
+  refreshBoard: string;
+  sprintList: string;
+  newSprint: string;
+  statusActive: string;
+  statusDraft: string;
+  statusTesting: string;
+  statusDone: string;
+  statusArchived: string;
+  branchCount: string;
+  detectionSettings: string;
+  keyBranchPatternsDesc: string;
+  branchTicketRegexDesc: string;
+  setupWizardTitle: string;
+  setupWizardSubtitle: string;
+  deploymentFlowLabel: string;
+  flowGitflow: string;
+  flowGitflowDesc: string;
+  flowGithubFlow: string;
+  flowGithubFlowDesc: string;
+  flowTrunk: string;
+  flowTrunkDesc: string;
+  flowCustom: string;
+  flowCustomDesc: string;
+  sourceBranchLabel: string;
+  sourceBranchDesc: string;
+  sourceBranchPlaceholder: string;
+  saveFlowSetup: string;
+  savingFlowSetup: string;
+  setupNoSourceRepo: string;
+  next: string;
+  back: string;
+  stepOfSteps: string;
 };
 
 export type MonitorMessages = {
   monitor: string;
-  // Health bar
-  healthCoverage: string;
-  healthLastRun: string;
-  healthOpenGaps: string;
-  healthCommitsSynced: string;
-  // Source repo config
-  sourceRepoSection: string;
-  sourceRepoOwner: string;
-  sourceRepoName: string;
-  sourceRepoBranch: string;
-  sourceRepoOwnerPlaceholder: string;
-  sourceRepoNamePlaceholder: string;
-  sourceRepoBranchPlaceholder: string;
-  autoAnalyzeCommits: string;
-  autoAnalyzeCommitsDescription: string;
-  saveSourceRepo: string;
-  savingSourceRepo: string;
-  saveSourceRepoSuccess: string;
-  saveSourceRepoError: string;
-  sourceRepoConnected: string;
-  sourceRepoNotConnected: string;
-  // Commit sync
-  syncCommits: string;
-  syncingCommits: string;
-  syncCommitsSuccess: string;
-  syncCommitsError: string;
-  syncCommitsResult: string;
-  // Commit timeline
-  commitTimelineSection: string;
-  noCommitsSynced: string;
-  analyzeCommit: string;
-  analyzingCommit: string;
-  analyzeCommitSuccess: string;
-  analyzeCommitError: string;
-  commitStatusNew: string;
-  commitStatusAnalyzing: string;
-  commitStatusDone: string;
-  commitStatusFailed: string;
-  viewTestCommit: string;
-  generatedCases: string;
-  // Test health matrix
   testHealthSection: string;
   noRunsForMatrix: string;
-  // Activity log
-  activitySection: string;
-  noActivity: string;
-  activityCommitSync: string;
-  activityAiAnalysis: string;
-  activityTestSync: string;
-  activityWebhook: string;
-  activityCasesCreated: string;
 };
 
 export type AutomationConfigType = {
@@ -244,27 +364,5 @@ export type AutomationMessages = {
   syncResult: string;
   viewCommitSync: string;
   openInRepo: string;
-  // Config sections
   testRepoSection: string;
-  sourceRepoSection: string;
-  sourceRepoOwner: string;
-  sourceRepoName: string;
-  sourceRepoBranch: string;
-  sourceRepoOwnerPlaceholder: string;
-  sourceRepoNamePlaceholder: string;
-  sourceRepoBranchPlaceholder: string;
-  autoAnalyzeCommits: string;
-  saveSourceRepo: string;
-  savingSourceRepo: string;
-  saveSourceRepoSuccess: string;
-  saveSourceRepoError: string;
-  // Repo picker
-  createNewRepo: string;
-  useExistingRepo: string;
-  browseRepos: string;
-  loadingRepos: string;
-  searchReposPlaceholder: string;
-  noReposFound: string;
-  pickRepoTitle: string;
-  sourceProvider: string;
 };

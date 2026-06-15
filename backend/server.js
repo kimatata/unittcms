@@ -225,6 +225,18 @@ app.use('/automation-configs', automationConfigsAnalyzeCommitRoute(db));
 app.use('/automation-configs', automationConfigsWebhookRoute(db));
 app.use('/automation-configs', automationConfigsTestHealthRoute(db));
 
+// "/sprint"
+import sprintConfigRoute from './routes/sprint/config.js';
+import sprintDetectRoute from './routes/sprint/detect.js';
+import sprintStartRoute from './routes/sprint/start.js';
+import sprintBoardRoute from './routes/sprint/board.js';
+import sprintGenerateRoute from './routes/sprint/generate.js';
+app.use('/sprint', sprintConfigRoute(db));
+app.use('/sprint', sprintDetectRoute(db));
+app.use('/sprint', sprintStartRoute(db));
+app.use('/sprint', sprintBoardRoute(db));
+app.use('/sprint', sprintGenerateRoute(db));
+
 // "/integration-configs"
 import integrationConfigsShowRoute from './routes/integrationConfigs/show.js';
 import integrationConfigsUpsertRoute from './routes/integrationConfigs/upsert.js';

@@ -20,6 +20,7 @@ export default function SidebarLayout({
     automation: t('automation'),
     integrations: t('integrations'),
     monitor: t('monitor'),
+    sprint: t('sprint'),
   };
 
   return (

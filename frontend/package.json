@@ -17,6 +17,7 @@
     "@types/node": "22.13.5",
     "@types/react": "18.3.18",
     "@types/react-dom": "18.3.5",
+    "@xyflow/react": "^12.11.0",
     "apexcharts": "^4.5.0",
     "autoprefixer": "10.4.20",
     "boring-avatars": "^1.11.2",
