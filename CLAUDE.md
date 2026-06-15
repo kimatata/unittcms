@@ -267,10 +267,75 @@ When state in the left pane (RunEditor) needs to be visible in the right pane (p
 - Right-pane `page.tsx` must be `'use client'` to consume context
 See `runs/[runId]/RunContext.tsx` as the example.
 
-### Permissions: when to gate UI
-- Destructive actions (delete, edit): check ownership/role, use `isDisabled` on buttons/dropdown items
-- `isProjectReporter()` → can modify runs and test case statuses
-- `isProjectOwner()` → can edit/delete the project itself
+### Integrations tab — adding a new integration card
+
+All cards in the Integrations tab (`IntegrationsPage.tsx`) must follow the established visual and behavioural patterns exactly. There are two card patterns depending on what the card represents.
+
+---
+
+#### Pattern A — credential card (git providers, AI providers)
+
+Used for: GitHub, GitLab, Anthropic, and any future token-based service.
+
+Rendered by `renderServiceCard(def: ServiceDef)`. To add a new service, add one entry to `SERVICE_DEFS` (git) or `AI_SERVICE_DEFS` (AI) and add the matching locale keys — no other code changes needed.
+
+A `ServiceDef` has:
+- `service: string` — unique key stored in `integrationConfigs.service`
+- `labelKey` / `descriptionKey` — keys into `IntegrationsMessages`
+- `icon: React.ReactNode` — lucide-react icon
+- `fields: FieldDef[]` — each field has `key`, `labelKey`, `placeholderKey`, `type` (`'password'|'text'`), `required`, optional `defaultValue`, optional `isSettings: true` (stored in the `settings` JSON column rather than `apiKey`)
+
+Visual states the renderer handles automatically:
+1. **Not configured** — shows service name + "Not configured" chip + a `+ {token}` button
+2. **Configured, view mode** — shows masked key + settings values + Edit / Delete buttons
+3. **Editing** — shows input fields + Save / Cancel buttons; token field clears on focus if it shows `***`
+
+Backend: `upsertIntegrationConfig` / `deleteIntegrationConfig` in `frontend/utils/integrationConfigControl.ts`. Key masking (`***ef45`) is done server-side; the frontend skips the PUT if the value still starts with `***`.
+
+---
+
+#### Pattern B — project connection card (Source Project, Test Project)
+
+Used for: any connection that maps a project to an external repo or service (not just a token — has multiple structured fields like owner, repo name, branch, tool).
+
+**Three visual states — all three must be implemented:**
+
+1. **Empty** (nothing saved yet)
+   - Shows only a single `+ {messages.configureXxxProject}` button
+   - Clicking it sets `isEditingXxx = true`
+
+2. **Editing** (form open — either first-time or after clicking Edit)
+   - Full form with all inputs + provider selector + optional Browse button
+   - Two action buttons: **Save** (calls the API, sets `isEditingXxx = false` on success) and **Cancel** (restores form to last-saved values from `automationConfig` state, sets `isEditingXxx = false`)
+   - Browse button is disabled when the required git provider token is not configured; show `messages.connectProviderFirst` hint
+
+3. **Connected** (saved values exist, not editing)
+   - Compact single-row layout: provider icon + key params in monospace + small `Chip`s for secondary info
+   - Connected `Chip` (green, `CheckCircle` icon) in the card header
+   - Edit button → sets `isEditingXxx = true`; Delete button → opens `DeleteConfirmDialog`
+   - Delete clears the config on the backend (send empty/null values via the existing update endpoint) and resets local state; shows a success toast
+
+**State variables required per card:**
+```ts
+const [isEditingXxx, setIsEditingXxx] = useState(false);
+const [isDeleteXxxOpen, setIsDeleteXxxOpen] = useState(false);
+```
+
+**Cancel must restore** — `handleCancelXxxEdit` must read the current values out of `automationConfig` (the saved state object) and reset all form fields before calling `setIsEditingXxx(false)`.
+
+**Save must close** — on successful API response, call `setIsEditingXxx(false)` and update both `automationConfig` state and `automationConfigCache`.
+
+**Delete flow**: open `DeleteConfirmDialog` → on confirm call the update endpoint with empty values → clear local state → `addToast` success → close dialog.
+
+**Message keys required** for each new project connection card (add to `IntegrationsMessages`, both locale files, and `page.tsx`):
+- `configureXxxProject` — label for the empty-state `+` button
+- `xxxProjectSaved` — success toast after save
+- `xxxProjectSaveError` — error toast after save failure
+- `xxxProjectRemoved` — success toast after delete/clear
+
+Reuse existing `edit`, `deleteKey`, `cancel`, `saving`, `areYouSure`, `delete`, `close`, `connected` keys for UI chrome — do not add duplicates.
+
+See `IntegrationsPage.tsx` source + test project cards as the canonical implementation.
 
 ---
 
@@ -311,6 +376,14 @@ At the end of each session, update this file (the "Recent additions" section and
 relevant architecture notes) and the memory files in
 `C:\Users\shira\.claude\projects\c--Documents-Projects-unittcms\memory\`
 to reflect what was built or changed.
+
+---
+
+## Recent additions (2026-06-15)
+
+### Bug fix: repeated RSC requests on automation (and all dynamic) pages
+
+- **`frontend/next.config.js`** — added `experimental.staleTimes.dynamic: 30`. Root cause: Next.js 14.2 defaults `staleTimes.dynamic` to `0`, meaning dynamic routes have zero client-side router cache lifetime. Every window focus switch and every navigation back to a dynamic page triggered a fresh RSC fetch from the server. Setting it to 30 seconds prevents redundant re-fetches within 30-second windows.
 
 ---
 
@@ -372,6 +445,25 @@ A full new tab at `/projects/:id/sprint` that visualizes active feature branches
 - **`frontend/types/project.ts`** — `TestHealthRun.status` renamed to `TestHealthRun.state` to match the column fix above.
 - **`backend/routes/automationConfigs/analyzeCommit.js`** — Anthropic API errors (e.g. low credit balance) were caught by the generic catch block and returned as raw 500 with the SDK's JSON string. Now wrapped in a dedicated try/catch: parses `error.message` JSON to extract the human-readable `error.error.message`, logs to `syncLogs`, and returns 422 so the frontend can display it cleanly.
 - **`frontend/src/app/[locale]/projects/[projectId]/monitor/MonitorPage.tsx`** — `handleAnalyzeCommit` error toast was showing only the generic `analyzeCommitError` label. Added `description: err instanceof Error ? err.message : undefined` so server-side messages like "Your credit balance is too low" appear directly in the toast.
+
+---
+
+## Recent additions (2026-06-09, session 3) — Project Connections in Integrations tab
+
+### Source + test project config moved to Integrations
+
+Both the source application repo and the test automation repo are now configured in the Integrations tab. The definitions are single-sourced and shared across Automation, Monitor, and Sprint pages via `automationConfig`.
+
+- **`IntegrationsPage.tsx`** — added "Project Connections" section between Git Providers and AI Providers. Two sub-cards:
+  - **Source Project**: provider selector + owner/name/branch inputs + Browse button (RepoPickerModal, disabled if that provider's token not set) + auto-analyze toggle + Save. Saves via `updateSourceRepoConfig`.
+  - **Test Project**: provider selector + repo name input + Browse button + automationTool/automationLanguage selects + Save. Saves via `updateAutomationConfig` / `createAutomationConfig`.
+  - Browse is disabled with an explanatory message when the required git provider has no token.
+- **`AutomationPage.tsx`** — removed source repo card entirely. Simplified test repo card: no more "Create New / Use Existing" toggle, no browse button. Just provider + repoName + tool/language inputs + save + generate buttons.
+- **`MonitorPage.tsx`** — removed source repo form. Now only shows the test health matrix.
+- **`MonitorMessages` type** — shrunk to 3 fields: `monitor`, `testHealthSection`, `noRunsForMatrix`.
+- **`AutomationMessages` type** — removed all source repo and repo picker fields.
+- **`IntegrationsMessages` type** — added 27 new fields for project connections UI.
+- **Locale files** (en.json, he.json) — 27 new keys added to Integrations namespace.
 
 ---
 
