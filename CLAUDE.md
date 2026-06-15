@@ -379,6 +379,37 @@ to reflect what was built or changed.
 
 ---
 
+## Recent additions (2026-06-15, session 2)
+
+### Integrations tab — Project Connections refactor (3-state cards)
+
+The Source Project and Test Project cards in `IntegrationsPage.tsx` were refactored from always-visible forms to 3-state cards that match the compact/clean behaviour of the credential (git/AI provider) cards.
+
+**`frontend/src/app/[locale]/projects/[projectId]/integrations/IntegrationsPage.tsx`**
+- Added `isEditingSource`, `isEditingTest`, `isDeleteSourceOpen`, `isDeleteTestOpen` boolean state variables.
+- Each project connection card now has three states:
+  1. **Empty**: shows only `+ Configure … Project` button.
+  2. **Editing** (first-time or after clicking Edit): full form (provider, inputs, browse, auto-analyze). Save closes the form; Cancel restores values from `automationConfig`.
+  3. **Connected / compact**: single row — provider icon + key params in monospace + `Chip`s for branch/tool/language + Connected chip + Edit / Remove buttons.
+- `handleSaveSourceProject` / `handleSaveTestProject` now call `setIsEditingSource/Test(false)` on success.
+- Added `handleCancelSourceEdit` / `handleCancelTestEdit` — restore form fields from saved `automationConfig` before closing.
+- Added `handleRemoveSourceProject` / `handleRemoveTestProject` — call the existing update endpoint with empty values, clear local state and cache, show success toast.
+- Added `ProviderIcon` helper component (GitHub / GitLab icon by service name).
+
+**`frontend/types/integrations.ts`** — added 4 new keys to `IntegrationsMessages`: `configureSourceProject`, `configureTestProject`, `sourceProjectRemoved`, `testProjectRemoved`.
+
+**`frontend/messages/en.json` + `he.json`** — added `configure_source_project`, `configure_test_project`, `source_project_removed`, `test_project_removed` under `Integrations` namespace.
+
+**`frontend/src/app/[locale]/projects/[projectId]/integrations/page.tsx`** — added the 4 new keys to the messages object.
+
+### Key conventions — Integrations tab pattern documented
+
+Added new section **"Integrations tab — adding a new integration card"** to the Key conventions block in CLAUDE.md. Covers both patterns future sessions must follow:
+- **Pattern A** (credential cards): extend `SERVICE_DEFS` or `AI_SERVICE_DEFS`, all rendering is automatic via `renderServiceCard`.
+- **Pattern B** (project connection cards): must implement all 3 visual states, required state variables, save-must-close, cancel-must-restore, delete flow, and which message keys to add.
+
+---
+
 ## Recent additions (2026-06-15)
 
 ### Bug fix: repeated RSC requests on automation (and all dynamic) pages
