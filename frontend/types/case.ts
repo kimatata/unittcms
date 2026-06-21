@@ -28,7 +28,7 @@ type CaseStepType = {
 };
 
 type StepType = {
-  id: number;
+  id: number | null;
   step: string;
   result: string;
   createdAt: Date;

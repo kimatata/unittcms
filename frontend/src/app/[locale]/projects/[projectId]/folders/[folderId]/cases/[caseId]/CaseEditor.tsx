@@ -1,5 +1,5 @@
 'use client';
-import { useState, useEffect, useContext, ChangeEvent, DragEvent } from 'react';
+import { useState, useEffect, useCallback, useContext, ChangeEvent, DragEvent } from 'react';
 import { Input, Textarea, Select, SelectItem, Button, Divider, Tooltip, addToast, Badge } from '@heroui/react';
 import { Save, Plus, ArrowLeft, Circle } from 'lucide-react';
 import CaseStepsEditor from './CaseStepsEditor';
@@ -60,7 +60,6 @@ export default function CaseEditor({
   const [testCase, setTestCase] = useState<CaseType>(defaultTestCase);
   const [isTitleInvalid] = useState<boolean>(false);
   const [isUpdating, setIsUpdating] = useState<boolean>(false);
-  const [idCounter, setIdCounter] = useState<number>(0);
   const [isDirty, setIsDirty] = useState(false);
   const [selectedTags, setSelectedTags] = useState<{ id: number; name: string }[]>([]);
 
@@ -68,14 +67,11 @@ export default function CaseEditor({
   useFormGuard(isDirty, messages.areYouSureLeave);
 
   const onPlusClick = async (newStepNo: number) => {
-    if (!testCase.Steps) {
-      return;
-    }
+    if (!testCase.Steps) return;
+
     setIsDirty(true);
-    const nextId = idCounter + 1;
     const newStep: StepType = {
-      // hypothetical ID
-      id: nextId,
+      id: null,
       step: '',
       result: '',
       createdAt: new Date(),
@@ -83,7 +79,7 @@ export default function CaseEditor({
       caseSteps: {
         stepNo: newStepNo,
       },
-      uid: `uid${nextId}`,
+      uid: `uid-${Date.now()}-${Math.floor(Math.random() * 100000)}`,
       editState: 'new',
     };
 
@@ -107,24 +103,18 @@ export default function CaseEditor({
       ...testCase,
       Steps: updatedSteps,
     });
-    setIdCounter(nextId);
   };
 
-  const onDeleteClick = async (stepId: number) => {
+  const onDeleteClick = async (stepUid: string) => {
+    if (!testCase.Steps) return;
     setIsDirty(true);
-    if (!testCase.Steps) {
-      return;
-    }
-    // find deletedStep's stepNo
 
-    const deletedStep = testCase.Steps.find((step) => step.id === stepId);
-    if (!deletedStep) {
-      return;
-    }
+    const deletedStep = testCase.Steps.find((step) => step.uid === stepUid);
+    if (!deletedStep) return;
+
     const deletedStepNo = deletedStep.caseSteps.stepNo;
-    deletedStep.editState = 'deleted';
 
-    const updatedSteps = testCase.Steps.map((step) => {
+    const updatedSteps = testCase.Steps.filter((step) => step.uid !== stepUid).map((step) => {
       if (step.caseSteps.stepNo > deletedStepNo) {
         return {
           ...step,
@@ -200,19 +190,18 @@ export default function CaseEditor({
     }
   };
 
-  const onStepUpdate = (stepId: number, changeStep: StepType) => {
+  const onStepUpdate = (stepUid: string, changeStep: StepType) => {
     if (changeStep.editState === 'notChanged') {
       changeStep.editState = 'changed';
+      setIsDirty(true);
     }
 
-    if (!testCase.Steps) {
-      return;
-    }
+    if (!testCase.Steps) return;
 
     setTestCase({
       ...testCase,
       Steps: testCase.Steps.map((step) => {
-        if (step.id === stepId) {
+        if (step.uid === stepUid) {
           return changeStep;
         } else {
           return step;
@@ -221,30 +210,27 @@ export default function CaseEditor({
     });
   };
 
-  useEffect(() => {
-    const fetchAndSetCase = async () => {
-      if (!tokenContext.isSignedIn()) return;
-      try {
-        const data = await fetchCase(tokenContext.token.access_token, Number(caseId));
-        data.Steps.forEach((step: StepType) => {
-          step.editState = 'notChanged';
-        });
+  const fetchAndSetCase = useCallback(async () => {
+    if (!tokenContext.isSignedIn()) return;
+    try {
+      const data = await fetchCase(tokenContext.token.access_token, Number(caseId));
+      data.Steps.forEach((step: StepType) => {
+        step.editState = 'notChanged';
+        step.uid = `uid-${step.id}`;
+      });
 
-        // set idCounter to the max step id to avoid id conflict for new steps
-        // id is not reflected on database
-        const maxStepId = data.Steps.reduce((maxId: number, step: StepType) => Math.max(maxId, step.id), 0);
-        setIdCounter(maxStepId);
-        setTestCase(data);
-        if (data.Tags) {
-          setSelectedTags(Array.isArray(data.Tags) ? data.Tags : []);
-        }
-      } catch (error: unknown) {
-        logError('Error fetching case data', error);
+      setTestCase(data);
+      if (data.Tags) {
+        setSelectedTags(Array.isArray(data.Tags) ? data.Tags : []);
       }
-    };
-    fetchAndSetCase();
+    } catch (error: unknown) {
+      logError('Error fetching case data', error);
+    }
   }, [tokenContext, caseId]);
 
+  useEffect(() => {
+    fetchAndSetCase();
+  }, [fetchAndSetCase]);
   return (
     <>
       <div className="border-b-1 dark:border-neutral-700 w-full p-3 flex items-center justify-between">
@@ -288,6 +274,8 @@ export default function CaseEditor({
                   color: 'success',
                   description: messages.updatedTestCase,
                 });
+
+                await fetchAndSetCase();
                 setIsDirty(false);
               } catch (error) {
                 logError('Error updating test case', error);

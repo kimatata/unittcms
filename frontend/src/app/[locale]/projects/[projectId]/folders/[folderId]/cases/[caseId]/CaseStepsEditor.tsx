@@ -5,9 +5,9 @@ import { CaseMessages, StepType } from '@/types/case';
 type Props = {
   isDisabled: boolean;
   steps: StepType[];
-  onStepUpdate: (stepId: number, step: StepType) => void;
+  onStepUpdate: (stepUid: string, step: StepType) => void;
   onStepPlus: (newStepNo: number) => void;
-  onStepDelete: (stepId: number) => void;
+  onStepDelete: (stepUid: string) => void;
   messages: CaseMessages;
 };
 
@@ -24,10 +24,10 @@ export default function StepsEditor({ isDisabled, steps, onStepUpdate, onStepPlu
 
   return (
     <>
-      {filteredSteps.map((step, index) => (
-        <div key={index} className="flex items-center my-1">
+      {filteredSteps.map((step) => (
+        <div key={step.uid} className="flex items-center my-1">
           <Avatar className="me-2" size="sm" name={step.caseSteps.stepNo.toString()} />
-          <div key={step.id} className="grow flex gap-2">
+          <div className="grow flex gap-2">
             <div className="w-1/2">
               <Textarea
                 size="sm"
@@ -35,7 +35,7 @@ export default function StepsEditor({ isDisabled, steps, onStepUpdate, onStepPlu
                 label={messages.detailsOfTheStep}
                 value={step.step}
                 onValueChange={(changeValue) => {
-                  onStepUpdate(step.id, { ...step, step: changeValue });
+                  onStepUpdate(step.uid, { ...step, step: changeValue });
                 }}
               />
             </div>
@@ -46,7 +46,7 @@ export default function StepsEditor({ isDisabled, steps, onStepUpdate, onStepPlu
                 label={messages.expectedResult}
                 value={step.result}
                 onValueChange={(changeValue) => {
-                  onStepUpdate(step.id, { ...step, result: changeValue });
+                  onStepUpdate(step.uid, { ...step, result: changeValue });
                 }}
               />
             </div>
@@ -58,7 +58,7 @@ export default function StepsEditor({ isDisabled, steps, onStepUpdate, onStepPlu
                 size="sm"
                 isDisabled={isDisabled}
                 className="bg-transparent rounded-full"
-                onPress={() => onStepDelete(step.id)}
+                onPress={() => onStepDelete(step.uid)}
               >
                 <Trash size={16} />
               </Button>
