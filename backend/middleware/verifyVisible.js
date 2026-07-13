@@ -5,6 +5,8 @@ import defineFolder from '../models/folders.js';
 import defineCase from '../models/cases.js';
 import defineRun from '../models/runs.js';
 import defineRunCase from '../models/runCases.js';
+import defineUser from '../models/users.js';
+import { roles } from '../routes/users/authSettings.js';
 
 export default function verifyVisibleMiddleware(sequelize) {
   /**
@@ -164,6 +166,15 @@ export default function verifyVisibleMiddleware(sequelize) {
   }
 
   async function isVisible(projectId, userId) {
+    const User = defineUser(sequelize, DataTypes);
+    const user = await User.findByPk(userId);
+
+    // admins can see all projects
+    const adminRoleIndex = roles.findIndex((entry) => entry.uid === 'administrator');
+    if (user && user.role === adminRoleIndex) {
+      return true;
+    }
+
     const Project = defineProject(sequelize, DataTypes);
     const Member = defineMember(sequelize, DataTypes);
     Project.hasMany(Member, { foreignKey: 'projectId' });
