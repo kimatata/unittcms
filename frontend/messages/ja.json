@@ -259,7 +259,18 @@
     "or_drag_and_drop": "またはドラッグアンドドロップ",
     "max_file_size": "最大ファイルサイズ",
     "cases_imported": "テストケースがインポートされました",
-    "create_more": "さらに作成"
+    "create_more": "さらに作成",
+    "import_preview_title": "インポートの確認",
+    "sheet": "シート",
+    "target_folder": "対象フォルダ",
+    "new_cases": "新規",
+    "update_cases": "更新",
+    "failed_cases": "失敗",
+    "row": "行",
+    "include_sheet": "このシートを含める",
+    "import_selected": "選択したものをインポート",
+    "back": "戻る",
+    "no_importable_cases": "このシートにはインポート可能なテストケースがありません"
   },
   "Case": {
     "back_to_cases": "テストケース一覧に戻る",

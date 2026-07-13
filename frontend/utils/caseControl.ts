@@ -2,7 +2,7 @@ import { getFilenameFromContentDisposition } from '@/utils/request';
 import { logError } from '@/utils/errorHandler';
 import Config from '@/config/config';
 const apiServer = Config.apiServer;
-import { CaseType } from '@/types/case';
+import { CaseType, ImportPreviewResponse, ImportSheetType } from '@/types/case';
 
 async function fetchCase(jwt: string, caseId: number) {
   const url = `${apiServer}/cases/${caseId}`;
@@ -239,8 +239,8 @@ async function exportCases(jwt: string, folderId: number, type: string) {
   }
 }
 
-async function importCases(jwt: string, folderId: number, file: File) {
-  const url = `${apiServer}/cases/import?folderId=${folderId}`;
+async function previewImportCases(jwt: string, folderId: number, file: File): Promise<ImportPreviewResponse> {
+  const url = `${apiServer}/cases/import/preview?folderId=${folderId}`;
   const formData = new FormData();
   formData.append('file', file);
 
@@ -256,8 +256,40 @@ async function importCases(jwt: string, folderId: number, file: File) {
     const data = await response.json();
     return data;
   } catch (error: unknown) {
-    logError('Error importing data', error);
+    logError('Error previewing import', error);
+    return { multiSheet: false, sheets: [], error: 'Failed to preview import' };
   }
 }
 
-export { fetchCase, fetchCases, updateCase, createCase, deleteCases, cloneCases, exportCases, importCases };
+async function commitImportCases(jwt: string, folderId: number, multiSheet: boolean, sheets: ImportSheetType[]) {
+  const url = `${apiServer}/cases/import/commit?folderId=${folderId}`;
+
+  try {
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${jwt}`,
+      },
+      body: JSON.stringify({ multiSheet, sheets }),
+    });
+
+    const data = await response.json();
+    return data;
+  } catch (error: unknown) {
+    logError('Error committing import', error);
+    return { error: 'Failed to import cases' };
+  }
+}
+
+export {
+  fetchCase,
+  fetchCases,
+  updateCase,
+  createCase,
+  deleteCases,
+  cloneCases,
+  exportCases,
+  previewImportCases,
+  commitImportCases,
+};

@@ -259,7 +259,18 @@
     "or_drag_and_drop": " or drag and drop",
     "max_file_size": "Max. file size",
     "cases_imported": "Test cases imported",
-    "create_more": "Create more"
+    "create_more": "Create more",
+    "import_preview_title": "Review Import",
+    "sheet": "Sheet",
+    "target_folder": "Target folder",
+    "new_cases": "New",
+    "update_cases": "Update",
+    "failed_cases": "Failed",
+    "row": "Row",
+    "include_sheet": "Include this sheet",
+    "import_selected": "Import Selected",
+    "back": "Back",
+    "no_importable_cases": "No importable cases in this sheet"
   },
   "Case": {
     "back_to_cases": "Back to test cases",

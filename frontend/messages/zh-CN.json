@@ -259,7 +259,18 @@
     "or_drag_and_drop": " 或拖拽文件到此处",
     "max_file_size": "最大文件大小",
     "cases_imported": "测试用例已导入",
-    "create_more": "继续创建"
+    "create_more": "继续创建",
+    "import_preview_title": "查看导入",
+    "sheet": "工作表",
+    "target_folder": "目标文件夹",
+    "new_cases": "新增",
+    "update_cases": "更新",
+    "failed_cases": "失败",
+    "row": "行",
+    "include_sheet": "包含此工作表",
+    "import_selected": "导入所选",
+    "back": "返回",
+    "no_importable_cases": "此工作表中没有可导入的测试用例"
   },
   "Case": {
     "back_to_cases": "返回测试用例列表",

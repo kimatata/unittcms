@@ -17,6 +17,7 @@ This is the original UnitTCMS import format where **each row represents one step
 | Column | Required | Description |
 |---|---|---|
 | `title` | Yes | Test case title. Repeat the same title for multi-step cases. |
+| `testCaseId` | No | Stable identifier for this case (see [Re-importing and updating existing cases](#re-importing-and-updating-existing-cases)) |
 | `description` | No | Test case description |
 | `priority` | Yes | `critical`, `high`, `medium`, or `low` |
 | `type` | Yes | `security`, `performance`, `smoke-and-sanity`, `regression`, `other` |
@@ -29,12 +30,12 @@ This is the original UnitTCMS import format where **each row represents one step
 
 **Example:**
 
-| title | description | priority | type | template | step | expectedStepResult |
-|---|---|---|---|---|---|---|
-| Login test | Verify login flow | high | smoke-and-sanity | step | Open login page | Login page appears |
-| Login test | Verify login flow | high | smoke-and-sanity | step | Enter credentials | Fields populated |
-| Login test | Verify login flow | high | smoke-and-sanity | step | Click submit | User is logged in |
-| Search test | Verify search | medium | regression | text | | |
+| testCaseId | title | description | priority | type | template | step | expectedStepResult |
+|---|---|---|---|---|---|---|---|
+| TC-1 | Login test | Verify login flow | high | smoke-and-sanity | step | Open login page | Login page appears |
+| TC-1 | Login test | Verify login flow | high | smoke-and-sanity | step | Enter credentials | Fields populated |
+| TC-1 | Login test | Verify login flow | high | smoke-and-sanity | step | Click submit | User is logged in |
+| TC-2 | Search test | Verify search | medium | regression | text | | |
 
 ### Reference Format
 
@@ -43,7 +44,7 @@ This format is common in QA teams and testing tools. **Each row represents one c
 | Column | Required | Description |
 |---|---|---|
 | `Test Scenario` or `title` | Yes | Test case title |
-| `Test Case ID` | No | Identifier (included in description) |
+| `Test Case ID` | No | Stable identifier for this case (see [Re-importing and updating existing cases](#re-importing-and-updating-existing-cases)) |
 | `Module` | No | Module name — creates a sub-folder automatically |
 | `Test Steps` or `step` | No | Multiline steps in a single cell (see below) |
 | `Expected Result` or `expectedResults` | No | Overall expected result |
@@ -111,6 +112,37 @@ When using the reference format with a `Module` column:
 - Each test case is placed in its corresponding module folder.
 - Test cases without a module value stay in the sheet/target folder.
 
+## Reviewing an Import Before It's Saved
+
+Uploading a file doesn't write anything to the database right away. Instead,
+every sheet is parsed and validated, and you're shown a review screen with,
+per sheet:
+
+- The folder the sheet's cases will go into.
+- Counts of cases that will be created, updated, or failed validation.
+- The exact row number and reason for every row that failed (e.g. a missing
+  required field, or an invalid `priority`/`type`/`template` value).
+
+A bad row only affects itself — every other valid row in the same sheet (and
+every other sheet in the workbook) still imports. You can uncheck a whole
+sheet to skip it entirely; failed rows within an included sheet are always
+skipped automatically. Nothing is saved until you click **Import Selected**.
+
+## Re-importing and Updating Existing Cases
+
+Give a row a `testCaseId` (v1.1 format) or `Test Case ID` (reference format)
+and it becomes possible to re-upload the same workbook later — after fixing a
+typo, adding a step, etc. — without creating duplicates:
+
+- A row whose ID matches an existing test case **anywhere in the project**
+  updates that case in place: every field is overwritten with the sheet's
+  data, and its steps are fully replaced (old steps removed, the sheet's
+  steps inserted).
+- A row with no ID always creates a new case, exactly as before.
+- The same ID used twice in one upload (in the same sheet or across sheets)
+  is reported as a validation error on the second occurrence — it's ambiguous
+  which row should win.
+
 ## Reference Excel Templates
 
 Two reference templates are provided in the [`reference/`](https://github.com/kimatata/unittcms/tree/main/reference) directory:
@@ -120,10 +152,16 @@ Two reference templates are provided in the [`reference/`](https://github.com/ki
 
 Download these templates to get started quickly.
 
-## API Endpoint
+## API Endpoints
+
+Import is a two-step process: preview parses and validates the file without
+writing anything, then commit saves whichever sheets the response says to
+keep.
+
+### Preview
 
 ```
-POST /cases/import?folderId={folderId}
+POST /cases/import/preview?folderId={folderId}
 Content-Type: multipart/form-data
 ```
 
@@ -131,4 +169,18 @@ Content-Type: multipart/form-data
 - `folderId` (query, required) — The target folder ID to import test cases into
 - `file` (form-data, required) — The Excel file (`.xlsx` or `.xls`, max 50 MB)
 
-**Authentication:** Required (must be a project developer or above)
+Returns `{ multiSheet, sheets: [{ sheetName, targetFolderName, summary, cases }] }`,
+where each case is tagged `new`, `update` (with a `matchedCaseId`), or `error`
+(with `errors` and `rowNumbers`).
+
+### Commit
+
+```
+POST /cases/import/commit?folderId={folderId}
+Content-Type: application/json
+```
+
+**Body:** `{ "multiSheet": boolean, "sheets": [...] }` — the preview response's
+`sheets` array, filtered down to whichever sheets should actually be imported.
+
+**Authentication:** Required for both endpoints (must be a project developer or above)

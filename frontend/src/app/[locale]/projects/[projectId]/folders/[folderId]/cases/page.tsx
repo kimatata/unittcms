@@ -58,6 +58,17 @@ export default function Page({ params }: { params: { projectId: string; folderId
     maxFileSize: t('max_file_size'),
     casesImported: t('cases_imported'),
     createMore: t('create_more'),
+    importPreviewTitle: t('import_preview_title'),
+    sheet: t('sheet'),
+    targetFolder: t('target_folder'),
+    newCases: t('new_cases'),
+    updateCases: t('update_cases'),
+    failedCases: t('failed_cases'),
+    row: t('row'),
+    includeSheet: t('include_sheet'),
+    importSelected: t('import_selected'),
+    back: t('back'),
+    noImportableCases: t('no_importable_cases'),
   };
 
   const priorityTranslation = useTranslations('Priority');

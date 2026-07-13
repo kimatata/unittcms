@@ -259,7 +259,18 @@
     "or_drag_and_drop": " oder per Drag & Drop",
     "max_file_size": "Max. Dateigröße",
     "cases_imported": "Testfälle importiert",
-    "create_more": "Weitere erstellen"
+    "create_more": "Weitere erstellen",
+    "import_preview_title": "Import überprüfen",
+    "sheet": "Tabellenblatt",
+    "target_folder": "Zielordner",
+    "new_cases": "Neu",
+    "update_cases": "Aktualisieren",
+    "failed_cases": "Fehlgeschlagen",
+    "row": "Zeile",
+    "include_sheet": "Dieses Blatt einschließen",
+    "import_selected": "Ausgewählte importieren",
+    "back": "Zurück",
+    "no_importable_cases": "Keine importierbaren Testfälle in diesem Blatt"
   },
   "Case": {
     "back_to_cases": "Zurück zu Testfällen",
