@@ -81,6 +81,14 @@ vi.mock('../../models/tags.js', () => ({
   default: () => mockTags,
 }));
 
+// mock defineStep
+const mockStep = {
+  belongsToMany: vi.fn(),
+};
+vi.mock('../../models/steps.js', () => ({
+  default: () => mockStep,
+}));
+
 describe('GET /download/:runId with type=csv', () => {
   let app;
   const sequelize = new Sequelize({
