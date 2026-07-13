@@ -8,6 +8,7 @@ import defineRunCase from '../../models/runCases.js';
 import defineCase from '../../models/cases.js';
 import defineFolder from '../../models/folders.js';
 import defineTag from '../../models/tags.js';
+import defineStep from '../../models/steps.js';
 import authMiddleware from '../../middleware/auth.js';
 import visibilityMiddleware from '../../middleware/verifyVisible.js';
 import { contentDisposition, toSafeFileName } from '../../config/contentDisposition.js';
@@ -22,10 +23,13 @@ export default function (sequelize) {
   const Case = defineCase(sequelize, DataTypes);
   const Folder = defineFolder(sequelize, DataTypes);
   const Tags = defineTag(sequelize, DataTypes);
+  const Step = defineStep(sequelize, DataTypes);
 
   RunCase.belongsTo(Case, { foreignKey: 'caseId' });
   Case.belongsToMany(Tags, { through: 'caseTags', foreignKey: 'caseId', otherKey: 'tagId' });
   Tags.belongsToMany(Case, { through: 'caseTags', foreignKey: 'tagId', otherKey: 'caseId' });
+  Case.belongsToMany(Step, { through: 'caseSteps' });
+  Step.belongsToMany(Case, { through: 'caseSteps' });
 
   router.get('/download/:runId', verifySignedIn, verifyProjectVisibleFromRunId, async (req, res) => {
     const { runId } = req.params;
@@ -56,6 +60,10 @@ export default function (sequelize) {
                 model: Tags,
                 attributes: ['id', 'name'],
                 through: { attributes: [] },
+              },
+              {
+                model: Step,
+                through: { attributes: ['stepNo'] },
               },
             ],
           },
@@ -102,6 +110,19 @@ export default function (sequelize) {
               time: '0',
             });
 
+            if (rc.Case.description) {
+              testCase.ele('system-out').txt(rc.Case.description);
+            }
+
+            if (rc.Case.Steps && rc.Case.Steps.length > 0) {
+              const stepsText = rc.Case.Steps.sort(
+                (a, b) => (a.caseSteps?.stepNo ?? 0) - (b.caseSteps?.stepNo ?? 0)
+              )
+                .map((s) => `${s.caseSteps?.stepNo ?? ''}. ${s.step} (expected: ${s.result})`)
+                .join('\n');
+              testCase.ele('properties').ele('property', { name: 'steps', value: stepsText });
+            }
+
             if (rc.status === 2) {
               testCase.ele('failure', { message: 'Test failed' }).txt('Test case failed.');
             } else if (rc.status === 4) {
@@ -125,6 +146,15 @@ export default function (sequelize) {
           type: testTypes[rc.Case.type] || rc.Case.type,
           automationStatus: automationStatus[rc.Case.automationStatus] || rc.Case.automationStatus,
           tags: rc.Case.Tags && rc.Case.Tags.length > 0 ? rc.Case.Tags.map((tag) => tag.name).join(', ') : '',
+          description: rc.Case.description || '',
+          preConditions: rc.Case.preConditions || '',
+          expectedResults: rc.Case.expectedResults || '',
+          steps:
+            rc.Case.Steps && rc.Case.Steps.length > 0
+              ? rc.Case.Steps.sort((a, b) => (a.caseSteps?.stepNo ?? 0) - (b.caseSteps?.stepNo ?? 0))
+                  .map((s) => `${s.caseSteps?.stepNo ?? ''}. ${s.step} (expected: ${s.result})`)
+                  .join(' | ')
+              : '',
           status: testRunCaseStatus[rc.status] || rc.status,
         }));
 
