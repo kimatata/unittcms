@@ -86,7 +86,7 @@ export default function CaseDialog({ isOpen, onCancel, onSubmit, messages }: Pro
       }}
     >
       <ModalContent>
-        <ModalHeader className="flex flex-col gap-1">{messages.newTestCase}</ModalHeader>
+        <ModalHeader className="flex flex-col gap-1 font-extrabold text-[#2b2f37]">{messages.newTestCase}</ModalHeader>
         <ModalBody>
           <Input
             type="text"
@@ -118,7 +118,7 @@ export default function CaseDialog({ isOpen, onCancel, onSubmit, messages }: Pro
           <Switch size="sm" isSelected={createMore} onValueChange={setCreateMore}>
             {messages.createMore}
           </Switch>
-          <Button color="primary" onPress={validate}>
+          <Button className="bg-gradient-to-r from-[#4953ac] to-[#652fe7] text-white font-bold rounded-xl shadow-lg shadow-indigo-500/20" onPress={validate}>
             {messages.create}
           </Button>
         </ModalFooter>

@@ -110,15 +110,15 @@ export default function CaseAttachmentsEditor({
       >
         <label
           htmlFor="dropzone-file"
-          className={`flex flex-col items-center justify-center w-full h-32 border-2 border-neutral-200 border-dashed rounded-lg  bg-neutral-50 dark:hover:bg-bray-800 dark:bg-neutral-700 hover:bg-neutral-100 dark:border-neutral-600 dark:hover:border-neutral-500 dark:hover:bg-neutral-600 ${isDisabled ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'}`}
+          className={`flex flex-col items-center justify-center w-full h-32 border-2 border-slate-200 border-dashed rounded-2xl bg-slate-50 hover:bg-indigo-50/50 ${isDisabled ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'}`}
         >
           <div className="flex flex-col items-center justify-center pt-5 pb-6">
             <ArrowUpFromLine />
-            <p className="mb-2 text-sm text-neutral-500 dark:text-neutral-400">
+            <p className="mb-2 text-sm text-slate-500">
               <span className="font-semibold">{messages.clickToUpload}</span>
               <span>{messages.orDragAndDrop}</span>
             </p>
-            <p className="text-xs text-neutral-500 dark:text-neutral-400">{messages.maxFileSize}: 50 MB</p>
+            <p className="text-xs text-slate-500">{messages.maxFileSize}: 50 MB</p>
           </div>
           <input
             id="dropzone-file"

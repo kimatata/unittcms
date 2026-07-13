@@ -37,7 +37,7 @@ export default function PasswordResetDialog({ isOpen, onCancel, onReset, message
       }}
     >
       <ModalContent>
-        <ModalHeader className="flex flex-col gap-1">{messages.resetPassword}</ModalHeader>
+        <ModalHeader className="flex flex-col gap-1 font-extrabold text-[#2b2f37]">{messages.resetPassword}</ModalHeader>
         <ModalBody>
           <div className="space-y-3">
             <form>

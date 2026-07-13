@@ -62,7 +62,7 @@ export default function AddMemberDialog({ isOpen, projectId, onCancel, onAddMemb
       size="2xl"
     >
       <ModalContent>
-        <ModalHeader className="flex flex-col gap-1">{messages.addMember}</ModalHeader>
+        <ModalHeader className="flex flex-col gap-1 font-extrabold text-[#2b2f37]">{messages.addMember}</ModalHeader>
         <ModalBody>
           <Input
             type="text"

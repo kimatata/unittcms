@@ -59,17 +59,24 @@ export default function ProjectsPage({ messages, projectDialogMessages, locale }
   };
 
   return (
-    <div className="container mx-auto max-w-3xl pt-16 px-6 flex-grow">
-      <div className="w-full p-3 flex items-center justify-between">
-        <h3 className="font-bold">{messages.projectList}</h3>
+    <div className="mx-auto max-w-5xl pt-10 px-8 flex-grow">
+      <div className="w-full pb-6 flex items-center justify-between">
+        <h1 className="text-4xl font-extrabold text-[#2b2f37] tracking-tight">{messages.projectList}</h1>
         <div>
-          <Button startContent={<Plus size={16} />} size="sm" color="primary" onPress={openDialogForCreate}>
+          <Button
+            startContent={<Plus size={16} />}
+            size="sm"
+            className="bg-gradient-to-r from-[#4953ac] to-[#652fe7] text-white font-bold rounded-xl shadow-lg shadow-indigo-500/20 px-5"
+            onPress={openDialogForCreate}
+          >
             {messages.newProject}
           </Button>
         </div>
       </div>
 
-      <ProjectsTable projects={projects} messages={messages} locale={locale} />
+      <div className="bg-white rounded-2xl shadow-sm overflow-hidden">
+        <ProjectsTable projects={projects} messages={messages} locale={locale} />
+      </div>
 
       <ProjectDialog
         isOpen={isProjectDialogOpen}

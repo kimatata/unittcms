@@ -54,9 +54,9 @@ export default function ResizablePanes({
   }, [isDragging, minLeftWidth, minRightWidth]);
 
   return (
-    <div ref={containerRef} className="flex h-full" style={{ userSelect: isDragging ? 'none' : 'auto' }}>
+    <div ref={containerRef} className="flex h-full overflow-hidden" style={{ userSelect: isDragging ? 'none' : 'auto' }}>
       <div
-        className="border-r-1 dark:border-neutral-700 overflow-auto"
+        className="overflow-auto"
         style={{ width: `${leftWidth}%`, minWidth: `${minLeftWidth}%` }}
       >
         {leftPane}

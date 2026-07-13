@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>UnitTCMS Dashboard | Electric Spectrum</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "surface-container-low": "#eef0fd",
+              "outline-variant": "#aaadb8",
+              "secondary-fixed": "#68fadd",
+              "on-secondary-fixed": "#00483d",
+              "on-primary": "#f3f1ff",
+              "surface-container": "#e5e8f6",
+              "on-secondary-container": "#005d4f",
+              "on-error": "#ffefef",
+              "surface-container-highest": "#d8dcec",
+              "outline": "#737681",
+              "primary-fixed-dim": "#858eec",
+              "error-dim": "#a70138",
+              "on-tertiary-container": "#370096",
+              "on-tertiary-fixed": "#1c0055",
+              "on-primary-fixed-variant": "#18217d",
+              "primary": "#4953ac",
+              "on-primary-container": "#0b1574",
+              "on-primary-fixed": "#000005",
+              "inverse-surface": "#0b0e16",
+              "primary-fixed": "#929bfa",
+              "surface-bright": "#f5f6ff",
+              "error-container": "#f74b6d",
+              "on-surface-variant": "#585b65",
+              "inverse-on-surface": "#9a9ca7",
+              "secondary-fixed-dim": "#56ebcf",
+              "on-error-container": "#510017",
+              "surface-dim": "#cfd4e5",
+              "surface-container-high": "#dee2f1",
+              "on-background": "#2b2f37",
+              "on-surface": "#2b2f37",
+              "surface-variant": "#d8dcec",
+              "secondary-dim": "#005a4d",
+              "on-secondary": "#c2ffef",
+              "tertiary-fixed-dim": "#ab93ff",
+              "tertiary-fixed": "#b8a3ff",
+              "primary-container": "#929bfa",
+              "background": "#f5f6ff",
+              "surface-container-lowest": "#ffffff",
+              "secondary": "#006859",
+              "surface": "#f5f6ff",
+              "tertiary-container": "#b8a3ff",
+              "secondary-container": "#68fadd",
+              "on-tertiary": "#f7f0ff",
+              "on-tertiary-fixed-variant": "#4000ad",
+              "surface-tint": "#4953ac",
+              "error": "#b41340",
+              "tertiary": "#652fe7",
+              "inverse-primary": "#929bfa",
+              "tertiary-dim": "#5819db",
+              "on-secondary-fixed-variant": "#006859",
+              "primary-dim": "#3d469f"
+            },
+            fontFamily: {
+              "headline": ["Manrope"],
+              "body": ["Manrope"],
+              "label": ["Manrope"]
+            },
+            borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .bg-electric-gradient {
+            background: linear-gradient(135deg, #4953ac 0%, #652fe7 100%);
+        }
+        .bg-passed-gradient {
+            background: linear-gradient(to top, #006859 0%, #68fadd 100%);
+        }
+        .bg-failed-gradient {
+            background: linear-gradient(to top, #b41340 0%, #f74b6d 100%);
+        }
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(20px);
+        }
+    </style>
+</head>
+<body class="bg-background font-body text-on-background antialiased overflow-x-hidden">
+<!-- SideNavBar Shell -->
+<aside class="h-screen w-64 fixed left-0 top-0 z-40 bg-indigo-950/70 backdrop-blur-xl dark:bg-slate-950/80 flex flex-col p-4 gap-2 shadow-2xl shadow-indigo-900/20">
+<div class="mb-8 px-4 py-2">
+<h1 class="text-2xl font-extrabold text-white tracking-tighter">UnitTCMS</h1>
+<p class="text-[10px] text-indigo-300 font-bold uppercase tracking-[0.2em]">Electric Spectrum</p>
+</div>
+<nav class="flex-1 space-y-1">
+<!-- Active Tab: Dashboard -->
+<a class="flex items-center gap-3 px-4 py-3 text-white bg-gradient-to-r from-indigo-600 to-violet-500 rounded-xl shadow-lg shadow-indigo-500/30 font-manrope font-semibold tracking-wide scale-95 transition-all" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span>Dashboard</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-indigo-200/70 hover:text-white hover:bg-white/10 rounded-xl transition-all duration-300 font-manrope font-semibold tracking-wide" href="#">
+<span class="material-symbols-outlined">inventory_2</span>
+<span>Test Suites</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-indigo-200/70 hover:text-white hover:bg-white/10 rounded-xl transition-all duration-300 font-manrope font-semibold tracking-wide" href="#">
+<span class="material-symbols-outlined">play_circle</span>
+<span>Runs</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-indigo-200/70 hover:text-white hover:bg-white/10 rounded-xl transition-all duration-300 font-manrope font-semibold tracking-wide" href="#">
+<span class="material-symbols-outlined">bug_report</span>
+<span>Defects</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-indigo-200/70 hover:text-white hover:bg-white/10 rounded-xl transition-all duration-300 font-manrope font-semibold tracking-wide" href="#">
+<span class="material-symbols-outlined">monitoring</span>
+<span>Analytics</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-indigo-200/70 hover:text-white hover:bg-white/10 rounded-xl transition-all duration-300 font-manrope font-semibold tracking-wide" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span>Settings</span>
+</a>
+</nav>
+<button class="mt-auto bg-white/10 text-white p-4 rounded-xl flex items-center justify-center gap-2 font-bold hover:bg-white/20 transition-all active:scale-95">
+<span class="material-symbols-outlined">add</span>
+            New Test Run
+        </button>
+</aside>
+<!-- TopNavBar Shell -->
+<header class="fixed top-0 right-0 w-[calc(100%-16rem)] h-16 z-30 bg-indigo-50/70 backdrop-blur-xl flex justify-between items-center px-8 font-manrope font-medium text-sm">
+<div class="flex items-center gap-4 bg-surface-container-low px-4 py-2 rounded-full focus-within:ring-2 focus-within:ring-violet-400 w-96">
+<span class="material-symbols-outlined text-outline">search</span>
+<input class="bg-transparent border-none focus:ring-0 w-full text-on-surface-variant" placeholder="Search test cases, suites, or runs..." type="text"/>
+</div>
+<div class="flex items-center gap-6">
+<button class="text-indigo-600 hover:bg-indigo-100/50 p-2 rounded-full transition-all relative">
+<span class="material-symbols-outlined">notifications</span>
+<span class="absolute top-1 right-1 w-2 h-2 bg-error rounded-full"></span>
+</button>
+<button class="text-indigo-600 hover:bg-indigo-100/50 p-2 rounded-full transition-all">
+<span class="material-symbols-outlined">help</span>
+</button>
+<div class="flex items-center gap-3 border-l border-indigo-200 pl-6 ml-2">
+<div class="text-right">
+<p class="text-xs font-bold text-primary">Alex Chen</p>
+<p class="text-[10px] text-on-surface-variant">Lead QA Engineer</p>
+</div>
+<button class="hover:ring-2 hover:ring-indigo-400 rounded-full transition-all">
+<img alt="User Avatar" class="w-8 h-8 rounded-full" data-alt="close-up portrait of professional software engineer with glasses and friendly expression on neutral background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA95hcewJTYjmYEbIWD3qqyUAcAEadfHacPJsNt0dHefHECsKJ2otGdbJsJFi7-lWK2vLpJs8jadXgMoCsW_LtNcsfbVDemxE1uY-4tF_I0ygFXfdMDY9sfezOaJRtBbAmGHFJ2C4-KaLSqXaQAqfEB5A2uoyynwk7L44vCZBuJyAZyOPX-9D-cx3IxT0My7MKVQsAYR7Fp9oM0rtFc74ods6V1chkZW5RoYznYP3QuZTjFq0-DtELdQoaDBI1G9CUF9KQDhQn6_xFk"/>
+</button>
+</div>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="ml-64 pt-24 px-10 pb-10 min-h-screen">
+<!-- Header Section -->
+<div class="flex justify-between items-end mb-10">
+<div>
+<h2 class="text-4xl font-extrabold text-on-primary-container tracking-tight">Project Dashboard</h2>
+<p class="text-on-surface-variant mt-1 font-medium italic">Spectral Analysis for "Project Phoenix: Sprint 12"</p>
+</div>
+<div class="flex gap-3">
+<button class="bg-surface-container-lowest text-primary px-5 py-2.5 rounded-xl font-bold flex items-center gap-2 shadow-sm hover:shadow-md transition-all">
+<span class="material-symbols-outlined text-lg">download</span>
+                    Export Report
+                </button>
+<button class="bg-electric-gradient text-white px-6 py-2.5 rounded-xl font-bold flex items-center gap-2 shadow-lg shadow-indigo-500/20 active:scale-95 transition-all">
+<span class="material-symbols-outlined text-lg">play_arrow</span>
+                    Start Execution
+                </button>
+</div>
+</div>
+<!-- Bento Grid: High Level Metrics -->
+<div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-10">
+<!-- Total Cases -->
+<div class="bg-surface-container-lowest p-6 rounded-2xl relative overflow-hidden group">
+<div class="absolute top-0 left-0 w-1.5 h-full bg-indigo-500"></div>
+<div class="flex justify-between items-start mb-4">
+<span class="text-sm font-bold text-outline-variant uppercase tracking-wider">Total Cases</span>
+<span class="material-symbols-outlined text-indigo-400">inventory_2</span>
+</div>
+<p class="text-4xl font-extrabold text-on-primary-container">1,248</p>
+<div class="flex items-center gap-1 mt-2 text-xs font-bold text-secondary">
+<span class="material-symbols-outlined text-sm">trending_up</span>
+<span>12% from last sprint</span>
+</div>
+</div>
+<!-- Execution Rate -->
+<div class="bg-electric-gradient p-6 rounded-2xl relative overflow-hidden shadow-xl shadow-indigo-900/10">
+<div class="flex justify-between items-start mb-4">
+<span class="text-sm font-bold text-indigo-100/70 uppercase tracking-wider">Execution Rate</span>
+<span class="material-symbols-outlined text-indigo-200">speed</span>
+</div>
+<p class="text-4xl font-extrabold text-white">84.2%</p>
+<div class="w-full bg-white/20 h-2 rounded-full mt-4">
+<div class="bg-secondary-fixed w-[84%] h-full rounded-full"></div>
+</div>
+</div>
+<!-- Pass Rate -->
+<div class="bg-surface-container-lowest p-6 rounded-2xl relative overflow-hidden">
+<div class="absolute top-0 left-0 w-1.5 h-full bg-secondary"></div>
+<div class="flex justify-between items-start mb-4">
+<span class="text-sm font-bold text-outline-variant uppercase tracking-wider">Pass Rate</span>
+<span class="material-symbols-outlined text-secondary">check_circle</span>
+</div>
+<p class="text-4xl font-extrabold text-on-primary-container">92.5%</p>
+<div class="flex items-center gap-1 mt-2 text-xs font-bold text-secondary">
+<span class="material-symbols-outlined text-sm">verified</span>
+<span>Stable Performance</span>
+</div>
+</div>
+<!-- Active Defects -->
+<div class="bg-surface-container-lowest p-6 rounded-2xl relative overflow-hidden">
+<div class="absolute top-0 left-0 w-1.5 h-full bg-error"></div>
+<div class="flex justify-between items-start mb-4">
+<span class="text-sm font-bold text-outline-variant uppercase tracking-wider">Active Defects</span>
+<span class="material-symbols-outlined text-error">bug_report</span>
+</div>
+<p class="text-4xl font-extrabold text-on-primary-container">18</p>
+<div class="flex items-center gap-1 mt-2 text-xs font-bold text-error">
+<span class="material-symbols-outlined text-sm">warning</span>
+<span>4 Critical/Blocker</span>
+</div>
+</div>
+</div>
+<!-- Main Analytics Section -->
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+<!-- Execution Progress (Bar Chart) -->
+<div class="lg:col-span-2 bg-surface-container-lowest p-8 rounded-3xl shadow-sm">
+<div class="flex justify-between items-center mb-10">
+<h3 class="text-xl font-extrabold text-on-primary-container">Daily Execution Volume</h3>
+<div class="flex gap-2">
+<span class="flex items-center gap-2 text-xs font-bold text-on-surface-variant">
+<span class="w-3 h-3 bg-passed-gradient rounded-full"></span> Passed
+                        </span>
+<span class="flex items-center gap-2 text-xs font-bold text-on-surface-variant">
+<span class="w-3 h-3 bg-failed-gradient rounded-full"></span> Failed
+                        </span>
+</div>
+</div>
+<div class="h-64 flex items-end justify-between gap-4">
+<!-- Monday -->
+<div class="flex-1 flex flex-col items-center gap-2 group">
+<div class="w-full flex flex-col-reverse items-center h-full gap-0.5">
+<div class="w-10 bg-passed-gradient rounded-t-lg transition-all duration-500 group-hover:opacity-80" style="height: 60%;"></div>
+<div class="w-10 bg-failed-gradient rounded-b-sm" style="height: 5%;"></div>
+</div>
+<span class="text-xs font-bold text-outline uppercase">Mon</span>
+</div>
+<!-- Tuesday -->
+<div class="flex-1 flex flex-col items-center gap-2 group">
+<div class="w-full flex flex-col-reverse items-center h-full gap-0.5">
+<div class="w-10 bg-passed-gradient rounded-t-lg transition-all duration-500 group-hover:opacity-80" style="height: 75%;"></div>
+<div class="w-10 bg-failed-gradient rounded-b-sm" style="height: 8%;"></div>
+</div>
+<span class="text-xs font-bold text-outline uppercase">Tue</span>
+</div>
+<!-- Wednesday -->
+<div class="flex-1 flex flex-col items-center gap-2 group">
+<div class="w-full flex flex-col-reverse items-center h-full gap-0.5">
+<div class="w-10 bg-passed-gradient rounded-t-lg transition-all duration-500 group-hover:opacity-80" style="height: 45%;"></div>
+<div class="w-10 bg-failed-gradient rounded-b-sm" style="height: 12%;"></div>
+</div>
+<span class="text-xs font-bold text-outline uppercase">Wed</span>
+</div>
+<!-- Thursday -->
+<div class="flex-1 flex flex-col items-center gap-2 group">
+<div class="w-full flex flex-col-reverse items-center h-full gap-0.5">
+<div class="w-10 bg-passed-gradient rounded-t-lg transition-all duration-500 group-hover:opacity-80" style="height: 85%;"></div>
+<div class="w-10 bg-failed-gradient rounded-b-sm" style="height: 4%;"></div>
+</div>
+<span class="text-xs font-bold text-outline uppercase">Thu</span>
+</div>
+<!-- Friday -->
+<div class="flex-1 flex flex-col items-center gap-2 group">
+<div class="w-full flex flex-col-reverse items-center h-full gap-0.5">
+<div class="w-10 bg-passed-gradient rounded-t-lg transition-all duration-500 group-hover:opacity-80" style="height: 95%;"></div>
+<div class="w-10 bg-failed-gradient rounded-b-sm" style="height: 3%;"></div>
+</div>
+<span class="text-xs font-bold text-outline uppercase">Fri</span>
+</div>
+<!-- Saturday -->
+<div class="flex-1 flex flex-col items-center gap-2 group opacity-40">
+<div class="w-10 h-10 bg-surface-container-high rounded-lg"></div>
+<span class="text-xs font-bold text-outline uppercase">Sat</span>
+</div>
+<!-- Sunday -->
+<div class="flex-1 flex flex-col items-center gap-2 group opacity-40">
+<div class="w-10 h-10 bg-surface-container-high rounded-lg"></div>
+<span class="text-xs font-bold text-outline uppercase">Sun</span>
+</div>
+</div>
+</div>
+<!-- Criticality Matrix -->
+<div class="bg-electric-gradient p-8 rounded-3xl text-white">
+<h3 class="text-xl font-extrabold mb-6">Criticality Matrix</h3>
+<div class="space-y-6">
+<div>
+<div class="flex justify-between text-xs font-bold mb-2 uppercase tracking-widest text-indigo-200">
+<span>High Severity</span>
+<span>42%</span>
+</div>
+<div class="h-1.5 w-full bg-white/10 rounded-full overflow-hidden">
+<div class="h-full bg-secondary-fixed shadow-[0_0_10px_rgba(104,250,221,0.5)]" style="width: 42%;"></div>
+</div>
+</div>
+<div>
+<div class="flex justify-between text-xs font-bold mb-2 uppercase tracking-widest text-indigo-200">
+<span>Medium Severity</span>
+<span>38%</span>
+</div>
+<div class="h-1.5 w-full bg-white/10 rounded-full overflow-hidden">
+<div class="h-full bg-primary-fixed" style="width: 38%;"></div>
+</div>
+</div>
+<div>
+<div class="flex justify-between text-xs font-bold mb-2 uppercase tracking-widest text-indigo-200">
+<span>Low Severity</span>
+<span>20%</span>
+</div>
+<div class="h-1.5 w-full bg-white/10 rounded-full overflow-hidden">
+<div class="h-full bg-tertiary-fixed" style="width: 20%;"></div>
+</div>
+</div>
+</div>
+<div class="mt-10 p-4 rounded-2xl bg-white/10 backdrop-blur-md">
+<p class="text-sm font-semibold italic text-indigo-100">"Blocker issues in Core API have decreased by 30% since the last automated deployment."</p>
+</div>
+</div>
+</div>
+<!-- Recent History Section -->
+<div class="mt-10">
+<h3 class="text-xl font-extrabold text-on-primary-container mb-6 flex items-center gap-2">
+<span class="material-symbols-outlined text-primary">history</span>
+                Recent Execution Activity
+            </h3>
+<div class="space-y-4">
+<!-- Activity Item 1 -->
+<div class="bg-surface-container-lowest p-5 rounded-2xl flex items-center justify-between group hover:translate-x-1 transition-transform cursor-pointer">
+<div class="flex items-center gap-5">
+<div class="w-12 h-12 rounded-xl bg-secondary/10 flex items-center justify-center text-secondary">
+<span class="material-symbols-outlined">verified</span>
+</div>
+<div>
+<h4 class="font-bold text-on-primary-container">Regression Suite - API v2.4</h4>
+<p class="text-sm text-on-surface-variant">Executed by Jenkins Agent 04 • 14 mins ago</p>
+</div>
+</div>
+<div class="flex items-center gap-10">
+<div class="text-right">
+<p class="text-sm font-extrabold text-on-primary-container">412 / 415 Passed</p>
+<div class="w-32 h-1.5 bg-surface-container mt-1 rounded-full overflow-hidden">
+<div class="h-full bg-passed-gradient" style="width: 98%;"></div>
+</div>
+</div>
+<span class="material-symbols-outlined text-outline group-hover:text-primary transition-colors">chevron_right</span>
+</div>
+</div>
+<!-- Activity Item 2 -->
+<div class="bg-surface-container-lowest p-5 rounded-2xl flex items-center justify-between group hover:translate-x-1 transition-transform cursor-pointer">
+<div class="flex items-center gap-5">
+<div class="w-12 h-12 rounded-xl bg-error/10 flex items-center justify-center text-error">
+<span class="material-symbols-outlined">cancel</span>
+</div>
+<div>
+<h4 class="font-bold text-on-primary-container">UI Automation - Mobile App</h4>
+<p class="text-sm text-on-surface-variant">Executed by Alex Chen • 2 hours ago</p>
+</div>
+</div>
+<div class="flex items-center gap-10">
+<div class="text-right">
+<p class="text-sm font-extrabold text-on-primary-container">88 / 120 Passed</p>
+<div class="w-32 h-1.5 bg-surface-container mt-1 rounded-full overflow-hidden">
+<div class="h-full bg-failed-gradient" style="width: 73%;"></div>
+</div>
+</div>
+<span class="material-symbols-outlined text-outline group-hover:text-primary transition-colors">chevron_right</span>
+</div>
+</div>
+<!-- Activity Item 3 -->
+<div class="bg-surface-container-lowest p-5 rounded-2xl flex items-center justify-between group hover:translate-x-1 transition-transform cursor-pointer">
+<div class="flex items-center gap-5">
+<div class="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined">sync</span>
+</div>
+<div>
+<h4 class="font-bold text-on-primary-container">Load Test - Payment Gateway</h4>
+<p class="text-sm text-on-surface-variant">In Progress • Running for 45 mins</p>
+</div>
+</div>
+<div class="flex items-center gap-10">
+<div class="text-right">
+<p class="text-sm font-extrabold text-on-primary-container">Running...</p>
+<div class="w-32 h-1.5 bg-surface-container mt-1 rounded-full overflow-hidden">
+<div class="h-full bg-primary animate-pulse" style="width: 45%;"></div>
+</div>
+</div>
+<span class="material-symbols-outlined text-outline group-hover:text-primary transition-colors">chevron_right</span>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Contextual FAB (Dashboard) -->
+<button class="fixed bottom-10 right-10 w-16 h-16 bg-gradient-to-tr from-secondary to-secondary-fixed rounded-2xl shadow-2xl shadow-secondary/40 flex items-center justify-center text-white active:scale-90 transition-transform z-50">
+<span class="material-symbols-outlined text-3xl" style="font-variation-settings: 'FILL' 1;">add</span>
+</button>
+</body></html>

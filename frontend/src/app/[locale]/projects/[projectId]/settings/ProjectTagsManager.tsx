@@ -158,6 +158,7 @@ export default function ProjectTagsManager({ projectId, messages }: ProjectTagsM
             <Button
               startContent={<Plus className="w-4 h-4" />}
               color="primary"
+              className="bg-gradient-to-r from-[#4953ac] to-[#652fe7] text-white font-bold rounded-xl shadow-lg shadow-indigo-500/20"
               size="sm"
               isDisabled={!isProjectDeveloper || !isValidTag}
               onPress={() => {
@@ -201,6 +202,7 @@ export default function ProjectTagsManager({ projectId, messages }: ProjectTagsM
                       <Button
                         size="sm"
                         color="primary"
+                        className="bg-gradient-to-r from-[#4953ac] to-[#652fe7] text-white font-bold rounded-xl shadow-lg shadow-indigo-500/20"
                         isIconOnly
                         isDisabled={!isValidEditTag}
                         onPress={() => onUpdateTag(tag.id)}

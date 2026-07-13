@@ -89,25 +89,25 @@ export default function HeaderNavbarMenu({ messages, locale }: Props) {
   }
 
   return (
-    <Navbar isMenuOpen={isMenuOpen} maxWidth="full" position="sticky" className="bg-inherit">
+    <Navbar isMenuOpen={isMenuOpen} maxWidth="full" position="sticky" className="bg-white/70 backdrop-blur-xl border-b border-indigo-100/50 shadow-sm">
       <NavbarContent className="basis-1/5 sm:basis-full" justify="start">
         <NavbarBrand as="li" className="gap-3 max-w-fit">
           <Link className="flex justify-start items-center gap-1" href="/" locale={locale}>
             <Image src="/favicon/icon-192.png" width={32} height={32} alt="Logo" />
-            <p className="font-bold text-inherit ms-1">UnitTCMS</p>
+            <p className="font-extrabold text-[#4953ac] tracking-tight ms-1 text-lg">UnitTCMS</p>
           </Link>
         </NavbarBrand>
         {commonLinks.map((link) =>
           link.isExternal ? (
             <NavbarItem key={link.uid} className="hidden md:block">
-              <NextUiLink isExternal href={link.href} showAnchorIcon>
+              <NextUiLink isExternal href={link.href} showAnchorIcon className="text-slate-600 hover:text-[#4953ac] font-semibold text-sm transition-colors">
                 {link.label}
               </NextUiLink>
             </NavbarItem>
           ) : (
             <NavbarItem key={link.uid} className="hidden md:block">
               <Link
-                className="data-[active=true]:text-primary data-[active=true]:font-medium"
+                className="text-slate-600 hover:text-[#4953ac] font-semibold text-sm transition-colors data-[active=true]:text-[#4953ac] data-[active=true]:font-bold"
                 href={link.href}
                 locale={locale}
               >
@@ -119,7 +119,7 @@ export default function HeaderNavbarMenu({ messages, locale }: Props) {
         {context.isAdmin() && (
           <NavbarItem key="admin" className="hidden md:block">
             <Link
-              className="data-[active=true]:text-primary data-[active=true]:font-medium"
+              className="text-slate-600 hover:text-[#4953ac] font-semibold text-sm transition-colors data-[active=true]:text-[#4953ac] data-[active=true]:font-bold"
               href="/admin"
               locale={locale}
             >
@@ -131,7 +131,7 @@ export default function HeaderNavbarMenu({ messages, locale }: Props) {
 
       <NavbarContent className="basis-1 pl-4" justify="end">
         <NextUiLink isExternal href="https://github.com/kimatata/unittcms" aria-label="Github">
-          <GithubIcon className="text-default-500" />
+          <GithubIcon className="text-slate-500" />
         </NextUiLink>
         <ThemeSwitch />
         <div className="hidden md:block">

@@ -87,9 +87,9 @@ export default function SettingsPage({ projectId, messages, projectDialogMessage
   };
 
   return (
-    <div className="container mx-auto max-w-3xl pt-6 px-6 flex-grow">
+    <div className="container mx-auto max-w-3xl pt-10 px-8 flex-grow">
       <div className="w-full p-3 flex items-center justify-between">
-        <h3 className="font-bold">{messages.projectManagement}</h3>
+        <h3 className="font-extrabold text-2xl text-[#2b2f37] tracking-tight">{messages.projectManagement}</h3>
         <div>
           <Button
             startContent={<Trash size={16} />}
@@ -103,10 +103,9 @@ export default function SettingsPage({ projectId, messages, projectDialogMessage
           <Button
             startContent={<Pencil size={16} />}
             size="sm"
-            color="primary"
+            className="ms-2 bg-gradient-to-r from-[#4953ac] to-[#652fe7] text-white font-bold rounded-xl shadow-lg shadow-indigo-500/20"
             isDisabled={!context.isProjectOwner(Number(projectId))}
             onPress={() => setIsProjectDialogOpen(true)}
-            className="ms-2"
           >
             {messages.editProject}
           </Button>
@@ -146,7 +145,7 @@ export default function SettingsPage({ projectId, messages, projectDialogMessage
       </div>
 
       <div className="w-full p-3 flex items-center justify-between">
-        <h3 className="font-bold">{messages.tagManagement}</h3>
+        <h3 className="font-extrabold text-lg text-[#2b2f37]">{messages.tagManagement}</h3>
       </div>
 
       <div className="w-full p-3">

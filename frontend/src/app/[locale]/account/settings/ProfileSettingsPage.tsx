@@ -301,13 +301,13 @@ export default function ProfileSettingsPage({ messages, locale: defaultLocale }:
   }
 
   return (
-    <div className="container mx-auto max-w-xl pt-6 px-6 flex-grow">
-      <h1 className="text-2xl font-bold mb-6">{messages.profileSettings}</h1>
+    <div className="container mx-auto max-w-xl pt-10 px-8 flex-grow">
+      <h1 className="text-2xl font-extrabold text-[#2b2f37] tracking-tight mb-6">{messages.profileSettings}</h1>
 
       {/* Change Username */}
-      <Card className="mb-6">
+      <Card className="mb-6 bg-white rounded-2xl shadow-sm border-none">
         <CardHeader>
-          <h2 className="text-large font-semibold">{messages.changeUsername}</h2>
+          <h2 className="text-large font-bold text-[#2b2f37]">{messages.changeUsername}</h2>
         </CardHeader>
         <CardBody>
           <form>
@@ -325,7 +325,7 @@ export default function ProfileSettingsPage({ messages, locale: defaultLocale }:
         </CardBody>
         <CardFooter className="flex justify-end">
           <Button
-            color="primary"
+            className="bg-gradient-to-r from-[#4953ac] to-[#652fe7] text-white font-bold rounded-xl shadow-lg shadow-indigo-500/20"
             onPress={handleUsernameUpdate}
             isLoading={isUpdatingUsername}
             isDisabled={!username.trim()}
@@ -337,9 +337,9 @@ export default function ProfileSettingsPage({ messages, locale: defaultLocale }:
       </Card>
 
       {/* Change Password */}
-      <Card className="mb-6">
+      <Card className="mb-6 bg-white rounded-2xl shadow-sm border-none">
         <CardHeader>
-          <h2 className="text-large font-semibold">{messages.changePassword}</h2>
+          <h2 className="text-large font-bold text-[#2b2f37]">{messages.changePassword}</h2>
         </CardHeader>
         <CardBody>
           <form>
@@ -384,7 +384,7 @@ export default function ProfileSettingsPage({ messages, locale: defaultLocale }:
         <CardFooter className="flex justify-end">
           <Button
             size="sm"
-            color="primary"
+            className="bg-gradient-to-r from-[#4953ac] to-[#652fe7] text-white font-bold rounded-xl shadow-lg shadow-indigo-500/20"
             onPress={handlePasswordUpdate}
             isLoading={isUpdatingPassword}
             isDisabled={!currentPassword || !newPassword || !confirmPassword}
@@ -395,10 +395,10 @@ export default function ProfileSettingsPage({ messages, locale: defaultLocale }:
       </Card>
 
       {/* Change Locale */}
-      <Card className="mb-6">
+      <Card className="mb-6 bg-white rounded-2xl shadow-sm border-none">
         <CardHeader>
           <Globe size={16} />
-          <h2 className="text-large font-semibold ml-2">{messages.changeLocale}</h2>
+          <h2 className="text-large font-bold text-[#2b2f37] ml-2">{messages.changeLocale}</h2>
         </CardHeader>
         <CardBody>
           <form>
@@ -423,7 +423,7 @@ export default function ProfileSettingsPage({ messages, locale: defaultLocale }:
         </CardBody>
         <CardFooter className="flex justify-end">
           <Button
-            color="primary"
+            className="bg-gradient-to-r from-[#4953ac] to-[#652fe7] text-white font-bold rounded-xl shadow-lg shadow-indigo-500/20"
             onPress={handleLocaleUpdate}
             isLoading={isUpdatingLocale}
             isDisabled={locale === context.token?.user?.locale}
@@ -435,9 +435,9 @@ export default function ProfileSettingsPage({ messages, locale: defaultLocale }:
       </Card>
 
       {/* Change Avatar */}
-      <Card className="mb-6">
+      <Card className="mb-6 bg-white rounded-2xl shadow-sm border-none">
         <CardHeader>
-          <h2 className="text-large font-semibold">{messages.changeAvatar}</h2>
+          <h2 className="text-large font-bold text-[#2b2f37]">{messages.changeAvatar}</h2>
         </CardHeader>
         <CardBody>
           <form>
@@ -474,7 +474,7 @@ export default function ProfileSettingsPage({ messages, locale: defaultLocale }:
               {messages.removeAvatar}
             </Button>
           )}
-          <Button size="sm" color="primary" onPress={() => fileInputRef.current?.click()} isLoading={isUploadingAvatar}>
+          <Button size="sm" className="bg-gradient-to-r from-[#4953ac] to-[#652fe7] text-white font-bold rounded-xl shadow-lg shadow-indigo-500/20" onPress={() => fileInputRef.current?.click()} isLoading={isUploadingAvatar}>
             {messages.uploadAvatar}
           </Button>
         </CardFooter>

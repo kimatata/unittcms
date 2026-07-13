@@ -85,7 +85,7 @@ export default function FolderDialog({ isOpen, editingFolder, onCancel, onSubmit
       }}
     >
       <ModalContent>
-        <ModalHeader className="flex flex-col gap-1">{messages.folder}</ModalHeader>
+        <ModalHeader className="flex flex-col gap-1 font-extrabold text-[#2b2f37]">{messages.folder}</ModalHeader>
         <ModalBody>
           <Input
             type="text"
@@ -117,7 +117,7 @@ export default function FolderDialog({ isOpen, editingFolder, onCancel, onSubmit
           <Button variant="light" onPress={onCancel}>
             {messages.close}
           </Button>
-          <Button color="primary" onPress={validate}>
+          <Button className="bg-gradient-to-r from-[#4953ac] to-[#652fe7] text-white font-bold rounded-xl shadow-lg shadow-indigo-500/20" onPress={validate}>
             {editingFolder ? messages.update : messages.create}
           </Button>
         </ModalFooter>

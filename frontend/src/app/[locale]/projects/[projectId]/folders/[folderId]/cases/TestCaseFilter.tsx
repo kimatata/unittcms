@@ -137,7 +137,7 @@ export default function TestCaseFilter({
   return (
     <div className="p-3">
       <div className="mb-3 space-y-1">
-        <h3 className="text-default-500 text-small">{messages.caseTitleOrDescription}</h3>
+        <h3 className="text-slate-500 text-small">{messages.caseTitleOrDescription}</h3>
         <Input
           variant="bordered"
           classNames={{
@@ -155,7 +155,7 @@ export default function TestCaseFilter({
       </div>
       <div className="mb-3 flex justify-between gap-2">
         <div className="flex-col space-y-1">
-          <h3 className="text-default-500 text-small">{messages.priority}</h3>
+          <h3 className="text-slate-500 text-small">{messages.priority}</h3>
           <Dropdown>
             <DropdownTrigger>
               <Button size="sm" variant="bordered" className="w-32" endContent={<ChevronDown size={16} />}>
@@ -186,7 +186,7 @@ export default function TestCaseFilter({
           </Dropdown>
         </div>
         <div className="flex-col space-y-1">
-          <h3 className="text-default-500 text-small">{messages.type}</h3>
+          <h3 className="text-slate-500 text-small">{messages.type}</h3>
           <Dropdown>
             <DropdownTrigger>
               <Button size="sm" variant="bordered" className="w-32" endContent={<ChevronDown size={16} />}>
@@ -211,12 +211,12 @@ export default function TestCaseFilter({
           </Dropdown>
         </div>
         <div className="flex-col space-y-1">
-          <h3 className="text-default-500 text-small"></h3>
+          <h3 className="text-slate-500 text-small"></h3>
         </div>
       </div>
 
       <div className="mb-3 space-y-1">
-        <h3 className="text-default-500 text-small">{messages.tags}</h3>
+        <h3 className="text-slate-500 text-small">{messages.tags}</h3>
         <Dropdown>
           <DropdownTrigger>
             <Button size="sm" variant="bordered" className="w-32" endContent={<ChevronDown size={16} />}>
@@ -244,7 +244,7 @@ export default function TestCaseFilter({
         <Button className="me-2" size="sm" variant="light" onPress={handleClearFilter}>
           {messages.clearAll}
         </Button>
-        <Button size="sm" variant="solid" color="primary" onPress={handleApplyFilter}>
+        <Button size="sm" variant="solid" className="bg-gradient-to-r from-[#4953ac] to-[#652fe7] text-white font-bold rounded-xl shadow-lg shadow-indigo-500/20" onPress={handleApplyFilter}>
           {messages.apply}
         </Button>
       </div>
