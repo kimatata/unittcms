@@ -45,7 +45,7 @@ function defineCase(sequelize, DataTypes) {
       },
       onDelete: 'CASCADE',
     },
-  });
+  }, { tableName: 'cases' });
 
   Case.associate = (models) => {
     Case.belongsTo(models.Folder, {

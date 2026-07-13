@@ -8,7 +8,7 @@ function defineStep(sequelize, DataTypes) {
       type: DataTypes.STRING,
       allowNull: false,
     },
-  });
+  }, { tableName: 'steps' });
 
   Step.associate = (models) => {
     Step.belongsToMany(models.Case, {

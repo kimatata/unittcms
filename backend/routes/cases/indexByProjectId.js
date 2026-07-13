@@ -130,9 +130,9 @@ export default function (sequelize) {
                 'assigneeUserId',
                 [
                   sequelize.literal(
-                    '(SELECT COUNT(*) FROM `comments` WHERE `comments`.`commentableType` = ' +
+                    '(SELECT COUNT(*) FROM "comments" WHERE "comments"."commentableType" = ' +
                       sequelize.escape('RunCase') +
-                      ' AND `comments`.`commentableId` = `RunCases`.`id`)'
+                      ' AND "comments"."commentableId" = "RunCases"."id")'
                   ),
                   'commentCount',
                 ],

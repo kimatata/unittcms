@@ -8,7 +8,7 @@ function defineCaseAttachment(sequelize, DataTypes) {
       type: DataTypes.INTEGER,
       allowNull: false,
     },
-  });
+  }, { tableName: 'caseAttachments' });
 
   CaseAttachment.associate = (models) => {
     CaseAttachment.belongsTo(models.Case, {

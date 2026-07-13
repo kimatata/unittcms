@@ -42,11 +42,12 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 // __dirname is backend/ in dev (ts-node) and backend/dist/ in production (compiled)
 const backendDir = path.basename(__dirname) === 'dist' ? path.resolve(__dirname, '..') : __dirname;
 const databasePath = process.env.DATABASE_PATH ?? path.resolve(backendDir, 'database/database.sqlite');
-export const sequelize = new Sequelize({
-  dialect: 'sqlite',
-  storage: databasePath,
-  logging: false,
-});
+
+// DB_DIALECT: 'sqlite' (default) or 'postgres'. Postgres reads connection info from DATABASE_URL.
+export const sequelize =
+  process.env.DB_DIALECT === 'postgres'
+    ? new Sequelize(process.env.DATABASE_URL as string, { dialect: 'postgres', logging: false })
+    : new Sequelize({ dialect: 'sqlite', storage: databasePath, logging: false });
 
 // Register TSOA-generated routes (TypeScript controllers)
 RegisterRoutes(app);

@@ -12,6 +12,17 @@ It is strongly recommended to change `SECRET_KEY` from the default value in prod
 
 :::
 
+## Database backend
+
+By default UnitTCMS uses SQLite, configured via `DATABASE_PATH`. To use PostgreSQL instead, set `DB_DIALECT=postgres` and `DATABASE_URL` to a Postgres connection string:
+
+```
+DB_DIALECT=postgres
+DATABASE_URL=postgres://user:password@host:5432/database
+```
+
+`DATABASE_URL` is ignored when `DB_DIALECT` is unset or `sqlite`, and `DATABASE_PATH` is ignored when `DB_DIALECT=postgres`.
+
 ## Docker
 
 If you are self-hosting UnitTCMS with Docker, you can customize the environment using the `environment` section in `docker-compose.yaml`.
@@ -30,6 +41,8 @@ services:
       - IS_DEMO=false # set to true to seed the database
       - API_PATH=/api
       - DATABASE_PATH=/app/backend/database/database.sqlite
+      # - DB_DIALECT=postgres
+      # - DATABASE_URL=postgres://user:password@host:5432/database
     // highlight-end
     volumes:
       - db-data:/app/backend/database
