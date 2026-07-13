@@ -21,7 +21,7 @@ const corsOptions = {
 app.use(cors(corsOptions));
 
 // enable json middleware
-app.use(express.json());
+app.use(express.json({ limit: process.env.MAX_REQUEST_BODY_SIZE || '100kb' }));
 
 // enable rate limiter
 const limiter = RateLimit({
