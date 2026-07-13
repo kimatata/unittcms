@@ -283,6 +283,24 @@ export default function CaseEditor({
                 const tagIds = selectedTags.map((tag) => tag.id);
                 await updateCaseTags(tokenContext.token.access_token, Number(caseId), tagIds, projectId);
 
+                // Re-fetch the case to get authoritative step IDs and reset editState.
+                // Without this, 'new' steps remain marked as 'new' in local state and
+                // would be re-created on a subsequent save (causing duplication).
+                const refreshed = await fetchCase(tokenContext.token.access_token, Number(caseId));
+                if (refreshed?.Steps) {
+                  const refreshedSteps = refreshed.Steps.map((step: StepType) => ({
+                    ...step,
+                    editState: 'notChanged' as const,
+                  }));
+                  refreshedSteps.sort((a: StepType, b: StepType) => a.caseSteps.stepNo - b.caseSteps.stepNo);
+                  const maxStepId = refreshedSteps.reduce(
+                    (maxId: number, step: StepType) => Math.max(maxId, step.id),
+                    0
+                  );
+                  setIdCounter(maxStepId);
+                  setTestCase((prev) => ({ ...prev, Steps: refreshedSteps }));
+                }
+
                 addToast({
                   title: 'Success',
                   color: 'success',
