@@ -2,7 +2,7 @@ import { getFilenameFromContentDisposition } from '@/utils/request';
 import { logError } from '@/utils/errorHandler';
 import Config from '@/config/config';
 const apiServer = Config.apiServer;
-import { CaseType, ImportPreviewResponse, ImportSheetType } from '@/types/case';
+import { CaseType, ImportPreviewResponse } from '@/types/case';
 
 async function fetchCase(jwt: string, caseId: number) {
   const url = `${apiServer}/cases/${caseId}`;
@@ -261,17 +261,19 @@ async function previewImportCases(jwt: string, folderId: number, file: File): Pr
   }
 }
 
-async function commitImportCases(jwt: string, folderId: number, multiSheet: boolean, sheets: ImportSheetType[]) {
+async function commitImportCases(jwt: string, folderId: number, file: File, includedSheetNames: string[]) {
   const url = `${apiServer}/cases/import/commit?folderId=${folderId}`;
+  const formData = new FormData();
+  formData.append('file', file);
+  formData.append('includedSheets', JSON.stringify(includedSheetNames));
 
   try {
     const response = await fetch(url, {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json',
         Authorization: `Bearer ${jwt}`,
       },
-      body: JSON.stringify({ multiSheet, sheets }),
+      body: formData,
     });
 
     const data = await response.json();

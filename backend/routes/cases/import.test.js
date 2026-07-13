@@ -122,7 +122,11 @@ describe('POST /import/preview and /import/commit', () => {
       .post(`/import/preview?folderId=${folderId}`)
       .attach('file', buffer, { filename: 'test.xlsx', contentType: XLSX_CONTENT_TYPE });
 
-  const commit = (folderId, body) => request(app).post(`/import/commit?folderId=${folderId}`).send(body);
+  const commit = (folderId, buffer, includedSheetNames) =>
+    request(app)
+      .post(`/import/commit?folderId=${folderId}`)
+      .field('includedSheets', JSON.stringify(includedSheetNames))
+      .attach('file', buffer, { filename: 'test.xlsx', contentType: XLSX_CONTENT_TYPE });
 
   // ──────────────────────────────────────────
   // Preview: request-level validation
@@ -338,36 +342,17 @@ describe('POST /import/preview and /import/commit', () => {
   // ──────────────────────────────────────────
 
   describe('commit', () => {
-    it('returns 400 when no sheets are provided', async () => {
-      const res = await commit(1, { multiSheet: false, sheets: [] });
+    it('returns 400 when no sheets are included', async () => {
+      const buffer = buildXlsxBuffer([{ 'Test Scenario': 'Case', 'Test Steps': '1. Step' }]);
+      const res = await commit(1, buffer, []);
       expect(res.status).toBe(400);
     });
 
     it('creates a new case and its steps', async () => {
-      const res = await commit(1, {
-        multiSheet: false,
-        sheets: [
-          {
-            sheetName: 'Sheet1',
-            cases: [
-              {
-                status: 'new',
-                title: 'New case',
-                description: '',
-                priority: 1,
-                type: 0,
-                preConditions: '',
-                expectedResults: '',
-                automationStatus: 0,
-                template: 1,
-                externalId: 'TC-1',
-                module: null,
-                steps: [{ stepNo: 1, step: 'Step 1', result: 'Result 1' }],
-              },
-            ],
-          },
-        ],
-      });
+      const buffer = buildXlsxBuffer([
+        { 'Test Case ID': 'TC-1', 'Test Scenario': 'New case', 'Test Steps': '1. Step 1', 'Expected Result': 'Result 1' },
+      ]);
+      const res = await commit(1, buffer, ['Sheet1']);
 
       expect(res.status).toBe(200);
       expect(res.body).toEqual({ created: 1, updated: 0 });
@@ -378,49 +363,41 @@ describe('POST /import/preview and /import/commit', () => {
       expect(createdCaseSteps[0].caseId).toBe(1);
     });
 
-    it('skips cases with status error even if present in the payload', async () => {
-      const res = await commit(1, {
-        multiSheet: false,
-        sheets: [
-          {
-            sheetName: 'Sheet1',
-            cases: [{ status: 'error', rowNumbers: [2], errors: ['bad'] }],
-          },
-        ],
-      });
+    it('skips cases that fail validation, even if their sheet is included', async () => {
+      const buffer = buildXlsxBuffer([{ 'Test Case ID': 'TC-BAD', 'Test Steps': '1. Step' }]); // missing Test Scenario
+      const res = await commit(1, buffer, ['Sheet1']);
+
       expect(res.status).toBe(200);
       expect(res.body).toEqual({ created: 0, updated: 0 });
       expect(createdCases).toHaveLength(0);
     });
 
+    it('only writes sheets whose name is in includedSheets', async () => {
+      const buffer = buildMultiSheetXlsxBuffer({
+        'Login Tests': [{ 'Test Scenario': 'Login case', 'Test Steps': '1. Step' }],
+        'Cart Tests': [{ 'Test Scenario': 'Cart case', 'Test Steps': '1. Step' }],
+      });
+      const res = await commit(1, buffer, ['Login Tests']);
+
+      expect(res.status).toBe(200);
+      expect(res.body).toEqual({ created: 1, updated: 0 });
+      expect(createdCases).toHaveLength(1);
+      expect(createdCases[0].title).toBe('Login case');
+    });
+
     it('updates a matched case in place and replaces its steps', async () => {
+      existingCasesByExternalId = [{ id: 42, externalId: 'TC-1' }];
       existingCaseSteps = [{ stepId: 501 }, { stepId: 502 }];
 
-      const res = await commit(1, {
-        multiSheet: false,
-        sheets: [
-          {
-            sheetName: 'Sheet1',
-            cases: [
-              {
-                status: 'update',
-                matchedCaseId: 42,
-                title: 'Updated title',
-                description: 'Updated description',
-                priority: 0,
-                type: 4,
-                preConditions: '',
-                expectedResults: '',
-                automationStatus: 0,
-                template: 0,
-                externalId: 'TC-1',
-                module: null,
-                steps: [{ stepNo: 1, step: 'New step', result: 'New result' }],
-              },
-            ],
-          },
-        ],
-      });
+      const buffer = buildXlsxBuffer([
+        {
+          'Test Case ID': 'TC-1',
+          'Test Scenario': 'Updated title',
+          'Test Steps': '1. New step',
+          'Expected Result': 'New result',
+        },
+      ]);
+      const res = await commit(1, buffer, ['Sheet1']);
 
       expect(res.status).toBe(200);
       expect(res.body).toEqual({ created: 0, updated: 1 });
@@ -439,27 +416,11 @@ describe('POST /import/preview and /import/commit', () => {
     });
 
     it('creates sheet folders for a multi-sheet commit and assigns cases to them', async () => {
-      const res = await commit(1, {
-        multiSheet: true,
-        sheets: [
-          {
-            sheetName: 'Login Tests',
-            cases: [
-              {
-                status: 'new',
-                title: 'Case A',
-                priority: 2,
-                type: 0,
-                automationStatus: 0,
-                template: 0,
-                externalId: null,
-                module: null,
-                steps: [],
-              },
-            ],
-          },
-        ],
+      const buffer = buildMultiSheetXlsxBuffer({
+        'Login Tests': [{ 'Test Scenario': 'Case A', 'Test Steps': '1. Step' }],
+        'Cart Tests': [{ 'Test Scenario': 'Case B', 'Test Steps': '1. Step' }],
       });
+      const res = await commit(1, buffer, ['Login Tests']);
 
       expect(res.status).toBe(200);
       expect(mockFolder.findOrCreate).toHaveBeenCalledWith(
@@ -469,27 +430,10 @@ describe('POST /import/preview and /import/commit', () => {
     });
 
     it('creates module subfolders under the sheet folder', async () => {
-      const res = await commit(5, {
-        multiSheet: false,
-        sheets: [
-          {
-            sheetName: 'Sheet1',
-            cases: [
-              {
-                status: 'new',
-                title: 'Case A',
-                priority: 2,
-                type: 0,
-                automationStatus: 0,
-                template: 0,
-                externalId: null,
-                module: 'Auth',
-                steps: [],
-              },
-            ],
-          },
-        ],
-      });
+      const buffer = buildXlsxBuffer([
+        { 'Test Case ID': 'TC-1', Module: 'Auth', 'Test Scenario': 'Case A', 'Test Steps': '1. Step' },
+      ]);
+      const res = await commit(5, buffer, ['Sheet1']);
 
       expect(res.status).toBe(200);
       expect(mockFolder.findOrCreate).toHaveBeenCalledWith(

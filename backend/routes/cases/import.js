@@ -46,183 +46,213 @@ export default function (sequelize) {
   const { verifySignedIn } = authMiddleware(sequelize);
   const { verifyProjectDeveloperFromFolderId } = editableMiddleware(sequelize);
 
+  const handleUpload = (req, res, next) => {
+    upload.single('file')(req, res, function (err) {
+      if (err) {
+        return res.status(400).json({ error: err.message });
+      }
+      next();
+    });
+  };
+
+  // Shared by preview and commit: parse every non-empty sheet in the workbook,
+  // flag duplicate Test Case IDs, and resolve new/update against existing cases.
+  // Read-only (aside from the project lookup needed to resolve matches).
+  const buildSheetsFromWorkbook = async (buffer, parentFolder) => {
+    const projectId = parentFolder.projectId;
+    const workbook = XLSX.read(buffer, { type: 'buffer' });
+    const sheetNames = workbook.SheetNames;
+    if (sheetNames.length === 0) {
+      return { error: 'Excel file contains no sheets' };
+    }
+
+    const nonEmptySheetNames = sheetNames.filter((name) => {
+      const jsonData = XLSX.utils.sheet_to_json(workbook.Sheets[name]);
+      return jsonData.length > 0;
+    });
+    if (nonEmptySheetNames.length === 0) {
+      return { error: 'Excel file contains no data rows' };
+    }
+    const multiSheet = nonEmptySheetNames.length > 1;
+
+    const sheets = [];
+    for (const sheetName of nonEmptySheetNames) {
+      const jsonData = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName]);
+      const headers = Object.keys(jsonData[0]);
+      const isReferenceFormat = headers.some((h) => ['Test Steps', 'Test Scenario', 'Test Case ID'].includes(h));
+
+      const cases = isReferenceFormat ? _parseReferenceFormat(jsonData) : _parseV1Format(jsonData);
+
+      sheets.push({
+        sheetName,
+        targetFolderName: multiSheet ? sheetName : parentFolder.name,
+        cases,
+      });
+    }
+
+    _flagDuplicateExternalIds(sheets);
+    await _resolveNewVsUpdate(sheets, Case, Folder, projectId);
+
+    return { multiSheet, sheets };
+  };
+
   // Preview: parse and validate every sheet, resolve new/update against existing
   // cases in the project, but write nothing to the database.
-  router.post(
-    '/import/preview',
-    (req, res, next) => {
-      upload.single('file')(req, res, function (err) {
-        if (err) {
-          return res.status(400).json({ error: err.message });
-        }
-        next();
-      });
-    },
-    verifySignedIn,
-    verifyProjectDeveloperFromFolderId,
-    async (req, res) => {
-      const { folderId } = req.query;
+  router.post('/import/preview', handleUpload, verifySignedIn, verifyProjectDeveloperFromFolderId, async (req, res) => {
+    const { folderId } = req.query;
 
-      if (!req.file || !req.file.buffer) {
-        return res.status(400).json({ error: 'No file uploaded' });
-      }
-
-      try {
-        const parentFolder = await Folder.findByPk(folderId);
-        if (!parentFolder) {
-          return res.status(404).json({ error: 'Parent folder not found' });
-        }
-        const projectId = parentFolder.projectId;
-
-        const workbook = XLSX.read(req.file.buffer, { type: 'buffer' });
-        const sheetNames = workbook.SheetNames;
-        if (sheetNames.length === 0) {
-          return res.status(400).json({ error: 'Excel file contains no sheets' });
-        }
-
-        const nonEmptySheetNames = sheetNames.filter((name) => {
-          const jsonData = XLSX.utils.sheet_to_json(workbook.Sheets[name]);
-          return jsonData.length > 0;
-        });
-        if (nonEmptySheetNames.length === 0) {
-          return res.status(400).json({ error: 'Excel file contains no data rows' });
-        }
-        const multiSheet = nonEmptySheetNames.length > 1;
-
-        const sheets = [];
-        for (const sheetName of nonEmptySheetNames) {
-          const jsonData = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName]);
-          const headers = Object.keys(jsonData[0]);
-          const isReferenceFormat = headers.some((h) => ['Test Steps', 'Test Scenario', 'Test Case ID'].includes(h));
-
-          const cases = isReferenceFormat ? _parseReferenceFormat(jsonData) : _parseV1Format(jsonData);
-
-          sheets.push({
-            sheetName,
-            targetFolderName: multiSheet ? sheetName : parentFolder.name,
-            cases,
-          });
-        }
-
-        _flagDuplicateExternalIds(sheets);
-        await _resolveNewVsUpdate(sheets, Case, Folder, projectId);
-
-        const responseSheets = sheets.map((sheet) => ({
-          sheetName: sheet.sheetName,
-          targetFolderName: sheet.targetFolderName,
-          summary: {
-            total: sheet.cases.length,
-            new: sheet.cases.filter((c) => c.status === 'new').length,
-            update: sheet.cases.filter((c) => c.status === 'update').length,
-            failed: sheet.cases.filter((c) => c.status === 'error').length,
-          },
-          cases: sheet.cases,
-        }));
-
-        res.json({ multiSheet, sheets: responseSheets });
-      } catch (error) {
-        console.error(error);
-        res.status(500).json({ error: 'Internal server error' });
-      }
+    if (!req.file || !req.file.buffer) {
+      return res.status(400).json({ error: 'No file uploaded' });
     }
-  );
 
-  // Commit: takes the (possibly sheet-filtered) preview response back and
-  // actually writes the accepted sheets' new/update cases to the database.
-  router.post('/import/commit', verifySignedIn, verifyProjectDeveloperFromFolderId, async (req, res) => {
-      const { folderId } = req.query;
-      const { multiSheet, sheets } = req.body;
+    try {
+      const parentFolder = await Folder.findByPk(folderId);
+      if (!parentFolder) {
+        return res.status(404).json({ error: 'Parent folder not found' });
+      }
 
-      if (!Array.isArray(sheets) || sheets.length === 0) {
+      const result = await buildSheetsFromWorkbook(req.file.buffer, parentFolder);
+      if (result.error) {
+        return res.status(400).json({ error: result.error });
+      }
+
+      const responseSheets = result.sheets.map((sheet) => ({
+        sheetName: sheet.sheetName,
+        targetFolderName: sheet.targetFolderName,
+        summary: {
+          total: sheet.cases.length,
+          new: sheet.cases.filter((c) => c.status === 'new').length,
+          update: sheet.cases.filter((c) => c.status === 'update').length,
+          failed: sheet.cases.filter((c) => c.status === 'error').length,
+        },
+        cases: sheet.cases,
+      }));
+
+      res.json({ multiSheet: result.multiSheet, sheets: responseSheets });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: 'Internal server error' });
+    }
+  });
+
+  // Commit: re-uploads the same file and re-runs the same parsing/matching as
+  // preview (rather than trusting a client-echoed payload, which both avoids
+  // request-size limits on large workbooks and guarantees the data written is
+  // exactly what the file says). `includedSheets` names which sheets to keep.
+  router.post('/import/commit', handleUpload, verifySignedIn, verifyProjectDeveloperFromFolderId, async (req, res) => {
+    const { folderId } = req.query;
+
+    if (!req.file || !req.file.buffer) {
+      return res.status(400).json({ error: 'No file uploaded' });
+    }
+
+    let includedSheets;
+    try {
+      includedSheets = JSON.parse(req.body.includedSheets || '[]');
+    } catch {
+      return res.status(400).json({ error: 'includedSheets must be a JSON array of sheet names' });
+    }
+    if (!Array.isArray(includedSheets) || includedSheets.length === 0) {
+      return res.status(400).json({ error: 'No sheets to import' });
+    }
+
+    const t = await sequelize.transaction();
+    try {
+      const parentFolder = await Folder.findByPk(folderId, { transaction: t });
+      if (!parentFolder) {
+        await t.rollback();
+        return res.status(404).json({ error: 'Parent folder not found' });
+      }
+      const projectId = parentFolder.projectId;
+
+      const result = await buildSheetsFromWorkbook(req.file.buffer, parentFolder);
+      if (result.error) {
+        await t.rollback();
+        return res.status(400).json({ error: result.error });
+      }
+      const { multiSheet, sheets: allSheets } = result;
+      const sheets = allSheets.filter((sheet) => includedSheets.includes(sheet.sheetName));
+      if (sheets.length === 0) {
+        await t.rollback();
         return res.status(400).json({ error: 'No sheets to import' });
       }
 
-      const t = await sequelize.transaction();
-      try {
-        const parentFolder = await Folder.findByPk(folderId, { transaction: t });
-        if (!parentFolder) {
-          await t.rollback();
-          return res.status(404).json({ error: 'Parent folder not found' });
-        }
-        const projectId = parentFolder.projectId;
+      let createdCount = 0;
+      let updatedCount = 0;
 
-        let createdCount = 0;
-        let updatedCount = 0;
-
-        for (const sheet of sheets) {
-          let sheetFolderId = folderId;
-          if (multiSheet) {
-            const [sheetFolder] = await Folder.findOrCreate({
-              where: { name: sheet.sheetName, parentFolderId: folderId, projectId },
-              defaults: { name: sheet.sheetName, parentFolderId: folderId, projectId },
-              transaction: t,
-            });
-            sheetFolderId = sheetFolder.id;
-          }
-
-          const importableCases = (sheet.cases || []).filter((c) => c.status === 'new' || c.status === 'update');
-
-          const moduleNames = [...new Set(importableCases.filter((c) => c.module).map((c) => c.module))];
-          const moduleFolderMap = {};
-          for (const moduleName of moduleNames) {
-            const [moduleFolder] = await Folder.findOrCreate({
-              where: { name: moduleName, parentFolderId: sheetFolderId, projectId },
-              defaults: { name: moduleName, parentFolderId: sheetFolderId, projectId },
-              transaction: t,
-            });
-            moduleFolderMap[moduleName] = moduleFolder.id;
-          }
-
-          for (const c of importableCases) {
-            const targetFolderId = c.module && moduleFolderMap[c.module] ? moduleFolderMap[c.module] : sheetFolderId;
-            const caseFields = {
-              folderId: targetFolderId,
-              title: c.title,
-              description: c.description || '',
-              state: 0,
-              priority: c.priority,
-              type: c.type,
-              preConditions: c.preConditions || '',
-              expectedResults: c.expectedResults || '',
-              automationStatus: c.automationStatus,
-              template: c.template,
-              externalId: c.externalId || null,
-            };
-
-            let caseId;
-            if (c.status === 'update' && c.matchedCaseId) {
-              await Case.update(caseFields, { where: { id: c.matchedCaseId }, transaction: t });
-              caseId = c.matchedCaseId;
-
-              const existingCaseSteps = await CaseStep.findAll({ where: { caseId }, transaction: t });
-              const stepIds = existingCaseSteps.map((cs) => cs.stepId);
-              await CaseStep.destroy({ where: { caseId }, transaction: t });
-              if (stepIds.length > 0) {
-                await Step.destroy({ where: { id: stepIds }, transaction: t });
-              }
-              updatedCount += 1;
-            } else {
-              const created = await Case.create(caseFields, { transaction: t });
-              caseId = created.id;
-              createdCount += 1;
-            }
-
-            for (const step of c.steps || []) {
-              const createdStep = await Step.create({ step: step.step, result: step.result }, { transaction: t });
-              await CaseStep.create({ caseId, stepId: createdStep.id, stepNo: step.stepNo }, { transaction: t });
-            }
-          }
+      for (const sheet of sheets) {
+        let sheetFolderId = folderId;
+        if (multiSheet) {
+          const [sheetFolder] = await Folder.findOrCreate({
+            where: { name: sheet.sheetName, parentFolderId: folderId, projectId },
+            defaults: { name: sheet.sheetName, parentFolderId: folderId, projectId },
+            transaction: t,
+          });
+          sheetFolderId = sheetFolder.id;
         }
 
-        await t.commit();
-        res.status(200).json({ created: createdCount, updated: updatedCount });
-      } catch (error) {
-        await t.rollback();
-        console.error(error);
-        res.status(500).json({ error: 'Internal server error' });
+        const importableCases = (sheet.cases || []).filter((c) => c.status === 'new' || c.status === 'update');
+
+        const moduleNames = [...new Set(importableCases.filter((c) => c.module).map((c) => c.module))];
+        const moduleFolderMap = {};
+        for (const moduleName of moduleNames) {
+          const [moduleFolder] = await Folder.findOrCreate({
+            where: { name: moduleName, parentFolderId: sheetFolderId, projectId },
+            defaults: { name: moduleName, parentFolderId: sheetFolderId, projectId },
+            transaction: t,
+          });
+          moduleFolderMap[moduleName] = moduleFolder.id;
+        }
+
+        for (const c of importableCases) {
+          const targetFolderId = c.module && moduleFolderMap[c.module] ? moduleFolderMap[c.module] : sheetFolderId;
+          const caseFields = {
+            folderId: targetFolderId,
+            title: c.title,
+            description: c.description || '',
+            state: 0,
+            priority: c.priority,
+            type: c.type,
+            preConditions: c.preConditions || '',
+            expectedResults: c.expectedResults || '',
+            automationStatus: c.automationStatus,
+            template: c.template,
+            externalId: c.externalId || null,
+          };
+
+          let caseId;
+          if (c.status === 'update' && c.matchedCaseId) {
+            await Case.update(caseFields, { where: { id: c.matchedCaseId }, transaction: t });
+            caseId = c.matchedCaseId;
+
+            const existingCaseSteps = await CaseStep.findAll({ where: { caseId }, transaction: t });
+            const stepIds = existingCaseSteps.map((cs) => cs.stepId);
+            await CaseStep.destroy({ where: { caseId }, transaction: t });
+            if (stepIds.length > 0) {
+              await Step.destroy({ where: { id: stepIds }, transaction: t });
+            }
+            updatedCount += 1;
+          } else {
+            const created = await Case.create(caseFields, { transaction: t });
+            caseId = created.id;
+            createdCount += 1;
+          }
+
+          for (const step of c.steps || []) {
+            const createdStep = await Step.create({ step: step.step, result: step.result }, { transaction: t });
+            await CaseStep.create({ caseId, stepId: createdStep.id, stepNo: step.stepNo }, { transaction: t });
+          }
+        }
       }
+
+      await t.commit();
+      res.status(200).json({ created: createdCount, updated: updatedCount });
+    } catch (error) {
+      await t.rollback();
+      console.error(error);
+      res.status(500).json({ error: 'Internal server error' });
     }
-  );
+  });
 
   return router;
 }

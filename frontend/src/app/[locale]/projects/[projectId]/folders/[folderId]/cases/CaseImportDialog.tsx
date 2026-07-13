@@ -13,7 +13,7 @@ import {
   Chip,
 } from '@heroui/react';
 import { ArrowUpFromLine } from 'lucide-react';
-import { CasesMessages, ImportPreviewResponse, ImportSheetType } from '@/types/case';
+import { CasesMessages, ImportPreviewResponse } from '@/types/case';
 import { previewImportCases, commitImportCases } from '@/utils/caseControl';
 
 type Props = {
@@ -31,6 +31,7 @@ export default function CaseImportDialog({ isOpen, folderId, isDisabled, onImpor
   const [importError, setImportError] = useState<string | null>(null);
   const [preview, setPreview] = useState<ImportPreviewResponse | null>(null);
   const [includedSheets, setIncludedSheets] = useState<Record<string, boolean>>({});
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
   const handleDrop = (event: DragEvent<HTMLElement>) => {
     event.preventDefault();
@@ -56,11 +57,13 @@ export default function CaseImportDialog({ isOpen, folderId, isDisabled, onImpor
     if (filesArray.length !== 1) {
       console.error('Error multiple file');
     } else {
-      const ret = await previewImportCases(token, folderId, filesArray[0]);
+      const file = filesArray[0];
+      const ret = await previewImportCases(token, folderId, file);
       if (ret.error) {
         setImportError(ret.error);
       } else {
         setPreview(ret);
+        setSelectedFile(file);
         const defaults: Record<string, boolean> = {};
         ret.sheets.forEach((sheet) => {
           defaults[sheet.sheetName] = sheet.summary.new + sheet.summary.update > 0;
@@ -72,13 +75,13 @@ export default function CaseImportDialog({ isOpen, folderId, isDisabled, onImpor
   };
 
   const handleCommit = async () => {
-    if (!preview) return;
+    if (!preview || !selectedFile) return;
     setIsProcessing(true);
     setImportError(null);
 
-    const sheetsToCommit: ImportSheetType[] = preview.sheets.filter((sheet) => includedSheets[sheet.sheetName]);
+    const includedSheetNames = preview.sheets.filter((sheet) => includedSheets[sheet.sheetName]).map((sheet) => sheet.sheetName);
 
-    const ret = await commitImportCases(token, folderId, preview.multiSheet, sheetsToCommit);
+    const ret = await commitImportCases(token, folderId, selectedFile, includedSheetNames);
     setIsProcessing(false);
     if (ret.error) {
       setImportError(ret.error);
@@ -92,6 +95,7 @@ export default function CaseImportDialog({ isOpen, folderId, isDisabled, onImpor
     setImportError(null);
     setPreview(null);
     setIncludedSheets({});
+    setSelectedFile(null);
   };
 
   const onCloseDialog = () => {
