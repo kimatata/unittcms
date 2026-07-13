@@ -463,6 +463,16 @@ export default function CaseEditor({
                 messages={messages}
               />
             )}
+
+            <MarkdownEditor
+              label={messages.overallExpectedResult}
+              value={testCase.expectedResults}
+              isDisabled={!tokenContext.isProjectDeveloper(Number(projectId))}
+              onValueChange={(changeValue) => {
+                setIsDirty(true);
+                setTestCase({ ...testCase, expectedResults: changeValue });
+              }}
+            />
           </div>
         )}
 

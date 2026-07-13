@@ -40,6 +40,7 @@ export default function RunLayout({
     steps: t('steps'),
     preconditions: t('preconditions'),
     expectedResult: t('expected_result'),
+    overallExpectedResult: t('overall_expected_result'),
     detailsOfTheStep: t('details_of_the_step'),
     close: t('close'),
     filter: t('filter'),
