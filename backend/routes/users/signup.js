@@ -13,7 +13,8 @@ export default function (sequelize) {
   router.post('/signup', async (req, res) => {
     try {
       const { email, password, username } = req.body;
-      const hashedPassword = await bcrypt.hash(password, 10);
+      const bcryptRounds = parseInt(process.env.BCRYPT_ROUNDS || '10', 10);
+      const hashedPassword = await bcrypt.hash(password, bcryptRounds);
 
       const userCount = await User.count();
       const initialRole =
