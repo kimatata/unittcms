@@ -36,9 +36,16 @@ export default function (sequelize) {
         }
 
         if (searchTerm.length >= 1) {
+          const likePattern = `%${searchTerm}%`;
+          const escapedPattern = sequelize.escape(likePattern);
           whereClause[Op.or] = [
-            { title: { [Op.like]: `%${searchTerm}%` } },
-            { description: { [Op.like]: `%${searchTerm}%` } },
+            { title: { [Op.like]: likePattern } },
+            { description: { [Op.like]: likePattern } },
+            { preConditions: { [Op.like]: likePattern } },
+            { expectedResults: { [Op.like]: likePattern } },
+            sequelize.literal(
+              `EXISTS (SELECT 1 FROM caseSteps cs JOIN Steps s ON cs.stepId = s.id WHERE cs.caseId = \`Case\`.\`id\` AND (s.step LIKE ${escapedPattern} OR s.result LIKE ${escapedPattern}))`
+            ),
           ];
         }
       }
