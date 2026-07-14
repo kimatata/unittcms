@@ -14,14 +14,25 @@ It is strongly recommended to change `SECRET_KEY` from the default value in prod
 
 ## Database backend
 
-By default UnitTCMS uses SQLite, configured via `DATABASE_PATH`. To use PostgreSQL instead, set `DB_DIALECT=postgres` and `DATABASE_URL` to a Postgres connection string:
+By default UnitTCMS uses SQLite, configured via `DATABASE_PATH`. To use PostgreSQL instead, set `DB_DIALECT=postgres` plus connection info, via either discrete fields (recommended) or a single URL:
+
+```
+DB_DIALECT=postgres
+DB_HOST=host
+DB_PORT=5432
+DB_NAME=database
+DB_USER=user
+DB_PASSWORD=password
+```
 
 ```
 DB_DIALECT=postgres
 DATABASE_URL=postgres://user:password@host:5432/database
 ```
 
-`DATABASE_URL` is ignored when `DB_DIALECT` is unset or `sqlite`, and `DATABASE_PATH` is ignored when `DB_DIALECT=postgres`.
+Prefer the discrete `DB_HOST`/`DB_PORT`/`DB_NAME`/`DB_USER`/`DB_PASSWORD` fields when the password contains special characters (`%`, `#`, `@`, `/`, etc.) — those characters are structurally ambiguous once embedded in a URL and require percent-encoding to parse correctly; the discrete fields are passed straight through to the database driver with no URL parsing involved. `DATABASE_URL` is only used when `DB_HOST` is unset.
+
+Both are ignored when `DB_DIALECT` is unset or `sqlite`, and `DATABASE_PATH` is ignored when `DB_DIALECT=postgres`.
 
 ## Docker
 
