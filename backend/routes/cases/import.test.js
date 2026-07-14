@@ -5,13 +5,6 @@ import { Sequelize } from 'sequelize';
 import XLSX from 'xlsx';
 import casesImportRoute from './import.js';
 
-vi.mock('xlsx', () => ({
-  default: {
-    read: vi.fn(),
-    utils: { sheet_to_json: vi.fn() },
-  },
-}));
-
 vi.mock('../../middleware/auth.js', () => ({
   default: () => ({
     verifySignedIn: vi.fn((req, res, next) => {
@@ -20,139 +13,457 @@ vi.mock('../../middleware/auth.js', () => ({
     }),
   }),
 }));
-
 vi.mock('../../middleware/verifyEditable.js', () => ({
   default: () => ({
-    verifyProjectDeveloperFromFolderId: vi.fn((req, res, next) => next()),
+    verifyProjectDeveloperFromFolderId: vi.fn((req, res, next) => {
+      next();
+    }),
   }),
 }));
 
-const mockCase = { bulkCreate: vi.fn(), belongsToMany: vi.fn() };
-vi.mock('../../models/cases.js', () => ({ default: () => mockCase }));
+let createdCases = [];
+let createdSteps = [];
+let createdCaseSteps = [];
+let updatedCaseCalls = [];
+let existingCaseSteps = []; // pre-seeded CaseStep rows returned by CaseStep.findAll for update tests
+let existingCasesByExternalId = []; // rows returned by Case.findAll (new/update resolution)
 
-const mockStep = { create: vi.fn(), belongsToMany: vi.fn() };
-vi.mock('../../models/steps.js', () => ({ default: () => mockStep }));
-
-const mockCaseStep = { create: vi.fn() };
-vi.mock('../../models/caseSteps.js', () => ({ default: () => mockCaseStep }));
-
-const FAKE_XLSX_BUFFER = Buffer.from('fake');
-const XLSX_CONTENT_TYPE = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
-
-const validRow = {
-  title: 'Test Case',
-  priority: 'medium',
-  type: 'other',
-  template: 'text',
+const mockCase = {
+  belongsToMany: vi.fn(),
+  belongsTo: vi.fn(),
+  findAll: vi.fn(() => existingCasesByExternalId),
+  create: vi.fn((data) => {
+    const result = { id: createdCases.length + 1, ...data };
+    createdCases.push(result);
+    return result;
+  }),
+  update: vi.fn((data, opts) => {
+    updatedCaseCalls.push({ data, where: opts.where });
+    return [1];
+  }),
 };
 
-describe('Test case import strict validation', () => {
+const mockStep = {
+  belongsToMany: vi.fn(),
+  create: vi.fn((data) => {
+    const result = { id: createdSteps.length + 1, ...data };
+    createdSteps.push(result);
+    return result;
+  }),
+  destroy: vi.fn(),
+};
+
+const mockCaseStep = {
+  create: vi.fn((data) => {
+    createdCaseSteps.push(data);
+    return data;
+  }),
+  findAll: vi.fn(() => existingCaseSteps),
+  destroy: vi.fn(),
+};
+
+let nextFolderId = 100;
+const mockFolder = {
+  findByPk: vi.fn((id) => ({ id, projectId: 1, name: 'Target Folder' })),
+  findOrCreate: vi.fn(({ where }) => {
+    const folder = { id: nextFolderId++, ...where };
+    return [folder];
+  }),
+};
+
+vi.mock('../../models/cases.js', () => ({ default: () => mockCase }));
+vi.mock('../../models/steps.js', () => ({ default: () => mockStep }));
+vi.mock('../../models/caseSteps.js', () => ({ default: () => mockCaseStep }));
+vi.mock('../../models/folders.js', () => ({ default: () => mockFolder }));
+
+function buildXlsxBuffer(rows, sheetName = 'Sheet1') {
+  const wb = XLSX.utils.book_new();
+  const ws = XLSX.utils.json_to_sheet(rows);
+  XLSX.utils.book_append_sheet(wb, ws, sheetName);
+  return XLSX.write(wb, { type: 'buffer', bookType: 'xlsx' });
+}
+
+function buildMultiSheetXlsxBuffer(sheets) {
+  const wb = XLSX.utils.book_new();
+  for (const [name, rows] of Object.entries(sheets)) {
+    const ws = XLSX.utils.json_to_sheet(rows);
+    XLSX.utils.book_append_sheet(wb, ws, name);
+  }
+  return XLSX.write(wb, { type: 'buffer', bookType: 'xlsx' });
+}
+
+const XLSX_CONTENT_TYPE = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
+
+describe('POST /import/preview and /import/commit', () => {
   let app;
+  const sequelize = new Sequelize({ dialect: 'sqlite', logging: false });
 
   beforeEach(() => {
-    const sequelize = new Sequelize({ dialect: 'sqlite', logging: false });
     app = express();
     app.use(express.json());
     app.use('/', casesImportRoute(sequelize));
     vi.clearAllMocks();
+    createdCases = [];
+    createdSteps = [];
+    createdCaseSteps = [];
+    updatedCaseCalls = [];
+    existingCaseSteps = [];
+    existingCasesByExternalId = [];
+    nextFolderId = 100;
+
+    sequelize.transaction = vi.fn(() => ({
+      commit: vi.fn(),
+      rollback: vi.fn(),
+    }));
   });
 
-  const postImport = (rows) => {
-    XLSX.read.mockReturnValue({ SheetNames: ['Sheet1'], Sheets: { Sheet1: {} } });
-    XLSX.utils.sheet_to_json.mockReturnValue(rows);
-    return request(app)
-      .post('/import?folderId=1')
-      .attach('file', FAKE_XLSX_BUFFER, { filename: 'test.xlsx', contentType: XLSX_CONTENT_TYPE });
+  const preview = (folderId, buffer) =>
+    request(app)
+      .post(`/import/preview?folderId=${folderId}`)
+      .attach('file', buffer, { filename: 'test.xlsx', contentType: XLSX_CONTENT_TYPE });
+
+  // Commit now runs in the background: POST returns 202 + a jobId
+  // immediately, and the caller polls /import/status/:jobId for the
+  // outcome. This helper does the full round-trip and returns a
+  // { status, body } shaped like the old synchronous response, so existing
+  // assertions below don't need to change — 400s from request-level
+  // validation (before a job is even created) pass through as-is.
+  const commit = async (folderId, buffer, includedSheetNames) => {
+    const postRes = await request(app)
+      .post(`/import/commit?folderId=${folderId}`)
+      .field('includedSheets', JSON.stringify(includedSheetNames))
+      .attach('file', buffer, { filename: 'test.xlsx', contentType: XLSX_CONTENT_TYPE });
+
+    if (postRes.status !== 202) {
+      return postRes;
+    }
+
+    const { jobId } = postRes.body;
+    let statusRes;
+    for (let i = 0; i < 20; i++) {
+      statusRes = await request(app).get(`/import/status/${jobId}`);
+      if (statusRes.body.status !== 'processing') break;
+      await new Promise((resolve) => setTimeout(resolve, 10));
+    }
+
+    if (statusRes.body.status === 'completed') {
+      return { status: 200, body: statusRes.body.result };
+    }
+    return { status: 500, body: { error: statusRes.body.error } };
   };
 
-  describe('Happy path', () => {
-    it('should return 200 for valid row', async () => {
-      mockCase.bulkCreate.mockResolvedValue([{ id: 1, title: 'Test Case' }]);
-      mockStep.create.mockResolvedValue({ id: 1 });
-      mockCaseStep.create.mockResolvedValue({ id: 1 });
-      const res = await postImport([{ ...validRow }]);
+  // ──────────────────────────────────────────
+  // Preview: request-level validation
+  // ──────────────────────────────────────────
+
+  describe('preview validation', () => {
+    it('returns 400 if no file is uploaded', async () => {
+      const res = await request(app).post('/import/preview?folderId=1');
+      expect(res.status).toBe(400);
+      expect(res.body.error).toBe('No file uploaded');
+    });
+
+    it('returns 404 if the target folder does not exist', async () => {
+      mockFolder.findByPk.mockResolvedValueOnce(null);
+      const buffer = buildXlsxBuffer([{ title: 'x', priority: 'medium', type: 'other', template: 'text' }]);
+      const res = await preview(999, buffer);
+      expect(res.status).toBe(404);
+    });
+
+    it('returns 400 if the workbook has no data rows anywhere', async () => {
+      const buffer = buildXlsxBuffer([]);
+      const res = await preview(1, buffer);
+      expect(res.status).toBe(400);
+      expect(res.body.error).toBe('Excel file contains no data rows');
+    });
+  });
+
+  // ──────────────────────────────────────────
+  // Preview: v1.1 format
+  // ──────────────────────────────────────────
+
+  describe('preview v1.1 format', () => {
+    it('parses a single-step case as new', async () => {
+      const buffer = buildXlsxBuffer([
+        { title: 'Login test', priority: 'high', type: 'functional', template: 'step', step: 'Open page', expectedStepResult: 'Page loads' },
+      ]);
+      const res = await preview(5, buffer);
+
       expect(res.status).toBe(200);
+      expect(res.body.multiSheet).toBe(false);
+      const sheet = res.body.sheets[0];
+      expect(sheet.summary).toEqual({ total: 1, new: 1, update: 0, failed: 0 });
+      expect(sheet.cases[0].status).toBe('new');
+      expect(sheet.cases[0].title).toBe('Login test');
+      expect(sheet.cases[0].steps).toHaveLength(1);
+    });
+
+    it('groups repeated-title rows into one case with multiple steps', async () => {
+      const buffer = buildXlsxBuffer([
+        { title: 'Multi step', priority: 'medium', type: 'other', template: 'step', step: 'Step 1', expectedStepResult: 'Result 1' },
+        { title: 'Multi step', priority: 'medium', type: 'other', template: 'step', step: 'Step 2', expectedStepResult: 'Result 2' },
+      ]);
+      const res = await preview(1, buffer);
+
+      expect(res.body.sheets[0].cases).toHaveLength(1);
+      expect(res.body.sheets[0].cases[0].steps).toHaveLength(2);
+      expect(res.body.sheets[0].cases[0].rowNumbers).toEqual([2, 3]);
+    });
+
+    it('reports a bad row as its own error without failing the rest of the sheet', async () => {
+      const buffer = buildXlsxBuffer([
+        { title: 'Good case', priority: 'medium', type: 'other', template: 'text' },
+        { title: 'Bad case', priority: 'medium', type: 'other' }, // missing template
+        { title: 'Another good case', priority: 'high', type: 'functional', template: 'text' },
+      ]);
+      const res = await preview(1, buffer);
+
+      expect(res.status).toBe(200);
+      const { cases, summary } = res.body.sheets[0];
+      expect(summary).toEqual({ total: 3, new: 2, update: 0, failed: 1 });
+      expect(cases.find((c) => c.title === 'Good case').status).toBe('new');
+      expect(cases.find((c) => c.title === 'Another good case').status).toBe('new');
+      const failed = cases.find((c) => c.status === 'error');
+      expect(failed.rowNumbers).toEqual([3]);
+      expect(failed.errors[0]).toContain('missing required field: template');
+    });
+
+    it('reads testCaseId as the externalId', async () => {
+      const buffer = buildXlsxBuffer([
+        { testCaseId: 'TC-1', title: 'Case', priority: 'medium', type: 'other', template: 'text' },
+      ]);
+      const res = await preview(1, buffer);
+      expect(res.body.sheets[0].cases[0].externalId).toBe('TC-1');
+    });
+
+    it('treats a row with no testCaseId as always new', async () => {
+      existingCasesByExternalId = []; // no externalId to match against
+      const buffer = buildXlsxBuffer([{ title: 'Case', priority: 'medium', type: 'other', template: 'text' }]);
+      const res = await preview(1, buffer);
+      expect(res.body.sheets[0].cases[0].externalId).toBeNull();
+      expect(res.body.sheets[0].cases[0].status).toBe('new');
+    });
+
+    it('tags a case update when its testCaseId matches an existing case', async () => {
+      existingCasesByExternalId = [{ id: 42, externalId: 'TC-1' }];
+      const buffer = buildXlsxBuffer([
+        { testCaseId: 'TC-1', title: 'Case', priority: 'medium', type: 'other', template: 'text' },
+      ]);
+      const res = await preview(1, buffer);
+      expect(res.body.sheets[0].cases[0].status).toBe('update');
+      expect(res.body.sheets[0].cases[0].matchedCaseId).toBe(42);
     });
   });
 
-  describe('Abnormal priority', () => {
-    it('should return 400 for "Medium" (wrong casing)', async () => {
-      const res = await postImport([{ ...validRow, priority: 'Medium' }]);
-      expect(res.status).toBe(400);
-      expect(res.body.error).toContain('invalid priority');
-      expect(res.body.error).toContain('Medium');
+  // ──────────────────────────────────────────
+  // Preview: reference format
+  // ──────────────────────────────────────────
+
+  describe('preview reference format', () => {
+    it('parses a case with numbered multiline steps', async () => {
+      const buffer = buildXlsxBuffer([
+        {
+          'Test Case ID': 'TC-001',
+          'Test Scenario': 'Login works',
+          'Test Steps': '1. Open page\n2. Enter creds\n3. Submit',
+          'Expected Result': 'Logged in',
+        },
+      ]);
+      const res = await preview(10, buffer);
+
+      const c = res.body.sheets[0].cases[0];
+      expect(c.status).toBe('new');
+      expect(c.externalId).toBe('TC-001');
+      expect(c.steps).toHaveLength(3);
+      expect(c.steps[0].step).toBe('Open page');
     });
 
-    it('should return 400 for "HIGH" (all caps)', async () => {
-      const res = await postImport([{ ...validRow, priority: 'HIGH' }]);
-      expect(res.status).toBe(400);
-      expect(res.body.error).toContain('invalid priority');
+    it('reports a row missing Test Scenario as an error without failing other rows', async () => {
+      const buffer = buildXlsxBuffer([
+        { 'Test Scenario': 'Good row', 'Test Steps': '1. Step' },
+        { 'Test Case ID': 'TC-BAD', 'Test Steps': '1. Step' }, // missing Test Scenario
+      ]);
+      const res = await preview(1, buffer);
+
+      const { summary, cases } = res.body.sheets[0];
+      expect(summary).toEqual({ total: 2, new: 1, update: 0, failed: 1 });
+      const failed = cases.find((c) => c.status === 'error');
+      expect(failed.rowNumbers).toEqual([3]);
+      expect(failed.errors[0]).toContain('missing required field: Test Scenario');
     });
 
-    it('should return 400 for a completely unknown priority value', async () => {
-      const res = await postImport([{ ...validRow, priority: 'urgent' }]);
-      expect(res.status).toBe(400);
-      expect(res.body.error).toContain('invalid priority');
+    it('flags a duplicate Test Case ID within the same upload as an error', async () => {
+      const buffer = buildXlsxBuffer([
+        { 'Test Case ID': 'TC-DUP', 'Test Scenario': 'First', 'Test Steps': '1. A' },
+        { 'Test Case ID': 'TC-DUP', 'Test Scenario': 'Second', 'Test Steps': '1. B' },
+      ]);
+      const res = await preview(1, buffer);
+
+      const { cases, summary } = res.body.sheets[0];
+      expect(summary.new).toBe(1);
+      expect(summary.failed).toBe(1);
+      expect(cases[0].status).toBe('new');
+      expect(cases[1].status).toBe('error');
+      expect(cases[1].errors[0]).toContain('duplicate Test Case ID');
+    });
+
+    it('captures the Module column without creating a folder yet', async () => {
+      const buffer = buildXlsxBuffer([
+        { 'Test Case ID': 'TC-1', 'Module': 'Auth', 'Test Scenario': 'Login', 'Test Steps': '1. Step' },
+      ]);
+      const res = await preview(5, buffer);
+
+      expect(res.body.sheets[0].cases[0].module).toBe('Auth');
+      expect(mockFolder.findOrCreate).not.toHaveBeenCalled();
+    });
+
+    it('auto-detects reference format from the Test Scenario header', async () => {
+      const buffer = buildXlsxBuffer([{ 'Test Scenario': 'Ref case', 'Test Steps': '1. Do something' }]);
+      const res = await preview(1, buffer);
+      expect(res.body.sheets[0].cases[0].title).toBe('Ref case');
     });
   });
 
-  describe('Invalid type', () => {
-    it('should return 400 for "Other" (wrong casing)', async () => {
-      const res = await postImport([{ ...validRow, type: 'Other' }]);
-      expect(res.status).toBe(400);
-      expect(res.body.error).toContain('invalid type');
+  // ──────────────────────────────────────────
+  // Preview: multi-sheet
+  // ──────────────────────────────────────────
+
+  describe('preview multi-sheet', () => {
+    it('sets multiSheet and per-sheet targetFolderName for a multi-sheet workbook', async () => {
+      const buffer = buildMultiSheetXlsxBuffer({
+        'Login Tests': [{ 'Test Scenario': 'Login', 'Test Steps': '1. Step' }],
+        'Cart Tests': [{ 'Test Scenario': 'Cart', 'Test Steps': '1. Step' }],
+      });
+      const res = await preview(1, buffer);
+
+      expect(res.body.multiSheet).toBe(true);
+      expect(res.body.sheets).toHaveLength(2);
+      expect(res.body.sheets[0].targetFolderName).toBe('Login Tests');
+      expect(res.body.sheets[1].targetFolderName).toBe('Cart Tests');
+      // No folders are created during preview
+      expect(mockFolder.findOrCreate).not.toHaveBeenCalled();
     });
 
-    it('should return 400 for a completely unknown type value', async () => {
-      const res = await postImport([{ ...validRow, type: 'integration' }]);
-      expect(res.status).toBe(400);
-      expect(res.body.error).toContain('invalid type');
-    });
-  });
-
-  describe('automationStatus field', () => {
-    it('should return 400 for "Automated" (wrong casing)', async () => {
-      const res = await postImport([{ ...validRow, automationStatus: 'Automated' }]);
-      expect(res.status).toBe(400);
-      expect(res.body.error).toContain('invalid automationStatus');
+    it('uses the target folder name (not a sheet name) for single-sheet workbooks', async () => {
+      const buffer = buildXlsxBuffer([{ 'Test Scenario': 'Case', 'Test Steps': '1. Step' }]);
+      const res = await preview(1, buffer);
+      expect(res.body.multiSheet).toBe(false);
+      expect(res.body.sheets[0].targetFolderName).toBe('Target Folder');
     });
 
-    it('should return 400 for a completely unknown automationStatus value', async () => {
-      const res = await postImport([{ ...validRow, automationStatus: 'unknown' }]);
-      expect(res.status).toBe(400);
-      expect(res.body.error).toContain('invalid automationStatus');
-    });
-  });
-
-  describe('template field', () => {
-    it('should return 400 for "Text" (wrong casing)', async () => {
-      const res = await postImport([{ ...validRow, template: 'Text' }]);
-      expect(res.status).toBe(400);
-      expect(res.body.error).toContain('invalid template');
-    });
-
-    it('should return 400 for "Step" (wrong casing)', async () => {
-      const res = await postImport([{ ...validRow, template: 'Step' }]);
-      expect(res.status).toBe(400);
-      expect(res.body.error).toContain('invalid template');
-    });
-
-    it('should return 400 for a completely unknown template value', async () => {
-      const res = await postImport([{ ...validRow, template: 'unknown' }]);
-      expect(res.status).toBe(400);
-      expect(res.body.error).toContain('invalid template');
+    it('skips empty sheets entirely', async () => {
+      const buffer = buildMultiSheetXlsxBuffer({
+        'Has Data': [{ 'Test Scenario': 'Case', 'Test Steps': '1. Step' }],
+        'Empty Sheet': [],
+      });
+      const res = await preview(1, buffer);
+      expect(res.body.sheets.map((s) => s.sheetName)).toEqual(['Has Data']);
     });
   });
 
-  describe('error message should include the row number', () => {
-    it('should report row 2 for the first data row', async () => {
-      const res = await postImport([{ ...validRow, priority: 'Medium' }]);
-      expect(res.body.error).toContain('Row 2');
+  // ──────────────────────────────────────────
+  // Commit
+  // ──────────────────────────────────────────
+
+  describe('commit', () => {
+    it('returns 400 when no sheets are included', async () => {
+      const buffer = buildXlsxBuffer([{ 'Test Scenario': 'Case', 'Test Steps': '1. Step' }]);
+      const res = await commit(1, buffer, []);
+      expect(res.status).toBe(400);
     });
 
-    it('should report row 3 for the second data row when first row is valid', async () => {
-      const res = await postImport([{ ...validRow }, { ...validRow, priority: 'Medium' }]);
-      expect(res.body.error).toContain('Row 3');
+    it('creates a new case and its steps', async () => {
+      const buffer = buildXlsxBuffer([
+        { 'Test Case ID': 'TC-1', 'Test Scenario': 'New case', 'Test Steps': '1. Step 1', 'Expected Result': 'Result 1' },
+      ]);
+      const res = await commit(1, buffer, ['Sheet1']);
+
+      expect(res.status).toBe(200);
+      expect(res.body).toEqual({ created: 1, updated: 0 });
+      expect(createdCases).toHaveLength(1);
+      expect(createdCases[0].folderId).toBe('1');
+      expect(createdCases[0].externalId).toBe('TC-1');
+      expect(createdSteps).toHaveLength(1);
+      expect(createdCaseSteps[0].caseId).toBe(1);
+    });
+
+    it('skips cases that fail validation, even if their sheet is included', async () => {
+      const buffer = buildXlsxBuffer([{ 'Test Case ID': 'TC-BAD', 'Test Steps': '1. Step' }]); // missing Test Scenario
+      const res = await commit(1, buffer, ['Sheet1']);
+
+      expect(res.status).toBe(200);
+      expect(res.body).toEqual({ created: 0, updated: 0 });
+      expect(createdCases).toHaveLength(0);
+    });
+
+    it('only writes sheets whose name is in includedSheets', async () => {
+      const buffer = buildMultiSheetXlsxBuffer({
+        'Login Tests': [{ 'Test Scenario': 'Login case', 'Test Steps': '1. Step' }],
+        'Cart Tests': [{ 'Test Scenario': 'Cart case', 'Test Steps': '1. Step' }],
+      });
+      const res = await commit(1, buffer, ['Login Tests']);
+
+      expect(res.status).toBe(200);
+      expect(res.body).toEqual({ created: 1, updated: 0 });
+      expect(createdCases).toHaveLength(1);
+      expect(createdCases[0].title).toBe('Login case');
+    });
+
+    it('updates a matched case in place and replaces its steps', async () => {
+      existingCasesByExternalId = [{ id: 42, externalId: 'TC-1' }];
+      existingCaseSteps = [{ stepId: 501 }, { stepId: 502 }];
+
+      const buffer = buildXlsxBuffer([
+        {
+          'Test Case ID': 'TC-1',
+          'Test Scenario': 'Updated title',
+          'Test Steps': '1. New step',
+          'Expected Result': 'New result',
+        },
+      ]);
+      const res = await commit(1, buffer, ['Sheet1']);
+
+      expect(res.status).toBe(200);
+      expect(res.body).toEqual({ created: 0, updated: 1 });
+
+      // Case fields fully replaced
+      expect(updatedCaseCalls[0].where).toEqual({ id: 42 });
+      expect(updatedCaseCalls[0].data.title).toBe('Updated title');
+
+      // Old steps torn down
+      expect(mockCaseStep.destroy).toHaveBeenCalledWith(expect.objectContaining({ where: { caseId: 42 } }));
+      expect(mockStep.destroy).toHaveBeenCalledWith(expect.objectContaining({ where: { id: [501, 502] } }));
+
+      // New step created and linked to the existing case id
+      expect(createdSteps[0].step).toBe('New step');
+      expect(createdCaseSteps[0].caseId).toBe(42);
+    });
+
+    it('creates sheet folders for a multi-sheet commit and assigns cases to them', async () => {
+      const buffer = buildMultiSheetXlsxBuffer({
+        'Login Tests': [{ 'Test Scenario': 'Case A', 'Test Steps': '1. Step' }],
+        'Cart Tests': [{ 'Test Scenario': 'Case B', 'Test Steps': '1. Step' }],
+      });
+      const res = await commit(1, buffer, ['Login Tests']);
+
+      expect(res.status).toBe(200);
+      expect(mockFolder.findOrCreate).toHaveBeenCalledWith(
+        expect.objectContaining({ where: { name: 'Login Tests', parentFolderId: '1', projectId: 1 } })
+      );
+      expect(createdCases[0].folderId).toBe(100);
+    });
+
+    it('creates module subfolders under the sheet folder', async () => {
+      const buffer = buildXlsxBuffer([
+        { 'Test Case ID': 'TC-1', Module: 'Auth', 'Test Scenario': 'Case A', 'Test Steps': '1. Step' },
+      ]);
+      const res = await commit(5, buffer, ['Sheet1']);
+
+      expect(res.status).toBe(200);
+      expect(mockFolder.findOrCreate).toHaveBeenCalledWith(
+        expect.objectContaining({ where: { name: 'Auth', parentFolderId: '5', projectId: 1 } })
+      );
+      expect(createdCases[0].folderId).toBe(100);
     });
   });
 });

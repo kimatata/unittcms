@@ -105,6 +105,9 @@ export default function CaseDetail({
                 </div>
               </div>
             ))}
+          <div className="my-2">
+            <MarkdownContent label={messages.overallExpectedResult} content={testCase.expectedResults || ''} />
+          </div>
         </>
       )}
     </div>

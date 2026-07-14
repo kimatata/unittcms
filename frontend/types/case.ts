@@ -19,6 +19,50 @@ type CaseType = {
   }[];
 };
 
+type ImportCaseStepType = {
+  stepNo: number;
+  step: string;
+  result: string;
+};
+
+type ImportCaseStatus = 'new' | 'update' | 'error';
+
+type ImportCaseType = {
+  rowNumbers: number[];
+  status: ImportCaseStatus;
+  errors?: string[];
+  externalId?: string | null;
+  module?: string | null;
+  matchedCaseId?: number;
+  title?: string;
+  description?: string;
+  priority?: number;
+  type?: number;
+  preConditions?: string;
+  expectedResults?: string;
+  automationStatus?: number;
+  template?: number;
+  steps?: ImportCaseStepType[];
+};
+
+type ImportSheetType = {
+  sheetName: string;
+  targetFolderName: string;
+  summary: {
+    total: number;
+    new: number;
+    update: number;
+    failed: number;
+  };
+  cases: ImportCaseType[];
+};
+
+type ImportPreviewResponse = {
+  multiSheet: boolean;
+  sheets: ImportSheetType[];
+  error?: string;
+};
+
 type CaseStepType = {
   createdAt?: Date;
   updatedAt?: Date;
@@ -108,6 +152,17 @@ type CasesMessages = {
   maxFileSize: string;
   casesImported: string;
   createMore: string;
+  importPreviewTitle: string;
+  sheet: string;
+  targetFolder: string;
+  newCases: string;
+  updateCases: string;
+  failedCases: string;
+  row: string;
+  includeSheet: string;
+  importSelected: string;
+  back: string;
+  noImportableCases: string;
 };
 
 type CaseMessages = {
@@ -126,6 +181,7 @@ type CaseMessages = {
   testDetail: string;
   preconditions: string;
   expectedResult: string;
+  overallExpectedResult: string;
   step: string;
   text: string;
   steps: string;
@@ -152,4 +208,13 @@ type CaseMessages = {
   noTagsSelected: string;
 };
 
-export type { CaseType, StepType, AttachmentType, CasesMessages, CaseMessages };
+export type {
+  CaseType,
+  StepType,
+  AttachmentType,
+  CasesMessages,
+  CaseMessages,
+  ImportSheetType,
+  ImportCaseType,
+  ImportPreviewResponse,
+};

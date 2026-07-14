@@ -2,7 +2,7 @@ import { getFilenameFromContentDisposition } from '@/utils/request';
 import { logError } from '@/utils/errorHandler';
 import Config from '@/config/config';
 const apiServer = Config.apiServer;
-import { CaseType } from '@/types/case';
+import { CaseType, ImportPreviewResponse } from '@/types/case';
 
 async function fetchCase(jwt: string, caseId: number) {
   const url = `${apiServer}/cases/${caseId}`;
@@ -239,8 +239,8 @@ async function exportCases(jwt: string, folderId: number, type: string) {
   }
 }
 
-async function importCases(jwt: string, folderId: number, file: File) {
-  const url = `${apiServer}/cases/import?folderId=${folderId}`;
+async function previewImportCases(jwt: string, folderId: number, file: File): Promise<ImportPreviewResponse> {
+  const url = `${apiServer}/cases/import/preview?folderId=${folderId}`;
   const formData = new FormData();
   formData.append('file', file);
 
@@ -256,8 +256,81 @@ async function importCases(jwt: string, folderId: number, file: File) {
     const data = await response.json();
     return data;
   } catch (error: unknown) {
-    logError('Error importing data', error);
+    logError('Error previewing import', error);
+    return { multiSheet: false, sheets: [], error: 'Failed to preview import' };
   }
 }
 
-export { fetchCase, fetchCases, updateCase, createCase, deleteCases, cloneCases, exportCases, importCases };
+// Import commit runs in the background on the server (large imports can
+// exceed a reverse proxy/CDN's request timeout if held open synchronously).
+// The initial POST returns a jobId immediately; this polls the status
+// endpoint until it's done, so callers see the same { created, updated } /
+// { error } shape as before — no caller-side changes needed.
+async function commitImportCases(jwt: string, folderId: number, file: File, includedSheetNames: string[]) {
+  const url = `${apiServer}/cases/import/commit?folderId=${folderId}`;
+  const formData = new FormData();
+  formData.append('file', file);
+  formData.append('includedSheets', JSON.stringify(includedSheetNames));
+
+  try {
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${jwt}`,
+      },
+      body: formData,
+    });
+
+    const data = await response.json();
+    if (response.status !== 202) {
+      return data;
+    }
+
+    return await pollImportStatus(jwt, data.jobId);
+  } catch (error: unknown) {
+    logError('Error committing import', error);
+    return { error: 'Failed to import cases' };
+  }
+}
+
+async function pollImportStatus(jwt: string, jobId: string) {
+  const url = `${apiServer}/cases/import/status/${jobId}`;
+  const pollIntervalMs = 1500;
+  const maxAttempts = 200; // ~5 minutes
+
+  for (let attempt = 0; attempt < maxAttempts; attempt++) {
+    await new Promise((resolve) => setTimeout(resolve, pollIntervalMs));
+
+    try {
+      const response = await fetch(url, {
+        headers: { Authorization: `Bearer ${jwt}` },
+      });
+      const data = await response.json();
+
+      if (data.status === 'completed') {
+        return data.result;
+      }
+      if (data.status === 'failed') {
+        return { error: data.error || 'Import failed' };
+      }
+      // status === 'processing' — keep polling
+    } catch (error: unknown) {
+      logError('Error polling import status', error);
+      return { error: 'Failed to check import status' };
+    }
+  }
+
+  return { error: 'Import is taking longer than expected. It may still complete in the background — check back later.' };
+}
+
+export {
+  fetchCase,
+  fetchCases,
+  updateCase,
+  createCase,
+  deleteCases,
+  cloneCases,
+  exportCases,
+  previewImportCases,
+  commitImportCases,
+};

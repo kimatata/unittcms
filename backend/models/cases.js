@@ -36,6 +36,10 @@ function defineCase(sequelize, DataTypes) {
       type: DataTypes.STRING,
       allowNull: true,
     },
+    externalId: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
     folderId: {
       type: DataTypes.INTEGER,
       allowNull: false,
