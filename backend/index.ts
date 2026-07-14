@@ -1,3 +1,4 @@
+import './config/otelLogger.js';
 import server from './server.js';
 import { PORT } from './config/config.js';
 
