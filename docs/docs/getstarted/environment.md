@@ -12,6 +12,19 @@ It is strongly recommended to change `SECRET_KEY` from the default value in prod
 
 :::
 
+## Log shipping (OpenTelemetry)
+
+UnitTCMS can ship its logs to any OTLP-compatible backend — Grafana Cloud, Splunk Observability Cloud, a self-hosted OpenTelemetry Collector, etc. — using the standard OpenTelemetry environment variables. It's disabled by default (console output is unaffected, zero overhead) and turns on the moment `OTEL_EXPORTER_OTLP_ENDPOINT` is set:
+
+```
+OTEL_EXPORTER_OTLP_ENDPOINT=https://otlp-gateway.example.com/otlp
+OTEL_EXPORTER_OTLP_HEADERS=Authorization=Basic base64(user:token)
+OTEL_SERVICE_NAME=unittcms
+OTEL_SERVICE_NAMESPACE=unittcms
+```
+
+`OTEL_EXPORTER_OTLP_HEADERS` is a comma-separated list of `key=value` pairs, per the OTEL spec — use whatever auth header format your backend requires. `console.log`/`info`/`warn`/`error` calls are shipped as OTEL log records in addition to printing normally; nothing about existing logging code needs to change.
+
 ## Docker
 
 If you are self-hosting UnitTCMS with Docker, you can customize the environment using the `environment` section in `docker-compose.yaml`.
