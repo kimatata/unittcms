@@ -17,6 +17,8 @@ function defineAttachment(sequelize, DataTypes) {
   Attachment.associate = (models) => {
     Attachment.belongsToMany(models.Case, {
       through: 'caseAttachments',
+      foreignKey: 'attachmentId',
+      otherKey: 'caseId',
     });
   };
 
