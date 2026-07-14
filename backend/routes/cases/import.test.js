@@ -122,11 +122,35 @@ describe('POST /import/preview and /import/commit', () => {
       .post(`/import/preview?folderId=${folderId}`)
       .attach('file', buffer, { filename: 'test.xlsx', contentType: XLSX_CONTENT_TYPE });
 
-  const commit = (folderId, buffer, includedSheetNames) =>
-    request(app)
+  // Commit now runs in the background: POST returns 202 + a jobId
+  // immediately, and the caller polls /import/status/:jobId for the
+  // outcome. This helper does the full round-trip and returns a
+  // { status, body } shaped like the old synchronous response, so existing
+  // assertions below don't need to change — 400s from request-level
+  // validation (before a job is even created) pass through as-is.
+  const commit = async (folderId, buffer, includedSheetNames) => {
+    const postRes = await request(app)
       .post(`/import/commit?folderId=${folderId}`)
       .field('includedSheets', JSON.stringify(includedSheetNames))
       .attach('file', buffer, { filename: 'test.xlsx', contentType: XLSX_CONTENT_TYPE });
+
+    if (postRes.status !== 202) {
+      return postRes;
+    }
+
+    const { jobId } = postRes.body;
+    let statusRes;
+    for (let i = 0; i < 20; i++) {
+      statusRes = await request(app).get(`/import/status/${jobId}`);
+      if (statusRes.body.status !== 'processing') break;
+      await new Promise((resolve) => setTimeout(resolve, 10));
+    }
+
+    if (statusRes.body.status === 'completed') {
+      return { status: 200, body: statusRes.body.result };
+    }
+    return { status: 500, body: { error: statusRes.body.error } };
+  };
 
   // ──────────────────────────────────────────
   // Preview: request-level validation

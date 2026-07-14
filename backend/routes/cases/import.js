@@ -1,4 +1,5 @@
 import path from 'path';
+import crypto from 'crypto';
 import express from 'express';
 const router = express.Router();
 import multer from 'multer';
@@ -34,6 +35,22 @@ const upload = multer({
   fileFilter,
   limits: { fileSize: 50 * 1024 * 1024 }, // 50 MB limit
 });
+
+// Commit jobs run in the background (see /import/commit below) so the HTTP
+// response returns immediately instead of holding the connection open for
+// the whole import — large imports were exceeding Cloudflare's 100s edge
+// timeout, which aborts the request before the client ever sees a result.
+// In-memory: fine for the current single-replica deployment; would need a
+// real queue/store if this ever runs with multiple replicas.
+const importJobs = new Map(); // jobId -> { status: 'processing'|'completed'|'failed', result?, error?, createdAt }
+const IMPORT_JOB_TTL_MS = 30 * 60 * 1000; // 30 min
+
+setInterval(() => {
+  const cutoff = Date.now() - IMPORT_JOB_TTL_MS;
+  for (const [jobId, job] of importJobs) {
+    if (job.createdAt < cutoff) importJobs.delete(jobId);
+  }
+}, 5 * 60 * 1000).unref();
 
 export default function (sequelize) {
   const Case = defineCase(sequelize, DataTypes);
@@ -135,46 +152,33 @@ export default function (sequelize) {
     }
   });
 
-  // Commit: re-uploads the same file and re-runs the same parsing/matching as
-  // preview (rather than trusting a client-echoed payload, which both avoids
-  // request-size limits on large workbooks and guarantees the data written is
-  // exactly what the file says). `includedSheets` names which sheets to keep.
-  router.post('/import/commit', handleUpload, verifySignedIn, verifyProjectDeveloperFromFolderId, async (req, res) => {
-    const { folderId } = req.query;
-
-    if (!req.file || !req.file.buffer) {
-      return res.status(400).json({ error: 'No file uploaded' });
-    }
-
-    let includedSheets;
-    try {
-      includedSheets = JSON.parse(req.body.includedSheets || '[]');
-    } catch {
-      return res.status(400).json({ error: 'includedSheets must be a JSON array of sheet names' });
-    }
-    if (!Array.isArray(includedSheets) || includedSheets.length === 0) {
-      return res.status(400).json({ error: 'No sheets to import' });
-    }
-
+  // Runs the actual import in the background (not awaited by the request
+  // handler) so a large import can't get killed by an edge/proxy timeout
+  // waiting for the HTTP response. Same logic as the old synchronous commit,
+  // just reporting its outcome into importJobs instead of a response.
+  const _runCommitJob = async (jobId, fileBuffer, includedSheets, folderId) => {
     const t = await sequelize.transaction();
     try {
       const parentFolder = await Folder.findByPk(folderId, { transaction: t });
       if (!parentFolder) {
         await t.rollback();
-        return res.status(404).json({ error: 'Parent folder not found' });
+        importJobs.set(jobId, { status: 'failed', error: 'Parent folder not found', createdAt: Date.now() });
+        return;
       }
       const projectId = parentFolder.projectId;
 
-      const result = await buildSheetsFromWorkbook(req.file.buffer, parentFolder);
+      const result = await buildSheetsFromWorkbook(fileBuffer, parentFolder);
       if (result.error) {
         await t.rollback();
-        return res.status(400).json({ error: result.error });
+        importJobs.set(jobId, { status: 'failed', error: result.error, createdAt: Date.now() });
+        return;
       }
       const { multiSheet, sheets: allSheets } = result;
       const sheets = allSheets.filter((sheet) => includedSheets.includes(sheet.sheetName));
       if (sheets.length === 0) {
         await t.rollback();
-        return res.status(400).json({ error: 'No sheets to import' });
+        importJobs.set(jobId, { status: 'failed', error: 'No sheets to import', createdAt: Date.now() });
+        return;
       }
 
       let createdCount = 0;
@@ -246,12 +250,62 @@ export default function (sequelize) {
       }
 
       await t.commit();
-      res.status(200).json({ created: createdCount, updated: updatedCount });
+      importJobs.set(jobId, {
+        status: 'completed',
+        result: { created: createdCount, updated: updatedCount },
+        createdAt: Date.now(),
+      });
     } catch (error) {
       await t.rollback();
       console.error(error);
-      res.status(500).json({ error: 'Internal server error' });
+      importJobs.set(jobId, { status: 'failed', error: 'Internal server error', createdAt: Date.now() });
     }
+  };
+
+  // Commit: re-uploads the same file and re-runs the same parsing/matching as
+  // preview (rather than trusting a client-echoed payload, which both avoids
+  // request-size limits on large workbooks and guarantees the data written is
+  // exactly what the file says). `includedSheets` names which sheets to keep.
+  //
+  // Responds immediately with a jobId (202) and runs the actual write in the
+  // background — the client polls GET /import/status/:jobId for the result.
+  // A synchronous response here previously held the request open for the
+  // full import duration, which large imports could exceed the reverse
+  // proxy/CDN's request timeout well before the app itself was done.
+  router.post('/import/commit', handleUpload, verifySignedIn, verifyProjectDeveloperFromFolderId, async (req, res) => {
+    const { folderId } = req.query;
+
+    if (!req.file || !req.file.buffer) {
+      return res.status(400).json({ error: 'No file uploaded' });
+    }
+
+    let includedSheets;
+    try {
+      includedSheets = JSON.parse(req.body.includedSheets || '[]');
+    } catch {
+      return res.status(400).json({ error: 'includedSheets must be a JSON array of sheet names' });
+    }
+    if (!Array.isArray(includedSheets) || includedSheets.length === 0) {
+      return res.status(400).json({ error: 'No sheets to import' });
+    }
+
+    const jobId = crypto.randomUUID();
+    importJobs.set(jobId, { status: 'processing', createdAt: Date.now() });
+    res.status(202).json({ jobId });
+
+    _runCommitJob(jobId, req.file.buffer, includedSheets, folderId).catch((error) => {
+      console.error('Unexpected error in import commit job', error);
+      importJobs.set(jobId, { status: 'failed', error: 'Internal server error', createdAt: Date.now() });
+    });
+  });
+
+  // Poll the outcome of a background commit job started above.
+  router.get('/import/status/:jobId', verifySignedIn, (req, res) => {
+    const job = importJobs.get(req.params.jobId);
+    if (!job) {
+      return res.status(404).json({ error: 'Import job not found' });
+    }
+    res.json(job);
   });
 
   return router;
