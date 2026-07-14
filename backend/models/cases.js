@@ -21,7 +21,7 @@ function defineCase(sequelize, DataTypes) {
       allowNull: false,
     },
     description: {
-      type: DataTypes.STRING,
+      type: DataTypes.TEXT,
       allowNull: true,
     },
     template: {
@@ -29,11 +29,11 @@ function defineCase(sequelize, DataTypes) {
       allowNull: false,
     },
     preConditions: {
-      type: DataTypes.STRING,
+      type: DataTypes.TEXT,
       allowNull: true,
     },
     expectedResults: {
-      type: DataTypes.STRING,
+      type: DataTypes.TEXT,
       allowNull: true,
     },
     folderId: {

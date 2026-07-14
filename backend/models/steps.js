@@ -1,11 +1,11 @@
 function defineStep(sequelize, DataTypes) {
   const Step = sequelize.define('Step', {
     step: {
-      type: DataTypes.STRING,
+      type: DataTypes.TEXT,
       allowNull: false,
     },
     result: {
-      type: DataTypes.STRING,
+      type: DataTypes.TEXT,
       allowNull: false,
     },
   }, { tableName: 'steps' });
