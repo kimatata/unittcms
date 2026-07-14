@@ -17,7 +17,7 @@ function defineRunCase(sequelize, DataTypes) {
       allowNull: true,
       defaultValue: null,
     },
-  });
+  }, { tableName: 'runCases' });
 
   RunCase.associate = (models) => {
     RunCase.belongsTo(models.Run, {

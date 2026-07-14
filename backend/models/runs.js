@@ -25,7 +25,7 @@ function defineRun(sequelize, DataTypes) {
       },
       onDelete: 'CASCADE',
     },
-  });
+  }, { tableName: 'runs' });
 
   Run.associate = (models) => {
     Run.belongsTo(models.Project, { foreignKey: 'projectId', onDelete: 'CASCADE' });

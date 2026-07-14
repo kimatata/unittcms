@@ -23,7 +23,7 @@ function definecaseTags(sequelize, DataTypes) {
       },
       onDelete: 'CASCADE',
     },
-  });
+  }, { tableName: 'caseTags' });
 
   caseTags.associate = (models) => {
     caseTags.belongsTo(models.Case, { foreignKey: 'caseId', onDelete: 'CASCADE' });

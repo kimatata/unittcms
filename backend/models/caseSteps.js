@@ -12,7 +12,7 @@ function defineCaseStep(sequelize, DataTypes) {
       type: DataTypes.INTEGER,
       allowNull: false,
     },
-  });
+  }, { tableName: 'caseSteps' });
 
   CaseStep.associate = (models) => {
     CaseStep.belongsTo(models.Case, {

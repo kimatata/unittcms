@@ -21,7 +21,7 @@ function defineCase(sequelize, DataTypes) {
       allowNull: false,
     },
     description: {
-      type: DataTypes.STRING,
+      type: DataTypes.TEXT,
       allowNull: true,
     },
     template: {
@@ -29,11 +29,11 @@ function defineCase(sequelize, DataTypes) {
       allowNull: false,
     },
     preConditions: {
-      type: DataTypes.STRING,
+      type: DataTypes.TEXT,
       allowNull: true,
     },
     expectedResults: {
-      type: DataTypes.STRING,
+      type: DataTypes.TEXT,
       allowNull: true,
     },
     folderId: {
@@ -45,7 +45,7 @@ function defineCase(sequelize, DataTypes) {
       },
       onDelete: 'CASCADE',
     },
-  });
+  }, { tableName: 'cases' });
 
   Case.associate = (models) => {
     Case.belongsTo(models.Folder, {
@@ -54,6 +54,8 @@ function defineCase(sequelize, DataTypes) {
     });
     Case.belongsToMany(models.Step, {
       through: 'caseSteps',
+      foreignKey: 'caseId',
+      otherKey: 'stepId',
     });
     Case.belongsToMany(models.Tags, {
       through: 'caseTags',

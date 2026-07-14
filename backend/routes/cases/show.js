@@ -14,10 +14,10 @@ export default function (sequelize) {
   const Step = defineStep(sequelize, DataTypes);
   const Tags = defineTag(sequelize, DataTypes);
   const Attachment = defineAttachment(sequelize, DataTypes);
-  Case.belongsToMany(Step, { through: 'caseSteps' });
-  Step.belongsToMany(Case, { through: 'caseSteps' });
-  Case.belongsToMany(Attachment, { through: 'caseAttachments' });
-  Attachment.belongsToMany(Case, { through: 'caseAttachments' });
+  Case.belongsToMany(Step, { through: 'caseSteps', foreignKey: 'caseId', otherKey: 'stepId' });
+  Step.belongsToMany(Case, { through: 'caseSteps', foreignKey: 'stepId', otherKey: 'caseId' });
+  Case.belongsToMany(Attachment, { through: 'caseAttachments', foreignKey: 'caseId', otherKey: 'attachmentId' });
+  Attachment.belongsToMany(Case, { through: 'caseAttachments', foreignKey: 'attachmentId', otherKey: 'caseId' });
   Case.belongsToMany(Tags, { through: 'caseTags', foreignKey: 'caseId', otherKey: 'tagId' });
   Tags.belongsToMany(Case, { through: 'caseTags', foreignKey: 'tagId', otherKey: 'caseId' });
   const RunCase = defineRunCase(sequelize, DataTypes);

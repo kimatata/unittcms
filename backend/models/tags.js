@@ -13,7 +13,7 @@ function defineTag(sequelize, DataTypes) {
       },
       onDelete: 'CASCADE',
     },
-  });
+  }, { tableName: 'tags' });
 
   Tags.associate = (models) => {
     Tags.belongsTo(models.Project, {

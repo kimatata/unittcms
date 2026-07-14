@@ -16,7 +16,7 @@ function defineComment(sequelize, DataTypes) {
       type: DataTypes.TEXT,
       allowNull: false,
     },
-  });
+  }, { tableName: 'comments' });
 
   Comment.associate = (models) => {
     // Polymorphic associations

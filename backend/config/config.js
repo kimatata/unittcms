@@ -10,17 +10,14 @@ export const API_PATH = process.env.API_PATH || '/api';
 
 const databasePath = process.env.DATABASE_PATH ?? path.resolve(process.cwd(), 'database/database.sqlite');
 
+// DB_DIALECT: 'sqlite' (default) or 'postgres'. Postgres reads connection info from DATABASE_URL.
+const dbConfig =
+  process.env.DB_DIALECT === 'postgres'
+    ? { dialect: 'postgres', url: process.env.DATABASE_URL }
+    : { dialect: 'sqlite', storage: databasePath };
+
 export default {
-  development: {
-    dialect: 'sqlite',
-    storage: databasePath,
-  },
-  test: {
-    dialect: 'sqlite',
-    storage: databasePath,
-  },
-  production: {
-    dialect: 'sqlite',
-    storage: databasePath,
-  },
+  development: dbConfig,
+  test: dbConfig,
+  production: dbConfig,
 };

@@ -15,8 +15,8 @@ export default function (sequelize) {
   const Step = defineStep(sequelize, DataTypes);
   const Folder = defineFolder(sequelize, DataTypes);
   Case.belongsTo(Folder);
-  Case.belongsToMany(Step, { through: 'caseSteps' });
-  Step.belongsToMany(Case, { through: 'caseSteps' });
+  Case.belongsToMany(Step, { through: 'caseSteps', foreignKey: 'caseId', otherKey: 'stepId' });
+  Step.belongsToMany(Case, { through: 'caseSteps', foreignKey: 'stepId', otherKey: 'caseId' });
   const { verifySignedIn } = authMiddleware(sequelize);
   const { verifyProjectVisibleFromFolderId } = visibilityMiddleware(sequelize);
 

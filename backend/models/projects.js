@@ -21,7 +21,7 @@ function defineProject(sequelize, DataTypes) {
       },
       onDelete: 'CASCADE',
     },
-  });
+  }, { tableName: 'projects' });
 
   Project.associate = (models) => {
     Project.belongsTo(models.User, { foreignKey: 'userId', onDelete: 'CASCADE' });
