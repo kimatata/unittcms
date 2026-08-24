@@ -158,6 +158,14 @@ app.use('/runcases', runCaseIndexRoute(sequelize));
 app.use('/runcases', runCaseEditRoute(sequelize));
 app.use('/runcases', runCaseAssigneeRoute(sequelize));
 
+// "/runcaseattachments"
+import runCaseAttachmentsIndexRoute from './routes/runcaseattachments/index.js';
+import runCaseAttachmentsNewRoute from './routes/runcaseattachments/new.js';
+import runCaseAttachmentsDeleteRoute from './routes/runcaseattachments/delete.js';
+app.use('/runcaseattachments', runCaseAttachmentsIndexRoute(sequelize));
+app.use('/runcaseattachments', runCaseAttachmentsNewRoute(sequelize));
+app.use('/runcaseattachments', runCaseAttachmentsDeleteRoute(sequelize));
+
 // "/members"
 import membersIndexRoute from './routes/members/index.js';
 import membersNewRoute from './routes/members/new.js';

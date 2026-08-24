@@ -55,6 +55,15 @@ type CaseAttachmentType = {
   attachmentId: number;
 };
 
+type RunCaseAttachmentType = {
+  createdAt: Date;
+  updatedAt: Date;
+  runCaseId: number;
+  attachmentId: number;
+};
+
+// An attachment belongs either to a test case or to a test case within a run,
+// so only the join table it came through is present.
 type AttachmentType = {
   id: number;
   title: string;
@@ -62,7 +71,8 @@ type AttachmentType = {
   filename: string;
   createdAt: Date;
   updatedAt: Date;
-  caseAttachments: CaseAttachmentType;
+  caseAttachments?: CaseAttachmentType;
+  runCaseAttachments?: RunCaseAttachmentType;
 };
 
 type CasesMessages = {
@@ -136,6 +146,7 @@ type CaseMessages = {
   attachments: string;
   delete: string;
   download: string;
+  close: string;
   deleteFile: string;
   clickToUpload: string;
   orDragAndDrop: string;
@@ -152,4 +163,4 @@ type CaseMessages = {
   noTagsSelected: string;
 };
 
-export type { CaseType, StepType, AttachmentType, CasesMessages, CaseMessages };
+export type { CaseType, StepType, AttachmentType, RunCaseAttachmentType, CasesMessages, CaseMessages };

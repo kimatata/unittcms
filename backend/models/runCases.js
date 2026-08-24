@@ -37,6 +37,11 @@ function defineRunCase(sequelize, DataTypes) {
       foreignKey: 'assigneeUserId',
       onDelete: 'SET NULL',
     });
+    RunCase.belongsToMany(models.Attachment, {
+      through: 'runCaseAttachments',
+      foreignKey: 'runCaseId',
+      otherKey: 'attachmentId',
+    });
   };
 
   return RunCase;
