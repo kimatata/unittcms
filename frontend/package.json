@@ -2,7 +2,7 @@
   "name": "unittcms-frontend",
   "version": "1.0.0",
   "private": true,
-    "engines": {
+  "engines": {
     "node": ">=24.0.0"
   },
   "scripts": {
@@ -36,7 +36,7 @@
     "react-apexcharts": "^1.7.0",
     "react-arborist": "^3.4.3",
     "react-dom": "18.3.1",
-    "sharp": "^0.33.5",
+    "sharp": "^0.35.4",
     "tailwind-variants": "^0.3.1",
     "tailwindcss": "^3.4.17",
     "typescript": "5.7.3"

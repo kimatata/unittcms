@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "type": "module",
-    "engines": {
+  "engines": {
     "node": ">=24.0.0"
   },
   "scripts": {
@@ -17,7 +17,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "bcrypt": "^5.1.1",
+    "bcrypt": "^6.0.0",
     "cors": "^2.8.5",
     "express": "^4.21.0",
     "express-openid-connect": "^2.19.4",
@@ -27,7 +27,7 @@
     "papaparse": "^5.5.2",
     "sequelize": "^6.37.7",
     "sequelize-cli": "^6.6.3",
-    "sqlite3": "^5.1.7",
+    "sqlite3": "^6.0.1",
     "swagger-ui-express": "^5.0.1",
     "tsoa": "^6.6.0",
     "xlsx": "https://cdn.sheetjs.com/xlsx-0.20.3/xlsx-0.20.3.tgz",
