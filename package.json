@@ -20,8 +20,8 @@
   "devDependencies": {
     "@next/eslint-plugin-next": "^15.3.0",
     "@playwright/test": "^1.48.2",
-    "@types/node": "^22.8.1",
-    "@vitest/coverage-v8": "^1.6.0",
+    "@types/node": "^24.13.1",
+    "@vitest/coverage-v8": "^5.0.0",
     "eslint": "^9.24.0",
     "eslint-config-next": "^15.3.0",
     "eslint-config-prettier": "^10.1.2",
@@ -36,6 +36,6 @@
     "sqlite3": "^6.0.1",
     "supertest": "^7.1.4",
     "typescript-eslint": "^8.24.1",
-    "vitest": "^1.6.0"
+    "vitest": "^5.0.0"
   }
 }
