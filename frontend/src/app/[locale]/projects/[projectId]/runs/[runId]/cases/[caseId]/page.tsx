@@ -3,6 +3,7 @@ import DetailPane from './DetailPane';
 import type { RunDetailMessages } from '@/types/run';
 import type { PriorityMessages } from '@/types/priority';
 import type { TestTypeMessages } from '@/types/testType';
+import type { AttachmentMessages } from '@/types/attachment';
 
 export default function Page({
   params,
@@ -23,6 +24,7 @@ export default function Page({
     detailsOfTheStep: t('details_of_the_step'),
     caseDetail: t('case_detail'),
     comments: t('comments'),
+    attachments: t('attachments'),
     history: t('history'),
   };
 
@@ -68,6 +70,23 @@ export default function Page({
     failedToDeleteComment: ct('failed_to_delete_comment'),
   };
 
+  const at = useTranslations('Attachments');
+  const attachmentMessages: AttachmentMessages = {
+    attachments: at('attachments'),
+    noAttachments: at('no_attachments'),
+    clickToUpload: at('click_to_upload'),
+    orDragAndDrop: at('or_drag_and_drop'),
+    maxFileSize: at('max_file_size'),
+    download: at('download'),
+    close: at('close'),
+    delete: at('delete'),
+    notIncludedInRun: at('not_included_in_run'),
+    attachmentUploaded: at('attachment_uploaded'),
+    failedToUploadAttachment: at('failed_to_upload_attachment'),
+    attachmentDeleted: at('attachment_deleted'),
+    failedToDeleteAttachment: at('failed_to_delete_attachment'),
+  };
+
   return (
     <DetailPane
       projectId={params.projectId}
@@ -78,6 +97,7 @@ export default function Page({
       priorityMessages={priorityMessages}
       testTypeMessages={testTypeMessages}
       commentMessages={commentMessages}
+      attachmentMessages={attachmentMessages}
     />
   );
 }

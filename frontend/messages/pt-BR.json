@@ -287,6 +287,7 @@
     "attachments": "Anexos",
     "delete": "Excluir",
     "download": "Baixar",
+    "close": "Fechar",
     "delete_file": "Excluir arquivo",
     "click_to_upload": "Clique para enviar",
     "or_drag_and_drop": " ou arraste e solte",
@@ -363,6 +364,7 @@
     "no_case_selected": "Nenhum caso de teste selecionado",
     "case_detail": "Detalhe do caso de teste",
     "comments": "Comentários",
+    "attachments": "Anexos",
     "history": "Histórico",
     "assignee": "Responsável",
     "unassigned": "Não atribuído",
@@ -387,6 +389,21 @@
     "failed_to_update_comment": "Falha ao atualizar comentário",
     "comment_deleted": "Comentário excluído",
     "failed_to_delete_comment": "Falha ao excluir comentário"
+  },
+  "Attachments": {
+    "attachments": "Anexos",
+    "no_attachments": "Nenhum anexo",
+    "click_to_upload": "Clique para enviar",
+    "or_drag_and_drop": " ou arraste e solte",
+    "max_file_size": "Tamanho máx. do arquivo",
+    "download": "Baixar",
+    "close": "Fechar",
+    "delete": "Excluir",
+    "not_included_in_run": "Não é possível anexar arquivos a casos de teste que não estão incluídos na execução de teste",
+    "attachment_uploaded": "Anexo enviado",
+    "failed_to_upload_attachment": "Falha ao enviar anexo",
+    "attachment_deleted": "Anexo excluído",
+    "failed_to_delete_attachment": "Falha ao excluir anexo"
   },
   "Members": {
     "member_management": "Gerenciamento de Membros",

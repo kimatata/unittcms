@@ -18,6 +18,11 @@ function defineAttachment(sequelize, DataTypes) {
     Attachment.belongsToMany(models.Case, {
       through: 'caseAttachments',
     });
+    Attachment.belongsToMany(models.RunCase, {
+      through: 'runCaseAttachments',
+      foreignKey: 'attachmentId',
+      otherKey: 'runCaseId',
+    });
   };
 
   return Attachment;
