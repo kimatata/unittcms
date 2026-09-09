@@ -2,6 +2,9 @@
   "name": "unittcms-frontend",
   "version": "1.0.0",
   "private": true,
+    "engines": {
+    "node": ">=24.0.0"
+  },
   "scripts": {
     "dev": "next dev -p 8000",
     "build": "next build",
