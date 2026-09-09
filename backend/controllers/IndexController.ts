@@ -1,4 +1,4 @@
-import { Get, Route, Tags } from 'tsoa';
+import { Get, Route, Tags } from '@tsoa/runtime';
 
 @Route('')
 @Tags('index')

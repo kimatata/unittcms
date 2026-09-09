@@ -2,6 +2,9 @@
   "name": "unittcms-frontend",
   "version": "1.0.0",
   "private": true,
+  "engines": {
+    "node": ">=24.0.0"
+  },
   "scripts": {
     "dev": "next dev -p 8000",
     "build": "next build",
@@ -14,7 +17,7 @@
     "@heroui/theme": "^2.4.5",
     "@react-aria/ssr": "^3.9.7",
     "@react-aria/visually-hidden": "^3.8.19",
-    "@types/node": "22.13.5",
+    "@types/node": "24.13.1",
     "@types/react": "18.3.18",
     "@types/react-dom": "18.3.5",
     "apexcharts": "^4.5.0",
@@ -33,9 +36,13 @@
     "react-apexcharts": "^1.7.0",
     "react-arborist": "^3.4.3",
     "react-dom": "18.3.1",
-    "sharp": "^0.33.5",
+    "sharp": "^0.35.4",
     "tailwind-variants": "^0.3.1",
     "tailwindcss": "^3.4.17",
     "typescript": "5.7.3"
+  },
+  "devDependencies": {
+    "eslint": "^8.57.1",
+    "eslint-config-next": "14.2.24"
   }
 }
