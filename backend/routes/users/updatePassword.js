@@ -35,7 +35,8 @@ export default function (sequelize) {
       }
 
       // Hash new password
-      const hashedPassword = await bcrypt.hash(newPassword, 10);
+      const bcryptRounds = parseInt(process.env.BCRYPT_ROUNDS || '10', 10);
+      const hashedPassword = await bcrypt.hash(newPassword, bcryptRounds);
       await user.update({ password: hashedPassword });
 
       res.json({ message: 'Password updated successfully' });

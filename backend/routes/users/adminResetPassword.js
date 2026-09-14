@@ -28,7 +28,8 @@ export default function (sequelize) {
         return res.status(404).send('User not found');
       }
 
-      const hashedPassword = await bcrypt.hash(newPassword, 10);
+      const bcryptRounds = parseInt(process.env.BCRYPT_ROUNDS || '10', 10);
+      const hashedPassword = await bcrypt.hash(newPassword, bcryptRounds);
       await user.update({ password: hashedPassword });
 
       return res.json({ user: { id: user.id } });
