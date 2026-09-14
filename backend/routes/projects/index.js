@@ -3,16 +3,24 @@ const router = express.Router();
 import { DataTypes, Op } from 'sequelize';
 import defineProject from '../../models/projects.js';
 import defineMember from '../../models/members.js';
+import defineUser from '../../models/users.js';
 import authMiddleware from '../../middleware/auth.js';
+import { roles } from '../users/authSettings.js';
 
 export default function (sequelize) {
   const { verifySignedIn } = authMiddleware(sequelize);
   const Project = defineProject(sequelize, DataTypes);
   const Member = defineMember(sequelize, DataTypes);
+  const User = defineUser(sequelize, DataTypes);
   Project.hasMany(Member, { foreignKey: 'projectId' });
 
   router.get('/', verifySignedIn, async (req, res) => {
     try {
+      // admins can see all projects
+      const user = await User.findByPk(req.userId);
+      const adminRoleIndex = roles.findIndex((entry) => entry.uid === 'administrator');
+      const isAdmin = user && user.role === adminRoleIndex;
+
       let projects;
       if (req.query.onlyUserProjects === 'true') {
         projects = await Project.findAll({
@@ -20,6 +28,8 @@ export default function (sequelize) {
             userId: req.userId,
           },
         });
+      } else if (isAdmin) {
+        projects = await Project.findAll();
       } else {
         // public projects, owned projects, participated projects will be returned
         projects = await Project.findAll({
