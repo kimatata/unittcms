@@ -23,6 +23,13 @@ app.use(cors(corsOptions));
 // enable json middleware
 app.use(express.json());
 
+// Express 5 leaves req.body undefined when no body was parsed (Express 4 used {}).
+// Keep the Express 4 behavior so route handlers that destructure req.body keep working.
+app.use((req, _res, next) => {
+  req.body ??= {};
+  next();
+});
+
 // enable rate limiter
 const limiter = RateLimit({
   windowMs: 60 * 60 * 1000, // 1h
