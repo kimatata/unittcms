@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import de from './de.json';
 import en from './en.json';
+import fr from './fr.json';
 import ptBR from './pt-BR.json';
 import zhCN from './zh-CN.json';
 import ja from './ja.json';
@@ -20,6 +21,7 @@ describe('Locale message keys consistency', () => {
   const locales = [
     { name: 'de', data: de },
     { name: 'en', data: en },
+    { name: 'fr', data: fr },
     { name: 'pt-BR', data: ptBR },
     { name: 'zh-CN', data: zhCN },
     { name: 'ja', data: ja },

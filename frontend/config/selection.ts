@@ -17,6 +17,7 @@ const categoricalPalette = ['#fba91e', '#6ea56c', '#3ac6e1', '#feda2f', '#f15f47
 const locales: LocaleType[] = [
   { code: 'de', name: 'Deutsch' },
   { code: 'en', name: 'English' },
+  { code: 'fr', name: 'Français' },
   { code: 'pt-BR', name: 'Português' },
   { code: 'zh-CN', name: '简体中文' },
   { code: 'ja', name: '日本語' },
