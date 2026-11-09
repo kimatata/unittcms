@@ -1,25 +1,30 @@
 'use client';
 import { useState, useEffect, useContext } from 'react';
 import { addToast, Button } from '@heroui/react';
-import { Plus } from 'lucide-react';
+import { Plus, UserPlus } from 'lucide-react';
 import MembersTable from './MembersTable';
 import AddMemberDialog from './AddMemberDialog';
+import InviteDialog from './InviteDialog';
 import { fetchProjectMembers, addMember, deleteMember, updateMember } from './membersControl';
 import { MemberType, UserType } from '@/types/user';
 import { MembersMessages } from '@/types/member';
+import { InvitationMessages } from '@/types/invitation';
 import { TokenContext } from '@/utils/TokenProvider';
 import DeleteConfirmDialog from '@/components/DeleteConfirmDialog';
 import { logError } from '@/utils/errorHandler';
 
 type Props = {
   projectId: string;
+  locale: string;
   messages: MembersMessages;
+  invitationMessages: InvitationMessages;
 };
 
-export default function MembersPage({ projectId, messages }: Props) {
+export default function MembersPage({ projectId, locale, messages, invitationMessages }: Props) {
   const context = useContext(TokenContext);
   const [members, setMembers] = useState<MemberType[]>([]);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [isInviteDialogOpen, setIsInviteDialogOpen] = useState(false);
 
   useEffect(() => {
     async function fetchDataEffect() {
@@ -104,15 +109,26 @@ export default function MembersPage({ projectId, messages }: Props) {
     <div className="container mx-auto max-w-3xl pt-6 px-6 flex-grow">
       <div className="w-full p-3 flex items-center justify-between">
         <h3 className="font-bold">{messages.memberManagement}</h3>
-        <Button
-          startContent={<Plus size={16} />}
-          size="sm"
-          color="primary"
-          isDisabled={!context.isProjectManager(Number(projectId))}
-          onPress={() => setIsDialogOpen(true)}
-        >
-          {messages.addMember}
-        </Button>
+        <div className="flex items-center gap-2">
+          <Button
+            startContent={<UserPlus size={16} />}
+            size="sm"
+            variant="bordered"
+            isDisabled={!context.isProjectManager(Number(projectId))}
+            onPress={() => setIsInviteDialogOpen(true)}
+          >
+            {invitationMessages.invite}
+          </Button>
+          <Button
+            startContent={<Plus size={16} />}
+            size="sm"
+            color="primary"
+            isDisabled={!context.isProjectManager(Number(projectId))}
+            onPress={() => setIsDialogOpen(true)}
+          >
+            {messages.addMember}
+          </Button>
+        </div>
       </div>
 
       <MembersTable
@@ -129,6 +145,14 @@ export default function MembersPage({ projectId, messages }: Props) {
         onCancel={() => setIsDialogOpen(false)}
         onAddMember={handleAddMember}
         messages={messages}
+      />
+
+      <InviteDialog
+        isOpen={isInviteDialogOpen}
+        projectId={projectId}
+        locale={locale}
+        messages={invitationMessages}
+        onCancel={() => setIsInviteDialogOpen(false)}
       />
 
       <DeleteConfirmDialog
