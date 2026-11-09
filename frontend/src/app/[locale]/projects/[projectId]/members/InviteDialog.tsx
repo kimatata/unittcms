@@ -115,12 +115,15 @@ export default function InviteDialog({ isOpen, projectId, locale, messages, onCa
         <ModalBody>
           <p className="text-small text-default-600">{messages.inviteIntro}</p>
 
-          <div className="flex items-end gap-2">
+          {/* `flex-wrap` plutôt qu'un point de rupture : la modale rétrécit avec
+              la fenêtre, et ce qui compte est la place restante, pas la taille
+              de l'écran. */}
+          <div className="flex flex-wrap items-end gap-2">
             <Select
               size="sm"
               variant="bordered"
               label={messages.role}
-              className="max-w-[12rem]"
+              className="w-full min-w-[10rem] flex-1 sm:w-auto sm:max-w-[12rem]"
               selectedKeys={[memberRoles[role].uid]}
               onSelectionChange={(keys) => {
                 const picked = Array.from(keys)[0];
@@ -140,6 +143,7 @@ export default function InviteDialog({ isOpen, projectId, locale, messages, onCa
               variant="bordered"
               type="email"
               label={messages.emailOptional}
+              className="w-full min-w-[12rem] flex-1 sm:w-auto"
               value={email}
               onValueChange={setEmail}
             />
@@ -147,6 +151,7 @@ export default function InviteDialog({ isOpen, projectId, locale, messages, onCa
             <Button
               size="sm"
               color="primary"
+              className="w-full shrink-0 sm:w-auto"
               startContent={<Plus size={16} />}
               isLoading={isCreating}
               onPress={onCreate}
@@ -165,15 +170,15 @@ export default function InviteDialog({ isOpen, projectId, locale, messages, onCa
                 invitation.token === lastToken ? 'border-primary' : 'border-default-200'
               }`}
             >
-              <div className="flex items-center justify-between gap-2">
-                <div className="min-w-0">
+              <div className="flex flex-wrap items-center justify-between gap-2">
+                <div className="min-w-0 flex-1 basis-[12rem]">
                   <p className="truncate font-bold">{invitation.email || roleLabel(invitation.role)}</p>
                   <p className="text-tiny text-default-600">
                     {roleLabel(invitation.role)} · {messages.expiresOn}{' '}
                     {new Date(invitation.expiresAt).toLocaleDateString(locale)}
                   </p>
                 </div>
-                <div className="flex shrink-0 items-center gap-1">
+                <div className="flex flex-wrap items-center gap-1">
                   <Button
                     size="sm"
                     variant="bordered"
@@ -208,12 +213,13 @@ export default function InviteDialog({ isOpen, projectId, locale, messages, onCa
               <Snippet
                 size="sm"
                 variant="flat"
-                className="mt-2 w-full"
+                className="mt-2 w-full min-w-0"
+                classNames={{ pre: 'min-w-0 overflow-hidden' }}
                 symbol=""
                 copyIcon={<Check size={14} />}
                 tooltipProps={{ content: messages.copy }}
               >
-                <span className="truncate">{linkFor(invitation.token)}</span>
+                <span className="block truncate">{linkFor(invitation.token)}</span>
               </Snippet>
             </div>
           ))}

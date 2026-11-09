@@ -107,7 +107,7 @@ export default function MembersPage({ projectId, locale, messages, invitationMes
 
   return (
     <div className="container mx-auto max-w-3xl pt-6 px-6 flex-grow">
-      <div className="w-full p-3 flex items-center justify-between">
+      <div className="w-full p-3 flex flex-wrap items-center justify-between gap-2">
         <h3 className="font-bold">{messages.memberManagement}</h3>
         <div className="flex items-center gap-2">
           <Button
