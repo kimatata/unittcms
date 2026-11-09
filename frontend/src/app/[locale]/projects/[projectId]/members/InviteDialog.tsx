@@ -9,8 +9,8 @@ import {
   ModalContent,
   ModalFooter,
   ModalHeader,
-  Select,
-  SelectItem,
+  Radio,
+  RadioGroup,
   Snippet,
 } from '@heroui/react';
 import { Check, Mail, MessageCircle, Plus, Trash2 } from 'lucide-react';
@@ -115,29 +115,32 @@ export default function InviteDialog({ isOpen, projectId, locale, messages, onCa
         <ModalBody>
           <p className="text-small text-default-600">{messages.inviteIntro}</p>
 
+          {/* Des radios plutôt qu'une liste déroulante : trois choix tiennent à
+              l'écran, et une liste s'ouvrant dans une modale est refermée par
+              elle au moment même où on l'ouvre. */}
+          <RadioGroup
+            size="sm"
+            orientation="horizontal"
+            label={messages.role}
+            value={memberRoles[role].uid}
+            onValueChange={(picked) => {
+              const index = memberRoles.findIndex((entry) => entry.uid === picked);
+              if (index >= 0) {
+                setRole(index);
+              }
+            }}
+          >
+            {memberRoles.map((entry, index) => (
+              <Radio key={entry.uid} value={entry.uid}>
+                {roleLabel(index)}
+              </Radio>
+            ))}
+          </RadioGroup>
+
           {/* `flex-wrap` plutôt qu'un point de rupture : la modale rétrécit avec
               la fenêtre, et ce qui compte est la place restante, pas la taille
               de l'écran. */}
           <div className="flex flex-wrap items-end gap-2">
-            <Select
-              size="sm"
-              variant="bordered"
-              label={messages.role}
-              className="w-full min-w-[10rem] flex-1 sm:w-auto sm:max-w-[12rem]"
-              selectedKeys={[memberRoles[role].uid]}
-              onSelectionChange={(keys) => {
-                const picked = Array.from(keys)[0];
-                const index = memberRoles.findIndex((entry) => entry.uid === picked);
-                if (index >= 0) {
-                  setRole(index);
-                }
-              }}
-            >
-              {memberRoles.map((entry, index) => (
-                <SelectItem key={entry.uid}>{roleLabel(index)}</SelectItem>
-              ))}
-            </Select>
-
             <Input
               size="sm"
               variant="bordered"
