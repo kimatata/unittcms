@@ -6,7 +6,7 @@ import Sequelize from 'sequelize';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const basename = path.basename(__filename);
-import configDefault from '../config/config';
+import configDefault from '../config/config.js';
 const config = configDefault[process.env.NODE_ENV || 'development'];
 const db = {};
 

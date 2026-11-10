@@ -40,6 +40,7 @@ export default function Page({
     attachments: t('attachments'),
     delete: t('delete'),
     download: t('download'),
+    close: t('close'),
     deleteFile: t('delete_file'),
     clickToUpload: t('click_to_upload'),
     orDragAndDrop: t('or_drag_and_drop'),

@@ -23,6 +23,13 @@ app.use(cors(corsOptions));
 // enable json middleware
 app.use(express.json());
 
+// Express 5 leaves req.body undefined when no body was parsed (Express 4 used {}).
+// Keep the Express 4 behavior so route handlers that destructure req.body keep working.
+app.use((req, _res, next) => {
+  req.body ??= {};
+  next();
+});
+
 // enable rate limiter
 const limiter = RateLimit({
   windowMs: 60 * 60 * 1000, // 1h
@@ -39,7 +46,7 @@ const swaggerPath = path.join(__dirname, 'public/swagger.json');
 const swaggerDocument = JSON.parse(readFileSync(swaggerPath, 'utf8'));
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
-// __dirname is backend/ in dev (ts-node) and backend/dist/ in production (compiled)
+// __dirname is backend/ in dev (tsx) and backend/dist/ in production (compiled)
 const backendDir = path.basename(__dirname) === 'dist' ? path.resolve(__dirname, '..') : __dirname;
 const databasePath = process.env.DATABASE_PATH ?? path.resolve(backendDir, 'database/database.sqlite');
 export const sequelize = new Sequelize({
@@ -157,6 +164,14 @@ import runCaseAssigneeRoute from './routes/runcases/assignee.js';
 app.use('/runcases', runCaseIndexRoute(sequelize));
 app.use('/runcases', runCaseEditRoute(sequelize));
 app.use('/runcases', runCaseAssigneeRoute(sequelize));
+
+// "/runcaseattachments"
+import runCaseAttachmentsIndexRoute from './routes/runcaseattachments/index.js';
+import runCaseAttachmentsNewRoute from './routes/runcaseattachments/new.js';
+import runCaseAttachmentsDeleteRoute from './routes/runcaseattachments/delete.js';
+app.use('/runcaseattachments', runCaseAttachmentsIndexRoute(sequelize));
+app.use('/runcaseattachments', runCaseAttachmentsNewRoute(sequelize));
+app.use('/runcaseattachments', runCaseAttachmentsDeleteRoute(sequelize));
 
 // "/members"
 import membersIndexRoute from './routes/members/index.js';

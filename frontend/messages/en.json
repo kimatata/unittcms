@@ -287,6 +287,7 @@
     "attachments": "Attachments",
     "delete": "Delete",
     "download": "Download",
+    "close": "Close",
     "delete_file": "Delete file",
     "click_to_upload": "Click to upload",
     "or_drag_and_drop": " or drag and drop",
@@ -363,6 +364,7 @@
     "no_case_selected": "No test case selected",
     "case_detail": "Test case detail",
     "comments": "Comments",
+    "attachments": "Attachments",
     "history": "History",
     "assignee": "Assignee",
     "unassigned": "Unassigned",
@@ -387,6 +389,21 @@
     "failed_to_update_comment": "Failed to update comment",
     "comment_deleted": "Comment deleted",
     "failed_to_delete_comment": "Failed to delete comment"
+  },
+  "Attachments": {
+    "attachments": "Attachments",
+    "no_attachments": "No attachments",
+    "click_to_upload": "Click to upload",
+    "or_drag_and_drop": " or drag and drop",
+    "max_file_size": "Max. file size",
+    "download": "Download",
+    "close": "Close",
+    "delete": "Delete",
+    "not_included_in_run": "Cannot attach files to test cases not included in the test run",
+    "attachment_uploaded": "Attachment uploaded",
+    "failed_to_upload_attachment": "Failed to upload attachment",
+    "attachment_deleted": "Attachment deleted",
+    "failed_to_delete_attachment": "Failed to delete attachment"
   },
   "Members": {
     "member_management": "Member Management",

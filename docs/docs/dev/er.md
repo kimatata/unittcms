@@ -22,6 +22,10 @@ erDiagram
   cases ||--o{ caseSteps: "has"
   cases ||--o{ caseAttachments: "has"
   attachments ||--o{ caseAttachments: "has"
+  runs ||--o{ runCases: "run has cases"
+  cases ||--o{ runCases: "case belongs to runs via the runCases table"
+  runCases ||--o{ runCaseAttachments: "has"
+  attachments ||--o{ runCaseAttachments: "has"
   cases ||--o{ "caseTags": "has"
   "tags" ||--o{ "caseTags": "has"
 
@@ -72,6 +76,14 @@ erDiagram
     integer projectId FK
     timestamp created_at
     timestamp deleted_at
+  }
+
+  runCases {
+    integer id PK
+    integer runId FK
+    integer caseId FK
+    integer status
+    integer assigneeUserId FK
   }
 
   "plans(unimplemented)" {
@@ -128,7 +140,7 @@ erDiagram
     integer id PK
     string title
     string detail
-    string path
+    string filename
     timestamp created_at
     timestamp deleted_at
   }
@@ -136,6 +148,12 @@ erDiagram
   caseAttachments {
     integer id PK
     integer caseId FK
+    integer attachmentId FK
+  }
+
+  runCaseAttachments {
+    integer id PK
+    integer runCaseId FK
     integer attachmentId FK
   }
 

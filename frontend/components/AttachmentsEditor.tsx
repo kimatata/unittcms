@@ -1,8 +1,20 @@
-import { Image, Button, Tooltip, Card, CardBody } from '@heroui/react';
+import {
+  Image,
+  Button,
+  Tooltip,
+  Card,
+  CardBody,
+  Modal,
+  ModalContent,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+} from '@heroui/react';
 import { Trash, ArrowDownToLine, ArrowUpFromLine } from 'lucide-react';
-import { ChangeEvent, DragEvent } from 'react';
-import { isImage } from './isImage';
-import { AttachmentType, CaseMessages } from '@/types/case';
+import { ChangeEvent, DragEvent, useState } from 'react';
+import { AttachmentType } from '@/types/case';
+import { AttachmentsEditorMessages } from '@/types/attachment';
+import { isImage } from '@/utils/isImage';
 import Config from '@/config/config';
 
 const apiServer = Config.apiServer;
@@ -14,10 +26,11 @@ type Props = {
   onAttachmentDelete: (attachmentId: number) => void;
   onFilesDrop: (event: DragEvent<HTMLElement>) => void;
   onFilesInput: (event: ChangeEvent) => void;
-  messages: CaseMessages;
+  messages: AttachmentsEditorMessages;
+  inputId?: string;
 };
 
-export default function CaseAttachmentsEditor({
+export default function AttachmentsEditor({
   isDisabled = false,
   attachments = [],
   onAttachmentDownload,
@@ -25,7 +38,9 @@ export default function CaseAttachmentsEditor({
   onFilesDrop,
   onFilesInput,
   messages,
+  inputId = 'dropzone-file',
 }: Props) {
+  const [preview, setPreview] = useState<AttachmentType | null>(null);
   const images: AttachmentType[] = [];
   const others: AttachmentType[] = [];
 
@@ -42,11 +57,17 @@ export default function CaseAttachmentsEditor({
         {images.map((image, index) => (
           <Card key={index} radius="sm" className="mt-2 me-2 max-w-md">
             <CardBody>
-              <Image
-                alt={image.title}
-                src={`${apiServer}/uploads/${image.filename}`}
-                className="object-cover h-40 w-40"
-              />
+              <button
+                type="button"
+                className="cursor-zoom-in transition-opacity hover:opacity-80"
+                onClick={() => setPreview(image)}
+              >
+                <Image
+                  alt={image.title}
+                  src={`${apiServer}/uploads/${image.filename}`}
+                  className="object-cover h-40 w-40"
+                />
+              </button>
               <div className="flex items-center justify-between">
                 <p>{image.title}</p>
                 <Tooltip content={messages.delete}>
@@ -86,6 +107,7 @@ export default function CaseAttachmentsEditor({
                   <Button
                     isIconOnly
                     size="sm"
+                    isDisabled={isDisabled}
                     className="bg-transparent rounded-full"
                     onPress={() => onAttachmentDelete(file.id)}
                   >
@@ -109,7 +131,7 @@ export default function CaseAttachmentsEditor({
         onDragOver={(event) => event.preventDefault()}
       >
         <label
-          htmlFor="dropzone-file"
+          htmlFor={inputId}
           className={`flex flex-col items-center justify-center w-full h-32 border-2 border-neutral-200 border-dashed rounded-lg  bg-neutral-50 dark:hover:bg-bray-800 dark:bg-neutral-700 hover:bg-neutral-100 dark:border-neutral-600 dark:hover:border-neutral-500 dark:hover:bg-neutral-600 ${isDisabled ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'}`}
         >
           <div className="flex flex-col items-center justify-center pt-5 pb-6">
@@ -121,7 +143,7 @@ export default function CaseAttachmentsEditor({
             <p className="text-xs text-neutral-500 dark:text-neutral-400">{messages.maxFileSize}: 50 MB</p>
           </div>
           <input
-            id="dropzone-file"
+            id={inputId}
             type="file"
             className="hidden"
             disabled={isDisabled}
@@ -130,6 +152,45 @@ export default function CaseAttachmentsEditor({
           />
         </label>
       </div>
+
+      <Modal
+        isOpen={preview !== null}
+        size="full"
+        onOpenChange={(isOpen) => {
+          if (!isOpen) {
+            setPreview(null);
+          }
+        }}
+      >
+        <ModalContent>
+          {preview && (
+            <>
+              <ModalHeader className="flex flex-col gap-1">{preview.title}</ModalHeader>
+              <ModalBody className="flex items-center justify-center overflow-auto">
+                <Image
+                  removeWrapper
+                  radius="none"
+                  alt={preview.title}
+                  src={`${apiServer}/uploads/${preview.filename}`}
+                  className="max-h-full max-w-full object-contain"
+                />
+              </ModalBody>
+              <ModalFooter>
+                <Button variant="light" onPress={() => setPreview(null)}>
+                  {messages.close}
+                </Button>
+                <Button
+                  color="primary"
+                  startContent={<ArrowDownToLine size={16} />}
+                  onPress={() => onAttachmentDownload(preview.id, preview.title)}
+                >
+                  {messages.download}
+                </Button>
+              </ModalFooter>
+            </>
+          )}
+        </ModalContent>
+      </Modal>
     </>
   );
 }

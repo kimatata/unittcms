@@ -63,10 +63,10 @@ async function startServer() {
       console.log('nextjs prepared');
 
       // Use Next.js to handle all other routes
-      server.all('*', (req, res) => handle(req, res));
+      server.all('/{*splat}', (req, res) => handle(req, res));
     } else {
       console.error('Next.js module not found at:', nextServerPath);
-      server.all('*', (req, res) => {
+      server.all('/{*splat}', (req, res) => {
         res.status(500).send('Frontend server not available');
       });
     }

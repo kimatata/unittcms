@@ -3,6 +3,7 @@ import { useEffect, useState, useContext } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { Tabs, Tab } from '@heroui/react';
 import CaseDetail from './CaseDetail';
+import RunCaseAttachments from './RunCaseAttachments';
 import Comments from '@/components/Comments';
 import History from '@/components/History';
 import { TokenContext } from '@/utils/TokenProvider';
@@ -13,6 +14,7 @@ import type { RunCaseType, RunDetailMessages } from '@/types/run';
 import type { PriorityMessages } from '@/types/priority';
 import type { TestTypeMessages } from '@/types/testType';
 import type { CommentMessages } from '@/types/comment';
+import type { AttachmentMessages } from '@/types/attachment';
 
 type Props = {
   projectId: string;
@@ -23,6 +25,7 @@ type Props = {
   testTypeMessages: TestTypeMessages;
   priorityMessages: PriorityMessages;
   commentMessages: CommentMessages;
+  attachmentMessages: AttachmentMessages;
 };
 
 export default function TestCaseDetailPane({
@@ -34,6 +37,7 @@ export default function TestCaseDetailPane({
   testTypeMessages,
   priorityMessages,
   commentMessages,
+  attachmentMessages,
 }: Props) {
   const context = useContext(TokenContext);
   const searchParams = useSearchParams();
@@ -47,6 +51,8 @@ export default function TestCaseDetailPane({
     const tab = searchParams.get('tab');
     if (tab === 'comments') {
       setSelectedTab('comments');
+    } else if (tab === 'attachments') {
+      setSelectedTab('attachments');
     } else if (tab === 'history') {
       setSelectedTab('history');
     } else {
@@ -112,6 +118,9 @@ export default function TestCaseDetailPane({
               commentableId={runCaseId}
               messages={commentMessages}
             />
+          </Tab>
+          <Tab key="attachments" title={messages.attachments}>
+            <RunCaseAttachments projectId={projectId} runCaseId={runCaseId} messages={attachmentMessages} />
           </Tab>
           <Tab key="history" title={messages.history}>
             <History />

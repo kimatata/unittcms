@@ -287,6 +287,7 @@
     "attachments": "Anhänge",
     "delete": "Löschen",
     "download": "Herunterladen",
+    "close": "Schließen",
     "delete_file": "Datei löschen",
     "click_to_upload": "Zum Hochladen klicken",
     "or_drag_and_drop": " oder per Drag & Drop",
@@ -363,6 +364,7 @@
     "no_case_selected": "Kein Testfall ausgewählt",
     "case_detail": "Testfall-Details",
     "comments": "Kommentare",
+    "attachments": "Anhänge",
     "history": "Verlauf",
     "assignee": "Beauftragter",
     "unassigned": "Nicht zugewiesen",
@@ -387,6 +389,21 @@
     "failed_to_update_comment": "Fehler beim Aktualisieren des Kommentars",
     "comment_deleted": "Kommentar gelöscht",
     "failed_to_delete_comment": "Fehler beim Löschen des Kommentars"
+  },
+  "Attachments": {
+    "attachments": "Anhänge",
+    "no_attachments": "Keine Anhänge",
+    "click_to_upload": "Zum Hochladen klicken",
+    "or_drag_and_drop": " oder per Drag & Drop",
+    "max_file_size": "Max. Dateigröße",
+    "download": "Herunterladen",
+    "close": "Schließen",
+    "delete": "Löschen",
+    "not_included_in_run": "Kann keine Dateien an Testfälle anhängen, die nicht im Testlauf enthalten sind",
+    "attachment_uploaded": "Anhang hochgeladen",
+    "failed_to_upload_attachment": "Fehler beim Hochladen des Anhangs",
+    "attachment_deleted": "Anhang gelöscht",
+    "failed_to_delete_attachment": "Fehler beim Löschen des Anhangs"
   },
   "Members": {
     "member_management": "Mitgliederverwaltung",

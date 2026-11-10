@@ -337,6 +337,39 @@ export default function verifyEditableMiddleware(sequelize) {
     }
   }
 
+  /**
+   * Verify user is reporter of the project by runCaseId
+   * (have to be called after verifySignedIn() middleware)
+   */
+  async function verifyProjectReporterFromRunCaseId(req, res, next) {
+    const runCaseId = req.params.runCaseId || req.query.runCaseId;
+    if (!runCaseId) {
+      return res.status(400).json({ error: 'runCaseId is required' });
+    }
+
+    const RunCase = defineRunCase(sequelize, DataTypes);
+    const runCase = await RunCase.findByPk(runCaseId);
+    const runId = runCase && runCase.runId;
+    if (!runId) {
+      return res.status(404).send('failed to find runId');
+    }
+
+    const Run = defineRun(sequelize, DataTypes);
+    const run = await Run.findByPk(runId);
+    const projectId = run && run.projectId;
+    if (!projectId) {
+      return res.status(404).send('failed to find projectId');
+    }
+
+    const isReporterRet = await isReporter(projectId, req.userId);
+    if (isReporterRet) {
+      next();
+      return;
+    }
+
+    return res.status(403).json({ error: 'Forbidden' });
+  }
+
   async function isReporter(projectId, userId) {
     const Project = defineProject(sequelize, DataTypes);
     const Member = defineMember(sequelize, DataTypes);
@@ -385,5 +418,6 @@ export default function verifyEditableMiddleware(sequelize) {
     verifyProjectReporterFromProjectId,
     verifyProjectReporterFromRunId,
     verifyProjectReporterFromCommentableId,
+    verifyProjectReporterFromRunCaseId,
   };
 }

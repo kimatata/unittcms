@@ -163,6 +163,39 @@ export default function verifyVisibleMiddleware(sequelize) {
     }
   }
 
+  /**
+   * Verify user can read project by runCaseId
+   * (have to be called after verifySignedIn() middleware)
+   */
+  async function verifyProjectVisibleFromRunCaseId(req, res, next) {
+    const runCaseId = req.params.runCaseId || req.query.runCaseId;
+    if (!runCaseId) {
+      return res.status(400).json({ error: 'runCaseId is required' });
+    }
+
+    const RunCase = defineRunCase(sequelize, DataTypes);
+    const runCase = await RunCase.findByPk(runCaseId);
+    const runId = runCase && runCase.runId;
+    if (!runId) {
+      return res.status(404).send('failed to find runId');
+    }
+
+    const Run = defineRun(sequelize, DataTypes);
+    const run = await Run.findByPk(runId);
+    const projectId = run && run.projectId;
+    if (!projectId) {
+      return res.status(404).send('failed to find projectId');
+    }
+
+    const visible = await isVisible(projectId, req.userId);
+    if (visible) {
+      next();
+      return;
+    }
+
+    return res.status(403).json({ error: 'Forbidden' });
+  }
+
   async function isVisible(projectId, userId) {
     const Project = defineProject(sequelize, DataTypes);
     const Member = defineMember(sequelize, DataTypes);
@@ -205,5 +238,6 @@ export default function verifyVisibleMiddleware(sequelize) {
     verifyProjectVisibleFromCaseId,
     verifyProjectVisibleFromRunId,
     verifyProjectVisibleFromCommentableId,
+    verifyProjectVisibleFromRunCaseId,
   };
 }

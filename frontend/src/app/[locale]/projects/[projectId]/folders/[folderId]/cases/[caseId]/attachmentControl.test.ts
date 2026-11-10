@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'vitest';
-import { isImage } from './isImage';
+import { isImage } from '@/utils/isImage';
 import { AttachmentType } from '@/types/case';
 
 describe('attachment control', () => {
@@ -7,15 +7,15 @@ describe('attachment control', () => {
     type CaseAttachmentType = {
       createdAt: Date;
       updatedAt: Date;
-      CaseId: number;
-      AttachmentId: number;
+      caseId: number;
+      attachmentId: number;
     };
 
     const sampleCaseAttachment: CaseAttachmentType = {
       createdAt: new Date(),
       updatedAt: new Date(),
-      CaseId: 1,
-      AttachmentId: 1,
+      caseId: 1,
+      attachmentId: 1,
     };
 
     const sampleAttachment: AttachmentType = {

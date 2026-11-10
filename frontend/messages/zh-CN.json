@@ -287,6 +287,7 @@
     "attachments": "附件",
     "delete": "删除",
     "download": "下载",
+    "close": "关闭",
     "delete_file": "删除文件",
     "click_to_upload": "点击上传",
     "or_drag_and_drop": " 或拖拽文件到此处",
@@ -363,6 +364,7 @@
     "no_case_selected": "未选择测试用例",
     "case_detail": "测试用例详情",
     "comments": "评论",
+    "attachments": "附件",
     "history": "历史",
     "assignee": "负责人",
     "unassigned": "未分配",
@@ -387,6 +389,21 @@
     "failed_to_update_comment": "更新评论失败",
     "comment_deleted": "评论已删除",
     "failed_to_delete_comment": "删除评论失败"
+  },
+  "Attachments": {
+    "attachments": "附件",
+    "no_attachments": "暂无附件",
+    "click_to_upload": "点击上传",
+    "or_drag_and_drop": " 或拖拽文件到此处",
+    "max_file_size": "最大文件大小",
+    "download": "下载",
+    "close": "关闭",
+    "delete": "删除",
+    "not_included_in_run": "无法为未包含在测试运行中的测试用例添加附件",
+    "attachment_uploaded": "附件已上传",
+    "failed_to_upload_attachment": "上传附件失败",
+    "attachment_deleted": "附件已删除",
+    "failed_to_delete_attachment": "删除附件失败"
   },
   "Members": {
     "member_management": "成员管理",

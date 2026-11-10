@@ -7,6 +7,7 @@ export default defineConfig({
       exclude: ['**/node_modules/**', 'docs/**', '**/.next/**'],
       provider: 'v8',
     },
+    setupFiles: ['./vitest.setup.ts'],
     exclude: [
       '**/node_modules/**',
       '**/dist/**',

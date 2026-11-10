@@ -287,6 +287,7 @@
     "attachments": "添付ファイル",
     "delete": "削除",
     "download": "ダウンロード",
+    "close": "閉じる",
     "delete_file": "ファイルを削除",
     "click_to_upload": "クリックしてアップロード",
     "or_drag_and_drop": "またはドラッグアンドドロップ",
@@ -363,6 +364,7 @@
     "no_case_selected": "テストケースが選択されていません",
     "case_detail": "テストケース詳細",
     "comments": "コメント",
+    "attachments": "添付ファイル",
     "history": "履歴",
     "assignee": "担当者",
     "unassigned": "未割り当て",
@@ -387,6 +389,21 @@
     "failed_to_update_comment": "コメントの更新に失敗しました",
     "comment_deleted": "コメントが削除されました",
     "failed_to_delete_comment": "コメントの削除に失敗しました"
+  },
+  "Attachments": {
+    "attachments": "添付ファイル",
+    "no_attachments": "添付ファイルがありません",
+    "click_to_upload": "クリックしてアップロード",
+    "or_drag_and_drop": "またはドラッグアンドドロップ",
+    "max_file_size": "最大ファイルサイズ",
+    "download": "ダウンロード",
+    "close": "閉じる",
+    "delete": "削除",
+    "not_included_in_run": "テストランに含まれていないテストケースにはファイルを添付できません",
+    "attachment_uploaded": "添付ファイルがアップロードされました",
+    "failed_to_upload_attachment": "添付ファイルのアップロードに失敗しました",
+    "attachment_deleted": "添付ファイルが削除されました",
+    "failed_to_delete_attachment": "添付ファイルの削除に失敗しました"
   },
   "Members": {
     "member_management": "メンバー管理",

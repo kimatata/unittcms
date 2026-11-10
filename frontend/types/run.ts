@@ -114,6 +114,7 @@ type RunDetailMessages = {
   detailsOfTheStep: string;
   caseDetail: string;
   comments: string;
+  attachments: string;
   history: string;
 };
 
