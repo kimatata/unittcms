@@ -166,6 +166,18 @@ app.use('/runcaseattachments', runCaseAttachmentsIndexRoute(sequelize));
 app.use('/runcaseattachments', runCaseAttachmentsNewRoute(sequelize));
 app.use('/runcaseattachments', runCaseAttachmentsDeleteRoute(sequelize));
 
+// "/invitations"
+import invitationsIndexRoute from './routes/invitations/index.js';
+import invitationsNewRoute from './routes/invitations/new.js';
+import invitationsDeleteRoute from './routes/invitations/delete.js';
+import invitationsAcceptRoute from './routes/invitations/accept.js';
+import invitationsShowRoute from './routes/invitations/show.js';
+app.use('/invitations', invitationsIndexRoute(sequelize));
+app.use('/invitations', invitationsNewRoute(sequelize));
+app.use('/invitations', invitationsDeleteRoute(sequelize));
+app.use('/invitations', invitationsAcceptRoute(sequelize)); // "/:token/accept" before "/:token"
+app.use('/invitations', invitationsShowRoute(sequelize));
+
 // "/members"
 import membersIndexRoute from './routes/members/index.js';
 import membersNewRoute from './routes/members/new.js';

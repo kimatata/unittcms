@@ -2,6 +2,7 @@ import { getTranslations } from 'next-intl/server';
 import { useTranslations } from 'next-intl';
 import MembersPage from './MembersPage';
 import { LocaleCodeType } from '@/types/locale';
+import { InvitationMessages } from '@/types/invitation';
 
 export async function generateMetadata({ params: { locale } }: { params: { locale: LocaleCodeType } }) {
   const t = await getTranslations({ locale, namespace: 'Members' });
@@ -35,9 +36,38 @@ export default function Page({ params }: { params: { projectId: string; locale: 
     memberDeleted: t('member_deleted'),
   };
 
+  const it = useTranslations('Invitation');
+  const invitationMessages: InvitationMessages = {
+    invite: it('invite'),
+    inviteTitle: it('invite_title'),
+    inviteIntro: it('invite_intro'),
+    role: it('role'),
+    emailOptional: it('email_optional'),
+    create: it('create'),
+    close: it('close'),
+    copy: it('copy'),
+    shareWhatsapp: it('share_whatsapp'),
+    shareEmail: it('share_email'),
+    shareSubject: it('share_subject'),
+    shareBody: it('share_body'),
+    pending: it('pending'),
+    noPending: it('no_pending'),
+    revoke: it('revoke'),
+    expiresOn: it('expires_on'),
+    inviteError: it('invite_error'),
+    roleManager: t('manager'),
+    roleDeveloper: t('developer'),
+    roleReporter: t('reporter'),
+  };
+
   return (
     <>
-      <MembersPage projectId={params.projectId} messages={messages} />
+      <MembersPage
+        projectId={params.projectId}
+        locale={params.locale}
+        messages={messages}
+        invitationMessages={invitationMessages}
+      />
     </>
   );
 }
