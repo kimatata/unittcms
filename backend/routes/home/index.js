@@ -31,19 +31,34 @@ export default function (sequelize) {
     }
 
     try {
-      const project = await Project.findByPk(projectId, {
-        include: [
-          {
-            model: Folder,
-            include: [{ model: Case }],
-          },
-          { model: Run, include: [{ model: RunCase }] },
-        ],
-      });
+      const project = await Project.findByPk(projectId);
       if (!project) {
         return res.status(404).send('Project not found');
       }
-      res.json(project);
+
+      // Two `hasMany` branches in ONE query make Sequelize emit a cartesian
+      // product: folders x cases x runs x runCases. On a project with ~1000
+      // cases and 9 runs that is roughly a million rows, each one carrying the
+      // full case text — the request never returns and the process dies with
+      // "JavaScript heap out of memory".
+      //
+      // Two separate queries, one join each, and only the columns the page
+      // actually aggregates (see aggregate.ts: counts, case type and priority,
+      // run case status and createdAt). The JSON shape is unchanged.
+      const [folders, runs] = await Promise.all([
+        Folder.findAll({
+          where: { projectId },
+          attributes: ['id'],
+          include: [{ model: Case, attributes: ['id', 'type', 'priority'] }],
+        }),
+        Run.findAll({
+          where: { projectId },
+          attributes: ['id'],
+          include: [{ model: RunCase, attributes: ['id', 'status', 'createdAt'] }],
+        }),
+      ]);
+
+      res.json({ ...project.toJSON(), Folders: folders, Runs: runs });
     } catch (error) {
       console.error(error);
       res.status(500).send('Internal Server Error');
