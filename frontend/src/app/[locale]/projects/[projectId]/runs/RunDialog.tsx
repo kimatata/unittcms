@@ -85,42 +85,49 @@ export default function RunDialog({ isOpen, editingRun, onCancel, onSubmit, mess
       }}
     >
       <ModalContent>
-        <ModalHeader className="flex flex-col gap-1">{messages.run}</ModalHeader>
-        <ModalBody>
-          <Input
-            type="text"
-            label={messages.runName}
-            value={runName.text}
-            isInvalid={runName.isInvalid}
-            errorMessage={runName.errorMessage}
-            onChange={(e) => {
-              setRunName({
-                ...runName,
-                text: e.target.value,
-              });
-            }}
-          />
-          <Textarea
-            label={messages.runDescription}
-            value={runDescription.text}
-            isInvalid={runDescription.isInvalid}
-            errorMessage={runDescription.errorMessage}
-            onChange={(e) => {
-              setRunDescription({
-                ...runDescription,
-                text: e.target.value,
-              });
-            }}
-          />
-        </ModalBody>
-        <ModalFooter>
-          <Button variant="light" onPress={onCancel}>
-            {messages.close}
-          </Button>
-          <Button color="primary" onPress={validate}>
-            {editingRun && editingRun.createdAt ? messages.update : messages.create}
-          </Button>
-        </ModalFooter>
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            validate();
+          }}
+        >
+          <ModalHeader className="flex flex-col gap-1">{messages.run}</ModalHeader>
+          <ModalBody>
+            <Input
+              type="text"
+              label={messages.runName}
+              value={runName.text}
+              isInvalid={runName.isInvalid}
+              errorMessage={runName.errorMessage}
+              onChange={(e) => {
+                setRunName({
+                  ...runName,
+                  text: e.target.value,
+                });
+              }}
+            />
+            <Textarea
+              label={messages.runDescription}
+              value={runDescription.text}
+              isInvalid={runDescription.isInvalid}
+              errorMessage={runDescription.errorMessage}
+              onChange={(e) => {
+                setRunDescription({
+                  ...runDescription,
+                  text: e.target.value,
+                });
+              }}
+            />
+          </ModalBody>
+          <ModalFooter>
+            <Button type="button" variant="light" onPress={onCancel}>
+              {messages.close}
+            </Button>
+            <Button type="submit" color="primary">
+              {editingRun && editingRun.createdAt ? messages.update : messages.create}
+            </Button>
+          </ModalFooter>
+        </form>
       </ModalContent>
     </Modal>
   );

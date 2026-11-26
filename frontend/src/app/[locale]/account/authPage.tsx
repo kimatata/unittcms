@@ -119,7 +119,12 @@ export default function AuthPage({ isSignup, messages, locale, ssoEnabled }: Pro
           </Button>
         </CardHeader>
         <CardBody className="overflow-visible px-4 pt-0 pb-4">
-          <form>
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              validate();
+            }}
+          >
             {errorMessage && <div className="my-3 text-danger">{errorMessage}</div>}
             <Input
               isRequired
@@ -188,11 +193,12 @@ export default function AuthPage({ isSignup, messages, locale, ssoEnabled }: Pro
             {isDemoSite && <div className="my-3 text-default-600">{messages.demoPageWarning}</div>}
 
             <div className="flex justify-end items-center mt-3">
-              <Button color="primary" onPress={validate}>
+              <Button type="submit" color="primary">
                 {messages.submitTitle}
               </Button>
               {!isSignup && isDemoSite && (
                 <Button
+                  type="button"
                   className="ms-3 bg-gradient-to-tr from-pink-500 to-yellow-500 text-white shadow-lg"
                   onPress={handleSignInAsGuest}
                 >
@@ -210,6 +216,7 @@ export default function AuthPage({ isSignup, messages, locale, ssoEnabled }: Pro
                 </div>
 
                 <Button
+                  type="button"
                   color="primary"
                   variant="bordered"
                   onPress={handleSSOLogin}

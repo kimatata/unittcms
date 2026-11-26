@@ -137,7 +137,19 @@ export default function ProjectTagsManager({ projectId, messages }: ProjectTagsM
   return (
     <Card>
       <CardBody>
-        <div className="mb-6 flex items-baseline gap-3">
+        {/* The form covers only this field and its button: the list below holds
+            delete buttons that a submission must never trigger. */}
+        <form
+          className="mb-6 flex items-baseline gap-3"
+          onSubmit={(e) => {
+            e.preventDefault();
+            if (!isProjectDeveloper || !isValidTag || !tagName) {
+              return;
+            }
+            onCreateTag();
+            setTagName('');
+          }}
+        >
           <Input
             size="sm"
             type="text"
@@ -156,19 +168,16 @@ export default function ProjectTagsManager({ projectId, messages }: ProjectTagsM
 
           <div>
             <Button
+              type="submit"
               startContent={<Plus className="w-4 h-4" />}
               color="primary"
               size="sm"
               isDisabled={!isProjectDeveloper || !isValidTag}
-              onPress={() => {
-                onCreateTag();
-                setTagName('');
-              }}
             >
               {messages.addTag}
             </Button>
           </div>
-        </div>
+        </form>
         <div className="space-y-1">
           {tags.length === 0 && <div className="text-center text-gray-500 mb-3">{messages.noTagsAvailable}</div>}
 

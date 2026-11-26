@@ -85,42 +85,49 @@ export default function FolderDialog({ isOpen, editingFolder, onCancel, onSubmit
       }}
     >
       <ModalContent>
-        <ModalHeader className="flex flex-col gap-1">{messages.folder}</ModalHeader>
-        <ModalBody>
-          <Input
-            type="text"
-            label={messages.folderName}
-            value={folderName.text}
-            isInvalid={folderName.isValid}
-            errorMessage={folderName.errorMessage}
-            onChange={(e) => {
-              setFolderName({
-                ...folderName,
-                text: e.target.value,
-              });
-            }}
-          />
-          <Textarea
-            label={messages.folderDetail}
-            value={folderDetail.text}
-            isInvalid={folderDetail.isValid}
-            errorMessage={folderDetail.errorMessage}
-            onChange={(e) => {
-              setFolderDetail({
-                ...folderDetail,
-                text: e.target.value,
-              });
-            }}
-          />
-        </ModalBody>
-        <ModalFooter>
-          <Button variant="light" onPress={onCancel}>
-            {messages.close}
-          </Button>
-          <Button color="primary" onPress={validate}>
-            {editingFolder ? messages.update : messages.create}
-          </Button>
-        </ModalFooter>
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            validate();
+          }}
+        >
+          <ModalHeader className="flex flex-col gap-1">{messages.folder}</ModalHeader>
+          <ModalBody>
+            <Input
+              type="text"
+              label={messages.folderName}
+              value={folderName.text}
+              isInvalid={folderName.isValid}
+              errorMessage={folderName.errorMessage}
+              onChange={(e) => {
+                setFolderName({
+                  ...folderName,
+                  text: e.target.value,
+                });
+              }}
+            />
+            <Textarea
+              label={messages.folderDetail}
+              value={folderDetail.text}
+              isInvalid={folderDetail.isValid}
+              errorMessage={folderDetail.errorMessage}
+              onChange={(e) => {
+                setFolderDetail({
+                  ...folderDetail,
+                  text: e.target.value,
+                });
+              }}
+            />
+          </ModalBody>
+          <ModalFooter>
+            <Button type="button" variant="light" onPress={onCancel}>
+              {messages.close}
+            </Button>
+            <Button type="submit" color="primary">
+              {editingFolder ? messages.update : messages.create}
+            </Button>
+          </ModalFooter>
+        </form>
       </ModalContent>
     </Modal>
   );
