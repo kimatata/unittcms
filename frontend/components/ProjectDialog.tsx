@@ -101,46 +101,53 @@ export default function ProjectDialog({ isOpen, editingProject, onCancel, onSubm
       }}
     >
       <ModalContent>
-        <ModalHeader className="flex flex-col gap-1">{projectDialogMessages.project}</ModalHeader>
-        <ModalBody>
-          <Input
-            type="text"
-            label={projectDialogMessages.projectName}
-            value={projectName.text}
-            isInvalid={projectName.isInvalid}
-            errorMessage={projectName.errorMessage}
-            onChange={(e) => {
-              setProjectName({
-                ...projectName,
-                text: e.target.value,
-              });
-            }}
-          />
-          <Textarea
-            label={projectDialogMessages.projectDetail}
-            value={projectDetail.text}
-            isInvalid={projectDetail.isInvalid}
-            errorMessage={projectDetail.errorMessage}
-            onChange={(e) => {
-              setProjectDetail({
-                ...projectDetail,
-                text: e.target.value,
-              });
-            }}
-          />
-          <Checkbox isSelected={isProjectPublic} onValueChange={setIsProjectPublic}>
-            {projectDialogMessages.public}
-          </Checkbox>
-          <div className="text-small text-default-500">{projectDialogMessages.ifYouMakePublic}</div>
-        </ModalBody>
-        <ModalFooter>
-          <Button variant="light" onPress={onCancel}>
-            {projectDialogMessages.close}
-          </Button>
-          <Button color="primary" onPress={validate}>
-            {editingProject ? projectDialogMessages.update : projectDialogMessages.create}
-          </Button>
-        </ModalFooter>
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            validate();
+          }}
+        >
+          <ModalHeader className="flex flex-col gap-1">{projectDialogMessages.project}</ModalHeader>
+          <ModalBody>
+            <Input
+              type="text"
+              label={projectDialogMessages.projectName}
+              value={projectName.text}
+              isInvalid={projectName.isInvalid}
+              errorMessage={projectName.errorMessage}
+              onChange={(e) => {
+                setProjectName({
+                  ...projectName,
+                  text: e.target.value,
+                });
+              }}
+            />
+            <Textarea
+              label={projectDialogMessages.projectDetail}
+              value={projectDetail.text}
+              isInvalid={projectDetail.isInvalid}
+              errorMessage={projectDetail.errorMessage}
+              onChange={(e) => {
+                setProjectDetail({
+                  ...projectDetail,
+                  text: e.target.value,
+                });
+              }}
+            />
+            <Checkbox isSelected={isProjectPublic} onValueChange={setIsProjectPublic}>
+              {projectDialogMessages.public}
+            </Checkbox>
+            <div className="text-small text-default-500">{projectDialogMessages.ifYouMakePublic}</div>
+          </ModalBody>
+          <ModalFooter>
+            <Button type="button" variant="light" onPress={onCancel}>
+              {projectDialogMessages.close}
+            </Button>
+            <Button type="submit" color="primary">
+              {editingProject ? projectDialogMessages.update : projectDialogMessages.create}
+            </Button>
+          </ModalFooter>
+        </form>
       </ModalContent>
     </Modal>
   );

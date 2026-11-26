@@ -86,42 +86,49 @@ export default function CaseDialog({ isOpen, onCancel, onSubmit, messages }: Pro
       }}
     >
       <ModalContent>
-        <ModalHeader className="flex flex-col gap-1">{messages.newTestCase}</ModalHeader>
-        <ModalBody>
-          <Input
-            type="text"
-            label={messages.caseTitle}
-            value={caseTitle.text}
-            isInvalid={caseTitle.isValid}
-            errorMessage={caseTitle.errorMessage}
-            onChange={(e) => {
-              setCaseName({
-                ...caseTitle,
-                text: e.target.value,
-              });
-            }}
-          />
-          <Textarea
-            label={messages.caseDescription}
-            value={caseDescription.text}
-            isInvalid={caseDescription.isValid}
-            errorMessage={caseDescription.errorMessage}
-            onChange={(e) => {
-              setCaseDescription({
-                ...caseDescription,
-                text: e.target.value,
-              });
-            }}
-          />
-        </ModalBody>
-        <ModalFooter>
-          <Switch size="sm" isSelected={createMore} onValueChange={setCreateMore}>
-            {messages.createMore}
-          </Switch>
-          <Button color="primary" onPress={validate}>
-            {messages.create}
-          </Button>
-        </ModalFooter>
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            validate();
+          }}
+        >
+          <ModalHeader className="flex flex-col gap-1">{messages.newTestCase}</ModalHeader>
+          <ModalBody>
+            <Input
+              type="text"
+              label={messages.caseTitle}
+              value={caseTitle.text}
+              isInvalid={caseTitle.isValid}
+              errorMessage={caseTitle.errorMessage}
+              onChange={(e) => {
+                setCaseName({
+                  ...caseTitle,
+                  text: e.target.value,
+                });
+              }}
+            />
+            <Textarea
+              label={messages.caseDescription}
+              value={caseDescription.text}
+              isInvalid={caseDescription.isValid}
+              errorMessage={caseDescription.errorMessage}
+              onChange={(e) => {
+                setCaseDescription({
+                  ...caseDescription,
+                  text: e.target.value,
+                });
+              }}
+            />
+          </ModalBody>
+          <ModalFooter>
+            <Switch size="sm" isSelected={createMore} onValueChange={setCreateMore}>
+              {messages.createMore}
+            </Switch>
+            <Button type="submit" color="primary">
+              {messages.create}
+            </Button>
+          </ModalFooter>
+        </form>
       </ModalContent>
     </Modal>
   );

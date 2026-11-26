@@ -37,10 +37,15 @@ export default function PasswordResetDialog({ isOpen, onCancel, onReset, message
       }}
     >
       <ModalContent>
-        <ModalHeader className="flex flex-col gap-1">{messages.resetPassword}</ModalHeader>
-        <ModalBody>
-          <div className="space-y-3">
-            <form>
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            validate();
+          }}
+        >
+          <ModalHeader className="flex flex-col gap-1">{messages.resetPassword}</ModalHeader>
+          <ModalBody>
+            <div className="space-y-3">
               {errorMessage && <div className="my-3 text-danger">{errorMessage}</div>}
               <Input
                 size="sm"
@@ -59,17 +64,17 @@ export default function PasswordResetDialog({ isOpen, onCancel, onReset, message
                 autoComplete="new-password"
                 className="mt-3"
               />
-            </form>
-          </div>
-        </ModalBody>
-        <ModalFooter>
-          <Button variant="light" onPress={onCancel}>
-            {messages.close}
-          </Button>
-          <Button color="danger" onPress={validate}>
-            {messages.reset}
-          </Button>
-        </ModalFooter>
+            </div>
+          </ModalBody>
+          <ModalFooter>
+            <Button type="button" variant="light" onPress={onCancel}>
+              {messages.close}
+            </Button>
+            <Button type="submit" color="danger">
+              {messages.reset}
+            </Button>
+          </ModalFooter>
+        </form>
       </ModalContent>
     </Modal>
   );
